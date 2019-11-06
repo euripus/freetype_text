@@ -20,8 +20,9 @@ INCLUDEPATH += $$PWD/include
 LIBS += -L$$PWD/lib
 
 win32:{
-    LIBS += -lopengl32 -lglu32 -lgdi32 -lglew32 -lglfw3dll
-    LIBS += -lfreetype252
+    INCLUDEPATH += $$PWD/include/freetype
+    LIBS += -lopengl32 -lglu32 -lgdi32 -lglew32dll -lglfw3dll
+    LIBS += -lfreetype -static-libgcc -static-libstdc++ -static -lpthread
 }
 unix:{
     INCLUDEPATH += /usr/include/freetype2/
