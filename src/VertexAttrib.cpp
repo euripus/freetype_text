@@ -4,7 +4,7 @@
 #include <cstring>
 #include <stdio.h>
 
-VertexAttrib VertexAttrib::VertexAttribParse(const char * format)
+VertexAttrib VertexAttrib::VertexAttribParse(char const * format)
 {
     assert(format);
 

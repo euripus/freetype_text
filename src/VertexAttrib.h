@@ -13,7 +13,7 @@ struct VertexAttrib
 
     VertexAttrib() : location(0), size(0), stride(0), pointer(0) {}
 
-    static VertexAttrib VertexAttribParse(const char * format);
+    static VertexAttrib VertexAttribParse(char const * format);
     void                VertexAttribEnable() const;
     void                VertexAttribDisable() const;
 };

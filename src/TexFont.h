@@ -1,18 +1,26 @@
 #ifndef TEXFONT_H
 #define TEXFONT_H
 
-#include <ft2build.h>
 #include <string>
 #include <vector>
-#include FT_FREETYPE_H
 #include "AtlasTex.h"
+
+#include <ft2build.h>
+#include <cstring>
+#include <cwchar>
+
+#include FT_FREETYPE_H
+#include FT_STROKER_H
+#include FT_LCD_FILTER_H
+// struct FT_LibraryRec_ * FT_Library;
+// struct FT_FaceRec_ *    FT_Face;
 
 struct Kerning
 {
     /**
      * Left character code in the kern pair.
      */
-    wchar_t charcode;
+    std::uint32_t charcode;
     /**
      * Kerning value (in fractional pixels).
      */
@@ -29,7 +37,7 @@ struct TextureGlyph
     /**
      * Wide character this glyph represents
      */
-    wchar_t charcode;
+    std::uint32_t charcode;
     /**
      * Glyph id (used for display lists)
      */
@@ -120,14 +128,14 @@ public:
 
     void Clear();
 
-    bool TextureFontNewFromFile(AtlasTex * atlas, float pt_size, const std::string & filename);
-    bool TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, const unsigned char * memory_base,
+    bool TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename);
+    bool TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
                                   size_t memory_size);
 
     TextureGlyph & TextureFontGetGlyph(const wchar_t charcode);
-    size_t         TextureFontLoadGlyphs(const wchar_t * charcodes);
+    size_t         TextureFontLoadGlyphs(wchar_t const * charcodes);
 
-    float TextureGlyphGetKerning(const TextureGlyph & self,
+    float TextureGlyphGetKerning(TextureGlyph const & self,
                                  const wchar_t charcode) const;   // charcode  codepoint of the peceding glyph
 protected:
 private:
@@ -208,11 +216,7 @@ private:
     /**
      * Font memory address, for when location == TEXTURE_FONT_MEMORY
      */
-    struct
-    {
-        const unsigned char * base;
-        size_t                size;
-    } _memory;
+    std::vector<unsigned char> _memory;
 };
 
 #endif   // TEXFONT_H

@@ -8,37 +8,34 @@
 class AtlasTex
 {
 public:
-    AtlasTex();
-    virtual ~AtlasTex();
+    AtlasTex() = default;
 
-    void Create(unsigned int width, unsigned int height, unsigned int depth);
+    void Create(unsigned int width, unsigned int height);
     void Delete();
     void Clear();
 
     glm::ivec4 GetRegion(unsigned int width, unsigned int height);
-    void       SetRegion(glm::ivec4 reg, const unsigned char * data, int stride);   // z - width, w - height
+    void       SetRegion(glm::ivec4 reg, unsigned char const * data, int stride);   // z - width, w - height
 
     unsigned int GetWidth() const { return _width; }
     unsigned int GetHeight() const { return _height; }
-    unsigned int GetDepth() const { return _depth; }
 
     void UploadTexture();
     void DeleteTexture();
     void BindTexture();
 
-    void WriteAtlasToTGA(const std::string & name);
+    void WriteAtlasToTGA(std::string const & name);
 
 protected:
     int  AtlasFit(unsigned int index, unsigned int width, unsigned int height);
     void AtlasMerge();
 
 private:
-    unsigned int    _width;
-    unsigned int    _height;
-    unsigned int    _depth;
-    unsigned char * _data;
+    unsigned int               _width  = 0;
+    unsigned int               _height = 0;
+    std::vector<unsigned char> _data;
 
-    unsigned int            _used;
+    unsigned int            _used = 0;
     std::vector<glm::ivec3> _nodes;
 };
 

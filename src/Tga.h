@@ -15,7 +15,7 @@ typedef struct
 } Texture;
 
 bool LoadTGA(Texture * texture, char * filename);
-void WriteUncompressedTGA(const char * fname, unsigned int depth, unsigned int width, unsigned int height,
-                          const unsigned char * data);
+void WriteUncompressedTGA(char const * fname, unsigned int depth, unsigned int width, unsigned int height,
+                          unsigned char const * data);
 
 #endif

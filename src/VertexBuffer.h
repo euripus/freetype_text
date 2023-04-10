@@ -30,15 +30,15 @@ private:
     std::vector<VertexAttrib> _attributes;
 
 public:
-    VertexBuffer(const char * format);
+    VertexBuffer(char const * format);
     virtual ~VertexBuffer();
 
     // unsigned int NumTris() const { return _indices.size()/3; }
     unsigned int GetNumVertComponents() const { return _numVertComp; }
 
-    void VertexBufferInsertVertices(const size_t index, const float * vertices, const size_t vcount);
-    void VertexBufferInsertIndices(const size_t index, const unsigned int * indices, const size_t icount);
-    void VertexBufferPushBack(const float * vertices, const size_t vcount, const unsigned int * indices,
+    void VertexBufferInsertVertices(const size_t index, float const * vertices, const size_t vcount);
+    void VertexBufferInsertIndices(const size_t index, unsigned int const * indices, const size_t icount);
+    void VertexBufferPushBack(float const * vertices, const size_t vcount, unsigned int const * indices,
                               const size_t icount);
 
     void EraseVertices(const size_t first, const size_t last);

@@ -37,6 +37,7 @@ typedef struct
 
 TGAHeader tgaheader;   // TGA header
 TGA       tga;         // TGA image data
+                       // clang-format on
 
 GLubyte uTGAcompare[12] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0};    // Uncompressed TGA Header
 GLubyte cTGAcompare[12] = {0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0};   // Compressed TGA Header
@@ -416,12 +417,12 @@ unsigned char TGAHeaderBW[12] = {
 // and byte order (least first)
 void write16bit(int n, FILE * fp)
 {
-    unsigned char bytes[] = {n % 256, n / 256};
+    unsigned char bytes[] = {static_cast<unsigned char>(n % 256), static_cast<unsigned char>(n / 256)};
     fwrite(bytes, 2, sizeof(unsigned char), fp);
 }
 
-void WriteUncompressedTGA(const char * fname, unsigned int depth, unsigned int width, unsigned int height,
-                          const unsigned char * data)
+void WriteUncompressedTGA(char const * fname, unsigned int depth, unsigned int width, unsigned int height,
+                          unsigned char const * data)
 {
     assert(depth == 1 || depth == 2 || depth == 3 || depth == 4);
     assert(fname);

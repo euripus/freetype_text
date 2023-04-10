@@ -30,7 +30,7 @@ std::string TextFileRead(std::string fileName)
 
 void ValidateShader(GLuint shader, std::string file)
 {
-    const unsigned int BUFFER_SIZE = 512;
+    unsigned int const BUFFER_SIZE = 512;
     char               buffer[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
     GLsizei length = 0;
@@ -44,7 +44,7 @@ void ValidateShader(GLuint shader, std::string file)
 
 void ValidateProgram(GLuint program)
 {
-    const unsigned int BUFFER_SIZE = 512;
+    unsigned int const BUFFER_SIZE = 512;
     char               buffer[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
     GLsizei length = 0;
@@ -75,10 +75,10 @@ void Shader::Init(std::string vsfile, std::string fsfile)
         return;
     }
 
-    const char * vert = vsText.c_str();
-    const char * frag = fsText.c_str();
-    glShaderSource(shader_vp, 1, (const GLchar **)&vert, 0);
-    glShaderSource(shader_fp, 1, (const GLchar **)&frag, 0);
+    char const * vert = vsText.c_str();
+    char const * frag = fsText.c_str();
+    glShaderSource(shader_vp, 1, (GLchar const **)&vert, 0);
+    glShaderSource(shader_fp, 1, (GLchar const **)&frag, 0);
 
     glCompileShader(shader_vp);
     ValidateShader(shader_vp, vsfile);

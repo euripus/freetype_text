@@ -14,7 +14,7 @@
 #define M_PI 3.14159265358979323846
 
 #define WINDOWTITLE "GLFW Frame Application"
-#define TEXNAME "base.tga"
+#define TEXNAME     "base.tga"
 #define WINDOWHEIGT 600
 #define WINDOWWIDTH 800
 
@@ -28,7 +28,7 @@ unsigned int g_numFPS    = 0;
 
 bool                running      = true;
 bool                isFullScreen = false;
-const GLFWvidmode * curMode;
+GLFWvidmode const * curMode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 unsigned int        g_width, g_height;
@@ -89,81 +89,88 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
 
     switch(key)
     {
-        case GLFW_KEY_ESCAPE: {
-            if(action == GLFW_PRESS)
+        case GLFW_KEY_ESCAPE:
             {
-                running = false;
-            }
-            break;
-        }
-        case GLFW_KEY_LEFT: {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rty -= 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_RIGHT: {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rty += 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_DOWN: {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rtx -= 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_UP: {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rtx += 5.0f;
-            }
-            break;
-        }
-        case 'W': {
-            if(action == GLFW_PRESS)
-            {
-                g_wire = (!g_wire);
-                if(g_wire)
+                if(action == GLFW_PRESS)
                 {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                }
-                else
-                {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                }
-            }
-            break;
-        }
-        case GLFW_KEY_F1: {
-            if(action == GLFW_PRESS)
-            {
-                isFullScreen = !isFullScreen;
-
-                KillWindow();
-
-                if(isFullScreen)
-                {
-                    width  = curMode->width;
-                    height = curMode->height;
-                }
-                else
-                {
-                    width  = WINDOWWIDTH;
-                    height = WINDOWHEIGT;
-                }
-                if(!CreateGLFWWindow(width, height, isFullScreen))
-                {
-                    printf("error!");
                     running = false;
                 }
+                break;
             }
-            break;
-        }
+        case GLFW_KEY_LEFT:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rty -= 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_RIGHT:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rty += 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_DOWN:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rtx -= 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_UP:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rtx += 5.0f;
+                }
+                break;
+            }
+        case 'W':
+            {
+                if(action == GLFW_PRESS)
+                {
+                    g_wire = (!g_wire);
+                    if(g_wire)
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    }
+                    else
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                    }
+                }
+                break;
+            }
+        case GLFW_KEY_F1:
+            {
+                if(action == GLFW_PRESS)
+                {
+                    isFullScreen = !isFullScreen;
+
+                    KillWindow();
+
+                    if(isFullScreen)
+                    {
+                        width  = curMode->width;
+                        height = curMode->height;
+                    }
+                    else
+                    {
+                        width  = WINDOWWIDTH;
+                        height = WINDOWHEIGT;
+                    }
+                    if(!CreateGLFWWindow(width, height, isFullScreen))
+                    {
+                        printf("error!");
+                        running = false;
+                    }
+                }
+                break;
+            }
     }
 }
 
@@ -254,8 +261,9 @@ bool InitWindow()
     shd.Init("vert.glsl", "frag.glsl");
 
     std::wstring str2(
-        L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-    atl.Create(512, 512, 4);
+        L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+        "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
+    atl.Create(256, 256);
     tf.TextureFontNewFromFile(&atl, 24, std::string("NotoSans.ttf"));
     tf.TextureFontLoadGlyphs(str2.c_str());
     atl.WriteAtlasToTGA(std::string("atlas.tga"));
@@ -367,7 +375,7 @@ void KillWindow(void)
     g_window = NULL;
 }
 
-static void error_callback(int error, const char * description)
+static void error_callback(int error, char const * description)
 {
     printf("%s", description);
 }

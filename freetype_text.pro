@@ -37,7 +37,8 @@ SOURCES += \
     src/Tga.cpp \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/utf8_utils.cpp
 
 HEADERS += \
     src/AtlasTex.h \
@@ -46,4 +47,5 @@ HEADERS += \
     src/TextRender.h \
     src/Tga.h \
     src/VertexAttrib.h \
-    src/VertexBuffer.h
+    src/VertexBuffer.h \
+    src/utf8_utils.h

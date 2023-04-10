@@ -70,6 +70,8 @@ Thumbs.db
 # --------
 *.dll
 *.exe
+bin/freetype_text
+bin/freetype_text_d
 
 # build directories
 /obj

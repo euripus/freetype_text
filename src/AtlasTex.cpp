@@ -4,55 +4,41 @@
 #include <climits>
 #include <cstring>
 
-AtlasTex::AtlasTex() : _width(0), _height(0), _depth(0), _used(0), _data(nullptr) {}
-
-AtlasTex::~AtlasTex()
-{
-    Delete();
-}
-
 void AtlasTex::Delete()
 {
     _nodes.clear();
-
-    if(_data != nullptr)
-    {
-        delete[] _data;
-        _data = nullptr;
-    }
+    _data.clear();
 
     _width  = 0;
     _height = 0;
-    _depth  = 0;
     _used   = 0;
 }
 
 void AtlasTex::Clear()
 {
     glm::ivec3 node(1, 1, 1);
-    assert(_data);
     _nodes.clear();
     _used = 0;
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
     node.z = _width - 2;
     _nodes.push_back(std::move(node));
-    std::memset(_data, 0, _width * _height * _depth);
+    _data.resize(_width * _height * 4);
+    std::memset(_data.data(), 0, _width * _height * 4);
 }
 
-void AtlasTex::Create(unsigned int width, unsigned int height, unsigned int depth)
+void AtlasTex::Create(unsigned int width, unsigned int height)
 {
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
     glm::ivec3 node(1, 1, width - 2);
-    assert((depth == 1) || (depth == 2) || (depth == 3) || (depth == 4));
+
     _used   = 0;
     _width  = width;
     _height = height;
-    _depth  = depth;
     _nodes.push_back(std::move(node));
-    _data = new unsigned char[width * height * depth];
-    std::memset(_data, 0, _width * _height * _depth);
+    _data.resize(_width * _height * 4);
+    std::memset(_data.data(), 0, _width * _height * 4);
 }
 
 int AtlasTex::AtlasFit(unsigned int index, unsigned int width, unsigned int height)
@@ -70,8 +56,6 @@ int AtlasTex::AtlasFit(unsigned int index, unsigned int width, unsigned int heig
     {
         return -1;
     }
-
-    y = node->y;
 
     while(width_left > 0)
     {
@@ -130,7 +114,8 @@ glm::ivec4 AtlasTex::GetRegion(unsigned int width, unsigned int height)
         {
             node = &_nodes[i];
 
-            if(((y + height) < best_height) || (((y + height) == best_height) && (node->z < best_width)))
+            if(((y + static_cast<int>(height)) < best_height)
+               || (((y + static_cast<int>(height)) == best_height) && (node->z < best_width)))
             {
                 best_height = y + height;
                 best_index  = i;
@@ -188,58 +173,44 @@ glm::ivec4 AtlasTex::GetRegion(unsigned int width, unsigned int height)
     return region;
 }
 
-void AtlasTex::SetRegion(glm::ivec4 reg, const unsigned char * data, int stride)   // z - width, w - height
+void AtlasTex::SetRegion(glm::ivec4 reg, unsigned char const * data, int stride)   // z - width, w - height
 {
-    unsigned int i;
-    unsigned int charsize;
     assert(reg.x > 0);
     assert(reg.y > 0);
-    assert(reg.x < (_width - 1));
-    assert((reg.x + reg.z) <= (_width - 1));
-    assert(reg.y < (_height - 1));
-    assert((reg.y + reg.w) <= (_height - 1));
+    assert(reg.x < (static_cast<int>(_width) - 1));
+    assert((reg.x + reg.z) <= (static_cast<int>(_width) - 1));
+    assert(reg.y < (static_cast<int>(_height) - 1));
+    assert((reg.y + reg.w) <= (static_cast<int>(_height) - 1));
+
+    int          i;
+    unsigned int charsize;
     charsize = sizeof(char);
 
     for(i = 0; i < reg.w; ++i)
     {
-        if(_depth == 1 || _depth == 3)
-            memcpy(_data + ((reg.y + i) * _width + reg.x) * charsize * _depth, data + (i * stride) * charsize,
-                   reg.z * charsize * _depth);
-        else   // depth 2 4
+        unsigned char bytes[4] = {0};   // 4 - alpha
+
+        for(int j = 0; j < reg.z; ++j)
         {
-            unsigned char bytes[4] = {0};   // 4 - alpha
-            unsigned int  depth    = _depth - 1;
+            unsigned int dst_shift = (((reg.y + i) * _width + reg.x + j) * charsize * 4);
+            unsigned int src_shift = (((i * stride) + j * 3) * charsize);
 
-            for(int j = 0; j < reg.z; ++j)
-            {
-                unsigned int dst_shift = (((reg.y + i) * _width + reg.x + j) * charsize * _depth);
-                unsigned int src_shift = (((i * stride) + j * depth) * charsize);
+            bytes[0] = data[src_shift + 0];
+            bytes[1] = data[src_shift + 1];
+            bytes[2] = data[src_shift + 2];
+            bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
 
-                bytes[0] = data[src_shift + 0];
-                if(_depth == 4)
-                {
-                    bytes[1] = data[src_shift + 1];
-                    bytes[2] = data[src_shift + 2];
-                }
-                bytes[3] = _depth == 1 ? bytes[0] : std::min(bytes[0] + bytes[1] + bytes[2], 255);
-
-                _data[dst_shift + 0] = bytes[0];
-                if(_depth == 4)
-                {
-                    _data[dst_shift + 1] = bytes[1];
-                    _data[dst_shift + 2] = bytes[2];
-                    _data[dst_shift + 3] = bytes[3];
-                }
-                else
-                    _data[dst_shift + 1] = bytes[3];
-            }
+            _data[dst_shift + 0] = bytes[0];
+            _data[dst_shift + 1] = bytes[1];
+            _data[dst_shift + 2] = bytes[2];
+            _data[dst_shift + 3] = bytes[3];
         }
     }
 }
 
-void AtlasTex::WriteAtlasToTGA(const std::string & name)
+void AtlasTex::WriteAtlasToTGA(std::string const & name)
 {
-    WriteUncompressedTGA(name.c_str(), _depth, _width, _height, _data);
+    WriteUncompressedTGA(name.c_str(), 4, _width, _height, _data.data());
 }
 
 ////////////////////////
@@ -256,8 +227,6 @@ void AtlasTex::BindTexture()
 
 void AtlasTex::UploadTexture()
 {
-    assert(_data);
-
     glGenTextures(1, &atlTex);
 
     glBindTexture(GL_TEXTURE_2D, atlTex);
@@ -265,23 +234,8 @@ void AtlasTex::UploadTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    if(_depth == 4)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _data);
-    }
-    else if(_depth == 3)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, _data);
-    }
-    else if(_depth == 2)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
-                     _data);
-    }
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, _width, _height, 0, GL_RED, GL_UNSIGNED_BYTE, _data);
-    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _data.data());
 }
 
 void AtlasTex::DeleteTexture()

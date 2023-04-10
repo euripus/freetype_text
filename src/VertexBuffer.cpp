@@ -5,7 +5,7 @@
 #include <cassert>
 #include <cstring>
 
-char * strndup(const char * s, size_t n)
+char * strndup(char const * s, size_t n)
 {
     char * result;
     size_t len = std::strlen(s);
@@ -21,7 +21,7 @@ char * strndup(const char * s, size_t n)
     return (char *)std::memcpy(result, s, len);
 }
 
-char * strdup(const char * s)
+char * strdup(char const * s)
 {
     char * result;
     size_t len = std::strlen(s);
@@ -34,7 +34,7 @@ char * strdup(const char * s)
     return (char *)std::memcpy(result, s, len);
 }
 
-VertexBuffer::VertexBuffer(const char * format) :
+VertexBuffer::VertexBuffer(char const * format) :
     vertices_id(0),
     indices_id(0),
     _mode(0),
@@ -44,7 +44,7 @@ VertexBuffer::VertexBuffer(const char * format) :
 {
     assert(format);
 
-    const char *start = 0, *end = 0;
+    char const *start = 0, *end = 0;
 
     start = format;
     do
@@ -97,7 +97,7 @@ void VertexBuffer::Clear()
     _indices.clear();
 }
 
-void VertexBuffer::VertexBufferInsertVertices(const size_t index, const float * vertices, const size_t vcount)
+void VertexBuffer::VertexBufferInsertVertices(const size_t index, float const * vertices, const size_t vcount)
 {
     assert(index * _numVertComp < _vertices.size());
     assert(vertices);
@@ -106,7 +106,7 @@ void VertexBuffer::VertexBufferInsertVertices(const size_t index, const float * 
     _vertices.insert(flt_it, vertices, vertices + vcount);
 }
 
-void VertexBuffer::VertexBufferInsertIndices(const size_t index, const unsigned int * indices,
+void VertexBuffer::VertexBufferInsertIndices(const size_t index, unsigned int const * indices,
                                              const size_t icount)
 {
     assert(index < _indices.size());
@@ -116,8 +116,8 @@ void VertexBuffer::VertexBufferInsertIndices(const size_t index, const unsigned 
     _indices.insert(ind_it, indices, indices + icount);
 }
 
-void VertexBuffer::VertexBufferPushBack(const float * vertices, const size_t vcount,
-                                        const unsigned int * indices, const size_t icount)
+void VertexBuffer::VertexBufferPushBack(float const * vertices, const size_t vcount,
+                                        unsigned int const * indices, const size_t icount)
 {
     assert(vertices);
     assert(indices);

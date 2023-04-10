@@ -23,7 +23,7 @@ void AddText(VertexBuffer & vb, TexFont & tf, wchar_t * text, glm::vec2 & pen)
         float        t1              = glyph.t1;
         unsigned int indices[6]      = {0, 1, 2, 0, 2, 3};
         float        vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x0, y1, 0.0, s0, t1,
-                                 x1, y1, 0.0, s1, t1, x1, y0, 0.0, s1, t0};
+                                        x1, y1, 0.0, s1, t1, x1, y0, 0.0, s1, t0};
 
         vb.VertexBufferPushBack(vertices, 4, indices, 6);
         pen.x += glyph.advance_x;

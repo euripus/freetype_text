@@ -1,7 +1,5 @@
 #include "TexFont.h"
-#include FT_STROKER_H
-#include FT_LCD_FILTER_H
-#include <cwchar>
+
 
 // clang-format off
 #undef __FTERRORS_H__
@@ -13,13 +11,13 @@ const struct {
     const char * message;
 } FT_Errors[] =
 #include FT_ERRORS_H
+// clang-format on
 
 #define HRES  64
 #define HRESf 64.f
 #define DPI   72
-    // clang-format on
 
-bool TexFont::TexFontLoadFace(float size, FT_Library * library, FT_Face * face)
+    bool TexFont::TexFontLoadFace(float size, FT_Library * library, FT_Face * face)
 {
     FT_Error  error;
     FT_Matrix matrix = {(int)((1.0 / HRES) * 0x10000L), (int)((0.0) * 0x10000L), (int)((0.0) * 0x10000L),
@@ -43,7 +41,7 @@ bool TexFont::TexFontLoadFace(float size, FT_Library * library, FT_Face * face)
             break;
 
         case TEXTURE_FONT_MEMORY:
-            error = FT_New_Memory_Face(*library, _memory.base, _memory.size, 0, face);
+            error = FT_New_Memory_Face(*library, _memory.data(), _memory.size(), 0, face);
             break;
     }
 
@@ -90,7 +88,7 @@ bool TexFont::InitFont()
     FT_Face         face;
     FT_Size_Metrics metrics;
 
-    if(!TexFontLoadFace(_size * 100.f, &library, &face))
+    if(!TexFontLoadFace(_size, &library, &face))
     {
         return false;
     }
@@ -140,9 +138,8 @@ TexFont::TexFont()
     _lcd_weights[2] = 0x70;
     _lcd_weights[3] = 0x40;
     _lcd_weights[4] = 0x10;
-    _memory.base    = nullptr;
-    _memory.size    = 0;
-    _atlas          = nullptr;
+
+    _atlas = nullptr;
 }
 
 TexFont::~TexFont()
@@ -153,15 +150,9 @@ TexFont::~TexFont()
 void TexFont::Clear()
 {
     _glyphs.clear();
-    if(_memory.base != nullptr)
-    {
-        delete[] _memory.base;
-        _memory.base = nullptr;
-        _memory.size = 0;
-    }
 }
 
-bool TexFont::TextureFontNewFromFile(AtlasTex * atlas, float pt_size, const std::string & filename)
+bool TexFont::TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename)
 {
     assert(!filename.empty());
     assert(atlas);
@@ -178,7 +169,7 @@ bool TexFont::TextureFontNewFromFile(AtlasTex * atlas, float pt_size, const std:
     return true;
 }
 
-bool TexFont::TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, const unsigned char * memory_base,
+bool TexFont::TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
                                        size_t memory_size)
 {
     assert(atlas);
@@ -189,9 +180,9 @@ bool TexFont::TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, const un
     _atlas = atlas;
     _size  = pt_size;
 
-    _location    = TEXTURE_FONT_MEMORY;
-    _memory.base = memory_base;
-    _memory.size = memory_size;
+    _location = TEXTURE_FONT_MEMORY;
+    _memory.resize(memory_size);
+    std::memcpy(_memory.data(), memory_base, memory_size);
 
     if(!InitFont())
         return false;
@@ -200,9 +191,8 @@ bool TexFont::TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, const un
 
 TextureGlyph & TexFont::TextureFontGetGlyph(const wchar_t charcode)
 {
-    size_t       i;
-    wchar_t      buffer[2] = {0, 0};
-    TextureGlyph glyph;
+    size_t  i;
+    wchar_t buffer[2] = {0, 0};
 
     assert(_atlas);
 
@@ -254,11 +244,9 @@ TextureGlyph & TexFont::TextureFontGetGlyph(const wchar_t charcode)
     {
         return _glyphs.back();
     }
-
-    return glyph;
 }
 
-size_t TexFont::TextureFontLoadGlyphs(const wchar_t * charcodes)
+size_t TexFont::TextureFontLoadGlyphs(wchar_t const * charcodes)
 {
     size_t       i, j, x, y, width, height, depth, w, h;
     FT_Library   library;
@@ -276,7 +264,7 @@ size_t TexFont::TextureFontLoadGlyphs(const wchar_t * charcodes)
 
     width  = _atlas->GetWidth();
     height = _atlas->GetHeight();
-    depth  = _atlas->GetDepth();
+    depth  = 4;//_atlas->GetDepth();
     if(depth == 2 || depth == 4)
         depth = depth - 1;
 
@@ -525,13 +513,13 @@ void TexFont::TextureFontGenerateKerning()
     FT_Done_FreeType(library);
 }
 
-float TexFont::TextureGlyphGetKerning(const TextureGlyph & self, const wchar_t charcode) const
+float TexFont::TextureGlyphGetKerning(TextureGlyph const & self, const wchar_t charcode) const
 {
     size_t i;
 
     for(i = 0; i < self.kerning.size(); ++i)
     {
-        const Kerning & kerning = self.kerning[i];
+        Kerning const & kerning = self.kerning[i];
         if(kerning.charcode == charcode)
         {
             return kerning.kerning;
