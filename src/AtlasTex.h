@@ -8,17 +8,14 @@
 class AtlasTex
 {
 public:
-    AtlasTex() = default;
+    AtlasTex(unsigned int size = 64);
 
-    void Create(unsigned int width, unsigned int height);
-    void Delete();
     void Clear();
 
     glm::ivec4 GetRegion(unsigned int width, unsigned int height);
     void       SetRegion(glm::ivec4 reg, unsigned char const * data, int stride);   // z - width, w - height
 
-    unsigned int GetWidth() const { return _width; }
-    unsigned int GetHeight() const { return _height; }
+    unsigned int GetSize() const { return _size; }
 
     void UploadTexture();
     void DeleteTexture();
@@ -31,8 +28,7 @@ protected:
     void AtlasMerge();
 
 private:
-    unsigned int               _width  = 0;
-    unsigned int               _height = 0;
+	unsigned int               _size = 0;
     std::vector<unsigned char> _data;
 
     unsigned int            _used = 0;
