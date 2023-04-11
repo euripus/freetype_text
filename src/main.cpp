@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
+#include <memory>
 #include <stdio.h>
 #undef __STRICT_ANSI__
 #include <cwchar>
@@ -50,12 +51,12 @@ GLfloat pyrVert[] = {
 
 GLuint pyrIndex[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-TexFont      tf;
-AtlasTex     atl;
-Shader       shd, shdTxt;
-GLuint       texBase;
-VertexBuffer pyramidBuf("Pos:3,Norm:3,Tex:2");
-VertexBuffer textBuf("Pos:3,Tex:2");
+TexFont                   tf;
+std::unique_ptr<AtlasTex> atl_ptr;
+Shader                    shd, shdTxt;
+GLuint                    texBase;
+VertexBuffer              pyramidBuf("Pos:3,Norm:3,Tex:2");
+VertexBuffer              textBuf("Pos:3,Tex:2");
 
 /*-----------------------------------------------------------
 /
@@ -263,11 +264,11 @@ bool InitWindow()
     std::wstring str2(
         L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
-    atl.Create(256, 256);
-    tf.TextureFontNewFromFile(&atl, 24, std::string("NotoSans.ttf"));
+    atl_ptr = std::make_unique<AtlasTex>(256);
+    tf.TextureFontNewFromFile(atl_ptr.get(), 24, std::string("Liberation.ttf"));
     tf.TextureFontLoadGlyphs(str2.c_str());
-    atl.WriteAtlasToTGA(std::string("atlas.tga"));
-    atl.UploadTexture();
+    atl_ptr->WriteAtlasToTGA(std::string("atlas.tga"));
+    atl_ptr->UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
     glm::vec2 pen(10, 40);
     AddText(textBuf, tf, L"FPS: 60", pen);
@@ -349,7 +350,7 @@ void DrawScene(void)
 
     shdTxt.Bind();
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
-    atl.BindTexture();
+    atl_ptr->BindTexture();
 
     textBuf.DrawBuffer();
     shdTxt.Unbind();
@@ -366,9 +367,8 @@ void KillWindow(void)
     pyramidBuf.DeleteGPUBuffers();
     shd.DeInit();
     glDeleteTextures(1, &texBase);
-    tf.Clear();
-    atl.DeleteTexture();
-    atl.Clear();
+    atl_ptr->DeleteTexture();
+    atl_ptr->clear();
     shdTxt.DeInit();
 
     glfwDestroyWindow(g_window);

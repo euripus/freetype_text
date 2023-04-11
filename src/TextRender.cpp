@@ -4,12 +4,12 @@ void AddText(VertexBuffer & vb, TexFont & tf, wchar_t * text, glm::vec2 & pen)
 {
     for(unsigned int i = 0; i < wcslen(text); ++i)
     {
-        TextureGlyph & glyph = tf.TextureFontGetGlyph(text[i]);
+        Glyph & glyph = tf.TextureFontGetGlyph(text[i]);
 
         float kerning = 0;   // !!!!!!!!!!!!!!!!!!!!!!!
         if(i > 0)
         {
-            kerning = tf.TextureGlyphGetKerning(glyph, text[i - 1]);
+            kerning = tf.GlyphGetKerning(glyph, text[i - 1]);
         }
 
         pen.x += kerning;
