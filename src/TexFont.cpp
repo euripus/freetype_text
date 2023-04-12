@@ -1,4 +1,5 @@
 #include "TexFont.h"
+#include <algorithm>
 #include <iostream>
 
 #include <ft2build.h>
@@ -32,8 +33,8 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     assert(size);
 
     FT_Error  error;
-    FT_Matrix matrix = {static_cast<int>((1.0 / HRES) * 0x10000L), static_cast<int>((0.0) * 0x10000L), static_cast<int>((0.0) * 0x10000L),
-                        static_cast<int>((1.0) * 0x10000L)};
+    FT_Matrix matrix = {static_cast<int>((1.0 / HRES) * 0x10000L), static_cast<int>((0.0) * 0x10000L),
+                        static_cast<int>((0.0) * 0x10000L), static_cast<int>((1.0) * 0x10000L)};
 
     /* Initialize library */
     error = FT_Init_FreeType(library);
@@ -95,21 +96,24 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
 
 TexFont::TexFont(float pt_size, std::string const & filename) :
     _size{pt_size},
-	_hinting{1},
-	_outline_type{0},
+    _hinting{1},
+    _outline_type{0},
     _outline_thickness{0.0f},
     _filtering{1},
-	_kerning{1},
-	_lcd_weights{},
-	_height{0.0f},
-	_linegap{0.0f},
+    _kerning{1},
+    _lcd_weights{},
+    _height{0.0f},
+    _linegap{0.0f},
     _ascender{0.0f},
     _descender{0.0f},
-	_underline_position{0.0f},
+    _underline_position{0.0f},
     _underline_thickness{0.0f},
-	_location{FontLocation::TEXTURE_FONT_FILE},
-	_filename{filename}
+    _location{FontLocation::TEXTURE_FONT_FILE},
+    _filename{filename}
 {
+    assert(!filename.empty());
+    assert(pt_size > 0);
+
     // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
     // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
     _lcd_weights[0] = 0x10;
@@ -117,11 +121,47 @@ TexFont::TexFont(float pt_size, std::string const & filename) :
     _lcd_weights[2] = 0x70;
     _lcd_weights[3] = 0x40;
     _lcd_weights[4] = 0x10;
-	
-	InitFont();
+
+    if(!initFont())
+        throw std::runtime_error("Error while loading font from file!!!");
 }
 
-bool TexFont::InitFont()
+TexFont::TexFont(float pt_size, unsigned char const * memory_base, size_t memory_size) :
+    _size{pt_size},
+    _hinting{1},
+    _outline_type{0},
+    _outline_thickness{0.0f},
+    _filtering{1},
+    _kerning{1},
+    _lcd_weights{},
+    _height{0.0f},
+    _linegap{0.0f},
+    _ascender{0.0f},
+    _descender{0.0f},
+    _underline_position{0.0f},
+    _underline_thickness{0.0f},
+    _location{FontLocation::TEXTURE_FONT_MEMORY}
+{
+    assert(pt_size > 0);
+    assert(memory_base);
+    assert(memory_size > 0);
+
+    // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
+    // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
+    _lcd_weights[0] = 0x10;
+    _lcd_weights[1] = 0x40;
+    _lcd_weights[2] = 0x70;
+    _lcd_weights[3] = 0x40;
+    _lcd_weights[4] = 0x10;
+
+    _memory.resize(memory_size);
+    std::memcpy(_memory.data(), memory_base, memory_size);
+
+    if(!initFont())
+        throw std::runtime_error("Error while loading font from memory!!!");
+}
+
+bool TexFont::initFont()
 {
     FT_Library      library;
     FT_Face         face;
@@ -155,110 +195,63 @@ bool TexFont::InitFont()
     FT_Done_FreeType(library);
 
     /* -1 is a special glyph */
-    TextureFontGetGlyph(-1);
+    textureFontLoadGlyph(-1);
 
     return true;
 }
 
-bool TexFont::TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename)
+Glyph & TexFont::textureFontGetGlyph(const std::uint32_t ucodepoint)
 {
-    assert(!filename.empty());
-    assert(atlas);
-    assert(pt_size > 0);
-
-    _atlas = atlas;
-    _size  = pt_size;
-
-    _location = TexFont::FontLocation::TEXTURE_FONT_FILE;
-    _filename = filename;
-
-    if(!InitFont())
-        return false;
-    return true;
-}
-
-bool TexFont::TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
-                                       size_t memory_size)
-{
-    assert(atlas);
-    assert(pt_size > 0);
-    assert(memory_base);
-    assert(memory_size > 0);
-
-    _atlas = atlas;
-    _size  = pt_size;
-
-    _location = TexFont::FontLocation::TEXTURE_FONT_MEMORY;
-    _memory.resize(memory_size);
-    std::memcpy(_memory.data(), memory_base, memory_size);
-
-    if(!InitFont())
-        return false;
-    return true;
-}
-
-Glyph & TexFont::TextureFontGetGlyph(const wchar_t charcode)
-{
-    size_t  i;
-    wchar_t buffer[2] = {0, 0};
-
-    assert(_atlas);
-
-    /* Check if charcode has been already loaded */
-    for(i = 0; i < _glyphs.size(); ++i)
+    // Check if charcode has been already loaded
+    for(std::uint32_t i = 0; i < _glyphs.size(); ++i)
     {
         Glyph & glyph = _glyphs[i];
         // If charcode is -1, we don't care about outline type or thickness
-        if((glyph.charcode == charcode)
-           && ((charcode == (wchar_t)(-1))
+        if((glyph.charcode == ucodepoint)
+           && ((ucodepoint == static_cast<std::uint32_t>(-1))
                || ((glyph.outline_type == _outline_type) && (glyph.outline_thickness == _outline_thickness))))
         {
             return glyph;
         }
     }
 
-    /* charcode -1 is special : it is used for line drawing (overline,
-     * underline, strikethrough) and background.
-     */
-    if(charcode == (wchar_t)(-1))
+    // Glyph has not been already loaded
+    auto i = textureFontLoadGlyph(ucodepoint);
+    if(i > 0)
     {
-        Glyph      glyph;
-        size_t     size   = _atlas->getSize();
-        glm::ivec4 region = _atlas->getRegion(5, 5);
-
-        static unsigned char data[4 * 4 * 3] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
-        if(region.x < 0)
+        textureFontGenerateKerning(_glyphs[i]);
+        return _glyphs[i];
+    }
+    else if(i == -1)   // atlas full
+    {
+        resizeAtlas();
+        i = textureFontLoadGlyph(ucodepoint);
+        if(i > 0)
         {
-            std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
-            return glyph;
+            textureFontGenerateKerning();
+            return _glyphs[i];
         }
-
-        _atlas->setRegion(glm::ivec4(region.x, region.y, 4, 4), data, 0);
-        glyph.charcode = (wchar_t)(-1);
-        glyph.s0       = (region.x + 2) / (float)size;
-        glyph.t0       = (region.y + 2) / (float)size;
-        glyph.s1       = (region.x + 3) / (float)size;
-        glyph.t1       = (region.y + 3) / (float)size;
-        _glyphs.push_back(std::move(glyph));
-        return _glyphs.back();
     }
 
-    /* Glyph has not been already loaded */
-    buffer[0] = charcode;
-    if(TextureFontLoadGlyphs(buffer) == 0)
-    {
-        return _glyphs.back();
-    }
+    throw std::runtime_error("Glyph not found!!!");
 }
 
-size_t TexFont::TextureFontLoadGlyphs(wchar_t const * charcodes)
+std::int32_t TexFont::textureFontLoadGlyph(char const * charcode)
 {
-    assert(charcodes);
+    std::uint32_t ucodepoint = 0;
+    // codepoint NULL is special : it is used for line drawing (overline, underline, strikethrough) and
+    // background.
+    if(charcode == nullptr)
+        ucodepoint = static_cast<std::uint32_t>(-1);
+    else
+        ucodepoint = utf8_to_utf32(charcode);
 
-    size_t       i, j, x, y, w, h, size;
+    return textureFontLoadGlyph(ucodepoint);
+}
+
+std::int32_t TexFont::textureFontLoadGlyph(std::uint32_t ucodepoint)
+{
+    size_t       x, y, w, h, size;
     FT_Library   library;
     FT_Error     error;
     FT_Face      face;
@@ -268,202 +261,248 @@ size_t TexFont::TextureFontLoadGlyphs(wchar_t const * charcodes)
 
     FT_UInt    glyph_index;
     glm::ivec4 region;
-    size_t     missed = 0;
 
-    char pass;
-    size = _atlas->getSize();
+    size = _atlas.getSize();
 
-    if(!TexFontLoadFace(_size, &library, &face, _location, _filename, _memory))
-        return std::wcslen(charcodes);
-
-    for(i = 0; i < std::wcslen(charcodes); ++i)
+    // Check if charcode has been already loaded
+    for(std::uint32_t i = 0; i < _glyphs.size(); ++i)
     {
-        pass = 0;
-        /* Check if charcode has been already loaded */
-        for(j = 0; j < _glyphs.size(); ++j)
+        Glyph & glyph = _glyphs[i];
+        // If charcode is -1, we don't care about outline type or thickness
+        if((glyph.charcode == ucodepoint)
+           && ((ucodepoint == static_cast<std::uint32_t>(-1))
+               || ((glyph.outline_type == _outline_type) && (glyph.outline_thickness == _outline_thickness))))
         {
-            Glyph & glyph = _glyphs[j];
-            // If charcode is -1, we don't care about outline type or thickness
-            if((glyph.charcode == charcodes[i]))
-            {
-                pass = 1;
-                break;
-            }
+            return i;
         }
+    }
 
-        if(pass)
-            continue;   // don't add the item
+    if(ucodepoint == static_cast<std::uint32_t>(-1))
+    {
+        Glyph      glyph;
+        size_t     size   = _atlas.getSize();
+        glm::ivec4 region = _atlas.getRegion(5, 5);
 
-        FT_Int32 flags         = 0;
-        int      ft_glyph_top  = 0;
-        int      ft_glyph_left = 0;
-        glyph_index            = FT_Get_Char_Index(face, charcodes[i]);
-        // WARNING: We use texture-atlas depth to guess if user wants
-        //          LCD subpixel rendering
-
-        if(_outline_type > 0)
-        {
-            flags |= FT_LOAD_NO_BITMAP;
-        }
-        else
-        {
-            flags |= FT_LOAD_RENDER;
-        }
-
-        if(!_hinting)
-        {
-            flags |= FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT;
-        }
-        else
-        {
-            flags |= FT_LOAD_FORCE_AUTOHINT;
-        }
-
-        FT_Library_SetLcdFilter(library, FT_LCD_FILTER_LIGHT);
-        flags |= FT_LOAD_TARGET_LCD;
-        if(_filtering)
-        {
-            FT_Library_SetLcdFilterWeights(library, _lcd_weights);
-        }
-
-        error = FT_Load_Glyph(face, glyph_index, flags);
-        if(error)
-        {
-            std::cerr << "FT_Error line " << __LINE__ << ", code " << FT_Errors[error].code << ": "
-                      << FT_Errors[error].message << std::endl;
-            FT_Done_Face(face);
-            FT_Done_FreeType(library);
-            return wcslen(charcodes) - i;
-        }
-
-        if(_outline_type == 0)
-        {
-            slot          = face->glyph;
-            ft_bitmap     = slot->bitmap;
-            ft_glyph_top  = slot->bitmap_top;
-            ft_glyph_left = slot->bitmap_left;
-        }
-        else
-        {
-            FT_Stroker     stroker;
-            FT_BitmapGlyph ft_bitmap_glyph;
-            error = FT_Stroker_New(library, &stroker);
-            if(error)
-            {
-                std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
-                          << std::endl;
-                FT_Done_Face(face);
-                FT_Stroker_Done(stroker);
-                FT_Done_FreeType(library);
-                return 0;
-            }
-            FT_Stroker_Set(stroker, (int)(_outline_thickness * HRES), FT_STROKER_LINECAP_ROUND,
-                           FT_STROKER_LINEJOIN_ROUND, 0);
-            error = FT_Get_Glyph(face->glyph, &ft_glyph);
-            if(error)
-            {
-                std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
-                          << std::endl;
-                FT_Done_Face(face);
-                FT_Stroker_Done(stroker);
-                FT_Done_FreeType(library);
-                return 0;
-            }
-
-            if(_outline_type == 1)
-            {
-                error = FT_Glyph_Stroke(&ft_glyph, stroker, 1);
-            }
-            else if(_outline_type == 2)
-            {
-                error = FT_Glyph_StrokeBorder(&ft_glyph, stroker, 0, 1);
-            }
-            else if(_outline_type == 3)
-            {
-                error = FT_Glyph_StrokeBorder(&ft_glyph, stroker, 1, 1);
-            }
-            if(error)
-            {
-                std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
-                          << std::endl;
-                FT_Done_Face(face);
-                FT_Stroker_Done(stroker);
-                FT_Done_FreeType(library);
-                return 0;
-            }
-
-            error = FT_Glyph_To_Bitmap(&ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
-            if(error)
-            {
-                std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
-                          << std::endl;
-                FT_Done_Face(face);
-                FT_Stroker_Done(stroker);
-                FT_Done_FreeType(library);
-                return 0;
-            }
-
-            ft_bitmap_glyph = (FT_BitmapGlyph)ft_glyph;
-            ft_bitmap       = ft_bitmap_glyph->bitmap;
-            ft_glyph_top    = ft_bitmap_glyph->top;
-            ft_glyph_left   = ft_bitmap_glyph->left;
-            FT_Stroker_Done(stroker);
-        }
-
-        // We want each glyph to be separated by at least one black pixel
-        // (for example for shader used in demo-subpixel.c)
-        w      = ft_bitmap.width / 3 + 1;
-        h      = ft_bitmap.rows + 1;
-        region = _atlas->getRegion(w, h);
+        static unsigned char data[4 * 4 * 3] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                                                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
         if(region.x < 0)
         {
-            missed++;
             std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
-            continue;
+            return -1;
         }
-        w = w - 1;
-        h = h - 1;
-        x = region.x;
-        y = region.y;
-        _atlas->setRegion(glm::ivec4(x, y, w, h), ft_bitmap.buffer, ft_bitmap.pitch);
 
-        Glyph glyph;
-        glyph.charcode          = charcodes[i];
-        glyph.width             = w;
-        glyph.height            = h;
-        glyph.outline_type      = _outline_type;
-        glyph.outline_thickness = _outline_thickness;
-        glyph.offset_x          = ft_glyph_left;
-        glyph.offset_y          = ft_glyph_top;
-        glyph.s0                = x / (float)size;
-        glyph.t0                = y / (float)size;
-        glyph.s1                = (x + glyph.width) / (float)size;
-        glyph.t1                = (y + glyph.height) / (float)size;
-
-        // Discard hinting to get advance
-        FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
-        slot            = face->glyph;
-        glyph.advance_x = slot->advance.x / HRESf;
-        glyph.advance_y = slot->advance.y / HRESf;
-
+        _atlas.setRegion(glm::ivec4(region.x, region.y, 4, 4), data, 0);
+        glyph.charcode = static_cast<std::uint32_t>(-1);
+        glyph.s0       = (region.x + 2) / static_cast<float>(size);
+        glyph.t0       = (region.y + 2) / static_cast<float>(size);
+        glyph.s1       = (region.x + 3) / static_cast<float>(size);
+        glyph.t1       = (region.y + 3) / static_cast<float>(size);
         _glyphs.push_back(std::move(glyph));
+        return _glyphs.size() - 1;
+    }
 
-        if(_outline_type > 0)
+    if(!TexFontLoadFace(_size, &library, &face, _location, _filename, _memory))
+        return 0;
+
+    FT_Int32 flags         = 0;
+    int      ft_glyph_top  = 0;
+    int      ft_glyph_left = 0;
+    glyph_index            = FT_Get_Char_Index(face, ucodepoint);
+
+    if(_outline_type > 0)
+    {
+        flags |= FT_LOAD_NO_BITMAP;
+    }
+    else
+    {
+        flags |= FT_LOAD_RENDER;
+    }
+
+    if(!_hinting)
+    {
+        flags |= FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT;
+    }
+    else
+    {
+        flags |= FT_LOAD_FORCE_AUTOHINT;
+    }
+
+    FT_Library_SetLcdFilter(library, FT_LCD_FILTER_LIGHT);
+    flags |= FT_LOAD_TARGET_LCD;
+    if(_filtering)
+    {
+        FT_Library_SetLcdFilterWeights(library, _lcd_weights);
+    }
+
+    error = FT_Load_Glyph(face, glyph_index, flags);
+    if(error)
+    {
+        std::cerr << "FT_Error line " << __LINE__ << ", code " << FT_Errors[error].code << ": "
+                  << FT_Errors[error].message << std::endl;
+        FT_Done_Face(face);
+        FT_Done_FreeType(library);
+        return 0;
+    }
+
+    if(_outline_type == 0)
+    {
+        slot          = face->glyph;
+        ft_bitmap     = slot->bitmap;
+        ft_glyph_top  = slot->bitmap_top;
+        ft_glyph_left = slot->bitmap_left;
+    }
+    else
+    {
+        FT_Stroker     stroker;
+        FT_BitmapGlyph ft_bitmap_glyph;
+        error = FT_Stroker_New(library, &stroker);
+        if(error)
         {
-            FT_Done_Glyph(ft_glyph);
+            std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
+                      << std::endl;
+            FT_Done_Face(face);
+            FT_Stroker_Done(stroker);
+            FT_Done_FreeType(library);
+            return 0;
         }
+        FT_Stroker_Set(stroker, (int)(_outline_thickness * HRES), FT_STROKER_LINECAP_ROUND,
+                       FT_STROKER_LINEJOIN_ROUND, 0);
+        error = FT_Get_Glyph(face->glyph, &ft_glyph);
+        if(error)
+        {
+            std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
+                      << std::endl;
+            FT_Done_Face(face);
+            FT_Stroker_Done(stroker);
+            FT_Done_FreeType(library);
+            return 0;
+        }
+
+        if(_outline_type == 1)
+        {
+            error = FT_Glyph_Stroke(&ft_glyph, stroker, 1);
+        }
+        else if(_outline_type == 2)
+        {
+            error = FT_Glyph_StrokeBorder(&ft_glyph, stroker, 0, 1);
+        }
+        else if(_outline_type == 3)
+        {
+            error = FT_Glyph_StrokeBorder(&ft_glyph, stroker, 1, 1);
+        }
+        if(error)
+        {
+            std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
+                      << std::endl;
+            FT_Done_Face(face);
+            FT_Stroker_Done(stroker);
+            FT_Done_FreeType(library);
+            return 0;
+        }
+
+        error = FT_Glyph_To_Bitmap(&ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
+        if(error)
+        {
+            std::cerr << "FT_Error code " << FT_Errors[error].code << ": " << FT_Errors[error].message
+                      << std::endl;
+            FT_Done_Face(face);
+            FT_Stroker_Done(stroker);
+            FT_Done_FreeType(library);
+            return 0;
+        }
+
+        ft_bitmap_glyph = (FT_BitmapGlyph)ft_glyph;
+        ft_bitmap       = ft_bitmap_glyph->bitmap;
+        ft_glyph_top    = ft_bitmap_glyph->top;
+        ft_glyph_left   = ft_bitmap_glyph->left;
+        FT_Stroker_Done(stroker);
+    }
+
+    // We want each glyph to be separated by at least one black pixel
+    // (for example for shader used in demo-subpixel.c)
+    w      = ft_bitmap.width / 3 + 1;
+    h      = ft_bitmap.rows + 1;
+    region = _atlas.getRegion(w, h);
+    if(region.x < 0)
+    {
+        std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
+        return -1;
+    }
+
+    w = w - 1;
+    h = h - 1;
+    x = region.x;
+    y = region.y;
+    _atlas.setRegion(glm::ivec4(x, y, w, h), ft_bitmap.buffer, ft_bitmap.pitch);
+
+    Glyph glyph;
+    glyph.charcode          = ucodepoint;
+    glyph.width             = w;
+    glyph.height            = h;
+    glyph.outline_type      = _outline_type;
+    glyph.outline_thickness = _outline_thickness;
+    glyph.offset_x          = ft_glyph_left;
+    glyph.offset_y          = ft_glyph_top;
+    glyph.s0                = x / static_cast<float>(size);
+    glyph.t0                = y / static_cast<float>(size);
+    glyph.s1                = (x + glyph.width) / static_cast<float>(size);
+    glyph.t1                = (y + glyph.height) / static_cast<float>(size);
+
+    // Discard hinting to get advance
+    FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
+    slot            = face->glyph;
+    glyph.advance_x = slot->advance.x / HRESf;
+    glyph.advance_y = slot->advance.y / HRESf;
+
+    _glyphs.push_back(std::move(glyph));
+
+    if(_outline_type > 0)
+    {
+        FT_Done_Glyph(ft_glyph);
     }
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 
-    TextureFontGenerateKerning();
+    return _glyphs.size() - 1;
+}
+
+size_t TexFont::textureFontCacheGlyphs(char const * charcodes)
+{
+    assert(charcodes);
+
+    std::uint32_t missed = 0;
+
+    // std::cout << utf8_strlen(charcodes) << std::endl;
+
+    // Load each glyph
+    for(std::uint32_t i = 0; i < strlen(charcodes); i += utf8_surrogate_len(charcodes + i))
+    {
+        // std::cout << (charcodes + i) << std::endl;
+
+        auto error = textureFontLoadGlyph(charcodes + i);
+
+        if(error == 0)   // error loading glyph
+            missed++;
+
+        if(error == -1)   // atlas full
+        {
+            resizeAtlas();
+
+            // repeat load glyph
+            if(!textureFontLoadGlyph(charcodes + i))
+                missed++;
+        }
+    }
+
+    textureFontGenerateKerning();
 
     return missed;
 }
 
-void TexFont::TextureFontGenerateKerning()
+void TexFont::textureFontGenerateKerning()
 {
-    size_t     i, j;
     FT_Library library;
     FT_Face    face;
     FT_UInt    glyph_index, prev_index;
@@ -477,17 +516,17 @@ void TexFont::TextureFontGenerateKerning()
     /* Starts at index 1 since 0 is for the special backgroudn glyph */
     for(auto & glyph : _glyphs)
     {
-        glyph_index   = FT_Get_Char_Index(face, glyph.charcode);
+        glyph_index = FT_Get_Char_Index(face, glyph.charcode);
         glyph.kerning.clear();
 
         for(auto & prev_glyph : _glyphs)
         {
-            prev_index         = FT_Get_Char_Index(face, prev_glyph.charcode);
+            prev_index = FT_Get_Char_Index(face, prev_glyph.charcode);
             FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
 
             if(kerning.x)
             {
-                glyph.kerning[prev_glyph.charcode] = kerning.x / (float)(HRESf * HRESf);
+                glyph.kerning[prev_glyph.charcode] = kerning.x / (HRESf * HRESf);
             }
         }
     }
@@ -496,13 +535,67 @@ void TexFont::TextureFontGenerateKerning()
     FT_Done_FreeType(library);
 }
 
-float TexFont::GlyphGetKerning(Glyph const & glyph, const std::uint32_t left_charcode) const
+void TexFont::textureFontGenerateKerning(Glyph & glyph)
 {
-	if(glyph.kerning.empty())
-		return 0.0f;
-	
-	if (auto search = glyph.kerning.find(left_charcode); search != glyph.kerning.end())
+    FT_Library library;
+    FT_Face    face;
+    FT_UInt    glyph_index, prev_index;
+    FT_Vector  kerning;
+
+    /* Load font */
+    if(!TexFontLoadFace(_size, &library, &face, _location, _filename, _memory))
+        return;
+
+    glyph_index = FT_Get_Char_Index(face, glyph.charcode);
+    glyph.kerning.clear();
+
+    for(auto & prev_glyph : _glyphs)
+    {
+        prev_index = FT_Get_Char_Index(face, prev_glyph.charcode);
+        FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
+
+        if(kerning.x)
+        {
+            glyph.kerning[prev_glyph.charcode] = kerning.x / (HRESf * HRESf);
+        }
+    }
+
+    FT_Done_Face(face);
+    FT_Done_FreeType(library);
+}
+
+float TexFont::glyphGetKerning(Glyph const & glyph, const std::uint32_t left_charcode) const
+{
+    if(glyph.kerning.empty())
+        return 0.0f;
+
+    if(auto search = glyph.kerning.find(left_charcode); search != glyph.kerning.end())
         return search->second;
     else
         return 0.0f;
+}
+
+void TexFont::resizeAtlas()
+{
+    std::size_t old_size = _atlas.getSize();
+    std::size_t new_size = old_size * 2;
+
+    AtlasTex new_atlas(new_size);
+    _atlas = new_atlas;
+
+    std::vector<std::uint32_t> loaded_ucodepoints;
+
+    // copy Unicode codepoints from already loaded glyphs
+    std::for_each(begin(_glyphs), end(_glyphs), [&loaded_ucodepoints](Glyph const & glyph) {
+        loaded_ucodepoints.push_back(glyph.charcode);
+    });
+
+    // clear glyphs
+    _glyphs.resize(0);
+
+    // load glyphs to new atlas
+    for(auto const & ucodepoint : loaded_ucodepoints)
+    {
+        textureFontLoadGlyph(ucodepoint);
+    }
 }

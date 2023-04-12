@@ -1,16 +1,20 @@
 #include "TextRender.h"
+#include <cstring>
 
-void AddText(VertexBuffer & vb, TexFont & tf, wchar_t * text, glm::vec2 & pen)
+void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pen)
 {
-    for(unsigned int i = 0; i < wcslen(text); ++i)
+    Glyph * prev_glyph = nullptr;
+    for(unsigned int i = 0; i < strlen(text); i += utf8_surrogate_len(text + i))
     {
-        Glyph & glyph = tf.TextureFontGetGlyph(text[i]);
+        std::uint32_t ucodepoint = utf8_to_utf32(text + i);
+        Glyph &       glyph      = tf.textureFontGetGlyph(ucodepoint);
 
-        float kerning = 0;   // !!!!!!!!!!!!!!!!!!!!!!!
-        if(i > 0)
+        float kerning = 0;
+        if(prev_glyph != nullptr)
         {
-            kerning = tf.GlyphGetKerning(glyph, text[i - 1]);
+            kerning = tf.glyphGetKerning(glyph, prev_glyph->charcode);
         }
+        prev_glyph = &glyph;
 
         pen.x += kerning;
         float        x0              = (int)(pen.x + glyph.offset_x);

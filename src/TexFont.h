@@ -1,14 +1,10 @@
 #ifndef TEXFONT_H
 #define TEXFONT_H
 
+#include <map>
 #include <vector>
 #include "AtlasTex.h"
-
-struct Kerning
-{
-    std::uint32_t left_charcode = 0;
-    float         kerning       = 0.0f;
-};
+#include "utf8_utils.h"
 
 struct Glyph
 {
@@ -26,7 +22,7 @@ struct Glyph
     std::int32_t  outline_type = 0;        // Glyph outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
     float         outline_thickness = 0;   // Glyph outline thickness
 
-	std::map<std::uint32_t, float> kerning; // key = left_charcode, kerning
+    std::map<std::uint32_t, float> kerning;   // key = left_charcode, kerning
 };
 
 class TexFont
@@ -39,24 +35,26 @@ public:
     };
 
     TexFont(float pt_size, std::string const & filename);
-	TexFont(float pt_size, unsigned char const * memory_base,
-                                  size_t memory_size);   
+    TexFont(float pt_size, unsigned char const * memory_base, size_t memory_size);
 
-    Glyph & TextureFontGetGlyph(const wchar_t charcode);
-    size_t  TextureFontLoadGlyphs(wchar_t const * charcodes);
-	
-	AtlasTex & getAtlas() const { _atlas; }
+    Glyph &      textureFontGetGlyph(const std::uint32_t ucodepoint);
+    std::int32_t textureFontLoadGlyph(char const * charcode);
+    std::int32_t textureFontLoadGlyph(std::uint32_t ucodepoint);
 
-    float GlyphGetKerning(Glyph const &       glyph,
-                          const std::uint32_t charcode) const;   // charcode  codepoint of the peceding glyph
+    size_t textureFontCacheGlyphs(char const * charcodes);
+
+    AtlasTex & getAtlas() { return _atlas; }
+
+    float glyphGetKerning(
+        Glyph const &       glyph,
+        const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
 protected:
 private:
-	bool TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename);
-    bool TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
-                                  size_t memory_size);
+    bool initFont();
+    void textureFontGenerateKerning();
+    void textureFontGenerateKerning(Glyph & glyph);
 
-    bool InitFont();
-    void TextureFontGenerateKerning();
+    void resizeAtlas();
 
     std::vector<Glyph> _glyphs;
     AtlasTex           _atlas;

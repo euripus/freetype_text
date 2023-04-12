@@ -4,7 +4,6 @@
 #include <memory>
 #include <stdio.h>
 #undef __STRICT_ANSI__
-#include <cwchar>
 
 #include "Shader.h"
 #include "TexFont.h"
@@ -51,12 +50,12 @@ GLfloat pyrVert[] = {
 
 GLuint pyrIndex[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-TexFont                   tf;
-std::unique_ptr<AtlasTex> atl_ptr;
-Shader                    shd, shdTxt;
-GLuint                    texBase;
-VertexBuffer              pyramidBuf("Pos:3,Norm:3,Tex:2");
-VertexBuffer              textBuf("Pos:3,Tex:2");
+// TexFont *    tf;
+std::unique_ptr<TexFont> tf;
+Shader                   shd, shdTxt;
+GLuint                   texBase;
+VertexBuffer             pyramidBuf("Pos:3,Norm:3,Tex:2");
+VertexBuffer             textBuf("Pos:3,Tex:2");
 
 /*-----------------------------------------------------------
 /
@@ -261,17 +260,17 @@ bool InitWindow()
 
     shd.Init("vert.glsl", "frag.glsl");
 
-    std::wstring str2(
-        L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    std::string str2(
+        " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
-    atl_ptr = std::make_unique<AtlasTex>(256);
-    tf.TextureFontNewFromFile(atl_ptr.get(), 24, std::string("Liberation.ttf"));
-    tf.TextureFontLoadGlyphs(str2.c_str());
-    atl_ptr->WriteAtlasToTGA(std::string("atlas.tga"));
-    atl_ptr->UploadTexture();
+
+    tf = std::make_unique<TexFont>(24, std::string("Liberation.ttf"));
+    tf->textureFontCacheGlyphs(str2.c_str());
+    tf->getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
+    tf->getAtlas().UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
-    glm::vec2 pen(10, 40);
-    AddText(textBuf, tf, L"FPS: 60", pen);
+    glm::vec2 pos(10, 40);
+    AddText(textBuf, *tf, "FPS: 60", pos);
     textBuf.VertexBufferUpload();
     textBuf.InitAttribLocation();
 
@@ -303,7 +302,7 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 
 void DrawScene(void)
 {
-    static wchar_t buffer[100];
+    static char buffer[100];
     if(glfwGetTime() - g_LastTime > 1.0)
     {
         g_LastTime  = glfwGetTime();
@@ -311,9 +310,9 @@ void DrawScene(void)
         g_numFrames = 0;
 
         textBuf.Clear();
-        std::swprintf(buffer, 100, L"FPS: %d", g_numFPS);
+        std::sprintf(buffer, "FPS: %d", g_numFPS);
         glm::vec2 pen(10, 40);
-        AddText(textBuf, tf, buffer, pen);
+        AddText(textBuf, *tf, buffer, pen);
         textBuf.VertexBufferUpload();
         textBuf.InitAttribLocation();
     }
@@ -350,7 +349,7 @@ void DrawScene(void)
 
     shdTxt.Bind();
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
-    atl_ptr->BindTexture();
+    tf->getAtlas().BindTexture();
 
     textBuf.DrawBuffer();
     shdTxt.Unbind();
@@ -367,8 +366,8 @@ void KillWindow(void)
     pyramidBuf.DeleteGPUBuffers();
     shd.DeInit();
     glDeleteTextures(1, &texBase);
-    atl_ptr->DeleteTexture();
-    atl_ptr->clear();
+    tf->getAtlas().DeleteTexture();
+    tf->getAtlas().clear();
     shdTxt.DeInit();
 
     glfwDestroyWindow(g_window);

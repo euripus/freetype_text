@@ -4,6 +4,6 @@
 #include "TexFont.h"
 #include "VertexBuffer.h"
 
-void AddText(VertexBuffer & vb, TexFont & tf, wchar_t * text, glm::vec2 & pen);
+void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pen);
 
 #endif   // TEXTRENDER_H
