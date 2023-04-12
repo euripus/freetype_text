@@ -32,8 +32,8 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     assert(size);
 
     FT_Error  error;
-    FT_Matrix matrix = {(int)((1.0 / HRES) * 0x10000L), (int)((0.0) * 0x10000L), (int)((0.0) * 0x10000L),
-                        (int)((1.0) * 0x10000L)};
+    FT_Matrix matrix = {static_cast<int>((1.0 / HRES) * 0x10000L), static_cast<int>((0.0) * 0x10000L), static_cast<int>((0.0) * 0x10000L),
+                        static_cast<int>((1.0) * 0x10000L)};
 
     /* Initialize library */
     error = FT_Init_FreeType(library);
@@ -93,6 +93,34 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     return true;
 }
 
+TexFont::TexFont(float pt_size, std::string const & filename) :
+    _size{pt_size},
+	_hinting{1},
+	_outline_type{0},
+    _outline_thickness{0.0f},
+    _filtering{1},
+	_kerning{1},
+	_lcd_weights{},
+	_height{0.0f},
+	_linegap{0.0f},
+    _ascender{0.0f},
+    _descender{0.0f},
+	_underline_position{0.0f},
+    _underline_thickness{0.0f},
+	_location{FontLocation::TEXTURE_FONT_FILE},
+	_filename{filename}
+{
+    // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
+    // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
+    _lcd_weights[0] = 0x10;
+    _lcd_weights[1] = 0x40;
+    _lcd_weights[2] = 0x70;
+    _lcd_weights[3] = 0x40;
+    _lcd_weights[4] = 0x10;
+	
+	InitFont();
+}
+
 bool TexFont::InitFont()
 {
     FT_Library      library;
@@ -130,28 +158,6 @@ bool TexFont::InitFont()
     TextureFontGetGlyph(-1);
 
     return true;
-}
-
-TexFont::TexFont()
-{
-    _height            = 0;
-    _ascender          = 0;
-    _descender         = 0;
-    _outline_type      = 0;
-    _outline_thickness = 0.0;
-    _hinting           = 1;
-    _kerning           = 1;
-    _filtering         = 1;
-
-    // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
-    // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
-    _lcd_weights[0] = 0x10;
-    _lcd_weights[1] = 0x40;
-    _lcd_weights[2] = 0x70;
-    _lcd_weights[3] = 0x40;
-    _lcd_weights[4] = 0x10;
-
-    _atlas = nullptr;
 }
 
 bool TexFont::TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename)
@@ -449,6 +455,7 @@ size_t TexFont::TextureFontLoadGlyphs(wchar_t const * charcodes)
     }
     FT_Done_Face(face);
     FT_Done_FreeType(library);
+
     TextureFontGenerateKerning();
 
     return missed;
@@ -468,22 +475,19 @@ void TexFont::TextureFontGenerateKerning()
 
     /* For each glyph couple combination, check if kerning is necessary */
     /* Starts at index 1 since 0 is for the special backgroudn glyph */
-    for(i = 1; i < _glyphs.size(); ++i)
+    for(auto & glyph : _glyphs)
     {
-        Glyph & glyph = _glyphs[i];
         glyph_index   = FT_Get_Char_Index(face, glyph.charcode);
         glyph.kerning.clear();
 
-        for(j = 1; j < _glyphs.size(); ++j)
+        for(auto & prev_glyph : _glyphs)
         {
-            Glyph & prev_glyph = _glyphs[j];
             prev_index         = FT_Get_Char_Index(face, prev_glyph.charcode);
             FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
 
             if(kerning.x)
             {
-                Kerning k{prev_glyph.charcode, kerning.x / (float)(HRESf * HRESf)};
-                glyph.kerning.push_back(k);
+                glyph.kerning[prev_glyph.charcode] = kerning.x / (float)(HRESf * HRESf);
             }
         }
     }
@@ -492,14 +496,13 @@ void TexFont::TextureFontGenerateKerning()
     FT_Done_FreeType(library);
 }
 
-float TexFont::GlyphGetKerning(Glyph const & glyph, const std::uint32_t charcode) const
+float TexFont::GlyphGetKerning(Glyph const & glyph, const std::uint32_t left_charcode) const
 {
-    for(auto const & kerning : glyph.kerning)
-    {
-        if(kerning.left_charcode == charcode)
-        {
-            return kerning.kerning;
-        }
-    }
-    return 0;
+	if(glyph.kerning.empty())
+		return 0.0f;
+	
+	if (auto search = glyph.kerning.find(left_charcode); search != glyph.kerning.end())
+        return search->second;
+    else
+        return 0.0f;
 }

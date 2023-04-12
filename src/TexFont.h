@@ -26,7 +26,7 @@ struct Glyph
     std::int32_t  outline_type = 0;        // Glyph outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
     float         outline_thickness = 0;   // Glyph outline thickness
 
-    std::vector<Kerning> kerning;   // A vector of kerning pairs relative to this glyph
+	std::map<std::uint32_t, float> kerning; // key = left_charcode, kerning
 };
 
 class TexFont
@@ -38,24 +38,28 @@ public:
         TEXTURE_FONT_MEMORY
     };
 
-    TexFont();
-
-    bool TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename);
-    bool TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
-                                  size_t memory_size);
+    TexFont(float pt_size, std::string const & filename);
+	TexFont(float pt_size, unsigned char const * memory_base,
+                                  size_t memory_size);   
 
     Glyph & TextureFontGetGlyph(const wchar_t charcode);
     size_t  TextureFontLoadGlyphs(wchar_t const * charcodes);
+	
+	AtlasTex & getAtlas() const { _atlas; }
 
     float GlyphGetKerning(Glyph const &       glyph,
                           const std::uint32_t charcode) const;   // charcode  codepoint of the peceding glyph
 protected:
 private:
+	bool TextureFontNewFromFile(AtlasTex * atlas, float pt_size, std::string const & filename);
+    bool TextureFontNewFromMemory(AtlasTex * atlas, float pt_size, unsigned char const * memory_base,
+                                  size_t memory_size);
+
     bool InitFont();
     void TextureFontGenerateKerning();
 
     std::vector<Glyph> _glyphs;
-    AtlasTex *         _atlas;
+    AtlasTex           _atlas;
 
     float         _size;                // Font size
     int           _hinting;             // Whether to use autohint when rendering font
