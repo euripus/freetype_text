@@ -22,9 +22,9 @@ const struct {
 #include FT_ERRORS_H
     // clang-format on
 
-    constexpr std::uint32_t HRES  = 64;
-constexpr float             HRESf = 64.0f;
-constexpr std::uint32_t     DPI   = 72;
+constexpr std::uint32_t HRES  = 64;
+constexpr float         HRESf = 64.0f;
+constexpr std::uint32_t DPI   = 72;
 
 static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, TexFont::FontLocation location,
                             std::string const & filename, std::vector<unsigned char> const & data)
@@ -172,24 +172,24 @@ bool TexFont::initFont()
         return false;
     }
 
-    _underline_position = face->underline_position / (float)(HRESf * HRESf) * _size;
+    _underline_position = face->underline_position / (HRESf * HRESf) * _size;
     _underline_position = round(_underline_position);
-    if(_underline_position > -2)
+    if(_underline_position > -2.0f)
     {
-        _underline_position = -2.0;
+        _underline_position = -2.0f;
     }
 
-    _underline_thickness = face->underline_thickness / (float)(HRESf * HRESf) * _size;
+    _underline_thickness = face->underline_thickness / (HRESf * HRESf) * _size;
     _underline_thickness = round(_underline_thickness);
-    if(_underline_thickness < 1)
+    if(_underline_thickness < 1.0f)
     {
-        _underline_thickness = 1.0;
+        _underline_thickness = 1.0f;
     }
 
     metrics    = face->size->metrics;
-    _ascender  = (metrics.ascender >> 6) / 100.0;
-    _descender = (metrics.descender >> 6) / 100.0;
-    _height    = (metrics.height >> 6) / 100.0;
+    _ascender  = (metrics.ascender >> 6) / 100.0f;
+    _descender = (metrics.descender >> 6) / 100.0f;
+    _height    = (metrics.height >> 6) / 100.0f;
     _linegap   = _height - _ascender + _descender;
     FT_Done_Face(face);
     FT_Done_FreeType(library);
@@ -474,13 +474,9 @@ size_t TexFont::textureFontCacheGlyphs(char const * charcodes)
 
     std::uint32_t missed = 0;
 
-    // std::cout << utf8_strlen(charcodes) << std::endl;
-
     // Load each glyph
-    for(std::uint32_t i = 0; i < strlen(charcodes); i += utf8_surrogate_len(charcodes + i))
+    for(std::uint32_t i = 0; i < std::strlen(charcodes); i += utf8_surrogate_len(charcodes + i))
     {
-        // std::cout << (charcodes + i) << std::endl;
-
         auto error = textureFontLoadGlyph(charcodes + i);
 
         if(error == 0)   // error loading glyph
@@ -577,10 +573,7 @@ float TexFont::glyphGetKerning(Glyph const & glyph, const std::uint32_t left_cha
 
 void TexFont::resizeAtlas()
 {
-    std::size_t old_size = _atlas.getSize();
-    std::size_t new_size = old_size * 2;
-
-    AtlasTex new_atlas(new_size);
+    AtlasTex new_atlas(_atlas.getSize() * 2);
     _atlas = new_atlas;
 
     std::vector<std::uint32_t> loaded_ucodepoints;
