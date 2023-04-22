@@ -376,7 +376,7 @@ void KillWindow(void)
 
 static void error_callback(int error, char const * description)
 {
-    printf("%s", description);
+    printf("%d: %s", error, description);
 }
 
 int main()

@@ -43,7 +43,7 @@ public:
 
     size_t textureFontCacheGlyphs(char const * charcodes);
 
-    AtlasTex & getAtlas() { return _atlas; }
+    AtlasTex & getAtlas() { return m_atlas; }
 
     float glyphGetKerning(
         Glyph const &       glyph,
@@ -56,31 +56,31 @@ private:
 
     void resizeAtlas();
 
-    std::vector<Glyph> _glyphs;
-    AtlasTex           _atlas;
+    std::vector<Glyph> m_glyphs;
+    AtlasTex           m_atlas;
 
-    float         _size;                // Font size
-    int           _hinting;             // Whether to use autohint when rendering font
-    int           _outline_type;        // Outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
-    float         _outline_thickness;   // Outline thickness
-    int           _filtering;           // Whether to use our own lcd filter
-    int           _kerning;             // Whether to use kerning if available
-    unsigned char _lcd_weights[5];      // LCD filter weights
+    float         m_size;                // Font size
+    int           m_hinting;             // Whether to use autohint when rendering font
+    int           m_outline_type;        // Outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
+    float         m_outline_thickness;   // Outline thickness
+    int           m_filtering;           // Whether to use our own lcd filter
+    int           m_kerning;             // Whether to use kerning if available
+    unsigned char m_lcd_weights[5];      // LCD filter weights
 
-    float _height;      // This field is simply used to compute a default line spacing (i.e., the
+    float m_height;     // This field is simply used to compute a default line spacing (i.e., the
                         // baseline-to-baseline distance) when writing text with this font.
-    float _linegap;     // This field is the distance that must be placed between two lines of text. The
+    float m_linegap;    // This field is the distance that must be placed between two lines of text. The
                         // baseline-to-baseline distance should be computed as: ascender - descender + linegap
-    float _ascender;    // The ascender is the vertical distance from the horizontal baseline to the highest
+    float m_ascender;   // The ascender is the vertical distance from the horizontal baseline to the highest
                         // 'character' coordinate in a font face.
-    float _descender;   // The descender is the vertical distance from the horizontal baseline to the lowest
-                        // 'character' coordinate in a font face.
-    float _underline_position;    // The position of the underline line for this face.
-    float _underline_thickness;   // The thickness of the underline for this face.
+    float m_descender;   // The descender is the vertical distance from the horizontal baseline to the lowest
+                         // 'character' coordinate in a font face.
+    float m_underline_position;    // The position of the underline line for this face.
+    float m_underline_thickness;   // The thickness of the underline for this face.
 
-    FontLocation               _location;
-    std::string                _filename;   // Font filename, for when location == TEXTURE_FONT_FILE
-    std::vector<unsigned char> _memory;     // Font memory, for when location == TEXTURE_FONT_MEMORY
+    FontLocation               m_location;
+    std::string                m_filename;   // Font filename, for when location == TEXTURE_FONT_FILE
+    std::vector<unsigned char> m_memory;     // Font memory, for when location == TEXTURE_FONT_MEMORY
 };
 
 #endif   // TEXFONT_H

@@ -35,12 +35,12 @@ char * strdup(char const * s)
 }
 
 VertexBuffer::VertexBuffer(char const * format) :
-    vertices_id(0),
-    indices_id(0),
-    _mode(0),
-    _isGenerated(false),
-    _state(VertexBuffer::State::VB_NOINIT),
-    _numVertComp(0)
+    m_vertices_id(0),
+    m_indices_id(0),
+    m_mode(0),
+    m_state(VertexBuffer::State::VB_NOINIT),
+    m_num_vert_comp(0),
+    m_is_generated(false)
 {
     assert(format);
 
@@ -65,55 +65,55 @@ VertexBuffer::VertexBuffer(char const * format) :
         start    = end + 1;
         delete[] desc;
 
-        new_attr.pointer = sizeof(float) * _numVertComp;
-        _numVertComp += new_attr.size;
-        _attributes.push_back(new_attr);
+        new_attr.pointer = sizeof(float) * m_num_vert_comp;
+        m_num_vert_comp += new_attr.size;
+        m_attributes.push_back(new_attr);
     } while(end);
 
-    std::for_each(_attributes.begin(), _attributes.end(),
-                  [=](VertexAttrib & attr) { attr.stride = sizeof(float) * _numVertComp; });
+    std::for_each(m_attributes.begin(), m_attributes.end(),
+                  [=](VertexAttrib & attr) { attr.stride = sizeof(float) * m_num_vert_comp; });
 }
 
 VertexBuffer::~VertexBuffer()
 {
     Clear();
     DeleteGPUBuffers();
-    _attributes.clear();
+    m_attributes.clear();
 }
 
 void VertexBuffer::Clear()
 {
-    _state = VertexBuffer::State::VB_NOINIT;
-    if(_isGenerated)
+    m_state = VertexBuffer::State::VB_NOINIT;
+    if(m_is_generated)
     {
-        glBindBuffer(GL_ARRAY_BUFFER_ARB, vertices_id);
+        glBindBuffer(GL_ARRAY_BUFFER_ARB, m_vertices_id);
         glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, 0, GL_STATIC_DRAW);
     }
 
-    _vertices.clear();
-    _indices.clear();
+    m_vertices.clear();
+    m_indices.clear();
 }
 
 void VertexBuffer::VertexBufferInsertVertices(const size_t index, float const * vertices, const size_t vcount)
 {
-    assert(index * _numVertComp < _vertices.size());
+    assert(index * m_num_vert_comp < m_vertices.size());
     assert(vertices);
 
-    auto flt_it = _vertices.begin() + index * _numVertComp;
-    _vertices.insert(flt_it, vertices, vertices + vcount);
+    auto flt_it = m_vertices.begin() + index * m_num_vert_comp;
+    m_vertices.insert(flt_it, vertices, vertices + vcount);
 }
 
 void VertexBuffer::VertexBufferInsertIndices(const size_t index, unsigned int const * indices,
                                              const size_t icount)
 {
-    assert(index < _indices.size());
+    assert(index < m_indices.size());
     assert(indices);
 
-    auto ind_it = _indices.begin() + index;
-    _indices.insert(ind_it, indices, indices + icount);
+    auto ind_it = m_indices.begin() + index;
+    m_indices.insert(ind_it, indices, indices + icount);
 }
 
 void VertexBuffer::VertexBufferPushBack(float const * vertices, const size_t vcount,
@@ -121,81 +121,82 @@ void VertexBuffer::VertexBufferPushBack(float const * vertices, const size_t vco
 {
     assert(vertices);
     assert(indices);
-    assert(_numVertComp != 0);
+    assert(m_num_vert_comp != 0);
 
-    unsigned int vstart = _vertices.size() / _numVertComp;
-    unsigned int istart = _indices.size();
+    unsigned int vstart = m_vertices.size() / m_num_vert_comp;
+    unsigned int istart = m_indices.size();
 
-    _vertices.insert(_vertices.end(), vertices, vertices + vcount * _numVertComp);
-    _indices.insert(_indices.end(), indices, indices + icount);
+    m_vertices.insert(m_vertices.end(), vertices, vertices + vcount * m_num_vert_comp);
+    m_indices.insert(m_indices.end(), indices, indices + icount);
 
     for(unsigned int i = 0; i < icount; i++)
     {
-        _indices[istart + i] += vstart;
+        m_indices[istart + i] += vstart;
     }
 
-    _state = VertexBuffer::State::VB_INITDATA;
+    m_state = VertexBuffer::State::VB_INITDATA;
 }
 
 void VertexBuffer::EraseVertices(const size_t first, const size_t last)
 {
-    assert(last * _numVertComp < _vertices.size());
-    assert(last < _indices.size());
+    assert(last * m_num_vert_comp < m_vertices.size());
+    assert(last < m_indices.size());
 
-    _vertices.erase(_vertices.begin() + first * _numVertComp, _vertices.begin() + last * _numVertComp);
-    _indices.erase(_indices.begin() + first, _indices.begin() + last);
+    m_vertices.erase(m_vertices.begin() + first * m_num_vert_comp,
+                     m_vertices.begin() + last * m_num_vert_comp);
+    m_indices.erase(m_indices.begin() + first, m_indices.begin() + last);
 
-    for(unsigned int i = 0; i < _indices.size(); i++)
+    for(unsigned int i = 0; i < m_indices.size(); i++)
     {
-        if(_indices[i] > first)
+        if(m_indices[i] > first)
         {
-            _indices[i] -= (last - first);
+            m_indices[i] -= (last - first);
         }
     }
 }
 
 void VertexBuffer::VertexBufferUpload()
 {
-    assert(_state == VertexBuffer::State::VB_INITDATA);
+    assert(m_state == VertexBuffer::State::VB_INITDATA);
 
-    if(!_isGenerated)
-        glGenBuffers(1, &vertices_id);
-    glBindBuffer(GL_ARRAY_BUFFER_ARB, vertices_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _vertices.size(), &_vertices[0], GL_STATIC_DRAW);
+    if(!m_is_generated)
+        glGenBuffers(1, &m_vertices_id);
+    glBindBuffer(GL_ARRAY_BUFFER_ARB, m_vertices_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertices.size(), &m_vertices[0], GL_STATIC_DRAW);
 
-    if(!_isGenerated)
+    if(!m_is_generated)
     {
-        glGenBuffers(1, &indices_id);
-        _isGenerated = true;
+        glGenBuffers(1, &m_indices_id);
+        m_is_generated = true;
     }
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), &_indices[0],
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_indices.size(), &m_indices[0],
                  GL_STATIC_DRAW);
 
-    _state = VertexBuffer::State::VB_UPLOAD;
+    m_state = VertexBuffer::State::VB_UPLOAD;
 }
 
 void VertexBuffer::DeleteGPUBuffers()
 {
-    glDeleteBuffers(1, &vertices_id);
-    glDeleteBuffers(1, &indices_id);
+    glDeleteBuffers(1, &m_vertices_id);
+    glDeleteBuffers(1, &m_indices_id);
 
-    _state       = VertexBuffer::State::VB_INITDATA;
-    _isGenerated = false;
+    m_state        = VertexBuffer::State::VB_INITDATA;
+    m_is_generated = false;
 }
 
 void VertexBuffer::DrawBuffer()
 {
-    assert(_state == VertexBuffer::State::VB_UPLOAD);
+    assert(m_state == VertexBuffer::State::VB_UPLOAD);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertices_id);
-    std::for_each(_attributes.begin(), _attributes.end(),
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertices_id);
+    std::for_each(m_attributes.begin(), m_attributes.end(),
                   [](VertexAttrib & attr) { attr.VertexAttribEnable(); });
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
 
-    glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, (char *)NULL);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, (char *)NULL);
 
-    std::for_each(_attributes.begin(), _attributes.end(),
+    std::for_each(m_attributes.begin(), m_attributes.end(),
                   [](VertexAttrib & attr) { attr.VertexAttribDisable(); });
     glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
@@ -210,7 +211,7 @@ void VertexBuffer::InitAttribLocation()
      * Tex  - texture coord - 2
      */
 
-    std::for_each(_attributes.begin(), _attributes.end(), [](VertexAttrib & attr) {
+    std::for_each(m_attributes.begin(), m_attributes.end(), [](VertexAttrib & attr) {
         if(attr.name == std::string("Pos"))
             attr.location = 0;
         else if(attr.name == std::string("Norm"))
