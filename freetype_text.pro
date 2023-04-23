@@ -38,6 +38,7 @@ SOURCES += \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
     src/main.cpp \
+    src/rect2d.cpp \
     src/utf8_utils.cpp
 
 HEADERS += \
@@ -48,4 +49,5 @@ HEADERS += \
     src/Tga.h \
     src/VertexAttrib.h \
     src/VertexBuffer.h \
+    src/rect2d.h \
     src/utf8_utils.h

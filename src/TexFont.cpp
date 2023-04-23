@@ -423,7 +423,6 @@ std::int32_t TexFont::textureFontLoadGlyph(std::uint32_t ucodepoint)
     }
 
     // We want each glyph to be separated by at least one black pixel
-    // (for example for shader used in demo-subpixel.c)
     w      = ft_bitmap.width / 3 + 1;
     h      = ft_bitmap.rows + 1;
     region = m_atlas.getRegion(w, h);
