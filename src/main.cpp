@@ -351,8 +351,10 @@ void DrawScene(void)
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
     tf->getAtlas().BindTexture();
 
+    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
     textBuf.DrawBuffer();
     shdTxt.Unbind();
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
