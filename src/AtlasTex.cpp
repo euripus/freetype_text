@@ -29,6 +29,7 @@ int AtlasTex::atlasFit(unsigned int index, unsigned int width, unsigned int heig
     glm::ivec3 * node;
     int          x, y, width_left;
     size_t       i;
+
     node       = &m_nodes[index];
     x          = node->x;
     y          = node->y;
