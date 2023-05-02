@@ -17,20 +17,19 @@ void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pos
         prev_glyph = &glyph;
 
         pos.x += kerning;
-        float        x0              = static_cast<int>(pos.x + glyph.offset_x);
-        float        y0              = static_cast<int>(pos.y + glyph.offset_y);
-        float        x1              = static_cast<int>(x0 + glyph.width);
-        float        y1              = static_cast<int>(y0 + glyph.height);
-        float        s0              = glyph.s0; 
-        float        t0              = glyph.t0;
-        float        s1              = glyph.s1;
-        float        t1              = glyph.t1;
-        unsigned int indices[6]      = {0, 1, 2, 0, 3, 1};
+        float        x0         = pos.x + glyph.offset_x;
+        float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
+        float        x1         = x0 + static_cast<int>(glyph.width);
+        float        y1         = y0 + static_cast<int>(glyph.height);
+        float        s0         = glyph.s0;
+        float        t0         = glyph.t0;
+        float        s1         = glyph.s1;
+        float        t1         = glyph.t1;
+        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
 
-        float        vertices[4 * 5] = {x0, y0, 0.0, s0, t1,
-		                                x1, y1, 0.0, s1, t1,
-                                        x0, y1, 0.0, s0, t0,         // (s0, t0) - top-left corner
-										x1, y0, 0.0, s1, t0};
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t1,  x1, y1, 0.0,
+                                 s1, t0, x0,  y1, 0.0, s0, t0,   // (s0, t0) - top-left corner
+                                 x1, y0, 0.0, s1, t1};
 
         vb.VertexBufferPushBack(vertices, 4, indices, 6);
         pos.x += glyph.advance_x;

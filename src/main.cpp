@@ -13,10 +13,10 @@
 
 #define M_PI 3.14159265358979323846
 
-#define WINDOWTITLE "GLFW Frame Application"
-#define TEXNAME     "base.tga"
-#define WINDOWHEIGT 600
-#define WINDOWWIDTH 800
+constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
+constexpr char const *  TEXNAME     = "base.tga";
+constexpr std::uint32_t WINDOWHEIGT = 600;
+constexpr std::uint32_t WINDOWWIDTH = 800;
 
 GLFWwindow * g_window = NULL;
 
@@ -310,7 +310,7 @@ void DrawScene(void)
         g_numFrames = 0;
 
         textBuf.Clear();
-        std::sprintf(buffer, "FPS: %d", g_numFPS);
+        std::sprintf(buffer, "Кадров в секунду: %d", g_numFPS);
         glm::vec2 pen(10, 40);
         AddText(textBuf, *tf, buffer, pen);
         textBuf.VertexBufferUpload();

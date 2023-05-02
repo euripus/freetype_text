@@ -14,7 +14,7 @@ typedef struct
     GLuint    type;        // Image Type (GL_RGB, GL_RGBA)
 } Texture;
 
-bool LoadTGA(Texture * texture, char * filename);
+bool LoadTGA(Texture * texture, char const * filename);
 void WriteUncompressedTGA(char const * fname, unsigned int depth, unsigned int width, unsigned int height,
                           unsigned char const * data);
 

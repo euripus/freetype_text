@@ -13,6 +13,8 @@ CONFIG(release, debug|release) {
     TARGET = $$join(TARGET,,,_d)
 }
 
+#QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wconversion -Wold-style-cast
+
 DESTDIR = $$PWD/bin
 
 INCLUDEPATH += $$PWD/include

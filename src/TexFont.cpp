@@ -53,7 +53,7 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
             break;
 
         case TexFont::FontLocation::TEXTURE_FONT_MEMORY:
-            error = FT_New_Memory_Face(*library, data.data(), data.size(), 0, face);
+            error = FT_New_Memory_Face(*library, data.data(), static_cast<FT_Long>(data.size()), 0, face);
             break;
     }
 
@@ -78,7 +78,7 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     }
 
     /* Set char size */
-    error = FT_Set_Char_Size(*face, (int)(size * HRES), 0, DPI * HRES, DPI);
+    error = FT_Set_Char_Size(*face, static_cast<int>(size * HRES), 0, DPI * HRES, DPI);
 
     if(error)
     {
@@ -173,14 +173,14 @@ bool TexFont::initFont()
     }
 
     m_underline_position = face->underline_position / (HRESf * HRESf) * m_size;
-    m_underline_position = round(m_underline_position);
+    m_underline_position = roundf(m_underline_position);
     if(m_underline_position > -2.0f)
     {
         m_underline_position = -2.0f;
     }
 
     m_underline_thickness = face->underline_thickness / (HRESf * HRESf) * m_size;
-    m_underline_thickness = round(m_underline_thickness);
+    m_underline_thickness = roundf(m_underline_thickness);
     if(m_underline_thickness < 1.0f)
     {
         m_underline_thickness = 1.0f;
@@ -369,7 +369,7 @@ std::int32_t TexFont::textureFontLoadGlyph(std::uint32_t ucodepoint)
             FT_Done_FreeType(library);
             return 0;
         }
-        FT_Stroker_Set(stroker, (int)(m_outline_thickness * HRES), FT_STROKER_LINECAP_ROUND,
+        FT_Stroker_Set(stroker, static_cast<int>(m_outline_thickness * HRES), FT_STROKER_LINECAP_ROUND,
                        FT_STROKER_LINEJOIN_ROUND, 0);
         error = FT_Get_Glyph(face->glyph, &ft_glyph);
         if(error)
@@ -415,7 +415,7 @@ std::int32_t TexFont::textureFontLoadGlyph(std::uint32_t ucodepoint)
             return 0;
         }
 
-        ft_bitmap_glyph = (FT_BitmapGlyph)ft_glyph;
+        ft_bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(ft_glyph);
         ft_bitmap       = ft_bitmap_glyph->bitmap;
         ft_glyph_top    = ft_bitmap_glyph->top;
         ft_glyph_left   = ft_bitmap_glyph->left;
