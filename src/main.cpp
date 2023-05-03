@@ -11,14 +11,12 @@
 #include "Tga.h"
 #include "VertexBuffer.h"
 
-#define M_PI 3.14159265358979323846
-
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
 constexpr char const *  TEXNAME     = "base.tga";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
-GLFWwindow * g_window = NULL;
+GLFWwindow * g_window = nullptr;
 
 bool g_wire = false;
 // Fps counter
@@ -50,7 +48,6 @@ GLfloat pyrVert[] = {
 
 GLuint pyrIndex[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-// TexFont *    tf;
 std::unique_ptr<TexFont> tf;
 Shader                   shd, shdTxt;
 GLuint                   texBase;
@@ -260,12 +257,12 @@ bool InitWindow()
 
     shd.Init("vert.glsl", "frag.glsl");
 
-    std::string str2(
-        " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-        "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
+    std::string dict(" !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+                     "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
 
     tf = std::make_unique<TexFont>(24, std::string("Liberation.ttf"));
-    tf->textureFontCacheGlyphs(str2.c_str());
+    tf->textureFontCacheGlyphs(dict.c_str());
     tf->getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
     tf->getAtlas().UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");

@@ -572,6 +572,33 @@ float TexFont::glyphGetKerning(Glyph const & glyph, const std::uint32_t left_cha
         return 0.0f;
 }
 
+glm::vec2 TexFont::getTextSize(char const * text)
+{
+    glm::vec2     size{0};
+    Glyph const * prev_glyph = nullptr;
+    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    {
+        std::uint32_t ucodepoint = utf8_to_utf32(text + i);
+        Glyph const & glyph      = textureFontGetGlyph(ucodepoint);
+
+        if(m_kerning)
+        {
+            float kerning = 0.0f;
+            if(prev_glyph != nullptr)
+            {
+                kerning = glyphGetKerning(glyph, prev_glyph->charcode);
+            }
+            prev_glyph = &glyph;
+            size.x += kerning;
+        }
+
+        size.y = glm::max(size.y, static_cast<float>(glyph.offset_y));
+        size.x += glyph.advance_x;
+    }
+
+    return size;
+}
+
 void TexFont::resizeAtlas()
 {
     AtlasTex new_atlas(m_atlas.getSize() * 2);

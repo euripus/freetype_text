@@ -1,6 +1,36 @@
 #include "TextRender.h"
 #include <cstring>
 
+//  Glyph metrics:
+//  --------------
+//                        xmin                     xmax
+//                         |                         |
+//                         |<-------- width -------->|
+//                         |                         |
+//               |         +-------------------------+----------------- ymax
+//               |         |    ggggggggg   ggggg    |     ^        ^
+//               |         |   g:::::::::ggg::::g    |     |        |
+//               |         |  g:::::::::::::::::g    |     |        |
+//               |         | g::::::ggggg::::::gg    |     |        |
+//               |         | g:::::g     g:::::g     |     |        |
+//     offset_x -|-------->| g:::::g     g:::::g     |  offset_y    |
+//               |         | g:::::g     g:::::g     |     |        |
+//               |         | g::::::g    g:::::g     |     |        |
+//               |         | g:::::::ggggg:::::g     |     |        |
+//               |         |  g::::::::::::::::g     |     |      height
+//               |         |   gg::::::::::::::g     |     |        |
+//   baseline ---*---------|---- gggggggg::::::g-----*--------      |
+//             / |         |             g:::::g     |              |
+//      origin   |         | gggggg      g:::::g     |              |
+//               |         | g:::::gg   gg:::::g     |              |
+//               |         |  g::::::ggg:::::::g     |              |
+//               |         |   gg:::::::::::::g      |              |
+//               |         |     ggg::::::ggg        |              |
+//               |         |         gggggg          |              v
+//               |         +-------------------------+----------------- ymin
+//               |                                   |
+//               |------------- advance_x ---------->|
+
 void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pos)
 {
     Glyph * prev_glyph = nullptr;
@@ -17,10 +47,10 @@ void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pos
         prev_glyph = &glyph;
 
         pos.x += kerning;
-        float        x0         = pos.x + glyph.offset_x;
-        float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
-        float        x1         = x0 + static_cast<int>(glyph.width);
-        float        y1         = y0 + static_cast<int>(glyph.height);
+        float        x0         = static_cast<int>(pos.x + glyph.offset_x);
+        float        y0         = static_cast<int>(pos.y + (glyph.offset_y - static_cast<int>(glyph.height)));
+        float        x1         = static_cast<int>(x0 + static_cast<int>(glyph.width));
+        float        y1         = static_cast<int>(y0 + static_cast<int>(glyph.height));
         float        s0         = glyph.s0;
         float        t0         = glyph.t0;
         float        s1         = glyph.s1;

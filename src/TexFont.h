@@ -48,6 +48,8 @@ public:
     float glyphGetKerning(
         Glyph const &       glyph,
         const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
+
+    glm::vec2 getTextSize(char const * text);
 protected:
 private:
     bool initFont();
