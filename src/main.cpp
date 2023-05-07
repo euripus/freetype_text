@@ -260,6 +260,7 @@ bool InitWindow()
 
     std::string dict(" !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~"
                      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω"
                      "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
 
     tf = std::make_unique<TexFont>(24, std::string("Liberation.ttf"));
@@ -308,7 +309,7 @@ void DrawScene(void)
         g_numFrames = 0;
 
         textBuf.Clear();
-        std::sprintf(buffer, "Кадров в секунду: %d", g_numFPS);
+        std::sprintf(buffer, "Καρε ανα δευτερολεπτο: %d", g_numFPS);
         glm::vec2 pen(10, 40);
         AddText(textBuf, *tf, buffer, pen);
         textBuf.VertexBufferUpload();
