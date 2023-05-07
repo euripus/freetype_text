@@ -85,9 +85,9 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
     glm::ivec3 *node, *prev;
     glm::ivec4  region(0, 0, width, height);
     size_t      i;
-    best_height = INT_MAX;
+    best_height = std::numeric_limits<int>::max();
     best_index  = -1;
-    best_width  = INT_MAX;
+    best_width  = std::numeric_limits<int>::max();
 
     for(i = 0; i < m_nodes.size(); ++i)
     {

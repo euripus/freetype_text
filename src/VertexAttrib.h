@@ -5,11 +5,11 @@
 
 struct VertexAttrib
 {
-    std::string  name;
-    unsigned int location;
-    size_t       size;     // num of components
-    size_t       stride;   // vertex size
-    size_t       pointer;
+    std::string   name;
+    std::uint32_t location;
+    size_t        size;     // num of components
+    size_t        stride;   // vertex size
+    size_t        pointer;
 
     VertexAttrib() : location(0), size(0), stride(0), pointer(0) {}
 

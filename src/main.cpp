@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/ext.hpp>
 #include <cmath>
 #include <memory>
 #include <stdio.h>
@@ -183,7 +184,7 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     glLoadIdentity();
 
     aspect = (GLfloat)width / (GLfloat)height;
-    ymax   = 0.1f * tan(65.0f * M_PI / 360.0f);
+    ymax   = 0.1f * glm::tan(65.0f * glm::pi<float>() / 360.0f);
     ymin   = -ymax;
     xmin   = ymin * aspect;
     xmax   = ymax * aspect;

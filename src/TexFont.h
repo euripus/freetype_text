@@ -19,7 +19,7 @@ struct Glyph
     float         t0           = 0.0f;     // Second normalized texture coordinate (y) of top-left corner
     float         s1           = 0.0f;     // First normalized texture coordinate (x) of bottom-right corner
     float         t1           = 0.0f;     // Second normalized texture coordinate (y) of bottom-right corner
-    std::int32_t  outline_type = 0;        // Glyph outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
+    std::uint32_t outline_type = 0;        // Glyph outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
     float         outline_thickness = 0;   // Glyph outline thickness
 
     std::map<std::uint32_t, float> kerning;   // key = left_charcode, kerning
@@ -63,7 +63,7 @@ private:
 
     float         m_size;                // Font size
     int           m_hinting;             // Whether to use autohint when rendering font
-    int           m_outline_type;        // Outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
+    std::uint32_t m_outline_type;        // Outline type (0 = None, 1 = line, 2 = inner, 3 = outer)
     float         m_outline_thickness;   // Outline thickness
     int           m_filtering;           // Whether to use our own lcd filter
     int           m_kerning;             // Whether to use kerning if available
