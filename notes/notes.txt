@@ -1,0 +1,40 @@
+GUI library:
+
+graph
+    bitblt()
+    rectangle()
+    string()
+
+font
+    text_size()
+    get_glyph()
+    cache_glyph()
+
+widget
+    parent()
+    pos()
+    move()
+
+layout
+    set_spacing()
+    set_layout_orient()
+    set_size()
+
+GUI
+    draw()
+    update()
+    set_style()
+    create_widget()
+
+// window tree
+window
+    vert_slider
+        text_area
+        hor_slider
+            button1
+            button2
+
+// draw
+for(layer : overlays)
+    for(window : layer)
+        window.draw(vertex_buffer, text_buffer, layer)
