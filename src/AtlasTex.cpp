@@ -1,8 +1,10 @@
 #include "AtlasTex.h"
-#include "Tga.h"
+#include "imagedata.h"
 #include <cassert>
 #include <climits>
 #include <cstring>
+
+#include <GL/glew.h>
 
 AtlasTex::AtlasTex(unsigned int size) : m_size{size}
 {
@@ -191,11 +193,19 @@ void AtlasTex::setRegion(glm::ivec4 reg, unsigned char const * data, int stride)
 
 void AtlasTex::WriteAtlasToTGA(std::string const & name)
 {
-    WriteUncompressedTGA(name.c_str(), 4, m_size, m_size, m_data.data());
+    tex::ImageData image;
+    image.height = m_size;
+    image.width  = m_size;
+    image.type   = tex::ImageData::PixelType::pt_rgba;
+    image.data   = std::make_unique<uint8_t[]>(m_data.size());
+
+    std::memcpy(image.data.get(), m_data.data(), m_data.size());
+
+    tex::WriteTGA(name, image);
 }
 
 ////////////////////////
-static GLuint atlas_tex_id;
+static GLuint atlas_tex_id{};
 
 void AtlasTex::BindTexture()
 {

@@ -9,7 +9,7 @@
 #include "Shader.h"
 #include "TexFont.h"
 #include "TextRender.h"
-#include "Tga.h"
+#include "imagedata.h"
 #include "VertexBuffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
@@ -206,23 +206,24 @@ void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset) {}
 
 bool LoadTexture()
 {
-    Texture tex;
+    tex::ImageData image;
 
-    if(LoadTGA(&tex, TEXNAME))
+    if(tex::ReadTGA(TEXNAME, image))
     {
         glGenTextures(1, &texBase);
 
         glBindTexture(GL_TEXTURE_2D, texBase);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, tex.bpp / 8, tex.width, tex.height, 0, tex.type, GL_UNSIGNED_BYTE,
-                     tex.imageData);
+        GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGB4;
+        GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
+                     GL_UNSIGNED_BYTE, image.data.get());
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glBindTexture(GL_TEXTURE_2D, 0);
-
-        free(tex.imageData);
 
         return true;
     }

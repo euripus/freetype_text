@@ -36,9 +36,9 @@ SOURCES += \
     src/Shader.cpp \
     src/TexFont.cpp \
     src/TextRender.cpp \
-    src/Tga.cpp \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
+    src/imagedata.cpp \
     src/main.cpp \
     src/rect2d.cpp \
     src/utf8_utils.cpp
@@ -48,8 +48,8 @@ HEADERS += \
     src/Shader.h \
     src/TexFont.h \
     src/TextRender.h \
-    src/Tga.h \
     src/VertexAttrib.h \
     src/VertexBuffer.h \
+    src/imagedata.h \
     src/rect2d.h \
     src/utf8_utils.h
