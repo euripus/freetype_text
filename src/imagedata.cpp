@@ -62,18 +62,18 @@ namespace tex
 //==============================================================================
 //         Read BMP section
 //==============================================================================
-bool ReadBMP(std::string const & file_name, ImageData & id)
+bool ReadBMP(std::string const & file_name, ImageData & image)
 {
     bool   res         = false;
     bool   compressed  = false;
     bool   flip        = false;
     size_t file_length = 0;
 
-    id.width  = 0;
-    id.height = 0;
-    id.type   = ImageData::PixelType::pt_none;
-    if(id.data)
-        id.data.reset(nullptr);
+    image.width  = 0;
+    image.height = 0;
+    image.type   = ImageData::PixelType::pt_none;
+    if(image.data)
+        image.data.reset(nullptr);
 
     std::ifstream        ifile(file_name, std::ios::binary);
     std::vector<uint8_t> file;
@@ -117,12 +117,12 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
             return res;
 
         if(pInfo->biBitCount == 24)
-            id.type = ImageData::PixelType::pt_rgb;
+            image.type = ImageData::PixelType::pt_rgb;
         else
-            id.type = ImageData::PixelType::pt_rgba;
+            image.type = ImageData::PixelType::pt_rgba;
 
-        id.width  = pInfo->biWidth;
-        id.height = pInfo->biHeight;
+        image.width  = pInfo->biWidth;
+        image.height = pInfo->biHeight;
     }
     else
     {
@@ -142,42 +142,42 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
         }
 
         if(pInfo->biBitCount == 24)
-            id.type = ImageData::PixelType::pt_rgb;
+            image.type = ImageData::PixelType::pt_rgb;
         else
-            id.type = ImageData::PixelType::pt_rgba;
+            image.type = ImageData::PixelType::pt_rgba;
 
-        id.width = static_cast<uint32_t>(pInfo->biWidth);
+        image.width = static_cast<uint32_t>(pInfo->biWidth);
 
         if(pInfo->biHeight < 0)
             flip = true;
-        id.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
+        image.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
     }
 
     // read data:
     pPtr                     = buffer + pHeader->bfOffBits;
     uint32_t lineLength      = 0;
-    uint32_t bytes_per_pixel = (id.type == ImageData::PixelType::pt_rgb ? 3 : 4);
-    auto     image           = std::make_unique<uint8_t[]>(id.width * id.height * bytes_per_pixel);
+    uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
+    auto     image_data      = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
     uint8_t  red, green, blue, alpha;
     uint32_t w_ind(0), h_ind(0);
 
-    if(id.type == ImageData::PixelType::pt_rgb)
-        lineLength = id.width * bytes_per_pixel + id.width % 4;
+    if(image.type == ImageData::PixelType::pt_rgb)
+        lineLength = image.width * bytes_per_pixel + image.width % 4;
     else
-        lineLength = id.width * bytes_per_pixel;
+        lineLength = image.width * bytes_per_pixel;
 
-    for(uint32_t i = 0; i < id.height; ++i)
+    for(uint32_t i = 0; i < image.height; ++i)
     {
         w_ind = 0;
         for(uint32_t j = 0; j < lineLength; j += bytes_per_pixel)
         {
-            if(j > id.width * bytes_per_pixel)
+            if(j > image.width * bytes_per_pixel)
                 continue;
 
             if(compressed)
             {
                 uint32_t count = 0;
-                if(id.type == ImageData::PixelType::pt_rgba)
+                if(image.type == ImageData::PixelType::pt_rgba)
                 {
                     alpha = pPtr[i * lineLength + j + count];
                     count++;
@@ -193,18 +193,17 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
                 blue  = pPtr[i * lineLength + j + 0];
                 green = pPtr[i * lineLength + j + 1];
                 red   = pPtr[i * lineLength + j + 2];
-                if(id.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
-                                                               // DWORD is not used
-                    alpha = pPtr
-                        [i * lineLength + j
-                         + 3];   // https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
+                if(image.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
+                                                                  // DWORD is not used
+                    alpha = pPtr[i * lineLength + j + 3];
+                // https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
             }
 
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
-            if(id.type == ImageData::PixelType::pt_rgba)
-                image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
+            image_data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
+            image_data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
+            image_data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
+            if(image.type == ImageData::PixelType::pt_rgba)
+                image_data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
             w_ind++;
         }
         h_ind++;
@@ -213,20 +212,20 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
     // flip image if necessary
     if(flip)
     {
-        auto temp_buf = std::make_unique<uint8_t[]>(id.width * id.height * bytes_per_pixel);
+        auto temp_buf = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            std::memcpy(temp_buf.get() + i * id.width * bytes_per_pixel,
-                        image.get() + (id.height - 1 - i) * id.width * bytes_per_pixel,
-                        id.width * bytes_per_pixel);
+            std::memcpy(temp_buf.get() + i * image.width * bytes_per_pixel,
+                        image_data.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
+                        image.width * bytes_per_pixel);
         }
 
-        image = std::move(temp_buf);
+        image_data = std::move(temp_buf);
     }
 
-    id.data = std::move(image);
-    res     = true;
+    image.data = std::move(image_data);
+    res        = true;
 
     return res;
 }
@@ -234,28 +233,28 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
 //==============================================================================
 //         TGA section
 //==============================================================================
-bool WriteTGA(std::string file_name, ImageData const & id)
+bool WriteTGA(std::string file_name, ImageData const & image)
 {
     TGAHEADER tga;
     std::memset(&tga, 0, sizeof(tga));
-    uint8_t bytes_per_pixel = (id.type == ImageData::PixelType::pt_rgb ? 3 : 4);
+    uint8_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
 
     tga.datatypecode = 2;
-    tga.width        = static_cast<uint16_t>(id.width);
-    tga.height       = static_cast<uint16_t>(id.height);
+    tga.width        = static_cast<uint16_t>(image.width);
+    tga.height       = static_cast<uint16_t>(image.height);
     tga.bitsperpixel = static_cast<uint8_t>(bytes_per_pixel * 8);
-    if(id.type == ImageData::PixelType::pt_rgb)
-        tga.imagedescriptor = 0x10;
+    if(image.type == ImageData::PixelType::pt_rgb)
+        tga.imagedescriptor = 0x0;   // bottom-lef origin
     else
-        tga.imagedescriptor = 0x18;
+        tga.imagedescriptor = 0x8;
 
     std::vector<uint8_t> out_data;
     out_data.resize(sizeof(tga));
     std::memcpy(out_data.data(), &tga, sizeof(tga));
 
-    uint8_t * data_ptr = id.data.get();
+    uint8_t * data_ptr = image.data.get();
     uint8_t   red, green, blue, alpha;
-    for(uint32_t i = 0; i < id.width * id.height * bytes_per_pixel; i += bytes_per_pixel)
+    for(uint32_t i = 0; i < image.width * image.height * bytes_per_pixel; i += bytes_per_pixel)
     {
         red   = data_ptr[i + 0];
         green = data_ptr[i + 1];
@@ -266,7 +265,7 @@ bool WriteTGA(std::string file_name, ImageData const & id)
         out_data.push_back(blue);
         out_data.push_back(green);
         out_data.push_back(red);
-        if(id.type == ImageData::PixelType::pt_rgba)
+        if(image.type == ImageData::PixelType::pt_rgba)
             out_data.push_back(alpha);
     }
 
@@ -280,15 +279,15 @@ bool WriteTGA(std::string file_name, ImageData const & id)
     return true;
 }
 
-bool ReadUncompressedTGA(ImageData & id, char * data);
-bool ReadCompressedTGA(ImageData & id, char * data);
+bool ReadUncompressedTGA(ImageData & image, uint8_t * data);
+bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
-bool ReadTGA(std::string const & file_name, ImageData & id)
+bool ReadTGA(std::string const & file_name, ImageData & image)
 {
     size_t file_length = 0;
 
-    std::ifstream     ifile(file_name, std::ios::binary);
-    std::vector<char> file;
+    std::ifstream        ifile(file_name, std::ios::binary);
+    std::vector<uint8_t> file;
 
     if(ifile.is_open())
     {
@@ -315,27 +314,10 @@ bool ReadTGA(std::string const & file_name, ImageData & id)
 
     auto * buffer = file.data();
 
-    auto        pPtr    = buffer;
-    TGAHEADER * pHeader = reinterpret_cast<TGAHEADER *>(pPtr);
+    auto *      data    = buffer;
+    TGAHEADER * pHeader = reinterpret_cast<TGAHEADER *>(data);
 
-    if(pHeader->datatypecode == 2)
-    {
-        return ReadUncompressedTGA(id, buffer);
-    }
-    else if(pHeader->datatypecode == 10)
-    {
-        return ReadCompressedTGA(id, buffer);
-    }
-
-    return false;
-}
-
-bool ReadUncompressedTGA(ImageData & id, char * data)
-{
-    char *      pPtr    = data;
-    TGAHEADER * pHeader = reinterpret_cast<TGAHEADER *>(pPtr);
-    pPtr += sizeof(TGAHEADER);
-
+    data += sizeof(TGAHEADER);
     if((pHeader->width == 0) || (pHeader->height == 0)
        || ((pHeader->bitsperpixel != 24)
            && (pHeader->bitsperpixel != 32)))   // Make sure all information is valid
@@ -343,189 +325,158 @@ bool ReadUncompressedTGA(ImageData & id, char * data)
         return false;
     }
 
-    id.width  = pHeader->width;
-    id.height = pHeader->height;
-    id.type   = pHeader->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
+    image.width  = pHeader->width;
+    image.height = pHeader->height;
+    image.type   = pHeader->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
     bool flip_horizontal = (pHeader->imagedescriptor & 0x10);
     bool flip_vertical   = (pHeader->imagedescriptor & 0x20);
 
     uint32_t bytes_per_pixel = pHeader->bitsperpixel / 8;
-    uint32_t image_size      = id.width * id.height * bytes_per_pixel;
+    uint32_t image_size      = image.width * image.height * bytes_per_pixel;
 
-    auto img = std::make_unique<uint8_t[]>(image_size);
-
-    for(uint32_t i = 0; i < id.width * id.height; ++i)
+    if(pHeader->datatypecode == 2)
     {
-        char red, green, blue, alpha;
-
-        red   = pPtr[i * bytes_per_pixel + 2];
-        green = pPtr[i * bytes_per_pixel + 1];
-        blue  = pPtr[i * bytes_per_pixel + 0];
-        if(id.type == ImageData::PixelType::pt_rgba)
-            alpha = pPtr[i * bytes_per_pixel + 3];
-
-        img[i * bytes_per_pixel + 0] = static_cast<uint8_t>(red);
-        img[i * bytes_per_pixel + 1] = static_cast<uint8_t>(green);
-        img[i * bytes_per_pixel + 2] = static_cast<uint8_t>(blue);
-        if(id.type == ImageData::PixelType::pt_rgba)
-            img[i * bytes_per_pixel + 3] = static_cast<uint8_t>(alpha);
+        ReadUncompressedTGA(image, data);
+    }
+    else if(pHeader->datatypecode == 10)
+    {
+        if(!ReadCompressedTGA(image, data))
+            return false;
     }
 
     if(flip_vertical)
     {
-        auto flipped_img = std::make_unique<uint8_t[]>(image_size);
+        auto flipped_image = std::make_unique<uint8_t[]>(image_size);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            std::memcpy(flipped_img.get() + i * id.width * bytes_per_pixel,
-                        img.get() + (id.height - 1 - i) * id.width * bytes_per_pixel,
-                        id.width * bytes_per_pixel);
+            std::memcpy(flipped_image.get() + i * image.width * bytes_per_pixel,
+                        image.data.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
+                        image.width * bytes_per_pixel);
         }
 
-        img = std::move(flipped_img);
+        image.data = std::move(flipped_image);
     }
 
     if(flip_horizontal)
     {
-        auto flipped_img = std::make_unique<uint8_t[]>(image_size);
+        auto flipped_image = std::make_unique<uint8_t[]>(image_size);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            for(uint32_t j = 0; j < id.width; j++)
+            for(uint32_t j = 0; j < image.width; j++)
             {
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 0];
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 1];
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 2];
-                if(id.type == ImageData::PixelType::pt_rgba)
-                    flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
-                        img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 3];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 0];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 1];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 2];
+                if(image.type == ImageData::PixelType::pt_rgba)
+                    flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
+                        image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                                   + 3];
             }
         }
 
-        img = std::move(flipped_img);
+        image.data = std::move(flipped_image);
     }
 
-    id.data = std::move(img);
     return true;
 }
 
-bool ReadCompressedTGA(ImageData & id, char * data)
+bool ReadUncompressedTGA(ImageData & image, uint8_t * data)
 {
-    char *      pPtr    = data;
-    TGAHEADER * pHeader = reinterpret_cast<TGAHEADER *>(pPtr);
-    pPtr += sizeof(TGAHEADER);
+    uint32_t bytes_per_pixel = image.type == ImageData::PixelType::pt_rgb ? 3 : 4;
+    uint32_t image_size      = image.width * image.height * bytes_per_pixel;
 
-    if((pHeader->width == 0) || (pHeader->height == 0)
-       || ((pHeader->bitsperpixel != 24)
-           && (pHeader->bitsperpixel != 32)))   // Make sure all information is valid
+    auto img = std::make_unique<uint8_t[]>(image_size);
+
+    for(uint32_t i = 0; i < image.width * image.height; ++i)
     {
-        return false;
+        uint8_t red, green, blue, alpha;
+
+        red   = data[i * bytes_per_pixel + 2];
+        green = data[i * bytes_per_pixel + 1];
+        blue  = data[i * bytes_per_pixel + 0];
+        if(image.type == ImageData::PixelType::pt_rgba)
+            alpha = data[i * bytes_per_pixel + 3];
+
+        img[i * bytes_per_pixel + 0] = red;
+        img[i * bytes_per_pixel + 1] = green;
+        img[i * bytes_per_pixel + 2] = blue;
+        if(image.type == ImageData::PixelType::pt_rgba)
+            img[i * bytes_per_pixel + 3] = alpha;
     }
 
-    id.width  = pHeader->width;
-    id.height = pHeader->height;
-    id.type   = pHeader->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
-    bool flip_horizontal = (pHeader->imagedescriptor & 0x10);
-    bool flip_vertical   = (pHeader->imagedescriptor & 0x20);
+    image.data = std::move(img);
 
-    uint32_t bytes_per_pixel = pHeader->bitsperpixel / 8;
-    uint32_t image_size      = id.width * id.height * bytes_per_pixel;
+    return true;
+}
 
-    auto     img          = std::make_unique<uint8_t[]>(image_size);
-    uint32_t pixelcount   = id.height * id.width;
-    uint32_t currentpixel = 0;
-    uint32_t currentbyte  = 0;
+bool ReadCompressedTGA(ImageData & image, uint8_t * data)
+{
+    uint32_t bytes_per_pixel = image.type == ImageData::PixelType::pt_rgb ? 3 : 4;
+    uint32_t image_size      = image.width * image.height * bytes_per_pixel;
+
+    auto     img           = std::make_unique<uint8_t[]>(image_size);
+    uint32_t pixel_count   = image.height * image.width;
+    uint32_t current_pixel = 0;
+    uint32_t current_byte  = 0;
 
     do
     {
-        unsigned char chunk = static_cast<unsigned char>(pPtr[0]);
-        pPtr++;
+        uint8_t chunk = data[0];
+        data++;
 
         if(chunk > 128)
         {
             chunk -= 127;
-            for(int32_t counter = 0; counter < chunk; counter++)
+            for(uint16_t counter = 0; counter < chunk; counter++)
             {
-                img[currentbyte + 0] = static_cast<uint8_t>(pPtr[2]);
-                img[currentbyte + 1] = static_cast<uint8_t>(pPtr[1]);
-                img[currentbyte + 2] = static_cast<uint8_t>(pPtr[0]);
-                if(id.type == ImageData::PixelType::pt_rgba)
-                    img[currentbyte + 3] = static_cast<uint8_t>(pPtr[3]);
+                img[current_byte + 0] = data[2];
+                img[current_byte + 1] = data[1];
+                img[current_byte + 2] = data[0];
+                if(image.type == ImageData::PixelType::pt_rgba)
+                    img[current_byte + 3] = data[3];
 
-                currentbyte += bytes_per_pixel;
-                currentpixel++;
+                current_byte += bytes_per_pixel;
+                current_pixel++;
 
-                if(currentpixel > pixelcount)   // Make sure we havent written too many pixels
+                if(current_pixel > pixel_count)   // Make sure we havent written too many pixels
                 {
                     return false;
                 }
             }
-            pPtr += bytes_per_pixel;
+            data += bytes_per_pixel;
         }
         else
         {
             chunk++;
-            for(short counter = 0; counter < chunk; counter++)
+            for(uint16_t counter = 0; counter < chunk; counter++)
             {
-                img[currentbyte + 0] = static_cast<uint8_t>(pPtr[2]);
-                img[currentbyte + 1] = static_cast<uint8_t>(pPtr[1]);
-                img[currentbyte + 2] = static_cast<uint8_t>(pPtr[0]);
-                if(id.type == ImageData::PixelType::pt_rgba)
-                    img[currentbyte + 3] = static_cast<uint8_t>(pPtr[3]);
+                img[current_byte + 0] = data[2];
+                img[current_byte + 1] = data[1];
+                img[current_byte + 2] = data[0];
+                if(image.type == ImageData::PixelType::pt_rgba)
+                    img[current_byte + 3] = data[3];
 
-                currentbyte += bytes_per_pixel;
-                currentpixel++;
-                pPtr += bytes_per_pixel;
+                current_byte += bytes_per_pixel;
+                current_pixel++;
+                data += bytes_per_pixel;
 
-                if(currentpixel > pixelcount)   // Make sure we havent read too many pixels
+                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
                 {
                     return false;
                 }
             }
         }
-    } while(currentpixel < pixelcount);
+    } while(current_pixel < pixel_count);
 
-    if(flip_vertical)
-    {
-        auto flipped_img = std::make_unique<uint8_t[]>(image_size);
-
-        for(uint32_t i = 0; i < id.height; i++)
-        {
-            std::memcpy(flipped_img.get() + i * id.width * bytes_per_pixel,
-                        img.get() + (id.height - 1 - i) * id.width * bytes_per_pixel,
-                        id.width * bytes_per_pixel);
-        }
-
-        img = std::move(flipped_img);
-    }
-
-    if(flip_horizontal)
-    {
-        auto flipped_img = std::make_unique<uint8_t[]>(image_size);
-
-        for(uint32_t i = 0; i < id.height; i++)
-        {
-            for(uint32_t j = 0; j < id.width; j++)
-            {
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 0];
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 1];
-                flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
-                    img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 2];
-                if(id.type == ImageData::PixelType::pt_rgba)
-                    flipped_img[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
-                        img[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 3];
-            }
-        }
-
-        img = std::move(flipped_img);
-    }
-
-    id.data = std::move(img);
+    image.data = std::move(img);
     return true;
 }
 }   // namespace tex

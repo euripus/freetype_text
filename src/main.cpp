@@ -206,26 +206,28 @@ void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset) {}
 
 bool LoadTexture()
 {
-    tex::ImageData image;
-
-    if(tex::ReadTGA(TEXNAME, image))
     {
-        glGenTextures(1, &texBase);
+        tex::ImageData image;
 
-        glBindTexture(GL_TEXTURE_2D, texBase);
+        if(tex::ReadTGA(TEXNAME, image))
+        {
+            glGenTextures(1, &texBase);
 
-        GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGB4;
-        GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
+            glBindTexture(GL_TEXTURE_2D, texBase);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
-                     GL_UNSIGNED_BYTE, image.data.get());
+            GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGB4;
+            GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
+                         GL_UNSIGNED_BYTE, image.data.get());
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        return true;
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            return true;
+        }
     }
 
     return false;

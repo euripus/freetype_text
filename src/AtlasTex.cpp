@@ -176,7 +176,7 @@ void AtlasTex::setRegion(glm::ivec4 reg, unsigned char const * data, int stride)
         for(int j = 0; j < reg.z; ++j)
         {
             unsigned int dst_shift = (((reg.y + i) * m_size + reg.x + j) * charsize * 4);
-            unsigned int src_shift = (((i * stride) + j * 3) * charsize);
+            unsigned int src_shift = ((i * stride) + j * 3 * charsize);
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
