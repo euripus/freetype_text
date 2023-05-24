@@ -7,9 +7,9 @@
 #undef __STRICT_ANSI__
 
 #include "Shader.h"
-#include "TexFont.h"
+#include "gui/fontmanager.h"
 #include "TextRender.h"
-#include "imagedata.h"
+#include "gui/imagedata.h"
 #include "VertexBuffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
@@ -49,11 +49,11 @@ GLfloat pyrVert[] = {
 
 GLuint pyrIndex[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-std::unique_ptr<TexFont> tf;
-Shader                   shd, shdTxt;
-GLuint                   texBase;
-VertexBuffer             pyramidBuf("Pos:3,Norm:3,Tex:2");
-VertexBuffer             textBuf("Pos:3,Tex:2");
+FontManager  fm;
+Shader       shd, shdTxt;
+GLuint       texBase;
+VertexBuffer pyramidBuf("Pos:3,Norm:3,Tex:2");
+VertexBuffer textBuf("Pos:3,Tex:2");
 
 /*-----------------------------------------------------------
 /
@@ -266,13 +266,20 @@ bool InitWindow()
                      "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω"
                      "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
 
-    tf = std::make_unique<TexFont>(24, std::string("Liberation.ttf"));
-    tf->textureFontCacheGlyphs(dict.c_str());
-    tf->getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
-    tf->getAtlas().UploadTexture();
+    FontDataDesc desc;
+    desc.filename = "liberation.ttf";
+    auto & fnt1   = fm.addFont(desc);
+    fnt1.cacheGlyphs(dict.c_str());
+
+    desc.filename = "damase.ttf";
+    auto & fnt2   = fm.addFont(desc);
+    fnt2.cacheGlyphs(dict.c_str());
+
+    //    tf->getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
+    //    tf->getAtlas().UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
     glm::vec2 pos(10, 40);
-    AddText(textBuf, *tf, "FPS: 60", pos);
+    AddText(textBuf, fnt1, "FPS: 60", pos);
     textBuf.VertexBufferUpload();
     textBuf.InitAttribLocation();
 
@@ -314,7 +321,7 @@ void DrawScene(void)
         textBuf.Clear();
         std::sprintf(buffer, "Καρε ανα δευτερολεπτο: %d", g_numFPS);
         glm::vec2 pen(10, 40);
-        AddText(textBuf, *tf, buffer, pen);
+        //        AddText(textBuf, *tf, buffer, pen);
         textBuf.VertexBufferUpload();
         textBuf.InitAttribLocation();
     }
@@ -351,7 +358,7 @@ void DrawScene(void)
 
     shdTxt.Bind();
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
-    tf->getAtlas().BindTexture();
+    //    tf->getAtlas().BindTexture();
 
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
     textBuf.DrawBuffer();
@@ -370,8 +377,8 @@ void KillWindow(void)
     pyramidBuf.DeleteGPUBuffers();
     shd.DeInit();
     glDeleteTextures(1, &texBase);
-    tf->getAtlas().DeleteTexture();
-    tf->getAtlas().clear();
+    //    tf->getAtlas().DeleteTexture();
+    //    tf->getAtlas().clear();
     shdTxt.DeInit();
 
     glfwDestroyWindow(g_window);

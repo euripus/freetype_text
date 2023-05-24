@@ -32,24 +32,26 @@ unix:{
 }
 
 SOURCES += \
-    src/AtlasTex.cpp \
     src/Shader.cpp \
-    src/TexFont.cpp \
     src/TextRender.cpp \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
-    src/imagedata.cpp \
-    src/main.cpp \
-    src/rect2d.cpp \
-    src/utf8_utils.cpp
+    src/gui/atlastex.cpp \
+    src/gui/fontmanager.cpp \
+    src/gui/imagedata.cpp \
+    src/gui/rect2d.cpp \
+    src/gui/texfont.cpp \
+    src/gui/utf8_utils.cpp \
+    src/main.cpp
 
 HEADERS += \
-    src/AtlasTex.h \
     src/Shader.h \
-    src/TexFont.h \
     src/TextRender.h \
     src/VertexAttrib.h \
     src/VertexBuffer.h \
-    src/imagedata.h \
-    src/rect2d.h \
-    src/utf8_utils.h
+    src/gui/atlastex.h \
+    src/gui/fontmanager.h \
+    src/gui/imagedata.h \
+    src/gui/rect2d.h \
+    src/gui/texfont.h \
+    src/gui/utf8_utils.h

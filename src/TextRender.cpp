@@ -37,7 +37,7 @@ void AddText(VertexBuffer & vb, TexFont & tf, char const * text, glm::vec2 & pos
     for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
-        Glyph &       glyph      = tf.textureFontGetGlyph(ucodepoint);
+        Glyph &       glyph      = tf.getGlyph(ucodepoint);
 
         float kerning = 0.0f;
         if(prev_glyph != nullptr)

@@ -27,7 +27,7 @@ const struct {
 constexpr float             HRESf = 64.0f;
 constexpr std::uint32_t     DPI   = 72;
 
-static bool TexFontLoadFace(FontManager & owner, float size, FT_Library * library, FT_Face * face, TexFont::FontLocation location,
+static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, TexFont::FontLocation location,
                             std::string const & filename, std::vector<unsigned char> const & data)
 {
     assert(library);
@@ -95,8 +95,9 @@ static bool TexFontLoadFace(FontManager & owner, float size, FT_Library * librar
     return true;
 }
 
-TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_size, bool hinting, bool kerning, float outline_thickness, OutlineType outline_type) :
-	m_owner{owner},
+TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_size, bool hinting, bool kerning,
+                 float outline_thickness, Glyph::OutlineType outline_type) :
+    m_owner{owner},
     m_size{pt_size},
     m_hinting{hinting},
     m_outline_type{outline_type},
@@ -127,8 +128,9 @@ TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_siz
         throw std::runtime_error("Error while loading font from file!!!");
 }
 
-TexFont::TexFont(FontManager & owner, unsigned char const * memory_base, size_t memory_size, float pt_size, bool hinting, bool kerning, float outline_thickness, OutlineType outline_type) :
-	m_owner{owner},
+TexFont::TexFont(FontManager & owner, unsigned char const * memory_base, size_t memory_size, float pt_size,
+                 bool hinting, bool kerning, float outline_thickness, Glyph::OutlineType outline_type) :
+    m_owner{owner},
     m_size{pt_size},
     m_hinting{hinting},
     m_outline_type{outline_type},
@@ -196,7 +198,7 @@ bool TexFont::initFont()
     FT_Done_FreeType(library);
 
     /* -1 is a special glyph */
-    textureFontLoadGlyph(-1);
+    loadGlyph(-1);
 
     return true;
 }
@@ -218,21 +220,23 @@ Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint)
     }
 
     // Glyph has not been already loaded
-    auto i = textureFontLoadGlyph(ucodepoint);
+    auto i = loadGlyph(ucodepoint);
     if(i > 0)
     {
-        textureFontGenerateKerning(m_glyphs[i]);
+        if(m_kerning)
+            generateKerning(m_glyphs[i]);
         return m_glyphs[i];
     }
     else if(i == -1)   // atlas full
     {
         m_owner.resizeAtlas();
-		//reloadGlyphs();
+        // reloadGlyphs();
 
-        i = textureFontLoadGlyph(ucodepoint);
+        i = loadGlyph(ucodepoint);
         if(i > 0)
         {
-            textureFontGenerateKerning();
+            if(m_kerning)
+                generateKerning();
             return m_glyphs[i];
         }
     }
@@ -250,7 +254,7 @@ std::int32_t TexFont::loadGlyph(char const * charcode)
     else
         ucodepoint = utf8_to_utf32(charcode);
 
-    return textureFontLoadGlyph(ucodepoint);
+    return loadGlyph(ucodepoint);
 }
 
 std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
@@ -478,7 +482,7 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
     // Load each glyph
     for(std::uint32_t i = 0; i < std::strlen(charcodes); i += utf8_surrogate_len(charcodes + i))
     {
-        auto error = textureFontLoadGlyph(charcodes + i);
+        auto error = loadGlyph(charcodes + i);
 
         if(error == 0)   // error loading glyph
             missed++;
@@ -488,12 +492,13 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
             m_owner.resizeAtlas();
 
             // repeat load glyph
-            if(!textureFontLoadGlyph(charcodes + i))
+            if(!loadGlyph(charcodes + i))
                 missed++;
         }
     }
 
-    textureFontGenerateKerning();
+    if(m_kerning)
+        generateKerning();
 
     return missed;
 }
@@ -579,7 +584,7 @@ glm::vec2 TexFont::getTextSize(char const * text)
     for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
-        Glyph const & glyph      = textureFontGetGlyph(ucodepoint);
+        Glyph const & glyph      = getGlyph(ucodepoint);
 
         if(m_kerning)
         {
@@ -614,6 +619,6 @@ void TexFont::reloadGlyphs()
     // load glyphs to new atlas
     for(auto const & ucodepoint : loaded_ucodepoints)
     {
-        textureFontLoadGlyph(ucodepoint);
+        loadGlyph(ucodepoint);
     }
 }
