@@ -8,6 +8,36 @@
 
 #include "utf8_utils.h"
 
+//  Glyph metrics:
+//  --------------
+//                        xmin                     xmax
+//                         |                         |
+//                         |<-------- width -------->|
+//                         |                         |
+//               |         +-------------------------+----------------- ymax
+//               |         |    ggggggggg   ggggg    |     ^        ^
+//               |         |   g:::::::::ggg::::g    |     |        |
+//               |         |  g:::::::::::::::::g    |     |        |
+//               |         | g::::::ggggg::::::gg    |     |        |
+//               |         | g:::::g     g:::::g     |     |        |
+//     offset_x -|-------->| g:::::g     g:::::g     |  offset_y    |
+//               |         | g:::::g     g:::::g     |     |        |
+//               |         | g::::::g    g:::::g     |     |        |
+//               |         | g:::::::ggggg:::::g     |     |        |
+//               |         |  g::::::::::::::::g     |     |      height
+//               |         |   gg::::::::::::::g     |     |        |
+//   baseline ---*---------|---- gggggggg::::::g-----*--------      |
+//             / |         |             g:::::g     |              |
+//      origin   |         | gggggg      g:::::g     |              |
+//               |         | g:::::gg   gg:::::g     |              |
+//               |         |  g::::::ggg:::::::g     |              |
+//               |         |   gg:::::::::::::g      |              |
+//               |         |     ggg::::::ggg        |              |
+//               |         |         gggggg          |              v
+//               |         +-------------------------+----------------- ymin
+//               |                                   |
+//               |------------- advance_x ---------->|
+
 struct Glyph
 {
     enum class OutlineType
@@ -36,6 +66,7 @@ struct Glyph
 };
 
 class FontManager;
+class VertexBuffer;
 
 class TexFont
 {
@@ -53,7 +84,7 @@ public:
             bool hinting = true, bool kerning = true, float outline_thickness = 0.0f,
             Glyph::OutlineType outline_type = Glyph::OutlineType::NONE);
 
-    Glyph &      getGlyph(const std::uint32_t ucodepoint);
+    const Glyph &      getGlyph(const std::uint32_t ucodepoint) const;
     std::int32_t loadGlyph(char const * charcode);
     std::int32_t loadGlyph(std::uint32_t ucodepoint);
 
@@ -64,6 +95,7 @@ public:
         const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
 
     glm::vec2 getTextSize(char const * text);
+	void addText(VertexBuffer & vb, char const * text, glm::vec2 & pos);
 
     void reloadGlyphs();
 protected:

@@ -21,13 +21,12 @@ public:
     void DeleteTexture();
     void BindTexture();
 
-    void WriteAtlasToTGA(std::string const & name);
+    void writeAtlasToTGA(std::string const & name);
 
-protected:
+private:
     int  atlasFit(unsigned int index, unsigned int width, unsigned int height);
     void atlasMerge();
 
-private:
     unsigned int               m_size = 0;
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;

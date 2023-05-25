@@ -8,7 +8,6 @@
 
 #include "Shader.h"
 #include "gui/fontmanager.h"
-#include "TextRender.h"
 #include "gui/imagedata.h"
 #include "VertexBuffer.h"
 
@@ -275,11 +274,11 @@ bool InitWindow()
     auto & fnt2   = fm.addFont(desc);
     fnt2.cacheGlyphs(dict.c_str());
 
-    //    tf->getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
-    //    tf->getAtlas().UploadTexture();
+    fm.getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
+    fm.getAtlas().UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
     glm::vec2 pos(10, 40);
-    AddText(textBuf, fnt1, "FPS: 60", pos);
+    fnt1.addText(textBuf, "FPS: 60", pos);
     textBuf.VertexBufferUpload();
     textBuf.InitAttribLocation();
 
@@ -321,7 +320,8 @@ void DrawScene(void)
         textBuf.Clear();
         std::sprintf(buffer, "Καρε ανα δευτερολεπτο: %d", g_numFPS);
         glm::vec2 pen(10, 40);
-        //        AddText(textBuf, *tf, buffer, pen);
+		auto tf = fm.getFont("liberation.ttf", 24);
+        tf.addText(textBuf, buffer, pen);
         textBuf.VertexBufferUpload();
         textBuf.InitAttribLocation();
     }
@@ -358,7 +358,7 @@ void DrawScene(void)
 
     shdTxt.Bind();
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
-    //    tf->getAtlas().BindTexture();
+    fm.getAtlas().BindTexture();
 
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
     textBuf.DrawBuffer();
@@ -377,8 +377,8 @@ void KillWindow(void)
     pyramidBuf.DeleteGPUBuffers();
     shd.DeInit();
     glDeleteTextures(1, &texBase);
-    //    tf->getAtlas().DeleteTexture();
-    //    tf->getAtlas().clear();
+    fm.getAtlas().DeleteTexture();
+    fm.getAtlas().clear();
     shdTxt.DeInit();
 
     glfwDestroyWindow(g_window);

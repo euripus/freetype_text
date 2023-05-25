@@ -1,5 +1,7 @@
 #include "texfont.h"
 #include "fontmanager.h"
+#include "../VertexBuffer.h"
+
 #include <algorithm>
 #include <iostream>
 
@@ -203,7 +205,7 @@ bool TexFont::initFont()
     return true;
 }
 
-Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint)
+const Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint) const
 {
     // Check if charcode has been already loaded
     for(std::uint32_t i = 0; i < m_glyphs.size(); ++i)
@@ -220,6 +222,7 @@ Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint)
     }
 
     // Glyph has not been already loaded
+	/*
     auto i = loadGlyph(ucodepoint);
     if(i > 0)
     {
@@ -240,8 +243,9 @@ Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint)
             return m_glyphs[i];
         }
     }
-
-    throw std::runtime_error("Glyph not found!!!");
+	*/
+    //throw std::runtime_error("Glyph not found!!!");
+	return m_glyphs[0];
 }
 
 std::int32_t TexFont::loadGlyph(char const * charcode)
@@ -505,36 +509,11 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
 
 void TexFont::generateKerning()
 {
-    FT_Library library;
-    FT_Face    face;
-    FT_UInt    glyph_index, prev_index;
-    FT_Vector  kerning;
 
-    /* Load font */
-    if(!TexFontLoadFace(m_size, &library, &face, m_location, m_filename, m_memory))
-        return;
-
-    /* For each glyph couple combination, check if kerning is necessary */
-    /* Starts at index 1 since 0 is for the special backgroudn glyph */
     for(auto & glyph : m_glyphs)
     {
-        glyph_index = FT_Get_Char_Index(face, glyph.charcode);
-        glyph.kerning.clear();
-
-        for(auto & prev_glyph : m_glyphs)
-        {
-            prev_index = FT_Get_Char_Index(face, prev_glyph.charcode);
-            FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
-
-            if(kerning.x)
-            {
-                glyph.kerning[prev_glyph.charcode] = kerning.x / (HRESf * HRESf);
-            }
-        }
+		generateKerning(glyph);
     }
-
-    FT_Done_Face(face);
-    FT_Done_FreeType(library);
 }
 
 void TexFont::generateKerning(Glyph & glyph)
@@ -581,27 +560,60 @@ glm::vec2 TexFont::getTextSize(char const * text)
 {
     glm::vec2     size{0};
     Glyph const * prev_glyph = nullptr;
+
     for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
         Glyph const & glyph      = getGlyph(ucodepoint);
 
-        if(m_kerning)
-        {
-            float kerning = 0.0f;
-            if(prev_glyph != nullptr)
-            {
-                kerning = glyphGetKerning(glyph, prev_glyph->charcode);
-            }
-            prev_glyph = &glyph;
-            size.x += kerning;
-        }
+		float kerning = 0.0f;
+		if(prev_glyph != nullptr && m_kerning)
+		{
+			kerning = glyphGetKerning(glyph, prev_glyph->charcode);
+		}
+		prev_glyph = &glyph;
+		size.x += kerning;
 
         size.y = glm::max(size.y, static_cast<float>(glyph.offset_y));
         size.x += glyph.advance_x;
     }
 
     return size;
+}
+
+void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos)
+{
+	Glyph * prev_glyph = nullptr;
+    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    {
+        std::uint32_t ucodepoint = utf8_to_utf32(text + i);
+        Glyph &       glyph      = getGlyph(ucodepoint);
+
+        float kerning = 0.0f;
+        if(prev_glyph != nullptr && m_kerning)
+        {
+            kerning = glyphGetKerning(glyph, prev_glyph->charcode);
+        }
+        prev_glyph = &glyph;
+
+        pos.x += kerning;
+        float        x0         = static_cast<int>(pos.x + glyph.offset_x);
+        float        y0         = static_cast<int>(pos.y + (glyph.offset_y - static_cast<int>(glyph.height)));
+        float        x1         = static_cast<int>(x0 + static_cast<int>(glyph.width));
+        float        y1         = static_cast<int>(y0 + static_cast<int>(glyph.height));
+        float        s0         = glyph.s0;
+        float        t0         = glyph.t0;
+        float        s1         = glyph.s1;
+        float        t1         = glyph.t1;
+        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t1,  x1, y1, 0.0,
+                                 s1, t0, x0,  y1, 0.0, s0, t0,   // (s0, t0) - top-left corner
+                                 x1, y0, 0.0, s1, t1};
+
+        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+        pos.x += glyph.advance_x;
+    }
 }
 
 void TexFont::reloadGlyphs()

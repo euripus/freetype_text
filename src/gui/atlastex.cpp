@@ -191,7 +191,7 @@ void AtlasTex::setRegion(glm::ivec4 reg, unsigned char const * data, int stride)
     }
 }
 
-void AtlasTex::WriteAtlasToTGA(std::string const & name)
+void AtlasTex::writeAtlasToTGA(std::string const & name)
 {
     tex::ImageData image;
     image.height = m_size;
@@ -214,7 +214,7 @@ void AtlasTex::BindTexture()
     glBindTexture(GL_TEXTURE_2D, atlas_tex_id);
 }
 
-#define GL_CLAMP_TO_EDGE 0x812F
+//#define GL_CLAMP_TO_EDGE 0x812F
 
 void AtlasTex::UploadTexture()
 {
@@ -226,7 +226,7 @@ void AtlasTex::UploadTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size, m_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB4, m_size, m_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data.data());
 }
 
 void AtlasTex::DeleteTexture()
