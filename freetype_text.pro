@@ -33,7 +33,6 @@ unix:{
 
 SOURCES += \
     src/Shader.cpp \
-    src/TextRender.cpp \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
     src/gui/atlastex.cpp \
@@ -46,7 +45,6 @@ SOURCES += \
 
 HEADERS += \
     src/Shader.h \
-    src/TextRender.h \
     src/VertexAttrib.h \
     src/VertexBuffer.h \
     src/gui/atlastex.h \

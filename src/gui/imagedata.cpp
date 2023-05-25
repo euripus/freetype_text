@@ -103,73 +103,73 @@ bool ReadBMP(std::string const & file_name, ImageData & image)
 
     auto * buffer = file.data();
 
-    auto *             pPtr    = buffer;
-    BITMAPFILEHEADER * pHeader = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
-    pPtr += sizeof(BITMAPFILEHEADER);
-    if(pHeader->bfSize != file_length || pHeader->bfType != 0x4D42)   // little-endian
+    auto *             cur_ptr  = buffer;
+    BITMAPFILEHEADER * p_header = reinterpret_cast<BITMAPFILEHEADER *>(cur_ptr);
+    cur_ptr += sizeof(BITMAPFILEHEADER);
+    if(p_header->bfSize != file_length || p_header->bfType != 0x4D42)   // little-endian
         return res;
 
-    if(reinterpret_cast<uint32_t *>(pPtr)[0] == 12)
+    if(reinterpret_cast<uint32_t *>(cur_ptr)[0] == 12)
     {
-        BITMAPINFO12 * pInfo = reinterpret_cast<BITMAPINFO12 *>(pPtr);
+        BITMAPINFO12 * p_info = reinterpret_cast<BITMAPINFO12 *>(cur_ptr);
 
-        if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
+        if(p_info->biBitCount != 24 && p_info->biBitCount != 32)
             return res;
 
-        if(pInfo->biBitCount == 24)
+        if(p_info->biBitCount == 24)
             image.type = ImageData::PixelType::pt_rgb;
         else
             image.type = ImageData::PixelType::pt_rgba;
 
-        image.width  = pInfo->biWidth;
-        image.height = pInfo->biHeight;
+        image.width  = p_info->biWidth;
+        image.height = p_info->biHeight;
     }
     else
     {
-        BITMAPINFO * pInfo = reinterpret_cast<BITMAPINFO *>(pPtr);
+        BITMAPINFO * p_info = reinterpret_cast<BITMAPINFO *>(cur_ptr);
 
-        if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
+        if(p_info->biBitCount != 24 && p_info->biBitCount != 32)
             return res;
 
-        if(pInfo->biCompression != 3 && pInfo->biCompression != 6 && pInfo->biCompression != 0)
+        if(p_info->biCompression != 3 && p_info->biCompression != 6 && p_info->biCompression != 0)
         {
             return res;
         }
 
-        if(pInfo->biCompression == 3 || pInfo->biCompression == 6)
+        if(p_info->biCompression == 3 || p_info->biCompression == 6)
         {
             compressed = true;
         }
 
-        if(pInfo->biBitCount == 24)
+        if(p_info->biBitCount == 24)
             image.type = ImageData::PixelType::pt_rgb;
         else
             image.type = ImageData::PixelType::pt_rgba;
 
-        image.width = static_cast<uint32_t>(pInfo->biWidth);
+        image.width = static_cast<uint32_t>(p_info->biWidth);
 
-        if(pInfo->biHeight < 0)
+        if(p_info->biHeight < 0)
             flip = true;
-        image.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
+        image.height = static_cast<uint32_t>(std::abs(p_info->biHeight));
     }
 
     // read data:
-    pPtr                     = buffer + pHeader->bfOffBits;
-    uint32_t lineLength      = 0;
+    cur_ptr                  = buffer + p_header->bfOffBits;
+    uint32_t line_length     = 0;
     uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
     auto     image_data      = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
-    uint8_t  red, green, blue, alpha;
+    uint8_t  red, green, blue, alpha(0);
     uint32_t w_ind(0), h_ind(0);
 
     if(image.type == ImageData::PixelType::pt_rgb)
-        lineLength = image.width * bytes_per_pixel + image.width % 4;
+        line_length = image.width * bytes_per_pixel + image.width % 4;
     else
-        lineLength = image.width * bytes_per_pixel;
+        line_length = image.width * bytes_per_pixel;
 
     for(uint32_t i = 0; i < image.height; ++i)
     {
         w_ind = 0;
-        for(uint32_t j = 0; j < lineLength; j += bytes_per_pixel)
+        for(uint32_t j = 0; j < line_length; j += bytes_per_pixel)
         {
             if(j > image.width * bytes_per_pixel)
                 continue;
@@ -179,23 +179,23 @@ bool ReadBMP(std::string const & file_name, ImageData & image)
                 uint32_t count = 0;
                 if(image.type == ImageData::PixelType::pt_rgba)
                 {
-                    alpha = pPtr[i * lineLength + j + count];
+                    alpha = cur_ptr[i * line_length + j + count];
                     count++;
                 }
-                blue = pPtr[i * lineLength + j + count];
+                blue = cur_ptr[i * line_length + j + count];
                 count++;
-                green = pPtr[i * lineLength + j + count];
+                green = cur_ptr[i * line_length + j + count];
                 count++;
-                red = pPtr[i * lineLength + j + count];
+                red = cur_ptr[i * line_length + j + count];
             }
             else
             {
-                blue  = pPtr[i * lineLength + j + 0];
-                green = pPtr[i * lineLength + j + 1];
-                red   = pPtr[i * lineLength + j + 2];
+                blue  = cur_ptr[i * line_length + j + 0];
+                green = cur_ptr[i * line_length + j + 1];
+                red   = cur_ptr[i * line_length + j + 2];
                 if(image.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
                                                                   // DWORD is not used
-                    alpha = pPtr[i * lineLength + j + 3];
+                    alpha = cur_ptr[i * line_length + j + 3];
                 // https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
             }
 
@@ -314,31 +314,31 @@ bool ReadTGA(std::string const & file_name, ImageData & image)
 
     auto * buffer = file.data();
 
-    auto *      data    = buffer;
-    TGAHEADER * pHeader = reinterpret_cast<TGAHEADER *>(data);
+    auto *      data     = buffer;
+    TGAHEADER * p_header = reinterpret_cast<TGAHEADER *>(data);
 
     data += sizeof(TGAHEADER);
-    if((pHeader->width == 0) || (pHeader->height == 0)
-       || ((pHeader->bitsperpixel != 24)
-           && (pHeader->bitsperpixel != 32)))   // Make sure all information is valid
+    if((p_header->width == 0) || (p_header->height == 0)
+       || ((p_header->bitsperpixel != 24)
+           && (p_header->bitsperpixel != 32)))   // Make sure all information is valid
     {
         return false;
     }
 
-    image.width  = pHeader->width;
-    image.height = pHeader->height;
-    image.type   = pHeader->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
-    bool flip_horizontal = (pHeader->imagedescriptor & 0x10);
-    bool flip_vertical   = (pHeader->imagedescriptor & 0x20);
+    image.width  = p_header->width;
+    image.height = p_header->height;
+    image.type = p_header->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
+    bool flip_horizontal = (p_header->imagedescriptor & 0x10);
+    bool flip_vertical   = (p_header->imagedescriptor & 0x20);
 
-    uint32_t bytes_per_pixel = pHeader->bitsperpixel / 8;
+    uint32_t bytes_per_pixel = p_header->bitsperpixel / 8;
     uint32_t image_size      = image.width * image.height * bytes_per_pixel;
 
-    if(pHeader->datatypecode == 2)
+    if(p_header->datatypecode == 2)
     {
         ReadUncompressedTGA(image, data);
     }
-    else if(pHeader->datatypecode == 10)
+    else if(p_header->datatypecode == 10)
     {
         if(!ReadCompressedTGA(image, data))
             return false;

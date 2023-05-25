@@ -205,12 +205,12 @@ bool TexFont::initFont()
     return true;
 }
 
-const Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint) const
+Glyph const & TexFont::getGlyph(const std::uint32_t ucodepoint) const
 {
     // Check if charcode has been already loaded
     for(std::uint32_t i = 0; i < m_glyphs.size(); ++i)
     {
-        Glyph & glyph = m_glyphs[i];
+        Glyph const & glyph = m_glyphs[i];
         // If charcode is -1, we don't care about outline type or thickness
         if((glyph.charcode == ucodepoint)
            && ((ucodepoint == static_cast<std::uint32_t>(-1))
@@ -221,31 +221,7 @@ const Glyph & TexFont::getGlyph(const std::uint32_t ucodepoint) const
         }
     }
 
-    // Glyph has not been already loaded
-	/*
-    auto i = loadGlyph(ucodepoint);
-    if(i > 0)
-    {
-        if(m_kerning)
-            generateKerning(m_glyphs[i]);
-        return m_glyphs[i];
-    }
-    else if(i == -1)   // atlas full
-    {
-        m_owner.resizeAtlas();
-        // reloadGlyphs();
-
-        i = loadGlyph(ucodepoint);
-        if(i > 0)
-        {
-            if(m_kerning)
-                generateKerning();
-            return m_glyphs[i];
-        }
-    }
-	*/
-    //throw std::runtime_error("Glyph not found!!!");
-	return m_glyphs[0];
+    return m_glyphs[0];
 }
 
 std::int32_t TexFont::loadGlyph(char const * charcode)
@@ -279,7 +255,7 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     // Check if charcode has been already loaded
     for(std::uint32_t i = 0; i < m_glyphs.size(); ++i)
     {
-        Glyph & glyph = m_glyphs[i];
+        Glyph const & glyph = m_glyphs[i];
         // If charcode is -1, we don't care about outline type or thickness
         if((glyph.charcode == ucodepoint)
            && ((ucodepoint == static_cast<std::uint32_t>(-1))
@@ -509,10 +485,9 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
 
 void TexFont::generateKerning()
 {
-
     for(auto & glyph : m_glyphs)
     {
-		generateKerning(glyph);
+        generateKerning(glyph);
     }
 }
 
@@ -566,13 +541,13 @@ glm::vec2 TexFont::getTextSize(char const * text)
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
         Glyph const & glyph      = getGlyph(ucodepoint);
 
-		float kerning = 0.0f;
-		if(prev_glyph != nullptr && m_kerning)
-		{
-			kerning = glyphGetKerning(glyph, prev_glyph->charcode);
-		}
-		prev_glyph = &glyph;
-		size.x += kerning;
+        float kerning = 0.0f;
+        if(prev_glyph != nullptr && m_kerning)
+        {
+            kerning = glyphGetKerning(glyph, prev_glyph->charcode);
+        }
+        prev_glyph = &glyph;
+        size.x += kerning;
 
         size.y = glm::max(size.y, static_cast<float>(glyph.offset_y));
         size.x += glyph.advance_x;
@@ -583,11 +558,11 @@ glm::vec2 TexFont::getTextSize(char const * text)
 
 void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos)
 {
-	Glyph * prev_glyph = nullptr;
+    Glyph const * prev_glyph = nullptr;
     for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
-        Glyph &       glyph      = getGlyph(ucodepoint);
+        Glyph const & glyph      = getGlyph(ucodepoint);
 
         float kerning = 0.0f;
         if(prev_glyph != nullptr && m_kerning)

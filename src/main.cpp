@@ -274,7 +274,7 @@ bool InitWindow()
     auto & fnt2   = fm.addFont(desc);
     fnt2.cacheGlyphs(dict.c_str());
 
-    fm.getAtlas().WriteAtlasToTGA(std::string("atlas.tga"));
+    fm.getAtlas().writeAtlasToTGA(std::string("atlas.tga"));
     fm.getAtlas().UploadTexture();
     shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
     glm::vec2 pos(10, 40);
@@ -295,7 +295,7 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 
     GLFWmonitor * mon = fullscreenflag ? glfwGetPrimaryMonitor() : NULL;
     g_window          = glfwCreateWindow(width, height, WINDOWTITLE, mon, NULL);
-    if(g_window == NULL)
+    if(g_window == nullptr)
     {
         printf("error!");
         glfwTerminate();
@@ -320,7 +320,7 @@ void DrawScene(void)
         textBuf.Clear();
         std::sprintf(buffer, "Καρε ανα δευτερολεπτο: %d", g_numFPS);
         glm::vec2 pen(10, 40);
-		auto tf = fm.getFont("liberation.ttf", 24);
+        auto &    tf = fm.getFont("damase.ttf", 24);
         tf.addText(textBuf, buffer, pen);
         textBuf.VertexBufferUpload();
         textBuf.InitAttribLocation();
@@ -378,11 +378,10 @@ void KillWindow(void)
     shd.DeInit();
     glDeleteTextures(1, &texBase);
     fm.getAtlas().DeleteTexture();
-    fm.getAtlas().clear();
     shdTxt.DeInit();
 
     glfwDestroyWindow(g_window);
-    g_window = NULL;
+    g_window = nullptr;
 }
 
 static void error_callback(int error, char const * description)
