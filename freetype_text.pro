@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += console c++17
+CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -13,7 +13,7 @@ CONFIG(release, debug|release) {
     TARGET = $$join(TARGET,,,_d)
 }
 
-#QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wconversion -Wold-style-cast
+QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast
 
 DESTDIR = $$PWD/bin
 

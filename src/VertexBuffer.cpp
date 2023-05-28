@@ -18,7 +18,7 @@ char * strndup(char const * s, size_t n)
         return 0;
 
     result[len] = '\0';
-    return (char *)std::memcpy(result, s, len);
+    return static_cast<char *>(std::memcpy(result, s, len));
 }
 
 char * strdup(char const * s)
@@ -31,7 +31,7 @@ char * strdup(char const * s)
         return 0;
 
     result[len] = '\0';
-    return (char *)std::memcpy(result, s, len);
+    return static_cast<char *>(std::memcpy(result, s, len));
 }
 
 VertexBuffer::VertexBuffer(char const * format) :
@@ -51,7 +51,7 @@ VertexBuffer::VertexBuffer(char const * format) :
     {
         VertexAttrib new_attr;
         char *       desc = 0;
-        end               = (char *)(std::strchr(start + 1, ','));
+        end               = const_cast<char *>(std::strchr(start + 1, ','));
 
         if(end == NULL)
         {
@@ -194,7 +194,7 @@ void VertexBuffer::DrawBuffer()
                   [](VertexAttrib & attr) { attr.VertexAttribEnable(); });
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
 
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, (char *)NULL);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, static_cast<char *>(nullptr));
 
     std::for_each(m_attributes.begin(), m_attributes.end(),
                   [](VertexAttrib & attr) { attr.VertexAttribDisable(); });

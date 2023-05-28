@@ -166,11 +166,10 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int strid
     assert(reg.y < (static_cast<int>(m_size) - 1));
     assert((reg.y + reg.w) <= (static_cast<int>(m_size) - 1));
 
-    int          i;
-    unsigned int charsize = sizeof(char);
-    int          y        = reg.y + reg.w;
+    int charsize = sizeof(char);
+    int y        = reg.y + reg.w;
 
-    for(i = 0; i < reg.w; ++i)
+    for(int i = 0; i < reg.w; ++i)
     {
         unsigned char bytes[4] = {0};   // 4 - alpha
 
@@ -201,10 +200,9 @@ void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int strid
     assert(reg.y < (static_cast<int>(m_size) - 1));
     assert((reg.y + reg.w) <= (static_cast<int>(m_size) - 1));
 
-    int          i;
     unsigned int charsize = sizeof(char);
 
-    for(i = 0; i < reg.w; ++i)
+    for(int i = 0; i < reg.w; ++i)
     {
         unsigned char bytes[4] = {0};   // 4 - alpha
 

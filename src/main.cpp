@@ -21,18 +21,18 @@ GLFWwindow * g_window = nullptr;
 
 bool g_wire = false;
 // Fps counter
-double       g_LastTime  = 0;
-unsigned int g_numFrames = 0;
-unsigned int g_numFPS    = 0;
+double       g_last_time  = 0.0;
+unsigned int g_num_frames = 0;
+unsigned int g_num_FPS    = 0;
 
-bool                running      = true;
-bool                isFullScreen = false;
-GLFWvidmode const * curMode;
+bool                running        = true;
+bool                is_full_screen = false;
+GLFWvidmode const * cur_mode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 unsigned int        g_width, g_height;
 
-GLfloat pyrVert[] = {
+GLfloat pyr_vert[] = {
     1.41421,  -1,        0,        0,         -1,       0,         0.5,      0.8,       0,        -1,
     1.41421,  0,         -1,       0,         0.2,      0.5,       -1.41421, -1,        0,        0,
     -1,       0,         0.5,      0.2,       0,        -1,        -1.41421, 0,         -1,       0,
@@ -47,13 +47,13 @@ GLfloat pyrVert[] = {
     1,        1,         1.41421,  -1,        0,        0.632456,  0.447214, -0.632456, 0.5,      0.8,
     0,        -1,        -1.41421, 0.632456,  0.447214, -0.632456, 0.8,      0.5};
 
-GLuint pyrIndex[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
+GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
 FontManager  fm;
-Shader       shd, shdTxt;
-GLuint       texBase;
-VertexBuffer pyramidBuf("Pos:3,Norm:3,Tex:2");
-VertexBuffer textBuf("Pos:3,Tex:2");
+Shader       shd, shd_txt;
+GLuint       tex_base;
+VertexBuffer pyramid_buf("Pos:3,Norm:3,Tex:2");
+VertexBuffer text_buf("Pos:3,Tex:2");
 
 /*-----------------------------------------------------------
 /
@@ -147,21 +147,21 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
             {
                 if(action == GLFW_PRESS)
                 {
-                    isFullScreen = !isFullScreen;
+                    is_full_screen = !is_full_screen;
 
                     KillWindow();
 
-                    if(isFullScreen)
+                    if(is_full_screen)
                     {
-                        width  = curMode->width;
-                        height = curMode->height;
+                        width  = cur_mode->width;
+                        height = cur_mode->height;
                     }
                     else
                     {
                         width  = WINDOWWIDTH;
                         height = WINDOWHEIGT;
                     }
-                    if(!CreateGLFWWindow(width, height, isFullScreen))
+                    if(!CreateGLFWWindow(width, height, is_full_screen))
                     {
                         printf("error!");
                         running = false;
@@ -183,7 +183,7 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    aspect = (GLfloat)width / (GLfloat)height;
+    aspect = static_cast<GLfloat>(width) / static_cast<GLfloat>(height);
     ymax   = 0.1f * glm::tan(65.0f * glm::pi<float>() / 360.0f);
     ymin   = -ymax;
     xmin   = ymin * aspect;
@@ -211,9 +211,9 @@ bool LoadTexture()
 
         if(tex::ReadTGA(TEXNAME, image))
         {
-            glGenTextures(1, &texBase);
+            glGenTextures(1, &tex_base);
 
-            glBindTexture(GL_TEXTURE_2D, texBase);
+            glBindTexture(GL_TEXTURE_2D, tex_base);
 
             GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGB4;
             GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
@@ -254,10 +254,10 @@ bool InitWindow()
         return false;
     }
 
-    pyramidBuf.VertexBufferPushBack(pyrVert, sizeof(pyrVert) / pyramidBuf.GetNumVertComponents(), pyrIndex,
-                                    sizeof(pyrIndex) / sizeof(GLuint));
-    pyramidBuf.VertexBufferUpload();
-    pyramidBuf.InitAttribLocation();
+    pyramid_buf.VertexBufferPushBack(pyr_vert, sizeof(pyr_vert) / pyramid_buf.GetNumVertComponents(),
+                                     pyr_index, sizeof(pyr_index) / sizeof(GLuint));
+    pyramid_buf.VertexBufferUpload();
+    pyramid_buf.InitAttribLocation();
 
     shd.Init("vert.glsl", "frag.glsl");
 
@@ -277,11 +277,11 @@ bool InitWindow()
 
     fm.getAtlas().writeAtlasToTGA(std::string("atlas.tga"));
     fm.getAtlas().UploadTexture();
-    shdTxt.Init("vertTxt.glsl", "fragTxt.glsl");
-    glm::vec2 pos(10, 40);
-    fnt1.addText(textBuf, "FPS: 60", pos);
-    textBuf.VertexBufferUpload();
-    textBuf.InitAttribLocation();
+    shd_txt.Init("vertTxt.glsl", "fragTxt.glsl");
+    glm::vec2 pos(10, 10);
+    fnt1.addText(text_buf, "FPS: 60", pos);
+    text_buf.VertexBufferUpload();
+    text_buf.InitAttribLocation();
 
     return LoadTexture();
 }
@@ -312,21 +312,21 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 void DrawScene(void)
 {
     static char buffer[100];
-    if(glfwGetTime() - g_LastTime > 1.0)
+    if(glfwGetTime() - g_last_time > 1.0)
     {
-        g_LastTime  = glfwGetTime();
-        g_numFPS    = g_numFrames;
-        g_numFrames = 0;
+        g_last_time  = glfwGetTime();
+        g_num_FPS    = g_num_frames;
+        g_num_frames = 0;
 
-        textBuf.Clear();
-        std::sprintf(buffer, TEXTSAMPLE, g_numFPS);
-        glm::vec2 pen(10, 40);
+        text_buf.Clear();
+        std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
+        glm::vec2 pen(10, 10);
         auto &    tf = fm.getFont("damase.ttf", 24);
-        tf.addText(textBuf, buffer, pen);
-        textBuf.VertexBufferUpload();
-        textBuf.InitAttribLocation();
+        tf.addText(text_buf, buffer, pen);
+        text_buf.VertexBufferUpload();
+        text_buf.InitAttribLocation();
     }
-    g_numFrames++;
+    g_num_frames++;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -341,15 +341,15 @@ void DrawScene(void)
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
-    glBindTexture(GL_TEXTURE_2D, texBase);
+    glBindTexture(GL_TEXTURE_2D, tex_base);
 
-    pyramidBuf.DrawBuffer();
+    pyramid_buf.DrawBuffer();
     shd.Unbind();
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0.0, g_width, 0, g_height, -1.0, 1.0);   // Левая, правая, нижняя, верхняя, ближняя, дальняя
+    glOrtho(0.0, g_width, 0, g_height, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -357,13 +357,13 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    shdTxt.Bind();
+    shd_txt.Bind();
     glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
     fm.getAtlas().BindTexture();
 
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    textBuf.DrawBuffer();
-    shdTxt.Unbind();
+    text_buf.DrawBuffer();
+    shd_txt.Unbind();
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glDisable(GL_BLEND);
@@ -375,11 +375,11 @@ void DrawScene(void)
 
 void KillWindow(void)
 {
-    pyramidBuf.DeleteGPUBuffers();
+    pyramid_buf.DeleteGPUBuffers();
     shd.DeInit();
-    glDeleteTextures(1, &texBase);
+    glDeleteTextures(1, &tex_base);
     fm.getAtlas().DeleteTexture();
-    shdTxt.DeInit();
+    shd_txt.DeInit();
 
     glfwDestroyWindow(g_window);
     g_window = nullptr;
@@ -400,9 +400,9 @@ int main()
         return 0;
     }
 
-    curMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    cur_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-    if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, isFullScreen))
+    if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
         return 0;
 
     while(!glfwWindowShouldClose(g_window) && running)

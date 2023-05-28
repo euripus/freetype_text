@@ -77,8 +77,8 @@ void Shader::Init(std::string vsfile, std::string fsfile)
 
     char const * vert = vsText.c_str();
     char const * frag = fsText.c_str();
-    glShaderSource(shader_vp, 1, (GLchar const **)&vert, 0);
-    glShaderSource(shader_fp, 1, (GLchar const **)&frag, 0);
+    glShaderSource(shader_vp, 1, const_cast<GLchar const **>(&vert), 0);
+    glShaderSource(shader_fp, 1, const_cast<GLchar const **>(&frag), 0);
 
     glCompileShader(shader_vp);
     ValidateShader(shader_vp, vsfile);
