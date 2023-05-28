@@ -8,12 +8,15 @@
 class AtlasTex
 {
 public:
-    AtlasTex(unsigned int size = 64);
+    AtlasTex(unsigned int size = 512);
 
     void clear();
 
     glm::ivec4 getRegion(unsigned int width, unsigned int height);
-    void       setRegion(glm::ivec4 reg, unsigned char const * data, int stride);   // z - width, w - height
+    void       setRegionTL(glm::ivec4 reg, unsigned char const * data,
+                           int stride);   // z - width, w - height, top-left region
+    void       setRegionBL(glm::ivec4 reg, unsigned char const * data,
+                           int stride);   // z - width, w - height, bottom-left region
 
     unsigned int getSize() const { return m_size; }
 

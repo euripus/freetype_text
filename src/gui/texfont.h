@@ -55,10 +55,10 @@ struct Glyph
     int           offset_y     = 0;      // Glyphs's top bearing expressed in integer pixels.
     float         advance_x    = 0.0f;   // this is the horizontal distance
     float         advance_y    = 0.0f;   // this is the vertical distance
-    float         s0           = 0.0f;   // First normalized texture coordinate (x) of top-left corner
-    float         t0           = 0.0f;   // Second normalized texture coordinate (y) of top-left corner
-    float         s1           = 0.0f;   // First normalized texture coordinate (x) of bottom-right corner
-    float         t1           = 0.0f;   // Second normalized texture coordinate (y) of bottom-right corner
+    float         s0           = 0.0f;   // First normalized texture coordinate (x) of bottom-left corner
+    float         t0           = 0.0f;   // Second normalized texture coordinate (y) of bottom-left corner
+    float         s1           = 0.0f;   // First normalized texture coordinate (x) of top-right corner
+    float         t1           = 0.0f;   // Second normalized texture coordinate (y) of top-right corner
     OutlineType   outline_type = OutlineType::NONE;   // Glyph outline type
     float         outline_thickness = 0;              // Glyph outline thickness
 
@@ -84,9 +84,9 @@ public:
             bool hinting = true, bool kerning = true, float outline_thickness = 0.0f,
             Glyph::OutlineType outline_type = Glyph::OutlineType::NONE);
 
-    const Glyph &      getGlyph(const std::uint32_t ucodepoint) const;
-    std::int32_t loadGlyph(char const * charcode);
-    std::int32_t loadGlyph(std::uint32_t ucodepoint);
+    Glyph const & getGlyph(const std::uint32_t ucodepoint) const;
+    std::int32_t  loadGlyph(char const * charcode);
+    std::int32_t  loadGlyph(std::uint32_t ucodepoint);
 
     size_t cacheGlyphs(char const * charcodes);
 
@@ -95,7 +95,7 @@ public:
         const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
 
     glm::vec2 getTextSize(char const * text);
-	void addText(VertexBuffer & vb, char const * text, glm::vec2 & pos);
+    void      addText(VertexBuffer & vb, char const * text, glm::vec2 & pos);
 
     void reloadGlyphs();
 protected:

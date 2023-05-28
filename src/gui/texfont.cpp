@@ -282,7 +282,7 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
             return -1;
         }
 
-        m_owner.getAtlas().setRegion(glm::ivec4(region.x, region.y, 4, 4), data, 0);
+        m_owner.getAtlas().setRegionTL(glm::ivec4(region.x, region.y, 4, 4), data, 0);
         glyph.charcode = static_cast<std::uint32_t>(-1);
         glyph.s0       = (region.x + 2) / static_cast<float>(size);
         glyph.t0       = (region.y + 2) / static_cast<float>(size);
@@ -420,7 +420,7 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     h = h - 1;
     x = region.x;
     y = region.y;
-    m_owner.getAtlas().setRegion(glm::ivec4(x, y, w, h), ft_bitmap.buffer, ft_bitmap.pitch);
+    m_owner.getAtlas().setRegionTL(glm::ivec4(x, y, w, h), ft_bitmap.buffer, ft_bitmap.pitch);
 
     Glyph glyph;
     glyph.charcode          = ucodepoint;
@@ -431,9 +431,9 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     glyph.offset_x          = ft_glyph_left;
     glyph.offset_y          = ft_glyph_top;
     glyph.s0                = x / static_cast<float>(size);
-    glyph.t0                = y / static_cast<float>(size);
+    glyph.t0                = (y + 1) / static_cast<float>(size);   // one black pixel margin
     glyph.s1                = (x + glyph.width) / static_cast<float>(size);
-    glyph.t1                = (y + glyph.height) / static_cast<float>(size);
+    glyph.t1                = (y + 1 + glyph.height) / static_cast<float>(size);
 
     // Discard hinting to get advance
     FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
@@ -572,19 +572,18 @@ void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos)
         prev_glyph = &glyph;
 
         pos.x += kerning;
-        float        x0         = static_cast<int>(pos.x + glyph.offset_x);
-        float        y0         = static_cast<int>(pos.y + (glyph.offset_y - static_cast<int>(glyph.height)));
-        float        x1         = static_cast<int>(x0 + static_cast<int>(glyph.width));
-        float        y1         = static_cast<int>(y0 + static_cast<int>(glyph.height));
+        float        x0         = pos.x + glyph.offset_x;
+        float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
+        float        x1         = x0 + static_cast<int>(glyph.width);
+        float        y1         = pos.y + glyph.offset_y;
         float        s0         = glyph.s0;
         float        t0         = glyph.t0;
         float        s1         = glyph.s1;
         float        t1         = glyph.t1;
         unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
 
-        float vertices[4 * 5] = {x0, y0, 0.0, s0, t1,  x1, y1, 0.0,
-                                 s1, t0, x0,  y1, 0.0, s0, t0,   // (s0, t0) - top-left corner
-                                 x1, y0, 0.0, s1, t1};
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
 
         vb.VertexBufferPushBack(vertices, 4, indices, 6);
         pos.x += glyph.advance_x;

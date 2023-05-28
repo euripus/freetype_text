@@ -13,6 +13,7 @@
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
 constexpr char const *  TEXNAME     = "base.tga";
+constexpr char const *  TEXTSAMPLE  = "Καρε ανα δευτερολεπτο: %d";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
@@ -318,7 +319,7 @@ void DrawScene(void)
         g_numFrames = 0;
 
         textBuf.Clear();
-        std::sprintf(buffer, "Καρε ανα δευτερολεπτο: %d", g_numFPS);
+        std::sprintf(buffer, TEXTSAMPLE, g_numFPS);
         glm::vec2 pen(10, 40);
         auto &    tf = fm.getFont("damase.ttf", 24);
         tf.addText(textBuf, buffer, pen);

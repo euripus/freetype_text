@@ -157,7 +157,42 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
     return region;
 }
 
-void AtlasTex::setRegion(glm::ivec4 reg, unsigned char const * data, int stride)   // z - width, w - height
+void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int stride)   // z - width, w - height
+{
+    assert(reg.x > 0);
+    assert(reg.y > 0);
+    assert(reg.x < (static_cast<int>(m_size) - 1));
+    assert((reg.x + reg.z) <= (static_cast<int>(m_size) - 1));
+    assert(reg.y < (static_cast<int>(m_size) - 1));
+    assert((reg.y + reg.w) <= (static_cast<int>(m_size) - 1));
+
+    int          i;
+    unsigned int charsize = sizeof(char);
+    int          y        = reg.y + reg.w;
+
+    for(i = 0; i < reg.w; ++i)
+    {
+        unsigned char bytes[4] = {0};   // 4 - alpha
+
+        for(int j = 0; j < reg.z; ++j)
+        {
+            unsigned int dst_shift = (((y - i) * m_size + reg.x + j) * charsize * 4);
+            unsigned int src_shift = ((i * stride) + j * 3 * charsize);
+
+            bytes[0] = data[src_shift + 0];
+            bytes[1] = data[src_shift + 1];
+            bytes[2] = data[src_shift + 2];
+            bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+
+            m_data[dst_shift + 0] = bytes[0];
+            m_data[dst_shift + 1] = bytes[1];
+            m_data[dst_shift + 2] = bytes[2];
+            m_data[dst_shift + 3] = bytes[3];
+        }
+    }
+}
+
+void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int stride)
 {
     assert(reg.x > 0);
     assert(reg.y > 0);
