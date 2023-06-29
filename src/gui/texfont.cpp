@@ -556,38 +556,46 @@ glm::vec2 TexFont::getTextSize(char const * text)
     return size;
 }
 
-void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos)
+void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const
 {
     Glyph const * prev_glyph = nullptr;
     for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
-        Glyph const & glyph      = getGlyph(ucodepoint);
+        addGlyph(vb, ucodepoint, prev_glyph, pos);
 
-        float kerning = 0.0f;
-        if(prev_glyph != nullptr && m_kerning)
-        {
-            kerning = glyphGetKerning(glyph, prev_glyph->charcode);
-        }
-        prev_glyph = &glyph;
-
-        pos.x += kerning;
-        float        x0         = pos.x + glyph.offset_x;
-        float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
-        float        x1         = x0 + static_cast<int>(glyph.width);
-        float        y1         = pos.y + glyph.offset_y;
-        float        s0         = glyph.s0;
-        float        t0         = glyph.t0;
-        float        s1         = glyph.s1;
-        float        t1         = glyph.t1;
-        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
-
-        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
-                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
-
-        vb.VertexBufferPushBack(vertices, 4, indices, 6);
-        pos.x += glyph.advance_x;
+        Glyph const & glyph = getGlyph(ucodepoint);
+        prev_glyph          = &glyph;
     }
+}
+
+void TexFont::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * prev_glyph,
+                       glm::vec2 & pos) const
+{
+    Glyph const & glyph = getGlyph(ucodepoint);
+
+    float kerning = 0.0f;
+    if(prev_glyph != nullptr && m_kerning)
+    {
+        kerning = glyphGetKerning(glyph, prev_glyph->charcode);
+    }
+
+    pos.x += kerning;
+    float        x0         = pos.x + glyph.offset_x;
+    float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
+    float        x1         = x0 + static_cast<int>(glyph.width);
+    float        y1         = pos.y + glyph.offset_y;
+    float        s0         = glyph.s0;
+    float        t0         = glyph.t0;
+    float        s1         = glyph.s1;
+    float        t1         = glyph.t1;
+    unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+    float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                             x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+
+    vb.VertexBufferPushBack(vertices, 4, indices, 6);
+    pos.x += glyph.advance_x;
 }
 
 void TexFont::reloadGlyphs()
@@ -607,4 +615,78 @@ void TexFont::reloadGlyphs()
     {
         loadGlyph(ucodepoint);
     }
+}
+
+void MarkupText::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const
+{
+    Glyph const * prev_glyph = nullptr;
+    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    {
+        std::uint32_t ucodepoint = utf8_to_utf32(text + i);
+        addGlyph(vb, ucodepoint, prev_glyph, pos);
+
+        Glyph const & glyph = m_font.getGlyph(ucodepoint);
+        prev_glyph          = &glyph;
+    }
+}
+
+void MarkupText::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * prev_glyph,
+                          glm::vec2 & pos) const
+{
+    Glyph const & line_glyph = m_font.getGlyph(static_cast<uint32_t>(-1));
+    Glyph const & glyph      = m_font.getGlyph(ucodepoint);
+
+    if(m_line == LineType::UNDERLINE)
+    {
+        float        x0         = pos.x;
+        float        y0         = pos.y + m_font.m_underline_position;
+        float        x1         = x0 + glyph.advance_x;
+        float        y1         = y0 + m_font.m_underline_thickness;
+        float        s0         = line_glyph.s0;
+        float        t0         = line_glyph.t0;
+        float        s1         = line_glyph.s1;
+        float        t1         = line_glyph.t1;
+        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+
+        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+    }
+    else if(m_line == LineType::OVERLINE)
+    {
+        float        x0         = pos.x;
+        float        y0         = pos.y + m_font.m_ascender * 100.0f;
+        float        x1         = x0 + glyph.advance_x;
+        float        y1         = y0 + m_font.m_underline_thickness;
+        float        s0         = line_glyph.s0;
+        float        t0         = line_glyph.t0;
+        float        s1         = line_glyph.s1;
+        float        t1         = line_glyph.t1;
+        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+
+        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+    }
+    else if(m_line == LineType::STRIKETHROUGH)
+    {
+        float        x0         = pos.x;
+        float        y0         = pos.y + m_font.m_ascender * 33.0f;
+        float        x1         = x0 + glyph.advance_x;
+        float        y1         = y0 + m_font.m_underline_thickness;
+        float        s0         = line_glyph.s0;
+        float        t0         = line_glyph.t0;
+        float        s1         = line_glyph.s1;
+        float        t1         = line_glyph.t1;
+        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+
+        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+    }
+
+    m_font.addGlyph(vb, ucodepoint, prev_glyph, pos);
 }

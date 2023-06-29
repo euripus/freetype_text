@@ -95,10 +95,12 @@ public:
         const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
 
     glm::vec2 getTextSize(char const * text);
-    void      addText(VertexBuffer & vb, char const * text, glm::vec2 & pos);
+    void      addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
+    void      addGlyph(VertexBuffer & vb, std::uint32_t ucodepoint, Glyph const * prev_glyph,
+                       glm::vec2 & pos) const;
 
     void reloadGlyphs();
-protected:
+
 private:
     bool initFont();
     void generateKerning();
@@ -129,6 +131,27 @@ private:
     FontLocation               m_location;
     std::string                m_filename;   // Font filename, for when location == TEXTURE_FONT_FILE
     std::vector<unsigned char> m_memory;     // Font memory, for when location == TEXTURE_FONT_MEMORY
+
+    friend struct MarkupText;
+};
+
+struct MarkupText
+{
+    enum class LineType
+    {
+        UNDERLINE,
+        OVERLINE,
+        STRIKETHROUGH
+    };
+
+    MarkupText(TexFont & font, LineType line = LineType::UNDERLINE) : m_font(font), m_line(line) {}
+
+    void addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
+    void addGlyph(VertexBuffer & vb, std::uint32_t ucodepoint, Glyph const * prev_glyph,
+                  glm::vec2 & pos) const;
+
+    TexFont & m_font;
+    LineType  m_line;
 };
 
 #endif   // TEXFONT_H

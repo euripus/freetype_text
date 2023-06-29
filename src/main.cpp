@@ -322,7 +322,8 @@ void DrawScene(void)
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
         auto &    tf = fm.getFont("damase.ttf", 24);
-        tf.addText(text_buf, buffer, pen);
+        auto      mt = MarkupText(tf, MarkupText::LineType::STRIKETHROUGH);
+        mt.addText(text_buf, buffer, pen);
         text_buf.VertexBufferUpload();
         text_buf.InitAttribLocation();
     }
