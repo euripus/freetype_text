@@ -18,7 +18,10 @@ widget
 layout
     set_spacing()
     set_layout_orient()
-    set_size()
+    set_desired_size()
+    fit_elements()
+        - union childs sizes
+        - arrange elements with desired spacing
 
 GUI
     draw()
