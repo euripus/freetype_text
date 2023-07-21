@@ -43,27 +43,29 @@ for(layer : overlays)
         window.draw(vertex_buffer, text_buffer, layer)
 
 struct CtrlAttrs {
-	float width;
-	float width_min;
-	float width_max;
-	float height;
-	float height_min;
-	float height_max;
-	float layout_spacing;
-	float layout_wrap_spacing;
-	VuiBool layout_wrap;
-	VuiVec2 offset;
-	VuiAlign align;
-	VuiImageScaleMode image_scale_mode;
-	float style_transition_time;
+    float width;
+    float width_min;
+    float width_max;
+    float height;
+    float height_min;
+    float height_max;
+    float layout_spacing;
+    float layout_wrap_spacing;
+    VuiBool layout_wrap;
+    VuiVec2 offset;
+    VuiAlign align;
+    VuiImageScaleMode image_scale_mode;
+    float style_transition_time;
 };
 
 typedef struct {
-	VuiVec2 pos;
-	VuiVec2 uv;
-	VuiColor color;
+    VuiVec2 pos;
+    VuiVec2 uv;
+    VuiColor color;
 } VuiVertexT;
 
+
+//gtec-demo-framework-4.0.0
 struct NineSlice
   {
   private:
@@ -224,3 +226,102 @@ struct NineSlice
         batch2D->Draw(texture, finalDstRect, Rectangle(srcRightStart, srcBottomStart, srcRightWidth, srcBottomHeight), color);
       }
     }
+    
+    bool UIScaleUtil::TryCalcScaling(Vector2& rScaling, const Vector2& targetSize, const Vector2& srcSize, const ItemScalePolicy scalePolicy)
+    {
+      rScaling = Vector2();
+      if (srcSize.X <= 0.0f || srcSize.Y <= 0.0f)
+        return false;
+
+      Vector2 newSize;
+      if (!TryCalcSize(newSize, targetSize, srcSize, scalePolicy))
+        return false;
+
+      rScaling = !EqualHelper::IsAlmostEqual(newSize, srcSize) ? Vector2((newSize.X / srcSize.X), (newSize.Y / srcSize.Y)) : Vector2(1.0f, 1.0f);
+      return true;
+    }
+    
+    bool UIScaleUtil::TryCalcSize(Vector2& rSize, const Vector2& targetSize, const Vector2& srcSize, const ItemScalePolicy scalePolicy)
+    {
+      rSize = Vector2();
+      if (srcSize.X <= 0.0f || srcSize.Y <= 0.0f)
+        return false;
+
+      Vector2 size = CalcSize(targetSize, srcSize, scalePolicy);
+      if (size.X < 0 || size.Y < 0)
+        return false;
+
+      rSize = size;
+      return true;
+    }
+    
+    Vector2 UIScaleUtil::CalcSize(const Vector2& targetSize, const Vector2& srcSize, const ItemScalePolicy scalePolicy)
+    {
+      assert(!isnan(targetSize.X));
+      assert(!isnan(targetSize.Y));
+      assert(!isnan(srcSize.X));
+      assert(!isnan(srcSize.Y));
+      assert(targetSize.X >= 0.0f);
+      assert(targetSize.Y >= 0.0f);
+      assert(targetSize.X < CONSIDER_POSITIVE_INFINITY);
+      assert(targetSize.Y < CONSIDER_POSITIVE_INFINITY);
+      assert(srcSize.X < CONSIDER_POSITIVE_INFINITY);
+      assert(srcSize.Y < CONSIDER_POSITIVE_INFINITY);
+
+      const Vector2 clampedTarget(std::max(targetSize.X, 0.0f), std::max(targetSize.Y, 0.0f));
+      const Vector2 clampedSrc(srcSize.X <= 0.0f ? 0.0f : srcSize.X, srcSize.Y <= 0.0f ? 0.0f : srcSize.Y);
+
+      // Early abort for no scaling
+      if (clampedTarget == clampedSrc)
+        return clampedTarget;
+
+      switch (scalePolicy)
+      {
+      case ItemScalePolicy::NoScaling:
+        return srcSize;
+      case ItemScalePolicy::Fit:
+        return clampedTarget;
+      case ItemScalePolicy::Downscale:
+        return Vector2(std::min(clampedTarget.X, clampedSrc.X), std::min(clampedTarget.Y, clampedSrc.Y));
+      case ItemScalePolicy::FitKeepAR:
+        return CalcSizeKeepAspectRatioScaling(clampedTarget, srcSize);
+      case ItemScalePolicy::DownscaleKeepAR:
+        return CalcSizeKeepAspectRatioDownScaling(clampedTarget, srcSize);
+      default:
+        FSLLOG_WARNING("Unsupported scaling policy, using src size");
+        return srcSize;
+      }
+    }
+    
+    inline Vector2 CalcSizeKeepAspectRatioScaling(const Vector2& targetSize, const Vector2& srcSize)
+      {
+        assert(targetSize.X >= 0.0f);
+        assert(targetSize.Y >= 0.0f);
+        assert(targetSize.X < CONSIDER_POSITIVE_INFINITY);
+        assert(targetSize.Y < CONSIDER_POSITIVE_INFINITY);
+        assert(srcSize.X >= 0.0f);
+        assert(srcSize.Y >= 0.0f);
+        assert(srcSize.X < CONSIDER_POSITIVE_INFINITY);
+        assert(srcSize.Y < CONSIDER_POSITIVE_INFINITY);
+
+        if (srcSize.X < 0.00001f || srcSize.X < 0.00001f)
+          return Vector2();
+        if( targetSize.X <= 0.00001f || targetSize.Y <= 0.00001f )
+          return Vector2();
+
+        // m = dy / dx
+        // y = m * x
+        // x = y / m
+        float m = srcSize.Y / srcSize.X;
+
+        float calcedX = targetSize.Y / m;
+        float calcedY = m * targetSize.X;
+        if (calcedX <= 0.0001f || calcedY <= 0.000f )
+          return Vector2();
+
+        Vector2 size1(calcedX, targetSize.Y);
+        Vector2 size2(targetSize.X, calcedY);
+        // since we keep the aspect ratio the scaling factors will always be uniform
+        return (size1.LengthSquared() < size2.LengthSquared() ? size1 : size2);
+      }
+      
