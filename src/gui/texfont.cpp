@@ -531,7 +531,7 @@ float TexFont::glyphGetKerning(Glyph const & glyph, const std::uint32_t left_cha
         return 0.0f;
 }
 
-glm::vec2 TexFont::getTextSize(char const * text)
+glm::vec2 TexFont::getTextSize(char const * text) const
 {
     glm::vec2     size{0};
     Glyph const * prev_glyph = nullptr;

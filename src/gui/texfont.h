@@ -94,7 +94,7 @@ public:
         Glyph const &       glyph,
         const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
 
-    glm::vec2 getTextSize(char const * text);
+    glm::vec2 getTextSize(char const * text) const;
     void      addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
     void      addGlyph(VertexBuffer & vb, std::uint32_t ucodepoint, Glyph const * prev_glyph,
                        glm::vec2 & pos) const;

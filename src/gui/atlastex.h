@@ -18,14 +18,14 @@ public:
     void       setRegionBL(glm::ivec4 reg, unsigned char const * data,
                            int stride);   // z - width, w - height, bottom-left region
 
-    unsigned int getSize() const { return m_size; }
+    unsigned int          getSize() const { return m_size; }
+    unsigned char const * getData() const { return m_data.data(); }
+
+    void writeAtlasToTGA(std::string const & name);
 
     void UploadTexture();
     void DeleteTexture();
     void BindTexture();
-
-    void writeAtlasToTGA(std::string const & name);
-
 private:
     int  atlasFit(unsigned int index, unsigned int width, unsigned int height);
     void atlasMerge();
