@@ -38,6 +38,7 @@ SOURCES += \
     src/gui/atlastex.cpp \
     src/gui/fontmanager.cpp \
     src/gui/imagedata.cpp \
+    src/gui/nineslice.cpp \
     src/gui/rect2d.cpp \
     src/gui/texfont.cpp \
     src/gui/utf8_utils.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     src/gui/atlastex.h \
     src/gui/fontmanager.h \
     src/gui/imagedata.h \
+    src/gui/nineslice.h \
     src/gui/rect2d.h \
     src/gui/texfont.h \
     src/gui/utf8_utils.h

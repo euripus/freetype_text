@@ -220,3 +220,14 @@ void VertexBuffer::InitAttribLocation()
             attr.location = 2;
     });
 }
+
+void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
+                    float t1)
+{
+    unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+
+    float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
+                             x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+
+    vb.VertexBufferPushBack(vertices, 4, indices, 6);
+}

@@ -581,20 +581,17 @@ void TexFont::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * pre
     }
 
     pos.x += kerning;
-    float        x0         = pos.x + glyph.offset_x;
-    float        y0         = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
-    float        x1         = x0 + static_cast<int>(glyph.width);
-    float        y1         = pos.y + glyph.offset_y;
-    float        s0         = glyph.s0;
-    float        t0         = glyph.t0;
-    float        s1         = glyph.s1;
-    float        t1         = glyph.t1;
-    unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
+    float x0 = pos.x + glyph.offset_x;
+    float y0 = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
+    float x1 = x0 + static_cast<int>(glyph.width);
+    float y1 = pos.y + glyph.offset_y;
+    float s0 = glyph.s0;
+    float t0 = glyph.t0;
+    float s1 = glyph.s1;
+    float t1 = glyph.t1;
 
-    float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
-                             x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
+    add2DRectangle(vb, x0, y0, x1, y1, s0, t0, s1, t1);
 
-    vb.VertexBufferPushBack(vertices, 4, indices, 6);
     pos.x += glyph.advance_x;
 }
 
@@ -636,57 +633,42 @@ void MarkupText::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * 
     Glyph const & line_glyph = m_font.getGlyph(static_cast<uint32_t>(-1));
     Glyph const & glyph      = m_font.getGlyph(ucodepoint);
 
+    float x0 = 0.0f, y0 = 0.0f, x1 = 0.0f, y1 = 0.0f, s0 = 0.0f, t0 = 0.0f, s1 = 0.0f, t1 = 0.0f;
+
     if(m_line == LineType::UNDERLINE)
     {
-        float        x0         = pos.x;
-        float        y0         = pos.y + m_font.m_underline_position;
-        float        x1         = x0 + glyph.advance_x;
-        float        y1         = y0 + m_font.m_underline_thickness;
-        float        s0         = line_glyph.s0;
-        float        t0         = line_glyph.t0;
-        float        s1         = line_glyph.s1;
-        float        t1         = line_glyph.t1;
-        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
-
-        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
-                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
-
-        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+        x0 = pos.x;
+        y0 = pos.y + m_font.m_underline_position;
+        x1 = x0 + glyph.advance_x;
+        y1 = y0 + m_font.m_underline_thickness;
+        s0 = line_glyph.s0;
+        t0 = line_glyph.t0;
+        s1 = line_glyph.s1;
+        t1 = line_glyph.t1;
     }
     else if(m_line == LineType::OVERLINE)
     {
-        float        x0         = pos.x;
-        float        y0         = pos.y + m_font.m_ascender * 100.0f;
-        float        x1         = x0 + glyph.advance_x;
-        float        y1         = y0 + m_font.m_underline_thickness;
-        float        s0         = line_glyph.s0;
-        float        t0         = line_glyph.t0;
-        float        s1         = line_glyph.s1;
-        float        t1         = line_glyph.t1;
-        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
-
-        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
-                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
-
-        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+        x0 = pos.x;
+        y0 = pos.y + m_font.m_ascender * 100.0f;
+        x1 = x0 + glyph.advance_x;
+        y1 = y0 + m_font.m_underline_thickness;
+        s0 = line_glyph.s0;
+        t0 = line_glyph.t0;
+        s1 = line_glyph.s1;
+        t1 = line_glyph.t1;
     }
     else if(m_line == LineType::STRIKETHROUGH)
     {
-        float        x0         = pos.x;
-        float        y0         = pos.y + m_font.m_ascender * 33.0f;
-        float        x1         = x0 + glyph.advance_x;
-        float        y1         = y0 + m_font.m_underline_thickness;
-        float        s0         = line_glyph.s0;
-        float        t0         = line_glyph.t0;
-        float        s1         = line_glyph.s1;
-        float        t1         = line_glyph.t1;
-        unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
-
-        float vertices[4 * 5] = {x0, y0, 0.0, s0, t0, x1, y1, 0.0, s1, t1,
-                                 x0, y1, 0.0, s0, t1, x1, y0, 0.0, s1, t0};
-
-        vb.VertexBufferPushBack(vertices, 4, indices, 6);
+        x0 = pos.x;
+        y0 = pos.y + m_font.m_ascender * 33.0f;
+        x1 = x0 + glyph.advance_x;
+        y1 = y0 + m_font.m_underline_thickness;
+        s0 = line_glyph.s0;
+        t0 = line_glyph.t0;
+        s1 = line_glyph.s1;
+        t1 = line_glyph.t1;
     }
 
+    add2DRectangle(vb, x0, y0, x1, y1, s0, t0, s1, t1);
     m_font.addGlyph(vb, ucodepoint, prev_glyph, pos);
 }
