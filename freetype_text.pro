@@ -41,6 +41,7 @@ SOURCES += \
     src/gui/nineslice.cpp \
     src/gui/rect2d.cpp \
     src/gui/texfont.cpp \
+    src/gui/uiimagemanager.cpp \
     src/gui/utf8_utils.cpp \
     src/main.cpp
 
@@ -54,4 +55,5 @@ HEADERS += \
     src/gui/nineslice.h \
     src/gui/rect2d.h \
     src/gui/texfont.h \
+    src/gui/uiimagemanager.h \
     src/gui/utf8_utils.h

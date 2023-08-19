@@ -4,6 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "src/gui/atlastex.h"
 #include "src/gui/imagedata.h"
 
 //                      (right_top, tx1)
@@ -16,7 +17,7 @@
 // (left_bottom, tx0)
 struct RegionDataOfUITexture
 {
-	std::uint32_t id;
+    std::uint32_t id;
 
     glm::vec2 left_bottom;   // pixel coordinates
     glm::vec2 right_top;
@@ -30,9 +31,13 @@ struct RegionDataOfUITexture
 
 class UIImageManager
 {
+public:
+    UIImageManager() = default;
+
+    void addImageData(tex::ImageData const & image);
 private:
-	std::vector<RegionDataOfUITexture> m_regions;
-	AtlasTex m_atlas;   // one tex atlas for all loaded UI elements
+    std::vector<RegionDataOfUITexture> m_regions;
+    AtlasTex                           m_atlas;   // one tex atlas for all loaded UI elements
 };
 
 #endif
