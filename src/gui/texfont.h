@@ -137,6 +137,7 @@ private:
 
 struct MarkupText
 {
+	// TODO background color
     enum class LineType
     {
         UNDERLINE,
