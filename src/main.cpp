@@ -1,3 +1,4 @@
+#include "src/gui/uiimagemanager.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
@@ -12,7 +13,7 @@
 #include "VertexBuffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
-constexpr char const *  TEXNAME     = "base.tga";
+constexpr char const *  TEXNAME     = "./data/base.tga";
 constexpr char const *  TEXTSAMPLE  = "Καρε ανα δευτερολεπτο: %d";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
@@ -259,7 +260,7 @@ bool InitWindow()
     pyramid_buf.VertexBufferUpload();
     pyramid_buf.InitAttribLocation();
 
-    shd.Init("vert.glsl", "frag.glsl");
+    shd.Init("./data/vert.glsl", "./data/frag.glsl");
 
     std::string dict(" !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~"
                      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -267,17 +268,17 @@ bool InitWindow()
                      "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
 
     FontDataDesc desc;
-    desc.filename = "liberation.ttf";
+    desc.filename = "./data/liberation.ttf";
     auto & fnt1   = fm.addFont(desc);
     fnt1.cacheGlyphs(dict.c_str());
 
-    desc.filename = "damase.ttf";
+    desc.filename = "./data/damase.ttf";
     auto & fnt2   = fm.addFont(desc);
     fnt2.cacheGlyphs(dict.c_str());
 
-    fm.getAtlas().writeAtlasToTGA(std::string("atlas.tga"));
+    fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     fm.getAtlas().UploadTexture();
-    shd_txt.Init("vertTxt.glsl", "fragTxt.glsl");
+    shd_txt.Init("./data/vertTxt.glsl", "./data/fragTxt.glsl");
     glm::vec2 pos(10, 10);
     fnt1.addText(text_buf, "FPS: 60", pos);
     text_buf.VertexBufferUpload();
@@ -321,7 +322,7 @@ void DrawScene(void)
         text_buf.Clear();
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
-        auto &    tf = fm.getFont("damase.ttf", 24);
+        auto &    tf = fm.getFont("./data/damase.ttf", 24);
         auto      mt = MarkupText(tf, MarkupText::LineType::STRIKETHROUGH);
         mt.addText(text_buf, buffer, pen);
         text_buf.VertexBufferUpload();
@@ -393,6 +394,11 @@ static void error_callback(int error, char const * description)
 
 int main()
 {
+    //
+    UIImageManager imgr;
+    imgr.addImageGroup("./data/ui_res.json");
+    //
+
     glfwSetErrorCallback(error_callback);
 
     if(!glfwInit())

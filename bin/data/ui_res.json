@@ -1,0 +1,17 @@
+{
+   "gui_set":"default",
+   "images":[
+      {
+         "background":{
+            "texture":"./data/background.tga",
+            "9slice_margins":[10, 10, 10, 10]
+         }
+      },
+      {
+         "button":{
+            "texture":"./data/button.tga",
+            "9slice_margins":[10, 10, 10, 10]
+         }
+      }
+   ]
+}

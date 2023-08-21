@@ -1,9 +1,14 @@
 #include "uiimagemanager.h"
+#include <fstream>
 #include <boost/json.hpp>
+
+#include "src/VertexBuffer.h"
+
+void parseImages(boost::json::value const & jv, UIImageGroup & group);
 
 void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::vec2 new_size) const
 {
-	if(new_size.x < static_cast<float>(left + right) || new_size.y < static_cast<float>(bottom + top))
+    if(new_size.x < static_cast<float>(left + right) || new_size.y < static_cast<float>(bottom + top))
     {
         // Error: the new rectangle size is too small
         return;
@@ -23,13 +28,13 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
     // 0----------------------
     float inv_new_width    = 1.0f / new_size.x;
     float inv_new_height   = 1.0f / new_size.y;
-    float tex_coord_width  = origin.tx1.s - origin.tx0.s;
-    float tex_coord_height = origin.tx1.t - origin.tx0.t;
+    float tex_coord_width  = tx1.s - tx0.s;
+    float tex_coord_height = tx1.t - tx0.t;
 
     float x0 = pos.x;
     float y0 = pos.y;
-    float s0 = origin.tx0.s;
-    float t0 = origin.tx0.t;
+    float s0 = tx0.s;
+    float t0 = tx0.t;
 
     float x1 = x0 + static_cast<float>(left);
     float y1 = y0 + static_cast<float>(bottom);
@@ -43,8 +48,8 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
 
     float x3 = x0 + new_size.x;
     float y3 = y0 + new_size.y;
-    float s3 = origin.tx1.s;
-    float t3 = origin.tx1.t;
+    float s3 = tx1.s;
+    float t3 = tx1.t;
 
     // add 9 rectangles to the vertex buffer
     // bottom row
@@ -69,29 +74,19 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
 UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
 {
     boost::json::error_code ec;
-    boost::json::value jv;
+    boost::json::value      jv;
 
     {
-        size_t file_length = 0;
-
-        std::ifstream  ifile(group_name, std::ios::in);
-        std::string    file_data; 
+        std::ifstream ifile(group_name, std::ios::in);
+        std::string   file_data;
 
         if(ifile.is_open())
         {
-            ifile.seekg(0, std::ios_base::end);
-            auto length = ifile.tellg();
-            ifile.seekg(0, std::ios_base::beg);
-
-            file_data.resize(static_cast<size_t>(length));
-
-            ifile.read(reinterpret_cast<char *>(file_data.data()), length);
-
-            auto success = !ifile.fail() && length == ifile.gcount();
-            ifile.close();
-
-            if(!success)
-                throw std::runtime_error("File not found!");
+            std::string tp;
+            while(std::getline(ifile, tp))
+            {
+                file_data += tp;
+            }
         }
         else
             throw std::runtime_error("File not found!");
@@ -100,55 +95,70 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
     }
 
     if(ec)
+    {
+        // auto msg = ec.to_string();
         throw std::runtime_error("File parsing error ");
+    }
 
-    auto& obj = jv.get_object();
+    auto & obj = jv.get_object();
     if(!obj.empty())
     {
         std::string gr_name;
-        auto new_group = std::make_unique<UIImageGroup>(*this);
+        auto        new_group = std::make_unique<UIImageGroup>(*this, gr_name);
 
         for(auto & kvp : obj)
         {
             if(kvp.key() == "gui_set")
-                    gr_name = kvp.value().as_string();
-            else if (kvp.key() == "images")
-            {       
+                gr_name = kvp.value().as_string();
+            else if(kvp.key() == "images")
+            {
                 // parse images
                 parseImages(kvp.value(), *new_group);
             }
         }
 
         m_groups[gr_name] = std::move(new_group);
+        return *m_groups[gr_name];
+    }
+
+    throw std::runtime_error("File parsing error ");
+}
+
+void parseImages(boost::json::value const & jv, UIImageGroup & group)
+{
+    auto const & arr = jv.get_array();
+    if(!arr.empty())
+    {
+        for(auto & kvp : arr)
+        {
+            std::string          path;
+            std::string          name;
+            std::vector<int32_t> margins;
+
+            auto const it = kvp.get_object().begin();
+            name          = boost::json::serialize(it->key());
+
+            for(auto & kvp2 : it->value().as_object())
+            {
+                if(kvp2.key() == "texture")
+                    path = kvp2.value().as_string();
+                else if(kvp2.key() == "9slice_margins")
+                {
+                    margins = boost::json::value_to<std::vector<int32_t>>(kvp2.value());
+                }
+            }
+
+            tex::ImageData image;
+            if(!tex::ReadTGA(path, image))
+                continue;
+
+            group.addImage(name, image, margins[0], margins[1], margins[2], margins[3]);
+        }
     }
 }
 
-void UIImageManager::parseImages(boost::json::value const & jv, UIImageGroup & group)
+uint32_t UIImageGroup::addImage(std::string name, tex::ImageData const & image, int32_t left, int32_t right,
+                                int32_t bottom, int32_t top)
 {
-	auto& obj = jv.get_object();
-    if(!obj.empty())
-    {
-		for(auto & kvp : obj)
-        {
-			std::string texture_name = kvp.key();
-			std::string path;
-			std::vector<int32_t> margins;
-			
-			for(auto & kvp2 : kvp.value().as_object())
-			{
-				if(kvp2.key() == "texture")
-                    path = kvp2.value().as_string();
-				else if (kvp2.key() == "9slice_margins")
-				{
-					margins = boost::json::value_to<std::vector<int32_t>>(kvp2.as_object());
-				}
-			}
-			
-			tex::ImageData image;
-			if(!tex::ReadTGA(path, &image))
-				continue;
-			
-			group.addImage(texture_name, image, margins[0], margins[1], margins[2], margins[3]);
-		}
-	}
+    return 0;
 }
