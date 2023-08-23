@@ -32,7 +32,7 @@ TexFont & FontManager::getFont(std::string name, uint32_t size)
 void FontManager::resizeAtlas()
 {
     AtlasTex new_atlas(m_atlas.getSize() * 2);
-    m_atlas = new_atlas;
+    m_atlas = std::move(new_atlas);
 
     for(auto & fnt : m_fonts)
     {

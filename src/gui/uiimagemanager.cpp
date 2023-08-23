@@ -1,6 +1,7 @@
 #include "uiimagemanager.h"
 #include <fstream>
 #include <boost/json.hpp>
+#include <algorithm>
 
 #include "src/VertexBuffer.h"
 
@@ -97,7 +98,7 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
     if(ec)
     {
         // auto msg = ec.to_string();
-        throw std::runtime_error("File parsing error ");
+        throw std::runtime_error("File parsing error");
     }
 
     auto & obj = jv.get_object();
@@ -152,13 +153,100 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             if(!tex::ReadTGA(path, image))
                 continue;
 
-            group.addImage(name, image, margins[0], margins[1], margins[2], margins[3]);
+            if(group.addImage(name, image, margins[0], margins[1], margins[2], margins[3]) == -1)
+            {
+                // texture atlas is full
+                m_owner.resizeAtlas()
+                if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
+                    throw std::runtime_error("texture atlas is full");
+            }
         }
     }
 }
 
-uint32_t UIImageGroup::addImage(std::string name, tex::ImageData const & image, int32_t left, int32_t right,
-                                int32_t bottom, int32_t top)
+UIImageGroup const & UIImageManager::getImageGroup(std::string const & group_name) const
 {
-    return 0;
+    if (auto search = m_groups.find(group_name); search != m_groups.end())
+        return **search->second;
+    
+    throw std::runtime_error("ImageGroup with requested name not found");
+}
+
+void UIImageManager::resizeAtlas()
+{
+    AtlasTex new_atlas(m_atlas.getSize() * 2);
+    m_atlas = std::move(new_atlas);
+
+    for(auto & fnt : m_groups)
+    {
+        fnt.second->reloadImages();
+    }
+}
+
+int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left, 
+                               int32_t right, int32_t bottom, int32_t top)
+{
+    glm::ivec4 region;
+    size_t w, h;
+    size_t size = m_owner.getAtlas().getSize();
+    float  inv_size = 1.0f / static_cast<float>(size);
+    
+    w      = image.width + 1;
+    h      = image.height + 1;
+    region = m_owner.getAtlas().getRegion(w, h);
+    if(region.x < 0)
+    {
+        std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
+        return -1;
+    }
+
+    w = w - 1;
+    h = h - 1;
+    x = region.x;
+    y = region.y;
+    m_owner.getAtlas().setRegionBL(glm::ivec4(x, y, w, h), image.data, image.width);
+
+    RegionDataOfUITexture tex_region;
+    tex_region.name = std::move(name);
+    tex_region.path = std::move(path);
+    tex_region.left_bottom = glm::vec2(x, y);
+    tex_region.right_top = glm::vec2(x+w, y+h);
+    tex_region.tx0.s = x * inv_size;
+    tex_region.tx0.t = y * inv_size;
+    tex_region.tx1.s = (x + w) * inv_size;
+    tex_region.tx1.t = (y + h) * inv_size;
+    tex_region.left = left;
+    tex_region.right = right;
+    tex_region.bottom = bottom;
+    tex_region.top = top;
+    
+    m_regions.push_back(tex_region);
+    
+    return m_regions.size() - 1;
+}
+
+RegionDataOfUITexture const & UIImageGroup::getImageRegion(std::string const & name) const
+{
+    auto it = std::find_if(begin(m_regions), end(m_regions), [&name](auto & region)
+                           {
+                               return name == region.name;
+                           });
+    
+    if(it != m_regions.end())
+        return *it;
+    
+    throw std::runtime_error("Region with requested name not found");
+}
+
+void UIImageGroup::reloadImages()
+{
+    auto regions = std::move(m_regions);
+    for(auto & reg : regions)
+    {
+        tex::ImageData image;
+        if(!tex::ReadTGA(reg.path, image))
+            continue;
+        // we don't care about the oversize atlas error in this function
+        addImage(reg.name, reg.path, image, reg.left, reg.right, reg.bottom, reg.top);
+    }
 }

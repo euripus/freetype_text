@@ -31,6 +31,9 @@ struct RegionDataOfUITexture
     int32_t right;
     int32_t bottom;
     int32_t top;
+	
+	std::string name;
+	std::string path;
 
     float     getWidth() const { return right_top.x - left_bottom.x; }
     float     getHeight() const { return right_top.y - left_bottom.y; }
@@ -44,7 +47,7 @@ class UIImageGroup   // a group of images of the same style
 public:
     UIImageGroup(UIImageManager & owner, std::string name) : m_owner(owner), m_name(std::move(name)) {}
 
-    std::uint32_t addImage(std::string name, tex::ImageData const & image, int32_t left, int32_t right,
+    std::int32_t addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left, int32_t right,
                            int32_t bottom, int32_t top);
 
     RegionDataOfUITexture const & getImageRegion(std::string const & name) const;
