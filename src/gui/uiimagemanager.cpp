@@ -104,8 +104,9 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
     auto & obj = jv.get_object();
     if(!obj.empty())
     {
-        std::string gr_name;
-        auto        new_group = std::make_unique<UIImageGroup>(*this, gr_name);
+        std::string        gr_name;
+        auto               new_group = std::make_unique<UIImageGroup>(*this);
+        boost::json::value images;
 
         for(auto & kvp : obj)
         {
@@ -113,12 +114,14 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
                 gr_name = kvp.value().as_string();
             else if(kvp.key() == "images")
             {
-                // parse images
-                parseImages(kvp.value(), *new_group);
+                images = kvp.value();
             }
         }
 
         m_groups[gr_name] = std::move(new_group);
+
+        parseImages(images, *m_groups[gr_name]);
+
         return *m_groups[gr_name];
     }
 
@@ -153,10 +156,10 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             if(!tex::ReadTGA(path, image))
                 continue;
 
-            if(group.addImage(name, image, margins[0], margins[1], margins[2], margins[3]) == -1)
+            if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
             {
                 // texture atlas is full
-                m_owner.resizeAtlas()
+                group.getOwner().resizeAtlas();
                 if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
                     throw std::runtime_error("texture atlas is full");
             }
@@ -166,9 +169,9 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
 
 UIImageGroup const & UIImageManager::getImageGroup(std::string const & group_name) const
 {
-    if (auto search = m_groups.find(group_name); search != m_groups.end())
-        return **search->second;
-    
+    if(auto search = m_groups.find(group_name); search != m_groups.end())
+        return *search->second;
+
     throw std::runtime_error("ImageGroup with requested name not found");
 }
 
@@ -177,26 +180,27 @@ void UIImageManager::resizeAtlas()
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & fnt : m_groups)
+    for(auto & gr : m_groups)
     {
-        fnt.second->reloadImages();
+        gr.second->reloadImages();
     }
 }
 
-int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left, 
+int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left,
                                int32_t right, int32_t bottom, int32_t top)
 {
     glm::ivec4 region;
-    size_t w, h;
-    size_t size = m_owner.getAtlas().getSize();
-    float  inv_size = 1.0f / static_cast<float>(size);
-    
+    size_t     x, y, w, h;
+    size_t     size            = m_owner.getAtlas().getSize();
+    float      inv_size        = 1.0f / static_cast<float>(size);
+    int32_t    bytes_per_pixel = image.type == tex::ImageData::PixelType::pt_rgb ? 3 : 4;
+
     w      = image.width + 1;
     h      = image.height + 1;
     region = m_owner.getAtlas().getRegion(w, h);
     if(region.x < 0)
     {
-        std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
+        // std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
         return -1;
     }
 
@@ -204,37 +208,36 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     h = h - 1;
     x = region.x;
     y = region.y;
-    m_owner.getAtlas().setRegionBL(glm::ivec4(x, y, w, h), image.data, image.width);
+    m_owner.getAtlas().setRegionBL(glm::ivec4(x, y, w, h), image.data.get(), image.width * bytes_per_pixel,
+                                   bytes_per_pixel);
 
     RegionDataOfUITexture tex_region;
-    tex_region.name = std::move(name);
-    tex_region.path = std::move(path);
+    tex_region.name        = std::move(name);
+    tex_region.path        = std::move(path);
     tex_region.left_bottom = glm::vec2(x, y);
-    tex_region.right_top = glm::vec2(x+w, y+h);
-    tex_region.tx0.s = x * inv_size;
-    tex_region.tx0.t = y * inv_size;
-    tex_region.tx1.s = (x + w) * inv_size;
-    tex_region.tx1.t = (y + h) * inv_size;
-    tex_region.left = left;
-    tex_region.right = right;
-    tex_region.bottom = bottom;
-    tex_region.top = top;
-    
+    tex_region.right_top   = glm::vec2(x + w, y + h);
+    tex_region.tx0.s       = x * inv_size;
+    tex_region.tx0.t       = y * inv_size;
+    tex_region.tx1.s       = (x + w) * inv_size;
+    tex_region.tx1.t       = (y + h) * inv_size;
+    tex_region.left        = left;
+    tex_region.right       = right;
+    tex_region.bottom      = bottom;
+    tex_region.top         = top;
+
     m_regions.push_back(tex_region);
-    
+
     return m_regions.size() - 1;
 }
 
 RegionDataOfUITexture const & UIImageGroup::getImageRegion(std::string const & name) const
 {
-    auto it = std::find_if(begin(m_regions), end(m_regions), [&name](auto & region)
-                           {
-                               return name == region.name;
-                           });
-    
+    auto it = std::find_if(begin(m_regions), end(m_regions),
+                           [&name](auto & region) { return name == region.name; });
+
     if(it != m_regions.end())
         return *it;
-    
+
     throw std::runtime_error("Region with requested name not found");
 }
 

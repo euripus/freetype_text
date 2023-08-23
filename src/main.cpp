@@ -397,6 +397,7 @@ int main()
     //
     UIImageManager imgr;
     imgr.addImageGroup("./data/ui_res.json");
+    imgr.getAtlas().writeAtlasToTGA(std::string("./data/gui.tga"));
     //
 
     glfwSetErrorCallback(error_callback);

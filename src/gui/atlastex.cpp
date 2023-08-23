@@ -157,7 +157,8 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
     return region;
 }
 
-void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int stride)   // z - width, w - height
+void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int stride,
+                           int bytes_ppx)   // z - width, w - height
 {
     assert(reg.x > 0);
     assert(reg.y > 0);
@@ -176,12 +177,15 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int strid
         for(int j = 0; j < reg.z; ++j)
         {
             unsigned int dst_shift = (((y - i) * m_size + reg.x + j) * charsize * 4);
-            unsigned int src_shift = ((i * stride) + j * 3 * charsize);
+            unsigned int src_shift = ((i * stride) + j * bytes_ppx * charsize);
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
             bytes[2] = data[src_shift + 2];
-            bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+            if(bytes_ppx == 3)
+                bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+            else
+                bytes[3] = data[src_shift + 3];
 
             m_data[dst_shift + 0] = bytes[0];
             m_data[dst_shift + 1] = bytes[1];
@@ -191,7 +195,7 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int strid
     }
 }
 
-void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int stride)
+void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int stride, int bytes_ppx)
 {
     assert(reg.x > 0);
     assert(reg.y > 0);
@@ -209,12 +213,15 @@ void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int strid
         for(int j = 0; j < reg.z; ++j)
         {
             unsigned int dst_shift = (((reg.y + i) * m_size + reg.x + j) * charsize * 4);
-            unsigned int src_shift = ((i * stride) + j * 3 * charsize);
+            unsigned int src_shift = ((i * stride) + j * bytes_ppx * charsize);
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
             bytes[2] = data[src_shift + 2];
-            bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+            if(bytes_ppx == 3)
+                bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+            else
+                bytes[3] = data[src_shift + 3];
 
             m_data[dst_shift + 0] = bytes[0];
             m_data[dst_shift + 1] = bytes[1];
