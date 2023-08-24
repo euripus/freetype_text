@@ -64,8 +64,6 @@ typedef struct {
     VuiColor color;
 } VuiVertexT;
 
-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
-
 //gtec-demo-framework-4.0.0
 struct NineSlice
   {
