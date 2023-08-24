@@ -31,6 +31,7 @@ win32:{
 unix:{
     INCLUDEPATH += /usr/include/freetype2/
     LIBS += -lglfw -lfreetype -lGL -lGLEW
+    LIBS += -lboost_json
 }
 
 SOURCES += \
