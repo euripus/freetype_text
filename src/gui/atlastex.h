@@ -8,7 +8,7 @@
 class AtlasTex
 {
 public:
-    AtlasTex(unsigned int32_t size = 64);
+    AtlasTex(uint32_t size = 64);
 
     void clear();
 
@@ -18,7 +18,7 @@ public:
     void       setRegionBL(glm::ivec4 reg, unsigned char const * data, int32_t stride,
                            int32_t bytes_ppx = 3);   // z - width, w - height, bottom-left region
 
-    uint32_t          getSize() const { return m_size; }
+    uint32_t              getSize() const { return m_size; }
     unsigned char const * getData() const { return m_data.data(); }
 
     void writeAtlasToTGA(std::string const & name);
@@ -27,10 +27,10 @@ public:
     void DeleteTexture();
     void BindTexture();
 private:
-    int32_t  atlasFit(uint32_t index, uint32_t width, uint32_t height);
-    void atlasMerge();
+    int32_t atlasFit(uint32_t index, uint32_t width, uint32_t height);
+    void    atlasMerge();
 
-    uint32_t               m_size = 0;
+    uint32_t                   m_size = 0;
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;
 };

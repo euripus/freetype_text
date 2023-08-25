@@ -83,7 +83,7 @@ void AtlasTex::atlasMerge()
 
 glm::ivec4 AtlasTex::getRegion(uint32_t width, uint32_t height)
 {
-    int32_t         y, best_height, best_width, best_index;
+    int32_t     y, best_height, best_width, best_index;
     glm::ivec3 *node, *prev;
     glm::ivec4  region(0, 0, width, height);
     size_t      i;

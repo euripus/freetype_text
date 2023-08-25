@@ -296,8 +296,8 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
         return 0;
 
     FT_Int32 flags         = 0;
-    int32_t     ft_glyph_top  = 0;
-    int32_t      ft_glyph_left = 0;
+    int32_t  ft_glyph_top  = 0;
+    int32_t  ft_glyph_left = 0;
     glyph_index            = FT_Get_Char_Index(face, ucodepoint);
 
     if(m_outline_type != Glyph::OutlineType::NONE)
