@@ -51,8 +51,8 @@ struct Glyph
     std::uint32_t charcode     = -1;     // Wide character this glyph represents
     size_t        width        = 0;      // Glyph's width in pixels
     size_t        height       = 0;      // Glyph's height in pixels.
-    int           offset_x     = 0;      // Glyph's left bearing expressed in integer pixels.
-    int           offset_y     = 0;      // Glyphs's top bearing expressed in integer pixels.
+    int32_t           offset_x     = 0;      // Glyph's left bearing expressed in integer pixels.
+    int32_t           offset_y     = 0;      // Glyphs's top bearing expressed in integer pixels.
     float         advance_x    = 0.0f;   // this is the horizontal distance
     float         advance_y    = 0.0f;   // this is the vertical distance
     float         s0           = 0.0f;   // First normalized texture coordinate (x) of bottom-left corner

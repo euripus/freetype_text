@@ -9,7 +9,7 @@ namespace tex
 {
 struct ImageData
 {
-    // origin is the bottom-left corner
+    // origin in the bottom-left corner
     enum class PixelType
     {
         pt_rgb,

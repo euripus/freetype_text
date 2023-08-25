@@ -19,7 +19,7 @@
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 const struct {
-    int          code;
+    int32_t      code;
     const char * message;
 } FT_Errors[] =
 #include FT_ERRORS_H
@@ -296,8 +296,8 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
         return 0;
 
     FT_Int32 flags         = 0;
-    int      ft_glyph_top  = 0;
-    int      ft_glyph_left = 0;
+    int32_t     ft_glyph_top  = 0;
+    int32_t      ft_glyph_left = 0;
     glyph_index            = FT_Get_Char_Index(face, ucodepoint);
 
     if(m_outline_type != Glyph::OutlineType::NONE)
@@ -536,7 +536,7 @@ glm::vec2 TexFont::getTextSize(char const * text) const
     glm::vec2     size{0};
     Glyph const * prev_glyph = nullptr;
 
-    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    for(uint32_t i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
         Glyph const & glyph      = getGlyph(ucodepoint);
@@ -559,7 +559,7 @@ glm::vec2 TexFont::getTextSize(char const * text) const
 void TexFont::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const
 {
     Glyph const * prev_glyph = nullptr;
-    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    for(uint32_t i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
         addGlyph(vb, ucodepoint, prev_glyph, pos);
@@ -617,7 +617,7 @@ void TexFont::reloadGlyphs()
 void MarkupText::addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const
 {
     Glyph const * prev_glyph = nullptr;
-    for(unsigned int i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
+    for(uint32_t i = 0; i < std::strlen(text); i += utf8_surrogate_len(text + i))
     {
         std::uint32_t ucodepoint = utf8_to_utf32(text + i);
         addGlyph(vb, ucodepoint, prev_glyph, pos);

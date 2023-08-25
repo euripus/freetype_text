@@ -6,7 +6,7 @@
 
 #include <GL/glew.h>
 
-AtlasTex::AtlasTex(unsigned int size) : m_size{size}
+AtlasTex::AtlasTex(uint32_t size) : m_size{size}
 {
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
@@ -26,10 +26,10 @@ void AtlasTex::clear()
     std::memset(m_data.data(), 0, m_size * m_size * 4);
 }
 
-int AtlasTex::atlasFit(unsigned int index, unsigned int width, unsigned int height)
+int32_t AtlasTex::atlasFit(uint32_t index, uint32_t width, uint32_t height)
 {
     glm::ivec3 * node;
-    int          x, y, width_left;
+    int32_t      x, y, width_left;
     size_t       i;
 
     node       = &m_nodes[index];
@@ -81,15 +81,15 @@ void AtlasTex::atlasMerge()
     }
 }
 
-glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
+glm::ivec4 AtlasTex::getRegion(uint32_t width, uint32_t height)
 {
-    int         y, best_height, best_width, best_index;
+    int32_t         y, best_height, best_width, best_index;
     glm::ivec3 *node, *prev;
     glm::ivec4  region(0, 0, width, height);
     size_t      i;
-    best_height = std::numeric_limits<int>::max();
+    best_height = std::numeric_limits<int32_t>::max();
     best_index  = -1;
-    best_width  = std::numeric_limits<int>::max();
+    best_width  = std::numeric_limits<int32_t>::max();
 
     for(i = 0; i < m_nodes.size(); ++i)
     {
@@ -99,8 +99,8 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
         {
             node = &m_nodes[i];
 
-            if(((y + static_cast<int>(height)) < best_height)
-               || (((y + static_cast<int>(height)) == best_height) && (node->z < best_width)))
+            if(((y + static_cast<int32_t>(height)) < best_height)
+               || (((y + static_cast<int32_t>(height)) == best_height) && (node->z < best_width)))
             {
                 best_height = y + height;
                 best_index  = i;
@@ -133,7 +133,7 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
 
         if(node->x < (prev->x + prev->z))
         {
-            int shrink = prev->x + prev->z - node->x;
+            int32_t shrink = prev->x + prev->z - node->x;
             node->x += shrink;
             node->z -= shrink;
 
@@ -157,27 +157,27 @@ glm::ivec4 AtlasTex::getRegion(unsigned int width, unsigned int height)
     return region;
 }
 
-void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int stride,
-                           int bytes_ppx)   // z - width, w - height
+void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int32_t stride,
+                           int32_t bytes_ppx)   // z - width, w - height
 {
     assert(reg.x > 0);
     assert(reg.y > 0);
-    assert(reg.x < (static_cast<int>(m_size) - 1));
-    assert((reg.x + reg.z) <= (static_cast<int>(m_size) - 1));
-    assert(reg.y < (static_cast<int>(m_size) - 1));
-    assert((reg.y + reg.w) <= (static_cast<int>(m_size) - 1));
+    assert(reg.x < (static_cast<int32_t>(m_size) - 1));
+    assert((reg.x + reg.z) <= (static_cast<int32_t>(m_size) - 1));
+    assert(reg.y < (static_cast<int32_t>(m_size) - 1));
+    assert((reg.y + reg.w) <= (static_cast<int32_t>(m_size) - 1));
 
-    int charsize = sizeof(char);
-    int y        = reg.y + reg.w;
+    int32_t charsize = sizeof(char);
+    int32_t y        = reg.y + reg.w;
 
-    for(int i = 0; i < reg.w; ++i)
+    for(int32_t i = 0; i < reg.w; ++i)
     {
         unsigned char bytes[4] = {0};   // 4 - alpha
 
-        for(int j = 0; j < reg.z; ++j)
+        for(int32_t j = 0; j < reg.z; ++j)
         {
-            unsigned int dst_shift = (((y - i) * m_size + reg.x + j) * charsize * 4);
-            unsigned int src_shift = ((i * stride) + j * bytes_ppx * charsize);
+            uint32_t dst_shift = (((y - i) * m_size + reg.x + j) * charsize * 4);
+            uint32_t src_shift = ((i * stride) + j * bytes_ppx * charsize);
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
@@ -195,25 +195,25 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int strid
     }
 }
 
-void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int stride, int bytes_ppx)
+void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int32_t stride, int32_t bytes_ppx)
 {
     assert(reg.x > 0);
     assert(reg.y > 0);
-    assert(reg.x < (static_cast<int>(m_size) - 1));
-    assert((reg.x + reg.z) <= (static_cast<int>(m_size) - 1));
-    assert(reg.y < (static_cast<int>(m_size) - 1));
-    assert((reg.y + reg.w) <= (static_cast<int>(m_size) - 1));
+    assert(reg.x < (static_cast<int32_t>(m_size) - 1));
+    assert((reg.x + reg.z) <= (static_cast<int32_t>(m_size) - 1));
+    assert(reg.y < (static_cast<int32_t>(m_size) - 1));
+    assert((reg.y + reg.w) <= (static_cast<int32_t>(m_size) - 1));
 
-    unsigned int charsize = sizeof(char);
+    uint32_t charsize = sizeof(char);
 
-    for(int i = 0; i < reg.w; ++i)
+    for(int32_t i = 0; i < reg.w; ++i)
     {
         unsigned char bytes[4] = {0};   // 4 - alpha
 
-        for(int j = 0; j < reg.z; ++j)
+        for(int32_t j = 0; j < reg.z; ++j)
         {
-            unsigned int dst_shift = (((reg.y + i) * m_size + reg.x + j) * charsize * 4);
-            unsigned int src_shift = ((i * stride) + j * bytes_ppx * charsize);
+            uint32_t dst_shift = (((reg.y + i) * m_size + reg.x + j) * charsize * 4);
+            uint32_t src_shift = ((i * stride) + j * bytes_ppx * charsize);
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
