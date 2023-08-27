@@ -17,7 +17,7 @@ widget
     pos()
     move()
 
-layout
+packer
     set_spacing()
     set_layout_orient()
     set_desired_size()
@@ -30,6 +30,7 @@ GUI
     update()
     set_style()
     create_widget()
+	create_window()
 
 // window tree
 window
@@ -44,36 +45,14 @@ for(layer : overlays)
     for(window : layer)
         window.draw(vertex_buffer, text_buffer, layer)
 
-struct CtrlAttrs {
-    float width;
-    float width_min;
-    float width_max;
-    float height;
-    float height_min;
-    float height_max;
-    float layout_spacing;
-    float layout_wrap_spacing;
-    VuiBool layout_wrap;
-    VuiVec2 offset;
-    VuiAlign align;
-    VuiImageScaleMode image_scale_mode;
-    float style_transition_time;
-};
-
-typedef struct {
-    VuiVec2 pos;
-    VuiVec2 uv;
-    VuiColor color;
-} VuiVertexT;
-
-Text
-Image
+TextBox
+ImageBox
 Button
-Toggle Button
-Select Button
-Check Box
-Radio Button
+CheckBox
+RadioButton
 Slider
-Progress Bar
-Text & Input Box
-Scroll View
+ProgressBar
+InputBox
+ScrollView
+VerticalLayoutee
+HorizontalLayoutee

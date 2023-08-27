@@ -16,7 +16,7 @@ void Rect2D::inflate(const int32_t horizontal_value, const int32_t vertical_valu
 {
     if(horizontal_value <= 0 || vertical_value <= 0)
     {
-        throw std::invalid_argument("");
+        throw std::invalid_argument("arguments out of range");
     }
 
     m_pos.x -= horizontal_value;
