@@ -41,10 +41,13 @@ SOURCES += \
     src/gui/atlastex.cpp \
     src/gui/fontmanager.cpp \
     src/gui/imagedata.cpp \
+    src/gui/packer.cpp \
     src/gui/rect2d.cpp \
     src/gui/texfont.cpp \
     src/gui/uiimagemanager.cpp \
     src/gui/utf8_utils.cpp \
+    src/gui/widget.cpp \
+    src/gui/window.cpp \
     src/main.cpp
 
 HEADERS += \
@@ -52,9 +55,13 @@ HEADERS += \
     src/VertexAttrib.h \
     src/VertexBuffer.h \
     src/gui/atlastex.h \
+    src/gui/basic_types.h \
     src/gui/fontmanager.h \
     src/gui/imagedata.h \
+    src/gui/packer.h \
     src/gui/rect2d.h \
     src/gui/texfont.h \
     src/gui/uiimagemanager.h \
-    src/gui/utf8_utils.h
+    src/gui/utf8_utils.h \
+    src/gui/widget.h \
+    src/gui/window.h

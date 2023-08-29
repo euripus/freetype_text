@@ -3,29 +3,33 @@
 
 enum class element_state
 {
-	normal,
-	hovered,
-	focus_normal,
-	focus_hovered,
-	pressed,
-	disabled
-};
-	
-enum class arrange
-{
-	horizontal, vertical
-};
-///The definition of horizontal alignment
-enum class align
-{
-	left, center, right
+    normal,
+    hovered,
+    focus_normal,
+    focus_hovered,
+    pressed,
+    disabled
 };
 
-///The definition of vertical alignment
+enum class arrange
+{
+    horizontal,
+    vertical
+};
+/// The definition of horizontal alignment
+enum class align_g
+{
+    left,
+    center,
+    right
+};
+
+/// The definition of vertical alignment
 enum class align_v
 {
-	top, center, bottom
+    top,
+    center,
+    bottom
 };
-	
 
 #endif
