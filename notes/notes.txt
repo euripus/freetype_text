@@ -25,13 +25,6 @@ packer
         - union childs sizes
         - arrange elements with desired spacing
 
-GUI
-    draw()
-    update()
-    set_style()
-    create_widget()
-	create_window()
-
 // window tree
 window
     vert_slider
@@ -39,6 +32,13 @@ window
         hor_slider
             button1
             button2
+
+GUI
+    draw()
+    update()
+    set_style()
+    create_widget()
+	create_window()
 
 // draw
 for(layer : overlays)

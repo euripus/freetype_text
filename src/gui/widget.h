@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
+#include "texfont.h"
 
 class Widget
 {
@@ -36,6 +37,8 @@ protected:
 
     Widget *                             m_parent;
     std::vector<std::unique_ptr<Widget>> m_children;
+
+    TexFont * m_font;
 
     friend class Packer;
 };

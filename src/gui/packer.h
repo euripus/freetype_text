@@ -8,6 +8,7 @@ class Packer
 public:
     void fitWidgets(Widget * root);
     void setSpacing(float val) { m_spacing = val; }
+
 protected:
     float m_spacing;
 };

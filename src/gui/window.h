@@ -4,9 +4,8 @@
 #include <string>
 #include "widget.h"
 #include "packer.h"
-#include "texfont.h"
 
-class Window
+class UIWindow
 {
     void draw();
     void update(float time);
@@ -21,15 +20,17 @@ class Window
 public:
     std::string m_caption;
     bool        m_visible;
+	bool        m_draw_caption;
 
     std::unique_ptr<Widget>  m_root;
+	std::unique_ptr<Widget>  m_background;
     Packer                   m_packer;
-    std::unique_ptr<TexFont> m_font;
+	TexFont *                m_font;         // caption font
 };
 
-struct Overlays
+struct Overlays  /// -> UI class
 {
-    std::vector<Window *> m_layers;
+    std::vector<UIWindow *> m_layers;
 };
 
 #endif
