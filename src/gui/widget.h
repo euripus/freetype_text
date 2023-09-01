@@ -19,7 +19,7 @@ public:
 
     void show();
     void hide();
-    bool visible() const;
+    bool visible() const { return m_visible; }
 
     glm::vec2 size() const;
 
