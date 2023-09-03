@@ -14,16 +14,16 @@ enum class ElementState
 enum class ElementType
 {
     TextBox,
-	ImageBox,
-	Button,
-	CheckBox,
-	RadioButton,
-	Slider,
-	ProgressBar,
-	InputBox,
-	ScrollView,
-	VerticalLayoutee,
-	HorizontalLayoutee
+    ImageBox,
+    Button,
+    CheckBox,
+    RadioButton,
+    Slider,
+    ProgressBar,
+    InputBox,
+    ScrollView,
+    VerticalLayoutee,
+    HorizontalLayoutee
 };
 
 enum class Align
@@ -31,8 +31,7 @@ enum class Align
     left,
     center,
     right,
-	top,
-    center,
+    top,
     bottom
 };
 

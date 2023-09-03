@@ -1,4 +1,3 @@
 #include "window.h"
 
-void Window::update(float time)
-{}
+void UIWindow::update(float time) {}
