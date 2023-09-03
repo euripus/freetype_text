@@ -10,10 +10,20 @@ class Widget
 {
 public:
     Widget() = default;
-    virtual ~Widget();
+    virtual ~Widget() = default;
 
     virtual void update(float time);
     virtual void draw();
+	
+	virtual void addWidget(std::unique_ptr<Widget> widget,Align align = Align::left);
+	virtual void removeWidget(Widget *widget);
+	virtual bool isChild(Widget *widget);
+	
+	    //input update
+    virtual void onCursorPos(int32_t xpos, int32_t ypos);
+    virtual void onMouseButton(int32_t button_code, bool press);
+    virtual void onMouseWheel(int32_t xoffset, int32_t yoffset);
+    virtual void onKey(int32_t key_code, bool press);
 
     Widget * parent() const { return m_parent; }
 
@@ -33,12 +43,13 @@ protected:
     glm::vec2 m_size_desired;
     glm::vec2 m_pos;
 
-    bool m_visible;
+    bool  m_visible;
+	Align m_align
+	ElementState m_state;
+	TexFont * m_font;
 
     Widget *                             m_parent;
     std::vector<std::unique_ptr<Widget>> m_children;
-
-    TexFont * m_font;
 
     friend class Packer;
 };

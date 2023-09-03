@@ -1,5 +1,7 @@
 {
    "gui_set":"default",
+   "font":"liberation.ttf",
+   "font_size":24,
    "images":[
       {
          "background":{
@@ -10,6 +12,8 @@
       {
          "button":{
             "texture":"./data/button.tga",
+			"font":"damase.ttf",
+			"font_size":20,
             "9slice_margins":[10, 10, 10, 10]
          }
       }

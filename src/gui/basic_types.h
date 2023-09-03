@@ -1,7 +1,7 @@
 #ifndef BASIC_TYPES_H
 #define BASIC_TYPES_H
 
-enum class element_state
+enum class ElementState
 {
     normal,
     hovered,
@@ -11,23 +11,27 @@ enum class element_state
     disabled
 };
 
-enum class arrange
+enum class ElementType
 {
-    horizontal,
-    vertical
+    TextBox,
+	ImageBox,
+	Button,
+	CheckBox,
+	RadioButton,
+	Slider,
+	ProgressBar,
+	InputBox,
+	ScrollView,
+	VerticalLayoutee,
+	HorizontalLayoutee
 };
-/// The definition of horizontal alignment
-enum class align_g
+
+enum class Align
 {
     left,
     center,
-    right
-};
-
-/// The definition of vertical alignment
-enum class align_v
-{
-    top,
+    right,
+	top,
     center,
     bottom
 };
