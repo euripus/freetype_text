@@ -13,7 +13,7 @@ public:
     Widget()          = default;
     virtual ~Widget() = default;
 
-    virtual void update(float time);
+    virtual void update(float time, bool check_cursor);
     virtual void draw();
 
     virtual void addWidget(std::unique_ptr<Widget> widget, Align align = Align::left);
