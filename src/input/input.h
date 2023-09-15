@@ -7,8 +7,8 @@ enum class KeyboardKey
     Key_0,
     Key_1,
     Key_2,
-    Key_3,
     Key_4,
+    Key_3,
     Key_5,
     Key_6,
     Key_7,
@@ -98,7 +98,7 @@ enum class KeyboardKey
     Key_RightAlt,       // Right ALT
     Key_RightShift,     // Right SHIFT
     Key_RightWin,       // Right Windows logo key
-	Key_MenuKey,        // Application key
+    Key_MenuKey,        // Application key
 
     Key_PrintScreen,
     Key_ScrollLock,
@@ -126,11 +126,11 @@ enum class KeyboardKey
 
 enum class MouseButton
 {
-    Button_left, 
-    Button_right,
-    Button_middle,
+    Left, 
+    Right,
+    Middle,
 
-    ButtonCount
+    ButtonsCount
 };
 
 KeyboardKey MapKeyCode(int32_t platform_key_code);
@@ -147,17 +147,15 @@ public:
     bool        isAnyKeyPressed() const;
 
     // Mouse
-    glm::ivec2 const & getMousePosition() const { return m_mouse_position; }
-    bool               getMouseButton(Buttons button_id) const;
+    glm::ivec2  getMousePosition() const { return m_mouse_position; }
+    bool               isMouseButtonPressed(MouseButton button_id) const;
     bool             isMouseWheel() const { return !m_mouse_wheel.empty(); }
-	int32_t getMouseWheel () { return m_mouse_wheel.pop_front(); }
-
-    //    virtual void hideCursor(bool is_hide)            = 0;
-	
-	// functions for platform callbacks to call
-	void buttonEvent(Buttons button_id, bool press);
+    int32_t getMouseWheel () { return m_mouse_wheel.pop_front(); }
+    
+    // functions for platform callbacks to call
+    void buttonEvent(MouseButton button_id, bool press);
     void mousePos(int32_t xpos, int32_t ypos);
-    void mouseWhell(int32_t offset);
+    void mouseWhell(int32_t offset) {}
     void keyEvent(KeyboardKey key_code, bool press);
 
 protected:
@@ -167,7 +165,7 @@ protected:
     // Mouse states
     glm::ivec2 m_mouse_position                                                 = {};
     std::deque<int32_t>    m_mouse_wheel                                       = {};
-    bool       m_mouse_buttons_state[static_cast<size_t>(Buttons::ButtonCount)] = {};
+    bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
 };
 
 #endif

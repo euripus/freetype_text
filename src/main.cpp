@@ -33,6 +33,9 @@ GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 unsigned int        g_width, g_height;
 
+Input g_input_state;
+
+// clang-format off
 GLfloat pyr_vert[] = {
     1.41421,  -1,        0,        0,         -1,       0,         0.5,      0.8,
     0,        -1,        1.41421,  0,         -1,       0,         0.2,      0.5,
@@ -52,6 +55,7 @@ GLfloat pyr_vert[] = {
     0,        -1,        -1.41421, 0.632456,  0.447214, -0.632456, 0.8,      0.5};
 
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
+// clang-format on
 
 FontManager  fm;
 Shader       shd, shd_txt;
@@ -174,6 +178,9 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
                 break;
             }
     }
+	
+	bool pressed = (action != GLFW_RELEASE);
+    g_input_state.keyEvent(MapKeyCode(key), pressed);
 }
 
 void WindowSizeCallback(GLFWwindow * win, int width, int height)
@@ -202,11 +209,31 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     g_height = height;
 }
 
-void MouseButtonCallback(GLFWwindow * win, int button, int action, int mods) {}
+void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
+{
+    MouseButton button_id = MouseButton::ButtonsCount;
 
-void MousePositionCallback(GLFWwindow * win, double xpos, double ypos) {}
+    if(button == GLFW_MOUSE_BUTTON_LEFT)
+        button_id = MouseButton::Left;
+    else if(button == GLFW_MOUSE_BUTTON_MIDDLE)
+        button_id = MouseButton::Middle;
+    else if(button == GLFW_MOUSE_BUTTON_RIGHT)
+        button_id = MouseButton::Right;
 
-void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset) {}
+    bool pressed = (action != GLFW_RELEASE);
+
+    g_input_state.buttonEvent(button_id, pressed);
+}
+
+void MousePositionCallback(GLFWwindow * win, double xpos, double ypos)
+{
+    g_input_state.mousePos(static_cast<int32_t>(xpos), static_cast<int32_t>(ypos));
+}
+
+void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset)
+{
+    g_input_state.mouseWhell(static_cast<int32_t>(yoffset));
+}
 
 bool LoadTexture()
 {
@@ -240,6 +267,7 @@ bool LoadTexture()
 bool InitWindow()
 {
     glfwSetWindowTitle(g_window, WINDOWTITLE);
+
     glfwSetKeyCallback(g_window, KeyFuncCallback);
     glfwSetCursorPosCallback(g_window, MousePositionCallback);
     glfwSetMouseButtonCallback(g_window, MouseButtonCallback);
