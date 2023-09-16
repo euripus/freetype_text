@@ -1,4 +1,5 @@
 #include "src/gui/uiimagemanager.h"
+#include "src/input/input.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
@@ -52,7 +53,8 @@ GLfloat pyr_vert[] = {
     0,        -1,        -1.41421, -0.632456, 0.447214, -0.632456, 0.8,      0.5,
     0,        1,         0,        0.632456,  0.447214, -0.632456, 1,        1,
     1.41421,  -1,        0,        0.632456,  0.447214, -0.632456, 0.5,      0.8,
-    0,        -1,        -1.41421, 0.632456,  0.447214, -0.632456, 0.8,      0.5};
+    0,        -1,        -1.41421, 0.632456,  0.447214, -0.632456, 0.8,      0.5
+};
 
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 // clang-format on
@@ -178,8 +180,8 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
                 break;
             }
     }
-	
-	bool pressed = (action != GLFW_RELEASE);
+
+    bool pressed = (action != GLFW_RELEASE);
     g_input_state.keyEvent(MapKeyCode(key), pressed);
 }
 

@@ -49,6 +49,7 @@ SOURCES += \
     src/gui/utf8_utils.cpp \
     src/gui/widget.cpp \
     src/gui/window.cpp \
+    src/input/input.cpp \
     src/main.cpp
 
 HEADERS += \
@@ -66,4 +67,5 @@ HEADERS += \
     src/gui/uiimagemanager.h \
     src/gui/utf8_utils.h \
     src/gui/widget.h \
-    src/gui/window.h
+    src/gui/window.h \
+    src/input/input.h

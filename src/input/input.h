@@ -1,6 +1,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include <glm/glm.hpp>
+#include <deque>
 
 enum class KeyboardKey
 {
@@ -86,7 +88,7 @@ enum class KeyboardKey
     Key_NumMultiply,   // (*) on numeric keypad
     Key_NumDivide,     // (/) on numeric keypad
     Key_NumPoint,      // PERIOD (decimal point) on numeric keypad
-  
+
     Key_LeftBracket,   // Left square bracket [
     Key_LeftCtrl,      // Left CTRL
     Key_LeftAlt,       // Left ALT
@@ -126,7 +128,7 @@ enum class KeyboardKey
 
 enum class MouseButton
 {
-    Left, 
+    Left,
     Right,
     Middle,
 
@@ -147,25 +149,25 @@ public:
     bool        isAnyKeyPressed() const;
 
     // Mouse
-    glm::ivec2  getMousePosition() const { return m_mouse_position; }
-    bool               isMouseButtonPressed(MouseButton button_id) const;
-    bool             isMouseWheel() const { return !m_mouse_wheel.empty(); }
-    int32_t getMouseWheel () { return m_mouse_wheel.pop_front(); }
-    
+    glm::ivec2 getMousePosition() const { return m_mouse_position; }
+    bool       isMouseButtonPressed(MouseButton button_id) const;
+    bool       isMouseWheel() const { return !m_mouse_wheel.empty(); }
+    int32_t    getMouseWheel() { return 0; }
+
     // functions for platform callbacks to call
     void buttonEvent(MouseButton button_id, bool press);
     void mousePos(int32_t xpos, int32_t ypos);
     void mouseWhell(int32_t offset) {}
-    void keyEvent(KeyboardKey key_code, bool press);
+    void keyEvent(KeyboardKey key, bool press);
 
 protected:
     // Keyboard states
     KeyboardKey m_last_key                                                     = KeyboardKey::Key_MaxKeyNum;
     bool        m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};
     // Mouse states
-    glm::ivec2 m_mouse_position                                                 = {};
-    std::deque<int32_t>    m_mouse_wheel                                       = {};
-    bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
+    glm::ivec2          m_mouse_position                                                      = {};
+    std::deque<int32_t> m_mouse_wheel                                                         = {};
+    bool                m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
 };
 
 #endif

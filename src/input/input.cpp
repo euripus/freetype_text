@@ -1,5 +1,6 @@
 #include "input.h"
 #include <GLFW/glfw3.h>
+#include <algorithm>
 
 KeyboardKey MapKeyCode(int32_t platformKeyCode)
 {
@@ -244,42 +245,6 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
         case GLFW_KEY_F12:
             key = KeyboardKey::Key_F12;
             break;
-        case GLFW_KEY_F13:
-            key = KeyboardKey::Key_F13;
-            break;
-        case GLFW_KEY_F14:
-            key = KeyboardKey::Key_F14;
-            break;
-        case GLFW_KEY_F15:
-            key = KeyboardKey::Key_F15;
-            break;
-        case GLFW_KEY_F16:
-            key = KeyboardKey::Key_F16;
-            break;
-        case GLFW_KEY_F17:
-            key = KeyboardKey::Key_F17;
-            break;
-        case GLFW_KEY_F18:
-            key = KeyboardKey::Key_F18;
-            break;
-        case GLFW_KEY_F19:
-            key = KeyboardKey::Key_F19;
-            break;
-        case GLFW_KEY_F20:
-            key = KeyboardKey::Key_F20;
-            break;
-        case GLFW_KEY_F21:
-            key = KeyboardKey::Key_F21;
-            break;
-        case GLFW_KEY_F22:
-            key = KeyboardKey::Key_F22;
-            break;
-        case GLFW_KEY_F23:
-            key = KeyboardKey::Key_F23;
-            break;
-        case GLFW_KEY_F24:
-            key = KeyboardKey::Key_F24;
-            break;
         case GLFW_KEY_LEFT_SHIFT:
             key = KeyboardKey::Key_LeftShift;
             break;
@@ -317,4 +282,36 @@ bool Input::isAnyKeyPressed() const
 bool Input::isMouseButtonPressed(MouseButton button_id) const
 {
     return m_mouse_buttons_state[static_cast<size_t>(button_id)];
+}
+
+void Input::buttonEvent(MouseButton button_id, bool press)
+{
+    if(press)
+    {
+        m_mouse_buttons_state[static_cast<size_t>(button_id)] = true;
+    }
+    else
+    {
+        m_mouse_buttons_state[static_cast<size_t>(button_id)] = false;
+    }
+}
+
+void Input::mousePos(int32_t xpos, int32_t ypos)
+{
+    m_mouse_position = glm::ivec2{xpos, ypos};
+}
+
+void Input::keyEvent(KeyboardKey key, bool press)
+{
+    auto key_ind = static_cast<size_t>(key);
+
+    if(press)
+    {
+        m_last_key             = key;
+        m_keys_states[key_ind] = true;
+    }
+    else
+    {
+        m_keys_states[key_ind] = false;
+    }
 }

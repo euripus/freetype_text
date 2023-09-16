@@ -13,8 +13,8 @@ public:
     void draw(VertexBuffer & vb);
 
     static std::unique_ptr<Widget> CreateWidget(ElementType type);
-	
-	//InputBackend * input;
+
+    // InputBackend * input;
 
     glm::vec2 m_size;   // screen size
 

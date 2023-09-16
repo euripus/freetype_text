@@ -20,12 +20,6 @@ public:
     virtual void removeWidget(Widget * widget);
     virtual bool isChild(Widget * widget);
 
-    // input update
-    virtual void onCursorPos(int32_t xpos, int32_t ypos);
-    virtual void onMouseButton(int32_t button_code, bool press);
-    virtual void onMouseWheel(int32_t xoffset, int32_t yoffset);
-    virtual void onKey(int32_t key_code, bool press);
-
     Widget * parent() const { return m_parent; }
 
     void show();
