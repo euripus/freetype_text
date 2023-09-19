@@ -8,7 +8,7 @@
 class UIWindow
 {
     void draw();
-    void update(float time);`
+    void update(float time);
 
     void        setCaption(std::string caption) { m_caption = std::move(caption); }
     std::string getCaption() const { return m_caption; }

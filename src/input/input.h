@@ -88,7 +88,7 @@ enum class KeyboardKey
     Key_NumMultiply,   // (*) on numeric keypad
     Key_NumDivide,     // (/) on numeric keypad
     Key_NumPoint,      // PERIOD (decimal point) on numeric keypad
-	Key_NumEqual,
+    Key_NumEqual,
 
     Key_LeftBracket,   // Left square bracket [
     Key_LeftCtrl,      // Left CTRL

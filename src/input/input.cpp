@@ -268,59 +268,59 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
             break;
         case GLFW_KEY_RIGHT_SUPER:
             key = KeyboardKey::Key_RightWin;
-            break;			
-		case GLFW_KEY_KP_0:
+            break;
+        case GLFW_KEY_KP_0:
             key = KeyboardKey::Key_NumPad0;
             break;
-		case GLFW_KEY_KP_1:
+        case GLFW_KEY_KP_1:
             key = KeyboardKey::Key_NumPad1;
             break;
-		case GLFW_KEY_KP_2:
+        case GLFW_KEY_KP_2:
             key = KeyboardKey::Key_NumPad2;
             break;
-		case GLFW_KEY_KP_3:
+        case GLFW_KEY_KP_3:
             key = KeyboardKey::Key_NumPad3;
             break;
-		case GLFW_KEY_KP_4:
+        case GLFW_KEY_KP_4:
             key = KeyboardKey::Key_NumPad4;
             break;
-		case GLFW_KEY_KP_5:
+        case GLFW_KEY_KP_5:
             key = KeyboardKey::Key_NumPad5;
             break;
-		case GLFW_KEY_KP_6:
+        case GLFW_KEY_KP_6:
             key = KeyboardKey::Key_NumPad6;
             break;
-		case GLFW_KEY_KP_7:
+        case GLFW_KEY_KP_7:
             key = KeyboardKey::Key_NumPad7;
             break;
-		case GLFW_KEY_KP_8:
+        case GLFW_KEY_KP_8:
             key = KeyboardKey::Key_NumPad8;
             break;
-		case GLFW_KEY_KP_9:
+        case GLFW_KEY_KP_9:
             key = KeyboardKey::Key_NumPad9;
             break;
-		case GLFW_KEY_KP_DECIMAL:
+        case GLFW_KEY_KP_DECIMAL:
             key = KeyboardKey::Key_NumPoint;
             break;
-		case GLFW_KEY_KP_DIVIDE:
+        case GLFW_KEY_KP_DIVIDE:
             key = KeyboardKey::Key_NumDivide;
             break;
-		case GLFW_KEY_KP_MULTIPLY:
+        case GLFW_KEY_KP_MULTIPLY:
             key = KeyboardKey::Key_NumMultiply;
             break;
-		case GLFW_KEY_KP_SUBTRACT:
+        case GLFW_KEY_KP_SUBTRACT:
             key = KeyboardKey::Key_NumSubtract;
             break;
-		case GLFW_KEY_KP_ADD:
+        case GLFW_KEY_KP_ADD:
             key = KeyboardKey::Key_NumAdd;
             break;
-		case GLFW_KEY_KP_ENTER:
+        case GLFW_KEY_KP_ENTER:
             key = KeyboardKey::Key_NumPadEnter;
             break;
-		case GLFW_KEY_KP_EQUAL:
+        case GLFW_KEY_KP_EQUAL:
             key = KeyboardKey::Key_NumEqual;
             break;
-		case GLFW_KEY_MENU:
+        case GLFW_KEY_MENU:
             key = KeyboardKey::Key_MenuKey;
             break;
     }

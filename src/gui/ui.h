@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "src/VertexBuffer.h"
+#include "fontmanager.h"
 #include "uiimagemanager.h"
 #include "window.h"
 
@@ -19,7 +20,7 @@ public:
     glm::vec2 m_size;   // screen size
 
     UIImageManager m_ui_images;
-	FontManager    m_fonts;
+    FontManager    m_fonts;
 
     std::vector<std::unique_ptr<UIWindow>> m_layers;
 };
