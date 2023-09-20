@@ -137,6 +137,7 @@ enum class MouseButton
 };
 
 KeyboardKey MapKeyCode(int32_t platform_key_code);
+std::string KeyDescription(KeyboardKey key);
 
 class Input
 {
