@@ -484,92 +484,8 @@ std::string KeyDescription(KeyboardKey key)
             return "Numpad/";
         case KeyboardKey::Key_NumPoint:
             return "Numpad.";
-        case KeyboardKey::Key_NumComma:
-            return "Numpad,";
-        case KeyboardKey::Key_Num00:
-            return "Numpad00";
-        case KeyboardKey::Key_Num000:
-            return "Numpad000";
-        case KeyboardKey::Key_NumLeftParen:
-            return "Numpad(";
-        case KeyboardKey::Key_NumRightParen:
-            return "Numpad)";
-        case KeyboardKey::Key_NumLeftBrace:
-            return "Numpadcase return ";
-        case KeyboardKey::Key_NumRightBrace:
-            return "Numpad}";
-        case KeyboardKey::Key_NumTab:
-            return "NumpadTab";
-        case KeyboardKey::Key_NumBackspace:
-            return "NumpadBackspace";
-        case KeyboardKey::Key_NumA:
-            return "NumpadA";
-        case KeyboardKey::Key_NumB:
-            return "NumpadB";
-        case KeyboardKey::Key_NumC:
-            return "NumpadC";
-        case KeyboardKey::Key_NumD:
-            return "NumpadD";
-        case KeyboardKey::Key_NumE:
-            return "NumpadE";
-        case KeyboardKey::Key_NumF:
-            return "NumpadF";
-        case KeyboardKey::Key_NumXor:
-            return "NumpadXor";
-        case KeyboardKey::Key_NumPower:
-            return "NumpadPower";
-        case KeyboardKey::Key_NumPercent:
-            return "Numpad%";
-        case KeyboardKey::Key_NumLess:
-            return "Numpad<";
-        case KeyboardKey::Key_NumGreater:
-            return "Numpad>";
-        case KeyboardKey::Key_NumAmpersand:
-            return "Numpad&";
-        case KeyboardKey::Key_NumDblAmpersand:
-            return "Numpad&&";
-        case KeyboardKey::Key_NumVerticalBar:
-            return "Numpad|";
-        case KeyboardKey::Key_NumDblVerticalBar:
-            return "Numpad||";
-        case KeyboardKey::Key_NumColon:
-            return "Numpad:";
-        case KeyboardKey::Key_NumHash:
-            return "Numpad#";
-        case KeyboardKey::Key_NumSpace:
-            return "NumpadSpace";
-        case KeyboardKey::Key_NumAt:
-            return "Numpad@";
-        case KeyboardKey::Key_NumExclam:
-            return "Numpad!";
-        case KeyboardKey::Key_NumMemStore:
-            return "NumpadMemStore";
-        case KeyboardKey::Key_NumMemRecall:
-            return "NumpadMemRecall";
-        case KeyboardKey::Key_NumMemClear:
-            return "NumpadMemClear";
-        case KeyboardKey::Key_NumMemAdd:
-            return "NumpadMemAdd";
-        case KeyboardKey::Key_NumMemSubtract:
-            return "NumpadMemSubtract";
-        case KeyboardKey::Key_NumMemMultiply:
-            return "NumpadMemMultiply";
-        case KeyboardKey::Key_NumMemDivide:
-            return "NumpadMemDivide";
-        case KeyboardKey::Key_NumPlusMinus:
-            return "NumpadPlusMinus";
-        case KeyboardKey::Key_NumClear:
-            return "NumpadClear";
-        case KeyboardKey::Key_NumClearEntry:
-            return "NumpadClearEntry";
-        case KeyboardKey::Key_NumBinary:
-            return "NumBinary";
-        case KeyboardKey::Key_NumOctal:
-            return "NumOctal";
-        case KeyboardKey::Key_NumDecimal:
-            return "NumDecimal";
-        case KeyboardKey::Key_NumHexadecimal:
-            return "NumHexadecimal";
+        case KeyboardKey::Key_NumEqual:
+            return "Numpad=";
         case KeyboardKey::Key_LeftBracket:
             return "[";
         case KeyboardKey::Key_LeftCtrl:
@@ -604,8 +520,8 @@ std::string KeyDescription(KeyboardKey key)
             return "Return";
         case KeyboardKey::Key_Tab:
             return "Tab";
-        case KeyboardKey::Key_Apps:
-            return "AppMenu";
+        case KeyboardKey::Key_MenuKey:
+            return "MenuKey";
         case KeyboardKey::Key_CapsLock:
             return "Capital";
         case KeyboardKey::Key_Slash:
@@ -626,9 +542,11 @@ std::string KeyDescription(KeyboardKey key)
             return "-";
         case KeyboardKey::Key_Equals:
             return "=";
+        case KeyboardKey::Key_MaxKeyNum:
+            return "unknown key";
     }
-	
-	return "unknown key";
+
+    return "unknown key";
 }
 
 bool Input::isAnyKeyPressed() const

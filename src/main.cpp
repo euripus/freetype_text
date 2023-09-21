@@ -353,21 +353,21 @@ void DrawScene(void)
         g_num_frames = 0;
 
         text_buf.Clear();
-		auto &    tf = fm.getFont("./data/damase.ttf", 24);
+        auto & tf = fm.getFont("./data/damase.ttf", 24);
 
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
         auto      mt = MarkupText(tf, MarkupText::LineType::UNDERLINE);
         mt.addText(text_buf, buffer, pen);
 
-		pen = glm::vec2(10, 40);
-		auto key_desc = std::string("Last key: ") + KeyDescription(g_input_state.getKeyPressed());
-		tf.addText(text_buf, key_desc, pen);
+        pen           = glm::vec2(10, 40);
+        auto key_desc = std::string("Last key: ") + KeyDescription(g_input_state.getKeyPressed());
+        tf.addText(text_buf, key_desc.c_str(), pen);
 
-		pen = glm::vec2(10, 70);
-		auto cursor_pos = g_input_state.getMousePosition();
-		std::sprintf(buffer, "Cursor pos: %d, %d", cursor_pos.x, cursor_pos.y);
-		tf.addText(text_buf, key_desc, pen);
+        pen             = glm::vec2(10, 70);
+        auto cursor_pos = g_input_state.getMousePosition();
+        std::sprintf(buffer, "Cursor pos: %d, %d", cursor_pos.x, cursor_pos.y);
+        tf.addText(text_buf, buffer, pen);
 
         text_buf.VertexBufferUpload();
         text_buf.InitAttribLocation();

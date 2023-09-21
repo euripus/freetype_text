@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <deque>
+#include <string>
 
 enum class KeyboardKey
 {
