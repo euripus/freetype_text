@@ -7,10 +7,12 @@
 #include "basic_types.h"
 #include "texfont.h"
 
+class UI;
+
 class Widget
 {
 public:
-    Widget()          = default;
+    Widget(UI & owner) : m_owner(owner) {}
     virtual ~Widget() = default;
 
     virtual void update(float time, bool check_cursor);
@@ -33,6 +35,8 @@ public:
     void      resize(glm::vec2 const & new_size);
 
 protected:
+	UI & m_owner;
+
     glm::vec2 m_size;
     glm::vec2 m_size_min;
     glm::vec2 m_size_desired;
@@ -43,7 +47,7 @@ protected:
     ElementState m_state;
     TexFont *    m_font;
 
-    Widget *                             m_parent;
+    Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;
 
     friend class Packer;
