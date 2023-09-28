@@ -38,7 +38,7 @@ GUI
     update()
     set_style()
     create_widget()
-	create_window()
+    create_window()
 
 // draw
 for(layer : overlays)
@@ -56,3 +56,18 @@ InputBox
 ScrollView
 VerticalLayoutee
 HorizontalLayoutee
+
+v_box
+    textBox
+    h_box
+        button1
+        button2
+
+v_box
+    v_box
+        textBox
+        textBox
+    h_box
+        button1
+        button2
+
