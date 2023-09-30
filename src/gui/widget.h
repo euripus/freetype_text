@@ -35,7 +35,7 @@ public:
     void      resize(glm::vec2 const & new_size);
 
 protected:
-	UI & m_owner;
+    UI & m_owner;
 
     glm::vec2 m_size;
     glm::vec2 m_size_min;
@@ -45,6 +45,7 @@ protected:
     bool         m_visible;
     Align        m_align;
     ElementState m_state;
+    ElementType  m_type;
     TexFont *    m_font;
 
     Widget *                             m_parent = nullptr;
