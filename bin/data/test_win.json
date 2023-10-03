@@ -1,0 +1,42 @@
+{
+    "size": [0, 0],
+    "type": "VerticalLayoutee",
+    "id_name": "",
+    "font": "liberation.ttf",
+    "font_size": 24,
+    "children": [
+        {
+            "size": [100, 100],
+            "type": "TextBox",
+            "id_name": "text_window",
+            "font": "liberation.ttf",
+            "font_size": 24,
+            "children": []
+        },
+        {
+            "size": [0, 0],
+            "type": "HorizontalLayoutee",
+            "id_name": "",
+            "font": "liberation.ttf",
+            "font_size": 24,
+            "children": [
+                {
+                    "size": [25, 25],
+                    "type": "Button",
+                    "id_name": "button_ok",
+                    "font": "liberation.ttf",
+                    "font_size": 24,
+                    "children": []
+                },
+                {
+                    "size": [25, 25],
+                    "type": "Button",
+                    "id_name": "button_cancel",
+                    "font": "liberation.ttf",
+                    "font_size": 24,
+                    "children": []
+                }
+            ]
+        }
+    ]
+}

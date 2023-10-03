@@ -13,7 +13,8 @@ public:
     void update(float time);
     void draw(VertexBuffer & vb);
 
-    static std::unique_ptr<Widget> CreateWidget(ElementType type);
+    std::unique_ptr<Widget> CreateWidget(ElementType type);
+	UIWindow & loadWindow(std::string_view file_name); 
 
     // InputBackend * input;
 
@@ -22,7 +23,8 @@ public:
     UIImageManager m_ui_images;
     FontManager    m_fonts;
 
-    std::vector<std::unique_ptr<UIWindow>> m_layers;
+	std::vector<std::unique_ptr<UIWindow>> m_storage;
+    std::vector<std::vector<UIWindow *>> m_layers;
 };
 
 #endif

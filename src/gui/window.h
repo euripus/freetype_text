@@ -7,6 +7,8 @@
 
 class UIWindow
 {
+	UIWindow(std::string caption) : m_caption(std::move(caption)), m_visible(true) {}
+
     void draw();
     void update(float time);
 
@@ -17,15 +19,17 @@ class UIWindow
     void hide();
     bool visible() const;
 
-public:
+	void loadWindow(std::string_view file_name);
+
+public:	
     std::string m_caption;
-    bool        m_visible;
-    bool        m_draw_caption;
+    bool        m_visible= false;
+    bool        m_draw_caption = false;
 
     std::unique_ptr<Widget> m_root;
     std::unique_ptr<Widget> m_background;
     Packer                  m_packer;
-    TexFont *               m_font;   // caption font
+    TexFont *               m_font = nullptr;   // caption font
 };
 
 #endif

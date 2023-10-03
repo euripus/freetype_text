@@ -23,7 +23,8 @@ enum class ElementType
     InputBox,
     ScrollView,
     VerticalLayoutee,
-    HorizontalLayoutee
+    HorizontalLayoutee,
+	Unknown
 };
 
 enum class Align

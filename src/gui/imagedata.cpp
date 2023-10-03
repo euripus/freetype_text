@@ -446,7 +446,7 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
                 current_byte += bytes_per_pixel;
                 current_pixel++;
 
-                if(current_pixel > pixel_count)   // Make sure we havent written too many pixels
+                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
                 {
                     return false;
                 }
