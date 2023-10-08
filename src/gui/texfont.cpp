@@ -243,7 +243,7 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     FT_Library   library;
     FT_Error     error;
     FT_Face      face;
-    FT_Glyph     ft_glyph;
+    FT_Glyph     ft_glyph = nullptr;
     FT_GlyphSlot slot;
     FT_Bitmap    ft_bitmap;
 

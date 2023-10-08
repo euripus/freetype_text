@@ -7,7 +7,7 @@
 
 class UIWindow
 {
-	UIWindow(std::string caption) : m_caption(std::move(caption)), m_visible(true) {}
+    UIWindow(std::string caption) : m_caption(std::move(caption)), m_visible(true) {}
 
     void draw();
     void update(float time);
@@ -19,11 +19,11 @@ class UIWindow
     void hide();
     bool visible() const;
 
-	void loadWindow(std::string_view file_name);
+    void loadWindow(std::string_view file_name);
 
-public:	
+public:
     std::string m_caption;
-    bool        m_visible= false;
+    bool        m_visible      = false;
     bool        m_draw_caption = false;
 
     std::unique_ptr<Widget> m_root;

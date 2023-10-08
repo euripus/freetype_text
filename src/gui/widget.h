@@ -43,10 +43,10 @@ protected:
     glm::vec2 m_pos;
 
     bool         m_visible = true;
-    Align        m_align = Align::left;
-    ElementState m_state = ElementState::normal;
-    ElementType  m_type = ElementType::Unknown;
-    TexFont *    m_font = nullptr;
+    Align        m_align   = Align::left;
+    ElementState m_state   = ElementState::normal;
+    ElementType  m_type    = ElementType::Unknown;
+    TexFont *    m_font    = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

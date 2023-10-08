@@ -18,8 +18,8 @@ Packer::FinalList Packer::getListFromTree(Widget * root)
 
 void Packer::addSubTree(FinalList & ls, Widget * root)
 {
-	if(root->m_type == ElementType::Unknown)
-		return;
+    if(root == nullptr || root->m_type == ElementType::Unknown)
+        return;
 
     ls.push_back({});
     auto & ch_list = ls.back();
@@ -29,7 +29,7 @@ void Packer::addSubTree(FinalList & ls, Widget * root)
         for(auto const & ch : root->m_children)
         {
             if(auto * cur_ch_ptr = ch.get(); cur_ch_ptr->m_type == ElementType::VerticalLayoutee
-                                         || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
+                                             || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
             {
                 if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
                     addSubTree(ls, cur_ch_ptr);
@@ -42,13 +42,13 @@ void Packer::addSubTree(FinalList & ls, Widget * root)
                 }
             }
             else
-            {				
-				ch_list.push_back(cur_ch_ptr);
+            {
+                ch_list.push_back(cur_ch_ptr);
             }
         }
     }
     else
     {
-		ch_list.push_back(root);
+        ch_list.push_back(root);
     }
 }

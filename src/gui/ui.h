@@ -14,17 +14,16 @@ public:
     void draw(VertexBuffer & vb);
 
     std::unique_ptr<Widget> CreateWidget(ElementType type);
-	UIWindow & loadWindow(std::string_view file_name); 
+    UIWindow &              loadWindow(std::string_view file_name);
 
     // InputBackend * input;
 
-    glm::vec2 m_size;   // screen size
-
-    UIImageManager m_ui_images;
+    glm::vec2      m_screen_size;
+    UIImageManager m_ui_image_atlas;
     FontManager    m_fonts;
 
-	std::vector<std::unique_ptr<UIWindow>> m_storage;
-    std::vector<std::vector<UIWindow *>> m_layers;
+    std::vector<std::unique_ptr<UIWindow>> m_windows;
+    std::vector<std::vector<UIWindow *>>   m_layers;
 };
 
 #endif

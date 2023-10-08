@@ -91,18 +91,16 @@ enum class KeyboardKey
     Key_NumPoint,      // PERIOD (decimal point) on numeric keypad
     Key_NumEqual,
 
-    Key_LeftBracket,   // Left square bracket [
-    Key_LeftCtrl,      // Left CTRL
-    Key_LeftAlt,       // Left ALT
-    Key_LeftShift,     // Left SHIFT
-    Key_LeftWin,       // Left Windows logo key
+    Key_LeftCtrl,    // Left CTRL
+    Key_LeftAlt,     // Left ALT
+    Key_LeftShift,   // Left SHIFT
+    Key_LeftWin,     // Left Windows logo key
 
-    Key_RightBracket,   // Right square bracket ]
-    Key_RightCtrl,      // Right CTRL
-    Key_RightAlt,       // Right ALT
-    Key_RightShift,     // Right SHIFT
-    Key_RightWin,       // Right Windows logo key
-    Key_MenuKey,        // Application key
+    Key_RightCtrl,    // Right CTRL
+    Key_RightAlt,     // Right ALT
+    Key_RightShift,   // Right SHIFT
+    Key_RightWin,     // Right Windows logo key
+    Key_MenuKey,      // Application key
 
     Key_PrintScreen,
     Key_ScrollLock,
@@ -112,17 +110,17 @@ enum class KeyboardKey
     Key_Backspace,
     Key_Enter,   // ENTER on main keyboard
     Key_Tab,
-
     Key_CapsLock,
-
-    Key_Slash,        // (/) On main keyboard
-    Key_Backslash,    // (\)
-    Key_Comma,        // (,)
-    Key_Semicolon,    // (;)
-    Key_Period,       // (.) On main keyboard
-    Key_Grave,        // (`) Grave accent
-    Key_Apostrophe,   // (')
-    Key_Minus,        // (-) On main keyboard
+    Key_LeftBracket,    // Left square bracket [
+    Key_RightBracket,   // Right square bracket ]
+    Key_Slash,          // (/) On main keyboard
+    Key_Backslash,      // (\)
+    Key_Comma,          // (,)
+    Key_Semicolon,      // (;)
+    Key_Period,         // (.) On main keyboard
+    Key_Grave,          // (`) Grave accent
+    Key_Apostrophe,     // (')
+    Key_Minus,          // (-) On main keyboard
     Key_Equals,
 
     Key_MaxKeyNum   // Max and unknown code

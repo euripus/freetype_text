@@ -244,6 +244,8 @@ RegionDataOfUITexture const & UIImageGroup::getImageRegion(std::string const & n
 void UIImageGroup::reloadImages()
 {
     auto regions = std::move(m_regions);
+    m_regions.clear();
+
     for(auto & reg : regions)
     {
         tex::ImageData image;
