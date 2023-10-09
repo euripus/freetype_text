@@ -38,8 +38,8 @@ enum class Align
 
 enum class SizePolicy
 {
-	resize,
-	none
+    resize,
+    none
 };
 
 #endif

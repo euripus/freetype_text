@@ -30,9 +30,9 @@ public:
     std::unique_ptr<Widget> m_background;
     Packer                  m_packer;
     TexFont *               m_font = nullptr;   // caption font
-	glm::vec2 m_size = {}; // Window size without caption
-	
-	friend class Packer;
+    glm::vec2               m_size = {};        // Window size without caption
+
+    friend class Packer;
 };
 
 #endif

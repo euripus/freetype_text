@@ -7,7 +7,7 @@ void Widget::draw() {}
 void Widget::addWidget(std::unique_ptr<Widget> widget, Align align) 
 {
 	m_children.push_back(std::move(widget));
-	m_align = align;
+    //m_align = align;
 	
 	if(parent())
 	{
