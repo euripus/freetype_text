@@ -22,15 +22,15 @@ class VertexBuffer;
 // (left_bottom, tx0)
 struct RegionDataOfUITexture
 {
-    glm::vec2 left_bottom;   // pixel coordinates
-    glm::vec2 right_top;
-    glm::vec2 tx0;   // normalized coordinates
-    glm::vec2 tx1;
+    glm::vec2 left_bottom = {};   // pixel coordinates
+    glm::vec2 right_top   = {};
+    glm::vec2 tx0         = {};   // normalized coordinates
+    glm::vec2 tx1         = {};
     // nine slice data
-    int32_t left;
-    int32_t right;
-    int32_t bottom;
-    int32_t top;
+    int32_t left   = 0;
+    int32_t right  = 0;
+    int32_t bottom = 0;
+    int32_t top    = 0;
 
     std::string name;
     std::string path;

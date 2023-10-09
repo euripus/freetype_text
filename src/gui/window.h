@@ -19,7 +19,7 @@ class UIWindow
     void hide();
     bool visible() const;
 
-    void loadWindow(std::string_view file_name);
+    void loadWindowDesc(std::string_view file_name);
 
 public:
     std::string m_caption;

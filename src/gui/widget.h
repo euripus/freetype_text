@@ -46,7 +46,7 @@ protected:
     bool         m_visible    = true;
     Align        m_horizontal = Align::left;
     Align        m_vertical   = Align::top;
-    SizePolicy   m_scale      = SizePolicy::resize;
+    SizePolicy   m_scale      = SizePolicy::scale;
     ElementState m_state      = ElementState::normal;
     ElementType  m_type       = ElementType::Unknown;
     TexFont *    m_font       = nullptr;

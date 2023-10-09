@@ -8,7 +8,7 @@ void Packer::fitWidgets(UIWindow * win) const
     if(win == nullptr)
         return;
 
-    auto list = getListFromTree(win->m_root.get());
+    auto list = getMatrixFromTree(win->m_root.get());
 
     float max_width = 0.0f;
     for(auto const & row : list)
@@ -17,9 +17,9 @@ void Packer::fitWidgets(UIWindow * win) const
     adjustWidgetsInRow(win, list, max_width);
 }
 
-Packer::FinalList Packer::getListFromTree(Widget * root) const
+Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
 {
-    Packer::FinalList list;
+    WidgetMatrix list;
 
     if(root != nullptr)
         addSubTree(list, root);
@@ -29,7 +29,7 @@ Packer::FinalList Packer::getListFromTree(Widget * root) const
     return list;
 }
 
-void Packer::addSubTree(FinalList & ls, Widget * root) const
+void Packer::addSubTree(WidgetMatrix & ls, Widget * root) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
@@ -86,7 +86,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
     return height;
 }
 
-void Packer::adjustWidgetsInRow(UIWindow * win, FinalList & ls, float new_width) const
+void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
 {
     // 1. Rearrange widgets in rows
     // 2. Set new_size and new_pos for window widgets
@@ -100,16 +100,16 @@ void Packer::adjustWidgetsInRow(UIWindow * win, FinalList & ls, float new_width)
         float element_width = new_width / num_widgets;
         float current_pos   = m_horizontal_spacing;
 
-        for(auto const * widget : row)
+        for(auto * widget : row)
         {
-            glm::vec2 pos{current_pos, current_height};
+            glm::vec2 pos(current_pos, current_height);
 
-            if(widget->m_scale == SizePolicy::resize) {}
+            if(widget->m_scale == SizePolicy::scale) {}
             else if(widget->m_scale == SizePolicy::none) {}
         }
 
         current_height = row_height + m_vertical_spacing;
     }
 
-    win->m_size = glm::vec2{new_width, current_height};
+    win->m_size = glm::vec2(new_width, current_height);
 }

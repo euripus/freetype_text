@@ -6,47 +6,46 @@
 struct Rect2D
 {
     // Cartesian coordinates
-    glm::ivec2 m_pos;
-    glm::ivec2 m_extent;
+    glm::vec2 m_pos;
+    glm::vec2 m_extent;
 
     Rect2D() noexcept = default;
 
-    constexpr Rect2D(glm::ivec2 const & position, glm::ivec2 const & extent) noexcept :
+    constexpr Rect2D(glm::vec2 const & position, glm::vec2 const & extent) noexcept :
         m_pos(position), m_extent(extent)
     {}
 
-    constexpr Rect2D(const std::int32_t x, const std::int32_t y, const std::int32_t width,
-                     const std::int32_t height) noexcept :
+    constexpr Rect2D(float const x, float const y, float const width, float const height) noexcept :
         m_pos(x, y), m_extent(width, height)
     {}
 
-    static Rect2D fromLeftBottomRightTop(const std::int32_t left, const std::int32_t bottom,
-                                         const std::int32_t right, const std::int32_t top);
+    static Rect2D fromLeftBottomRightTop(float const left, float const bottom, float const right,
+                                         float const top);
 
     static constexpr Rect2D empty() noexcept { return {}; }
 
-    inline std::int32_t left() const noexcept { return m_pos.x; }
+    inline float left() const noexcept { return m_pos.x; }
 
-    inline std::int32_t top() const noexcept { return m_pos.y + m_extent.y; }
+    inline float top() const noexcept { return m_pos.y + m_extent.y; }
 
-    inline std::int32_t right() const noexcept { return m_pos.x + m_extent.x; }
+    inline float right() const noexcept { return m_pos.x + m_extent.x; }
 
-    inline std::int32_t bottom() const noexcept { return m_pos.y; }
+    inline float bottom() const noexcept { return m_pos.y; }
 
-    inline std::int32_t width() const noexcept { return m_extent.x; }
+    inline float width() const noexcept { return m_extent.x; }
 
-    inline std::int32_t height() const noexcept { return m_extent.y; }
+    inline float height() const noexcept { return m_extent.y; }
 
-    bool contains(const std::int32_t x, const std::int32_t y) const noexcept
+    bool contains(float const x, float const y) const noexcept
     {
         return (x >= left() && x < right() && y < top() && y >= bottom());
     }
 
-    bool contains(glm::ivec2 const & value) const noexcept { return contains(value.x, value.y); }
+    bool contains(glm::vec2 const & value) const noexcept { return contains(value.x, value.y); }
 
-    glm::ivec2 getCenter() const noexcept { return {m_pos.x + m_extent.x / 2, m_pos.y + m_extent.y / 2}; }
+    glm::vec2 getCenter() const noexcept { return {m_pos.x + m_extent.x / 2, m_pos.y + m_extent.y / 2}; }
 
-    void inflate(const std::int32_t horizontal_value, const std::int32_t vertical_value);
+    void inflate(float const horizontal_value, float const vertical_value);
 
     bool isEmpty() const noexcept
     {

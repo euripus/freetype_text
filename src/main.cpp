@@ -309,7 +309,7 @@ bool InitWindow()
     auto & fnt2   = fm.addFont(desc);
     fnt2.cacheGlyphs(dict.c_str());
 
-    fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
+    // fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     fm.getAtlas().UploadTexture();
     shd_txt.Init("./data/vertTxt.glsl", "./data/fragTxt.glsl");
     glm::vec2 pos(10, 10);
@@ -360,8 +360,8 @@ void DrawScene(void)
         auto      mt = MarkupText(tf, MarkupText::LineType::UNDERLINE);
         mt.addText(text_buf, buffer, pen);
 
-        pen           = glm::vec2(10, 40);
-        auto key_desc = std::string("Last key: ") + KeyDescription(g_input_state.getKeyPressed());
+        pen = glm::vec2(10, 40);
+        auto key_desc = std::string("Последняя клавиша: ") + KeyDescription(g_input_state.getKeyPressed());
         tf.addText(text_buf, key_desc.c_str(), pen);
 
         pen             = glm::vec2(10, 70);
