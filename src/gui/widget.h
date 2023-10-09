@@ -29,6 +29,7 @@ public:
     bool visible() const { return m_visible; }
 
     glm::vec2 size() const;
+	glm::vec2 sizeHint() const { return m_size_hint; }
 
     glm::vec2 pos() const;
     void      move(glm::vec2 const & point);
@@ -37,13 +38,15 @@ public:
 protected:
     UI & m_owner;
 
-    glm::vec2 m_size;
-    glm::vec2 m_size_min;
-    glm::vec2 m_size_desired;
-    glm::vec2 m_pos;
+    glm::vec2 m_size={};
+    glm::vec2 m_size_min={};
+    glm::vec2 m_size_hint={};
+    glm::vec2 m_pos={};
 
     bool         m_visible = true;
-    Align        m_align   = Align::left;
+    Align        m_horizontal   = Align::left;
+	Align        m_vertical   = Align::top;
+	SizePolicy   m_scale = SizePolicy::resize;
     ElementState m_state   = ElementState::normal;
     ElementType  m_type    = ElementType::Unknown;
     TexFont *    m_font    = nullptr;

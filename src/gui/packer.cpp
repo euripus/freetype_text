@@ -2,9 +2,21 @@
 #include "basic_types.h"
 #include <algorithm>
 
-void Packer::fitWidgets(Widget * root) {}
+void Packer::fitWidgets(UIWindow * win) const
+{
+	if(root == nullptr)
+		return;
+	
+	auto list = getListFromTree(win->m_root.get());
 
-Packer::FinalList Packer::getListFromTree(Widget * root)
+	float max_width = 0.0f;
+	for(auto const & row : list)
+		max_width = glm::max(max_width, getRowMaxWidth(row));
+	
+	adjustWidgetsInRow(list, max_width);
+}
+
+Packer::FinalList Packer::getListFromTree(Widget * root) const
 {
     Packer::FinalList list;
 
@@ -16,7 +28,7 @@ Packer::FinalList Packer::getListFromTree(Widget * root)
     return list;
 }
 
-void Packer::addSubTree(FinalList & ls, Widget * root)
+void Packer::addSubTree(FinalList & ls, Widget * root) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
@@ -51,4 +63,54 @@ void Packer::addSubTree(FinalList & ls, Widget * root)
     {
         ch_list.push_back(root);
     }
+}
+
+float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
+{
+	float width = m_horizontal_spacing;
+	
+	for(auto const * widget : row)
+		width += widget->size().x + m_horizontal_spacing;
+	
+	return width;
+}
+
+float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
+{
+	float height = 0.0f;
+	
+	for(auto const * widget : row)
+		height = glm::max(height, widget->size().y);
+	
+	return height;
+}
+
+void Packer::adjustWidgetsInRow(UIWindow * win, FinalList & ls, float new_width) const
+{
+	// 1. Rearrange widgets in rows
+	// 2. Set new_size and new_pos for window widgets
+
+	float current_height = m_vertical_spacing;
+
+	for(auto & row : list)
+	{
+		auto  num_widgets = row.size();
+		float row_height  = getRowMaxHeight(row);
+		float element_width = new_width / num_widgets;
+		float current_pos = m_horizontal_spacing;
+
+		for(auto const * widget : row)
+		{
+			glm::vec2 pos{current_pos, current_height};
+
+			if(widget->m_scale == SizePolicy::resize)
+			{
+			}
+			else if(widget->m_scale == SizePolicy::none)
+			{
+			}
+		}
+
+		current_height = row_height + m_vertical_spacing;
+	}
 }

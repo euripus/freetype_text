@@ -36,4 +36,10 @@ enum class Align
     bottom
 };
 
+enum class SizePolicy
+{
+	resize,
+	none
+};
+
 #endif
