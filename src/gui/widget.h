@@ -39,7 +39,6 @@ protected:
     UI & m_owner;
 
     glm::vec2 m_size      = {};
-    glm::vec2 m_size_min  = {};
     glm::vec2 m_size_hint = {};
     glm::vec2 m_pos       = {};
 
@@ -47,7 +46,6 @@ protected:
     Align        m_horizontal = Align::left;
     Align        m_vertical   = Align::top;
     SizePolicy   m_scale      = SizePolicy::scale;
-    ElementState m_state      = ElementState::normal;
     ElementType  m_type       = ElementType::Unknown;
     TexFont *    m_font       = nullptr;
 

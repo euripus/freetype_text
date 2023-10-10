@@ -2,6 +2,9 @@
     "size": [0, 0],
     "type": "VerticalLayoutee",
     "id_name": "",
+    "size_policy": "scale",
+    "align_horizontal": "left",
+    "align_vertical": "top",
     "font": "liberation.ttf",
     "font_size": 24,
     "children": [
@@ -9,6 +12,9 @@
             "size": [100, 100],
             "type": "TextBox",
             "id_name": "text_window",
+            "size_policy": "scale",
+            "align_horizontal": "left",
+            "align_vertical": "top",
             "font": "liberation.ttf",
             "font_size": 24,
             "children": []
@@ -17,6 +23,9 @@
             "size": [0, 0],
             "type": "HorizontalLayoutee",
             "id_name": "",
+            "size_policy": "scale",
+            "align_horizontal": "left",
+            "align_vertical": "top",
             "font": "liberation.ttf",
             "font_size": 24,
             "children": [
@@ -24,6 +33,9 @@
                     "size": [25, 25],
                     "type": "Button",
                     "id_name": "button_ok",
+                    "size_policy": "scale",
+                    "align_horizontal": "left",
+                    "align_vertical": "top",
                     "font": "liberation.ttf",
                     "font_size": 24,
                     "children": []
@@ -32,6 +44,9 @@
                     "size": [25, 25],
                     "type": "Button",
                     "id_name": "button_cancel",
+                    "size_policy": "scale",
+                    "align_horizontal": "left",
+                    "align_vertical": "top",
                     "font": "liberation.ttf",
                     "font_size": 24,
                     "children": []

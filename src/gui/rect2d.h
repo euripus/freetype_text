@@ -19,10 +19,10 @@ struct Rect2D
         m_pos(x, y), m_extent(width, height)
     {}
 
-    static Rect2D fromLeftBottomRightTop(float const left, float const bottom, float const right,
+    static Rect2D FromLeftBottomRightTop(float const left, float const bottom, float const right,
                                          float const top);
 
-    static constexpr Rect2D empty() noexcept { return {}; }
+    static constexpr Rect2D Empty() noexcept { return {}; }
 
     inline float left() const noexcept { return m_pos.x; }
 
@@ -58,9 +58,9 @@ struct Rect2D
                && bottom() < value.top();
     }
 
-    static Rect2D intersect(Rect2D const & rect1, Rect2D const & rect2);
+    static Rect2D Intersect(Rect2D const & rect1, Rect2D const & rect2);
 
-    static Rect2D union_rect2D(Rect2D const & rect1, Rect2D const & rect2);
+    static Rect2D Union_rect2D(Rect2D const & rect1, Rect2D const & rect2);
 
     bool operator==(Rect2D const & rhs) const noexcept
     {

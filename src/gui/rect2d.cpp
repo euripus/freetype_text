@@ -1,7 +1,7 @@
 #include "rect2d.h"
 #include <stdexcept>
 
-Rect2D Rect2D::fromLeftBottomRightTop(float const left, float const bottom, float const right,
+Rect2D Rect2D::FromLeftBottomRightTop(float const left, float const bottom, float const right,
                                       float const top)
 {
     if(left > right || top < bottom)
@@ -25,7 +25,7 @@ void Rect2D::inflate(float const horizontal_value, float const vertical_value)
     m_extent.y += vertical_value * 2;
 }
 
-Rect2D Rect2D::intersect(Rect2D const & rect1, Rect2D const & rect2)
+Rect2D Rect2D::Intersect(Rect2D const & rect1, Rect2D const & rect2)
 {
     if(rect1.intersects(rect2))
     {
@@ -33,16 +33,16 @@ Rect2D Rect2D::intersect(Rect2D const & rect1, Rect2D const & rect2)
         float const top    = std::min(rect1.top(), rect2.top());
         float const left   = std::max(rect1.left(), rect2.left());
         float const bottom = std::max(rect1.bottom(), rect2.bottom());
-        return fromLeftBottomRightTop(left, bottom, right, top);
+        return FromLeftBottomRightTop(left, bottom, right, top);
     }
     return {};
 }
 
-Rect2D Rect2D::union_rect2D(Rect2D const & rect1, Rect2D const & rect2)
+Rect2D Rect2D::Union_rect2D(Rect2D const & rect1, Rect2D const & rect2)
 {
     float const left   = std::min(rect1.m_pos.x, rect2.m_pos.x);
     float const bottom = std::min(rect1.m_pos.y, rect2.m_pos.y);
     float const right  = std::max(rect1.right(), rect2.right());
     float const top    = std::max(rect1.top(), rect2.top());
-    return fromLeftBottomRightTop(left, bottom, right, top);
+    return FromLeftBottomRightTop(left, bottom, right, top);
 }
