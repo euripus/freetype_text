@@ -42,12 +42,12 @@ protected:
     glm::vec2 m_size_hint = {};
     glm::vec2 m_pos       = {};
 
-    bool         m_visible    = true;
-    Align        m_horizontal = Align::left;
-    Align        m_vertical   = Align::top;
-    SizePolicy   m_scale      = SizePolicy::scale;
-    ElementType  m_type       = ElementType::Unknown;
-    TexFont *    m_font       = nullptr;
+    bool        m_visible    = true;
+    Align       m_horizontal = Align::left;
+    Align       m_vertical   = Align::top;
+    SizePolicy  m_scale      = SizePolicy::scale;
+    ElementType m_type       = ElementType::Unknown;
+    TexFont *   m_font       = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

@@ -89,7 +89,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
 void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
 {
     float current_height = m_vertical_spacing;
-    float final_width = 0.0f;
+    float final_width    = 0.0f;
 
     for(auto & row : ls)
     {
@@ -100,23 +100,23 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
         for(auto * widget : row)
         {
-            if(widget->m_scale == SizePolicy::scale) 
+            if(widget->m_scale == SizePolicy::scale)
             {
                 glm::vec2 pos(current_pos, current_height);
                 glm::vec2 size(element_width, row_height);
-                
-                widget->m_pos = pos;
+
+                widget->m_pos  = pos;
                 widget->m_size = size;
-                
+
                 current_pos += element_width + m_horizontal_spacing;
             }
-            else if(widget->m_scale == SizePolicy::none) 
+            else if(widget->m_scale == SizePolicy::none)
             {
                 if(widget->m_size_hint.x < element_width)
                 {
                     // vertical align
                     float vertical_delta = row_height - widget->m_size_hint.y;
-                    float widget_y = current_height;
+                    float widget_y       = current_height;
                     if(vertical_delta > 0)
                     {
                         if(widget->m_vertical == Align::top)
@@ -124,10 +124,10 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                         else if(widget->m_vertical == Align::center)
                             widget_y += vertical_delta / 2.0f;
                     }
-                    
+
                     // horizontal align
                     float horizontal_delta = element_width - widget->m_size_hint.x;
-                    float widget_x = current_pos;                   
+                    float widget_x         = current_pos;
                     if(horizontal_delta > 0)
                     {
                         if(widget->m_horizontal == Align::right)
@@ -135,20 +135,20 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                         else if(widget->m_horizontal == Align::center)
                             widget_x += horizontal_delta / 2.0f;
                     }
-                    
+
                     glm::vec2 pos(widget_x, widget_y);
                     glm::vec2 size(widget->m_size_hint);
-                    
-                    widget->m_pos = pos;
+
+                    widget->m_pos  = pos;
                     widget->m_size = size;
-                    
+
                     current_pos += widget->m_size_hint.x + m_horizontal_spacing;
                 }
                 else
                 {
                     // vertical align
                     float vertical_delta = row_height - widget->m_size_hint.y;
-                    float widget_y = current_height;
+                    float widget_y       = current_height;
                     if(vertical_delta > 0)
                     {
                         if(widget->m_vertical == Align::top)
@@ -156,13 +156,13 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                         else if(widget->m_vertical == Align::center)
                             widget_y += vertical_delta / 2.0f;
                     }
-                    
+
                     glm::vec2 pos(current_pos, widget_y);
                     glm::vec2 size(widget->m_size_hint);
-                    
-                    widget->m_pos = pos;
+
+                    widget->m_pos  = pos;
                     widget->m_size = size;
-                    
+
                     current_pos += widget->m_size_hint.x + m_horizontal_spacing;
                 }
             }
