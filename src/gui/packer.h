@@ -16,7 +16,7 @@ public:
 
 protected:
     WidgetMatrix getMatrixFromTree(Widget * root) const;
-    void         addSubTree(WidgetMatrix & ls, Widget * root) const;
+    void         addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level = 0) const;
     float        getRowMaxWidth(std::vector<Widget *> const & row) const;
     float        getRowMaxHeight(std::vector<Widget *> const & row) const;
     void         adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const;

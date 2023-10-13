@@ -29,13 +29,23 @@ Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
     return list;
 }
 
-void Packer::addSubTree(WidgetMatrix & ls, Widget * root) const
+void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
 
-    ls.push_back({});
-    auto & ch_list = ls.back();
+    std::vector<Widget *> * row = nullptr;
+    if(level < ls.size())
+    {       
+        row = &ls[level];
+    }
+    else
+    {
+        ls.push_back({});
+        row = &ls.back();
+    }
+    
+    auto & ch_list = *row;
 
     if(root->m_type == ElementType::VerticalLayoutee || root->m_type == ElementType::HorizontalLayoutee)
     {
@@ -45,12 +55,12 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root) const
                                              || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
             {
                 if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
-                    addSubTree(ls, cur_ch_ptr);
+                    addSubTree(ls, cur_ch_ptr, level++);
                 else
                 {
                     for(auto const & ch2 : cur_ch_ptr->m_children)
                     {
-                        addSubTree(ls, ch2.get());
+                        addSubTree(ls, ch2.get(), level++);
                     }
                 }
             }
@@ -107,8 +117,6 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
                 widget->m_pos  = pos;
                 widget->m_size = size;
-
-                current_pos += element_width + m_horizontal_spacing;
             }
             else if(widget->m_scale == SizePolicy::none)
             {
@@ -141,8 +149,6 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
                     widget->m_pos  = pos;
                     widget->m_size = size;
-
-                    current_pos += widget->m_size_hint.x + m_horizontal_spacing;
                 }
                 else
                 {
@@ -162,10 +168,10 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
                     widget->m_pos  = pos;
                     widget->m_size = size;
-
-                    current_pos += widget->m_size_hint.x + m_horizontal_spacing;
                 }
             }
+            
+            current_pos += widget->m_size.x  + m_horizontal_spacing;
         }
 
         final_width = glm::max(current_pos, new_width);
