@@ -1,6 +1,7 @@
 #ifndef VERTEXATTRIB_H
 #define VERTEXATTRIB_H
 
+#include <cstdint>
 #include <string>
 
 struct VertexAttrib

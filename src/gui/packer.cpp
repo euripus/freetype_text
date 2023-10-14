@@ -36,7 +36,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
 
     std::vector<Widget *> * row = nullptr;
     if(level < ls.size())
-    {       
+    {
         row = &ls[level];
     }
     else
@@ -44,7 +44,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
         ls.push_back({});
         row = &ls.back();
     }
-    
+
     auto & ch_list = *row;
 
     if(root->m_type == ElementType::VerticalLayoutee || root->m_type == ElementType::HorizontalLayoutee)
@@ -170,8 +170,8 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     widget->m_size = size;
                 }
             }
-            
-            current_pos += widget->m_size.x  + m_horizontal_spacing;
+
+            current_pos += widget->m_size.x + m_horizontal_spacing;
         }
 
         final_width = glm::max(current_pos, new_width);
