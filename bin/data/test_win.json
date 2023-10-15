@@ -1,6 +1,7 @@
 {
     "size": [0, 0],
     "type": "VerticalLayoutee",
+    "region_name":"",
     "id_name": "",
     "size_policy": "scale",
     "align_horizontal": "left",
@@ -11,6 +12,7 @@
         {
             "size": [100, 100],
             "type": "TextBox",
+            "region_name":"background",
             "id_name": "text_window",
             "size_policy": "scale",
             "align_horizontal": "left",
@@ -22,6 +24,7 @@
         {
             "size": [0, 0],
             "type": "HorizontalLayoutee",
+            "region_name":"",
             "id_name": "",
             "size_policy": "scale",
             "align_horizontal": "left",
@@ -32,6 +35,7 @@
                 {
                     "size": [25, 25],
                     "type": "Button",
+                    "region_name":"button",
                     "id_name": "button_ok",
                     "size_policy": "scale",
                     "align_horizontal": "left",
@@ -43,6 +47,7 @@
                 {
                     "size": [25, 25],
                     "type": "Button",
+                    "region_name":"button",
                     "id_name": "button_cancel",
                     "size_policy": "scale",
                     "align_horizontal": "left",

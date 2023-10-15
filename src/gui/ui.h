@@ -13,12 +13,17 @@ public:
     void update(float time);
     void draw(VertexBuffer & vb);
 
-    std::unique_ptr<Widget> CreateWidget(ElementType type);
-    UIWindow &              loadWindow(std::string_view file_name);
+    UIWindow & loadWindow(std::string_view file_name);
+	bool       loadUIImageGroup(std::string_view file_name);
+
+	static ElementType GetElementTypeFromString(std::string_view name);
+	static SizePolicy  GetSizePolicyFromString(std::string_view name);
+	static Align       GetAlignFromString(std::string_view name);
+	static std::unique_ptr<Widget> CreateWidget(ElementType type);
 
     // InputBackend * input;
 
-    glm::vec2      m_screen_size;
+    glm::ivec2     m_screen_size;
     UIImageManager m_ui_image_atlas;
     FontManager    m_fonts;
 
