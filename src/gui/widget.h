@@ -28,9 +28,9 @@ public:
     void hide();
     bool visible() const { return m_visible; }
 
-    glm::vec2 size() const { return m_size; }
-    glm::vec2 sizeHint() const { return m_size_hint; }
-	std::string getId() const { return m_id; }
+    glm::vec2   size() const { return m_size; }
+    glm::vec2   sizeHint() const { return m_size_hint; }
+    std::string getId() const { return m_id; }
 
     glm::vec2 pos() const { return m_pos; }
     void      move(glm::vec2 const & point);
@@ -39,10 +39,10 @@ public:
 protected:
     UI & m_owner;
 
-    glm::vec2 m_size      = {};
-    glm::vec2 m_size_hint = {};
-    glm::vec2 m_pos       = {};	
-	std::string m_id = {};
+    glm::vec2   m_size      = {};
+    glm::vec2   m_size_hint = {};
+    glm::vec2   m_pos       = {};
+    std::string m_id        = {};
 
     bool        m_visible    = true;
     Align       m_horizontal = Align::left;

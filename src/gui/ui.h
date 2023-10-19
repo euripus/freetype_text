@@ -14,12 +14,12 @@ public:
     void draw(VertexBuffer & vb);
 
     UIWindow & loadWindow(std::string_view file_name);
-	bool       loadUIImageGroup(std::string_view file_name);
+    bool       loadUIImageGroup(std::string_view file_name);
 
-	static ElementType GetElementTypeFromString(std::string_view name);
-	static SizePolicy  GetSizePolicyFromString(std::string_view name);
-	static Align       GetAlignFromString(std::string_view name);
-	static std::unique_ptr<Widget> CreateWidget(ElementType type);
+    static ElementType             GetElementTypeFromString(std::string_view name);
+    static SizePolicy              GetSizePolicyFromString(std::string_view name);
+    static Align                   GetAlignFromString(std::string_view name);
+    static std::unique_ptr<Widget> CreateWidget(ElementType type);
 
     // InputBackend * input;
 
