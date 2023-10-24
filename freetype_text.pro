@@ -10,6 +10,7 @@ CONFIG(release, debug|release) {
 } else {
     #This is a debug build
     DEFINES += DEBUG
+    # QMAKE_CXXFLAGS += -fsanitize=address  -fsanitize=leak -g
     TARGET = $$join(TARGET,,,_d)
 }
 
