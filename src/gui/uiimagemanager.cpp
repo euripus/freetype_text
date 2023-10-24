@@ -110,9 +110,9 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
 
         for(auto & kvp : obj)
         {
-            if(kvp.key() == "gui_set")
+            if(kvp.key() == sid_gui_set)
                 gr_name = kvp.value().as_string();
-            else if(kvp.key() == "images")
+            else if(kvp.key() == sid_images)
             {
                 images = kvp.value();
             }
@@ -144,9 +144,9 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
 
             for(auto & kvp2 : it->value().as_object())
             {
-                if(kvp2.key() == "texture")
+                if(kvp2.key() == sid_texture)
                     path = kvp2.value().as_string();
-                else if(kvp2.key() == "9slice_margins")
+                else if(kvp2.key() == sid_9slice_margins)
                 {
                     margins = boost::json::value_to<std::vector<int32_t>>(kvp2.value());
                 }

@@ -7,6 +7,7 @@
 
 class UIWindow
 {
+public:
     UIWindow(std::string caption) : m_caption(std::move(caption)), m_visible(true) {}
 
     void draw();
@@ -21,7 +22,7 @@ class UIWindow
 
     void loadWindowDesc(std::string_view file_name);
 
-public:
+private:
     std::string m_caption;
     bool        m_visible      = false;
     bool        m_draw_caption = false;
