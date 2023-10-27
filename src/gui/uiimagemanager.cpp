@@ -144,9 +144,9 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
 
             for(auto & kvp2 : it->value().as_object())
             {
-                if(kvp2.key() == sid_texture)
+                if(kvp2.key() == UIImageManager::sid_texture)
                     path = kvp2.value().as_string();
-                else if(kvp2.key() == sid_9slice_margins)
+                else if(kvp2.key() == UIImageManager::sid_9slice_margins)
                 {
                     margins = boost::json::value_to<std::vector<int32_t>>(kvp2.value());
                 }

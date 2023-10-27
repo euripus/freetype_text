@@ -63,12 +63,12 @@ private:
 
 class UIImageManager
 {
-private:
-	// json keys
-	static constexpr char const * sid_gui_set        = "gui_set";
-	static constexpr char const * sid_images         = "images";
-	static constexpr char const * sid_texture        = "texture";
-	static constexpr char const * sid_9slice_margins = "9slice_margins";
+public:
+    // json keys
+    static constexpr char const * sid_gui_set        = "gui_set";
+    static constexpr char const * sid_images         = "images";
+    static constexpr char const * sid_texture        = "texture";
+    static constexpr char const * sid_9slice_margins = "9slice_margins";
 
 public:
     UIImageManager() = default;

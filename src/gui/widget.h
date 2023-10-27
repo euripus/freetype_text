@@ -12,16 +12,16 @@ class UI;
 class Widget
 {
 private:
-	// json keys
-	static constexpr char const * sid_size             = "size";
-	static constexpr char const * sid_type             = "type";
-	static constexpr char const * sid_region_name      = "region_name";
-	static constexpr char const * sid_id_name          = "id_name";
-	static constexpr char const * sid_size_policy      = "size_policy";
-	static constexpr char const * sid_align_horizontal = "align_horizontal";
-	static constexpr char const * sid_align_vertical   = "align_vertical";
-	static constexpr char const * sid_font             = "font";
-	static constexpr char const * sid_font_size        = "font_size";
+    // json keys
+    static constexpr char const * sid_size             = "size";
+    static constexpr char const * sid_type             = "type";
+    static constexpr char const * sid_region_name      = "region_name";
+    static constexpr char const * sid_id_name          = "id_name";
+    static constexpr char const * sid_size_policy      = "size_policy";
+    static constexpr char const * sid_align_horizontal = "align_horizontal";
+    static constexpr char const * sid_align_vertical   = "align_vertical";
+    static constexpr char const * sid_font             = "font";
+    static constexpr char const * sid_font_size        = "font_size";
 
 public:
     Widget(UI & owner) : m_owner(owner) {}
