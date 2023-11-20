@@ -65,7 +65,8 @@ class UIImageManager
 {
 public:
     // json keys
-    static constexpr char const * sid_gui_set        = "gui_set";
+    static constexpr char const * sid_gui_set        = "gui_sets";
+    static constexpr char const * sid_set_name       = "set_name";
     static constexpr char const * sid_images         = "images";
     static constexpr char const * sid_texture        = "texture";
     static constexpr char const * sid_9slice_margins = "9slice_margins";
@@ -73,7 +74,7 @@ public:
 public:
     UIImageManager() = default;
 
-    UIImageGroup &       addImageGroup(std::string const & group_name);
+    void                 parseUIRes(std::string const & file_name);
     UIImageGroup const & getImageGroup(std::string const & group_name) const;
 
     AtlasTex & getAtlas() { return m_atlas; }

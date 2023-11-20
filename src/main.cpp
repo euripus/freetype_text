@@ -440,7 +440,7 @@ int main()
 {
     //
     UIImageManager imgr;
-    imgr.addImageGroup("./data/ui_res.json");
+    imgr.parseUIRes("./data/ui_res.json");
     imgr.getAtlas().writeAtlasToTGA(std::string("./data/gui.tga"));
     //
 

@@ -72,13 +72,13 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
     pos.x += new_size.x;
 }
 
-UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
+void UIImageManager::parseUIRes(std::string const & file_name)
 {
-    boost::json::error_code ec;
-    boost::json::value      jv;
+    boost::json::value jv;
 
+    try
     {
-        std::ifstream ifile(group_name, std::ios::in);
+        std::ifstream ifile(file_name, std::ios::in);
         std::string   file_data;
 
         if(ifile.is_open())
@@ -92,40 +92,47 @@ UIImageGroup & UIImageManager::addImageGroup(std::string const & group_name)
         else
             throw std::runtime_error("File not found!");
 
-        jv = boost::json::parse(file_data, ec);
+        jv = boost::json::parse(file_data);
+    }
+    catch(std::exception const & e)
+    {
+        throw std::runtime_error(e.what());
     }
 
-    if(ec)
-    {
-        // auto msg = ec.to_string();
-        throw std::runtime_error("File parsing error");
-    }
+    assert(!jv.is_null());
 
-    auto & obj = jv.get_object();
-    if(!obj.empty())
+    auto const & obj        = jv.get_object();
+    auto const   gui_set_it = obj.find(sid_gui_set);
+    if(gui_set_it != obj.end())
     {
-        std::string        gr_name;
-        auto               new_group = std::make_unique<UIImageGroup>(*this);
-        boost::json::value images;
-
-        for(auto & kvp : obj)
+        auto const & arr = gui_set_it->value().as_array();
+        if(!arr.empty())
         {
-            if(kvp.key() == sid_gui_set)
-                gr_name = kvp.value().as_string();
-            else if(kvp.key() == sid_images)
+            for(auto const & set_val : arr)
             {
-                images = kvp.value();
+                std::string gr_name;
+
+                auto const & array_obj = set_val.as_object();
+                for(auto const & kvp : array_obj)
+                {
+                    if(kvp.key() == sid_set_name)
+                    {
+                        gr_name = kvp.value().as_string();
+                    }
+                    else if(kvp.key() == sid_images)
+                    {
+                        m_groups[gr_name] = std::make_unique<UIImageGroup>(*this);
+                        parseImages(kvp.value(), *m_groups[gr_name]);
+                    }
+                }
             }
         }
-
-        m_groups[gr_name] = std::move(new_group);
-
-        parseImages(images, *m_groups[gr_name]);
-
-        return *m_groups[gr_name];
     }
-
-    throw std::runtime_error("File parsing error ");
+    else
+    {
+        std::string err = "In file " + file_name + " not found " + sid_gui_set;
+        throw std::runtime_error(err);
+    }
 }
 
 void parseImages(boost::json::value const & jv, UIImageGroup & group)
@@ -161,7 +168,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
                 // texture atlas is full
                 group.getOwner().resizeAtlas();
                 if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
-                    throw std::runtime_error("texture atlas is full");
+                    throw std::runtime_error("Texture atlas is full");
             }
         }
     }
