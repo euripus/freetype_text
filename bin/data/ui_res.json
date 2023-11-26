@@ -20,21 +20,19 @@
   ],
   "fonts": [
     {
-      "font_id": "liberation",
-      "file_name": "liberation.ttf",
+      "file_name": "./data/liberation.ttf",
       "hinting": true,
       "kerning": true,
-      "outline_thickness": 0,
+      "outline_thickness": 0.0,
       "outline_type": "NONE",
       "font_size": 24,
       "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
     },
     {
-      "font_id": "damase",
-      "file_name": "damase.ttf",
+      "file_name": "./data/damase.ttf",
       "hinting": true,
       "kerning": false,
-      "outline_thickness": 0,
+      "outline_thickness": 0.0,
       "outline_type": "NONE",
       "font_size": 24,
       "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"

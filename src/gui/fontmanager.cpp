@@ -1,5 +1,105 @@
 #include "fontmanager.h"
+#include <fstream>
+#include <boost/json.hpp>
 #include <stdexcept>
+
+Glyph::OutlineType FontManager::GetOutlineTypeFromString(std::string_view str_outline)
+{
+    if(str_outline == "NONE")
+        return Glyph::OutlineType::NONE;
+    else if(str_outline == "LINE")
+        return Glyph::OutlineType::LINE;
+    else if(str_outline == "INNER")
+        return Glyph::OutlineType::INNER;
+    else if(str_outline == "OUTER")
+        return Glyph::OutlineType::OUTER;
+
+    return Glyph::OutlineType::NONE;
+}
+
+void FontManager::parseFontsRes(std::string const & file_name)
+{
+    boost::json::value jv;
+
+    try
+    {
+        std::ifstream ifile(file_name, std::ios::in);
+        std::string   file_data;
+
+        if(ifile.is_open())
+        {
+            std::string tp;
+            while(std::getline(ifile, tp))
+            {
+                file_data += tp;
+            }
+        }
+        else
+        {
+            std::string err = "File: " + file_name + " - not found!";
+            throw std::runtime_error(err);
+        }
+
+        jv = boost::json::parse(file_data);
+    }
+    catch(std::exception const & e)
+    {
+        throw std::runtime_error(e.what());
+    }
+
+    assert(!jv.is_null());
+
+    auto const & obj          = jv.get_object();
+    auto const   fonts_set_it = obj.find(sid_fonts);
+    if(fonts_set_it != obj.end())
+    {
+        auto const & arr = fonts_set_it->value().as_array();
+        if(!arr.empty())
+        {
+            for(auto const & font_entry : arr)
+            {
+                auto const & font_obj = font_entry.as_object();
+                FontDataDesc desc;
+                std::string  glyphs;
+
+                for(auto const & kvp : font_obj)
+                {
+                    if(kvp.key() == sid_file_name)
+                    {
+                        desc.filename = kvp.value().as_string();
+                    }
+                    else if(kvp.key() == sid_hinting)
+                    {
+                        desc.hinting = kvp.value().as_bool();
+                    }
+                    else if(kvp.key() == sid_kerning)
+                    {
+                        desc.kerning = kvp.value().as_bool();
+                    }
+                    else if(kvp.key() == sid_outline_thickness)
+                    {
+                        desc.outline_thickness = kvp.value().as_double();
+                    }
+                    else if(kvp.key() == sid_outline_type)
+                    {
+                        desc.outline_type = GetOutlineTypeFromString(kvp.value().as_string());
+                    }
+                    else if(kvp.key() == sid_font_size)
+                    {
+                        desc.pt_size = kvp.value().as_int64();
+                    }
+                    else if(kvp.key() == sid_glyphs)
+                    {
+                        glyphs = kvp.value().as_string();
+                    }
+                }
+
+                auto & fnt = addFont(desc);
+                fnt.cacheGlyphs(glyphs.c_str());
+            }
+        }
+    }
+}
 
 TexFont & FontManager::addFont(FontDataDesc const & desc)
 {

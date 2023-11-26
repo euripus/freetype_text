@@ -90,7 +90,10 @@ void UIImageManager::parseUIRes(std::string const & file_name)
             }
         }
         else
-            throw std::runtime_error("File not found!");
+        {
+            std::string err = "File: " + file_name + " - not found!";
+            throw std::runtime_error(err);
+        }
 
         jv = boost::json::parse(file_data);
     }
@@ -140,7 +143,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
     auto const & arr = jv.get_array();
     if(!arr.empty())
     {
-        for(auto & kvp : arr)
+        for(auto const & kvp : arr)
         {
             std::string          path;
             std::string          name;
@@ -149,7 +152,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             auto const it = kvp.get_object().begin();
             name          = boost::json::serialize(it->key());
 
-            for(auto & kvp2 : it->value().as_object())
+            for(auto const & kvp2 : it->value().as_object())
             {
                 if(kvp2.key() == UIImageManager::sid_texture)
                     path = kvp2.value().as_string();
@@ -166,6 +169,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
             {
                 // texture atlas is full
+                // let's try again
                 group.getOwner().resizeAtlas();
                 if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
                     throw std::runtime_error("Texture atlas is full");
@@ -205,9 +209,9 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     w      = image.width + 1;
     h      = image.height + 1;
     region = m_owner.getAtlas().getRegion(w, h);
+
     if(region.x < 0)
     {
-        // std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
         return -1;
     }
 

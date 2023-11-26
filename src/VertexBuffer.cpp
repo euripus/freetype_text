@@ -187,19 +187,20 @@ void VertexBuffer::DeleteGPUBuffers()
 
 void VertexBuffer::DrawBuffer()
 {
-    assert(m_state == VertexBuffer::State::VB_UPLOAD);
+    if(m_state == VertexBuffer::State::VB_UPLOAD)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertices_id);
+        std::for_each(m_attributes.begin(), m_attributes.end(),
+                      [](VertexAttrib & attr) { attr.VertexAttribEnable(); });
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertices_id);
-    std::for_each(m_attributes.begin(), m_attributes.end(),
-                  [](VertexAttrib & attr) { attr.VertexAttribEnable(); });
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_id);
+        glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, static_cast<char *>(nullptr));
 
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, static_cast<char *>(nullptr));
-
-    std::for_each(m_attributes.begin(), m_attributes.end(),
-                  [](VertexAttrib & attr) { attr.VertexAttribDisable(); });
-    glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        std::for_each(m_attributes.begin(), m_attributes.end(),
+                      [](VertexAttrib & attr) { attr.VertexAttribDisable(); });
+        glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
 }
 
 void VertexBuffer::InitAttribLocation()

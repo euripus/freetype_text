@@ -3,7 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
-#include <cmath>
 #include <memory>
 #include <stdio.h>
 #undef __STRICT_ANSI__
@@ -295,27 +294,11 @@ bool InitWindow()
 
     shd.Init("./data/vert.glsl", "./data/frag.glsl");
 
-    std::string dict(" !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~"
-                     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω"
-                     "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя");
-
-    FontDataDesc desc;
-    desc.filename = "./data/liberation.ttf";
-    auto & fnt1   = fm.addFont(desc);
-    fnt1.cacheGlyphs(dict.c_str());
-
-    desc.filename = "./data/damase.ttf";
-    auto & fnt2   = fm.addFont(desc);
-    fnt2.cacheGlyphs(dict.c_str());
+    fm.parseFontsRes("./data/ui_res.json");
 
     // fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     fm.getAtlas().UploadTexture();
     shd_txt.Init("./data/vertTxt.glsl", "./data/fragTxt.glsl");
-    glm::vec2 pos(10, 10);
-    fnt1.addText(text_buf, "FPS: 60", pos);
-    text_buf.VertexBufferUpload();
-    text_buf.InitAttribLocation();
 
     return LoadTexture();
 }
@@ -456,6 +439,9 @@ int main()
 
     if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
         return 0;
+
+    // auto device = glGetString(GL_VENDOR);
+    // auto renderer = glGetString(GL_RENDERER);
 
     while(!glfwWindowShouldClose(g_window) && running)
     {

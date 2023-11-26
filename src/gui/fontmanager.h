@@ -19,6 +19,21 @@ struct FontDataDesc
 class FontManager
 {
 public:
+    // json keys
+    static constexpr char const * sid_fonts             = "fonts";
+    static constexpr char const * sid_file_name         = "file_name";
+    static constexpr char const * sid_hinting           = "hinting";
+    static constexpr char const * sid_kerning           = "kerning";
+    static constexpr char const * sid_outline_thickness = "outline_thickness";
+    static constexpr char const * sid_outline_type      = "outline_type";
+    static constexpr char const * sid_font_size         = "font_size";
+    static constexpr char const * sid_glyphs            = "glyphs";
+
+    static Glyph::OutlineType GetOutlineTypeFromString(std::string_view str_outline);
+
+public:
+    void parseFontsRes(std::string const & file_name);
+
     TexFont & addFont(FontDataDesc const & desc);
     TexFont & getFont(std::string name, uint32_t size);
 
