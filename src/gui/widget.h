@@ -7,7 +7,7 @@
 #include "basic_types.h"
 #include "texfont.h"
 
-class UI;
+class UIWindow;
 
 class Widget
 {
@@ -24,7 +24,7 @@ private:
     static constexpr char const * sid_font_size        = "font_size";
 
 public:
-    Widget(UI & owner) : m_owner(owner) {}
+    Widget(UIWindow & owner) : m_owner(owner) {}
     virtual ~Widget() = default;
 
     virtual void update(float time, bool check_cursor);
@@ -45,11 +45,9 @@ public:
     std::string getId() const { return m_id; }
 
     glm::vec2 pos() const { return m_pos; }
-    void      move(glm::vec2 const & point);
-    void      resize(glm::vec2 const & new_size);
 
 protected:
-    UI & m_owner;
+    UIWindow & m_owner;
 
     glm::vec2   m_size      = {};
     glm::vec2   m_size_hint = {};
@@ -57,6 +55,7 @@ protected:
     std::string m_id        = {};
 
     bool        m_visible    = true;
+	bool        m_focused = false;
     Align       m_horizontal = Align::left;
     Align       m_vertical   = Align::top;
     SizePolicy  m_scale      = SizePolicy::scale;
@@ -67,6 +66,7 @@ protected:
     std::vector<std::unique_ptr<Widget>> m_children;
 
     friend class Packer;
+	friend class UIWindow;
 };
 
 #endif
