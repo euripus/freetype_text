@@ -115,8 +115,8 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                 glm::vec2 pos(current_pos, current_height);
                 glm::vec2 size(element_width, row_height);
 
-                widget->m_pos  = pos;
-                widget->m_size = size;
+                Rect2D new_rect{pos, size};
+                widget->m_rect = new_rect;
             }
             else if(widget->m_scale == SizePolicy::none)
             {
@@ -147,8 +147,8 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     glm::vec2 pos(widget_x, widget_y);
                     glm::vec2 size(widget->m_size_hint);
 
-                    widget->m_pos  = pos;
-                    widget->m_size = size;
+                    Rect2D new_rect{pos, size};
+                    widget->m_rect = new_rect;
                 }
                 else
                 {
@@ -166,17 +166,17 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     glm::vec2 pos(current_pos, widget_y);
                     glm::vec2 size(widget->m_size_hint);
 
-                    widget->m_pos  = pos;
-                    widget->m_size = size;
+                    Rect2D new_rect{pos, size};
+                    widget->m_rect = new_rect;
                 }
             }
 
-            current_pos += widget->m_size.x + m_horizontal_spacing;
+            current_pos += widget->size().x + m_horizontal_spacing;
         }
 
         final_width = glm::max(current_pos, new_width);
         current_height += row_height + m_vertical_spacing;
     }
 
-    win->m_size = glm::vec2(final_width, current_height);
+    win->m_rect.m_extent = glm::vec2(final_width, current_height);
 }

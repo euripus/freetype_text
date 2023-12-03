@@ -30,28 +30,27 @@ public:
     virtual void update(float time, bool check_cursor);
     virtual void draw();
 
-    virtual void addWidget(std::unique_ptr<Widget> widget, Align align = Align::left);
+    virtual void addWidget(std::unique_ptr<Widget> widget);
     virtual void removeWidget(Widget * widget);
     virtual bool isChild(Widget * widget);
 
     Widget * parent() const { return m_parent; }
 
-    void show();
-    void hide();
+    void show() { m_visible=true; }
+    void hide() { m_visible=false; }
     bool visible() const { return m_visible; }
+	bool focused() const { return m_focused; }
 
-    glm::vec2   size() const { return m_size; }
+    glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     std::string getId() const { return m_id; }
-
-    glm::vec2 pos() const { return m_pos; }
+    glm::vec2   pos() const { return m_extent.m_pos; }
 
 protected:
     UIWindow & m_owner;
 
-    glm::vec2   m_size      = {};
     glm::vec2   m_size_hint = {};
-    glm::vec2   m_pos       = {};
+    Rect2D      m_rect ={};
     std::string m_id        = {};
 
     bool        m_visible    = true;
