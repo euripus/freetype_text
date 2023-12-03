@@ -19,9 +19,9 @@ public:
     void show();
     void hide();
     bool visible() const;
-	
-	void      move(glm::vec2 const & point);
-    void      resize(glm::vec2 const & new_size);
+
+    void move(glm::vec2 const & point);
+    void resize(glm::vec2 const & new_size);
 
     void loadWindowDesc(std::string_view file_name);
 
@@ -34,8 +34,8 @@ private:
     std::unique_ptr<Widget> m_background;
     Packer                  m_packer;
     TexFont *               m_font = nullptr;   // caption font
-	glm::vec2               m_pos = {};
-    glm::vec2               m_size = {};        // Window size without caption
+    glm::vec2               m_pos  = {};
+    glm::vec2               m_size = {};   // Window size without caption
 
     friend class Packer;
 };

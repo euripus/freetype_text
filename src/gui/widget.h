@@ -55,7 +55,7 @@ protected:
     std::string m_id        = {};
 
     bool        m_visible    = true;
-	bool        m_focused = false;
+    bool        m_focused    = false;
     Align       m_horizontal = Align::left;
     Align       m_vertical   = Align::top;
     SizePolicy  m_scale      = SizePolicy::scale;
@@ -66,7 +66,7 @@ protected:
     std::vector<std::unique_ptr<Widget>> m_children;
 
     friend class Packer;
-	friend class UIWindow;
+    friend class UIWindow;
 };
 
 #endif
