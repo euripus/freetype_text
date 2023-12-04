@@ -92,11 +92,12 @@ void FontManager::parseFontsRes(std::string const & file_name)
                     {
                         glyphs = kvp.value().as_string();
                     }
-					else
-					{
-						std::string error = "Unknown parameter: " + kvp.key().as_string() + " in file: " + file_name;
-						throw std::runtime_error(error);
-					}
+                    else
+                    {
+                        std::string error =
+                            "Unknown parameter: " + std::string(kvp.key()) + " in file: " + file_name;
+                        throw std::runtime_error(error);
+                    }
                 }
 
                 auto & fnt = addFont(desc);

@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "gui/fontmanager.h"
 #include "gui/imagedata.h"
+#include "gui/ui.h"
 #include "VertexBuffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
@@ -421,11 +422,9 @@ static void error_callback(int error, char const * description)
 
 int main()
 {
-    //
-    UIImageManager imgr;
-    imgr.parseUIRes("./data/ui_res.json");
-    imgr.getAtlas().writeAtlasToTGA(std::string("./data/gui.tga"));
-    //
+    UI ui;
+    ui.loadUIImageGroup("./data/ui_res.json");
+    ui.loadWindow("./data/test_win.json", "Test", "default");
 
     glfwSetErrorCallback(error_callback);
 

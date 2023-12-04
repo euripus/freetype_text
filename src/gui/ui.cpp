@@ -2,12 +2,17 @@
 
 void UI::update(float time) {}
 
-UIWindow & UI::loadWindow(std::string_view file_name) {}
+UIWindow * UI::loadWindow(std::string const & widgets_filename, std::string const & caption,
+                          std::string const & image_roup)
+{
+    auto win = std::make_unique<UIWindow>(*this, caption, image_roup);
+    win->loadWindowFromDesc(widgets_filename);
 
-ElementType UI::GetElementTypeFromString(std::string_view name) {}
+    m_windows.push_back(std::move(win));
+    return m_windows.back().get();
+}
 
-SizePolicy UI::GetSizePolicyFromString(std::string_view name) {}
-
-Align UI::GetAlignFromString(std::string_view name) {}
-
-std::unique_ptr<Widget> UI::CreateWidget(ElementType type) {}
+void UI::loadUIImageGroup(std::string const & file_name)
+{
+    m_ui_image_atlas.parseUIRes(file_name);
+}

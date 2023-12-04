@@ -5,13 +5,14 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "basic_types.h"
+#include "rect2d.h"
 #include "texfont.h"
 
 class UIWindow;
 
 class Widget
 {
-private:
+public:
     // json keys
     static constexpr char const * sid_size             = "size";
     static constexpr char const * sid_type             = "type";
@@ -22,6 +23,10 @@ private:
     static constexpr char const * sid_align_vertical   = "align_vertical";
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
+
+    static ElementType GetElementTypeFromString(std::string_view name);
+    static SizePolicy  GetSizePolicyFromString(std::string_view name);
+    static Align       GetAlignFromString(std::string_view name);
 
 public:
     Widget(UIWindow & owner) : m_owner(owner) {}
@@ -36,21 +41,21 @@ public:
 
     Widget * parent() const { return m_parent; }
 
-    void show() { m_visible=true; }
-    void hide() { m_visible=false; }
+    void show() { m_visible = true; }
+    void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
-	bool focused() const { return m_focused; }
+    bool focused() const { return m_focused; }
 
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     std::string getId() const { return m_id; }
-    glm::vec2   pos() const { return m_extent.m_pos; }
+    glm::vec2   pos() const { return m_rect.m_pos; }
 
 protected:
     UIWindow & m_owner;
 
     glm::vec2   m_size_hint = {};
-    Rect2D      m_rect ={};
+    Rect2D      m_rect      = {};
     std::string m_id        = {};
 
     bool        m_visible    = true;

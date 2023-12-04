@@ -13,12 +13,9 @@ public:
     void update(float time);
     void draw(VertexBuffer & vb);
 
-    UIWindow * loadWindow(std::string_view file_name);
-    bool       loadUIImageGroup(std::string_view file_name);
-
-    static ElementType             GetElementTypeFromString(std::string_view name);
-    static SizePolicy              GetSizePolicyFromString(std::string_view name);
-    static Align                   GetAlignFromString(std::string_view name);
+    UIWindow * loadWindow(std::string const & widgets_filename, std::string const & caption,
+                          std::string const & image_roup);
+    void       loadUIImageGroup(std::string const & file_name);
 
     // InputBackend * input;
 
