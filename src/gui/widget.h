@@ -9,6 +9,8 @@
 #include "texfont.h"
 
 class UIWindow;
+class boost::json::object;
+class WidgetDesc;
 
 class Widget
 {
@@ -16,6 +18,8 @@ public:
     // json keys
     static constexpr char const * sid_size             = "size";
     static constexpr char const * sid_type             = "type";
+	static constexpr char const * sid_visible             = "visible";
+	static constexpr char const * sid_texture             = "texture";
     static constexpr char const * sid_region_name      = "region_name";
     static constexpr char const * sid_id_name          = "id_name";
     static constexpr char const * sid_size_policy      = "size_policy";
@@ -23,13 +27,17 @@ public:
     static constexpr char const * sid_align_vertical   = "align_vertical";
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
+	static constexpr char const * sid_children        = "children";
 
     static ElementType GetElementTypeFromString(std::string_view name);
     static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
+	
+	static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
 
 public:
     Widget(UIWindow & owner) : m_owner(owner) {}
+	Widget(UIWindow & owner, WidgetDesc const & desc);
     virtual ~Widget() = default;
 
     virtual void update(float time, bool check_cursor);
@@ -49,13 +57,14 @@ public:
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     std::string getId() const { return m_id; }
-    glm::vec2   pos() const { return m_rect.m_pos; }
+    glm::vec2   pos() const { return m_pos; }
 
 protected:
     UIWindow & m_owner;
 
     glm::vec2   m_size_hint = {};
     Rect2D      m_rect      = {};
+	glm::vec2   m_pos ={}; // draw position
     std::string m_id        = {};
 
     bool        m_visible    = true;

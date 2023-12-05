@@ -1,33 +1,11 @@
 {
-    "size": [0, 0],
-    "type": "VerticalLayoutee",
-    "visible": "false",
-    "region_name":"",
-    "id_name": "",
-    "size_policy": "scale",
-    "align_horizontal": "left",
-    "align_vertical": "top",
-    "font": "liberation.ttf",
-    "font_size": 24,
-    "children": [
-        {
-            "size": [100, 100],
-            "type": "TextBox",
-            "visible": "true",
-            "region_name":"background",
-            "id_name": "text_window",
-            "size_policy": "scale",
-            "align_horizontal": "left",
-            "align_vertical": "top",
-            "font": "liberation.ttf",
-            "font_size": 24,
-            "children": []
-        },
+    "Test Window": [
         {
             "size": [0, 0],
-            "type": "HorizontalLayoutee",
+            "type": "VerticalLayoutee",
             "visible": "false",
-            "region_name":"",
+			"texture": "",
+            "region_name": "",
             "id_name": "",
             "size_policy": "scale",
             "align_horizontal": "left",
@@ -36,11 +14,12 @@
             "font_size": 24,
             "children": [
                 {
-                    "size": [25, 25],
-                    "type": "Button",
+                    "size": [100, 100],
+                    "type": "TextBox",
                     "visible": "true",
-                    "region_name":"button",
-                    "id_name": "button_ok",
+					"texture": "",
+                    "region_name": "text_box",
+                    "id_name": "text_window",
                     "size_policy": "scale",
                     "align_horizontal": "left",
                     "align_vertical": "top",
@@ -49,19 +28,63 @@
                     "children": []
                 },
                 {
-                    "size": [25, 25],
-                    "type": "Button",
-                    "visible": "true",
-                    "region_name":"button",
-                    "id_name": "button_cancel",
+                    "size": [0, 0],
+                    "type": "HorizontalLayoutee",
+                    "visible": "false",
+					"texture": "",
+                    "region_name": "",
+                    "id_name": "",
                     "size_policy": "scale",
                     "align_horizontal": "left",
                     "align_vertical": "top",
                     "font": "liberation.ttf",
                     "font_size": 24,
-                    "children": []
+                    "children": [
+                        {
+                            "size": [25, 25],
+                            "type": "Button",
+                            "visible": "true",
+							"texture": "button",
+                            "region_name": "button",
+                            "id_name": "button_ok",
+                            "size_policy": "scale",
+                            "align_horizontal": "left",
+                            "align_vertical": "top",
+                            "font": "liberation.ttf",
+                            "font_size": 24,
+                            "children": []
+                        },
+                        {
+                            "size": [25, 25],
+                            "type": "Button",
+                            "visible": "true",
+							"texture": "button",
+                            "region_name": "button",
+                            "id_name": "button_cancel",
+                            "size_policy": "scale",
+                            "align_horizontal": "left",
+                            "align_vertical": "top",
+                            "font": "liberation.ttf",
+                            "font_size": 24,
+                            "children": []
+                        }
+                    ]
                 }
             ]
+        },
+        {
+            "size": [0, 0],
+            "type": "ImageBox",
+            "visible": "true",
+			"texture": "background",
+            "region_name": "background",
+            "id_name": "background",
+            "size_policy": "scale",
+            "align_horizontal": "left",
+            "align_vertical": "top",
+            "font": "liberation.ttf",
+            "font_size": 24,
+            "children": []
         }
     ]
 }

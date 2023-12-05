@@ -3,26 +3,6 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-struct WidgetDesc
-{
-    glm::vec2   size_hint   = {};
-    ElementType type        = ElementType::Unknown;
-    bool        visible     = true;
-    std::string region_name = {};
-    std::string id_name     = {};
-    SizePolicy  scale       = SizePolicy::scale;
-    Align       horizontal  = Align::left;
-    Align       vertical    = Align::top;
-    std::string font_name   = {};
-    float       size        = 0.0f;
-};
-
-WidgetDesc ParseEntry(boost::json::object const & obj)
-{
-    WidgetDesc desc;
-    return desc;
-}
-
 UIWindow::UIWindow(UI & owner, std::string caption, std::string_view image_group) :
     m_caption(std::move(caption)), m_owner(owner)
 {
@@ -62,4 +42,20 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
     }
 
     assert(!jv.is_null());
+	
+	if(auto const & win_obj = jv.get_object(); !win_obj.empty())
+	{
+		auto const & val = *win_obj.begin();
+		
+		m_caption = std::string(val.key());
+		auto const & arr = val.value().as_array();
+		if(!arr.empty())
+        {
+            auto const & root_entry = arr[0];
+			m_root = Widget::GetWidgetFromDesc(root_entry.as_object(), *this);
+			
+			auto const & background_entry = arr[1];
+			m_background = Widget::GetWidgetFromDesc(background_entry.as_object(), *this);
+		}
+	}
 }

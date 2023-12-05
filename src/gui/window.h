@@ -44,6 +44,7 @@ private:
     Packer                  m_packer;
     TexFont *               m_font = nullptr;   // caption font, default font
     Rect2D                  m_rect = {};
+	glm::vec2 m_pos = {}; // draw position 
 
     UI &                 m_owner;
     UIImageGroup const * m_images = nullptr;
