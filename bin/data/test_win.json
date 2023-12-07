@@ -3,7 +3,7 @@
         {
             "size": [0, 0],
             "type": "VerticalLayoutee",
-            "visible": "false",
+            "visible": false,
 			"texture": "",
             "region_name": "",
             "id_name": "",
@@ -16,7 +16,7 @@
                 {
                     "size": [100, 100],
                     "type": "TextBox",
-                    "visible": "true",
+                    "visible": true,
 					"texture": "",
                     "region_name": "text_box",
                     "id_name": "text_window",
@@ -30,7 +30,7 @@
                 {
                     "size": [0, 0],
                     "type": "HorizontalLayoutee",
-                    "visible": "false",
+                    "visible": false,
 					"texture": "",
                     "region_name": "",
                     "id_name": "",
@@ -43,7 +43,7 @@
                         {
                             "size": [25, 25],
                             "type": "Button",
-                            "visible": "true",
+                            "visible": true,
 							"texture": "button",
                             "region_name": "button",
                             "id_name": "button_ok",
@@ -57,7 +57,7 @@
                         {
                             "size": [25, 25],
                             "type": "Button",
-                            "visible": "true",
+                            "visible": true,
 							"texture": "button",
                             "region_name": "button",
                             "id_name": "button_cancel",
@@ -75,7 +75,7 @@
         {
             "size": [0, 0],
             "type": "ImageBox",
-            "visible": "true",
+            "visible": true,
 			"texture": "background",
             "region_name": "background",
             "id_name": "background",

@@ -13,6 +13,8 @@ class UIWindow
 public:
     UIWindow(UI & owner, std::string caption, std::string_view image_group);
 
+    UI & getOwner() { return m_owner; }
+
     void draw();
     void update(float time, bool check_cursor);
 
@@ -44,7 +46,7 @@ private:
     Packer                  m_packer;
     TexFont *               m_font = nullptr;   // caption font, default font
     Rect2D                  m_rect = {};
-	glm::vec2 m_pos = {}; // draw position 
+    glm::vec2               m_pos  = {};   // draw position
 
     UI &                 m_owner;
     UIImageGroup const * m_images = nullptr;

@@ -424,6 +424,7 @@ int main()
 {
     UI ui;
     ui.loadUIImageGroup("./data/ui_res.json");
+    ui.m_fonts.parseFontsRes("./data/ui_res.json");
     ui.loadWindow("./data/test_win.json", "Test", "default");
 
     glfwSetErrorCallback(error_callback);
