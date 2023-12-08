@@ -11,7 +11,7 @@ class UIImageGroup;
 class UIWindow
 {
 public:
-    UIWindow(UI & owner, std::string caption, std::string_view image_group);
+    UIWindow(UI & owner, std::string const & image_group);
 
     UI & getOwner() { return m_owner; }
 
@@ -43,7 +43,6 @@ private:
 
     std::unique_ptr<Widget> m_root;
     std::unique_ptr<Widget> m_background;
-    Packer                  m_packer;
     TexFont *               m_font = nullptr;   // caption font, default font
     Rect2D                  m_rect = {};
     glm::vec2               m_pos  = {};   // draw position

@@ -9,6 +9,7 @@
 struct FontDataDesc
 {
     std::string        filename;
+	std::string        font_id;
     float              pt_size           = 24.0f;
     bool               hinting           = true;
     bool               kerning           = true;
@@ -22,6 +23,7 @@ public:
     // json keys
     static constexpr char const * sid_fonts             = "fonts";
     static constexpr char const * sid_file_name         = "file_name";
+	static constexpr char const * sid_font_id           = "font_id";
     static constexpr char const * sid_hinting           = "hinting";
     static constexpr char const * sid_kerning           = "kerning";
     static constexpr char const * sid_outline_thickness = "outline_thickness";

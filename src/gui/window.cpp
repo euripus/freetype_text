@@ -3,10 +3,10 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-UIWindow::UIWindow(UI & owner, std::string caption, std::string_view image_group) :
-    m_caption(std::move(caption)), m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group) :
+    m_owner(owner)
 {
-    m_images = &m_owner.m_ui_image_atlas.getImageGroup(std::string(image_group));
+    m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
 
 void UIWindow::update(float time, bool check_cursor) {}

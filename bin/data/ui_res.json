@@ -21,6 +21,7 @@
   "fonts": [
     {
       "file_name": "./data/liberation.ttf",
+      "font_id": "liberation",
       "hinting": true,
       "kerning": true,
       "outline_thickness": 0.0,
@@ -30,6 +31,7 @@
     },
     {
       "file_name": "./data/damase.ttf",
+      "font_id": "damase",
       "hinting": true,
       "kerning": false,
       "outline_thickness": 0.0,

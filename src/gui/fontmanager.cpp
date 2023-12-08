@@ -68,6 +68,10 @@ void FontManager::parseFontsRes(std::string const & file_name)
                     {
                         desc.filename = kvp.value().as_string();
                     }
+					else if(kvp.key() == sid_font_id)
+                    {
+                        desc.font_id = kvp.value().as_string();
+                    }
                     else if(kvp.key() == sid_hinting)
                     {
                         desc.hinting = kvp.value().as_bool();
@@ -109,7 +113,7 @@ void FontManager::parseFontsRes(std::string const & file_name)
 
 TexFont & FontManager::addFont(FontDataDesc const & desc)
 {
-    std::string hash_string = desc.filename + ' ' + std::to_string(static_cast<uint32_t>(desc.pt_size));
+    std::string hash_string = desc.font_id + ' ' + std::to_string(static_cast<uint32_t>(desc.pt_size));
     std::size_t hash_val    = std::hash<std::string>{}(hash_string);
 
     if(auto search = m_fonts.find(hash_val); search != m_fonts.end())

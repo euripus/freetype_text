@@ -14,7 +14,7 @@ struct WidgetDesc;
 
 class Widget
 {
-public:
+private:
     // json keys
     static constexpr char const * sid_size             = "size";
     static constexpr char const * sid_type             = "type";
@@ -33,6 +33,7 @@ public:
     static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
+public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
 
 public:
@@ -66,6 +67,7 @@ protected:
     Rect2D      m_rect      = {};
     glm::vec2   m_pos       = {};   // draw position
     std::string m_id        = {};
+	std::string m_region ={};
 
     bool        m_visible    = true;
     bool        m_focused    = false;

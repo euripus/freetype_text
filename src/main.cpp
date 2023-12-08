@@ -337,7 +337,7 @@ void DrawScene(void)
         g_num_frames = 0;
 
         text_buf.Clear();
-        auto & tf = fm.getFont("./data/damase.ttf", 24);
+        auto & tf = fm.getFont("damase", 24);
 
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
@@ -423,9 +423,8 @@ static void error_callback(int error, char const * description)
 int main()
 {
     UI ui;
-    ui.loadUIImageGroup("./data/ui_res.json");
-    ui.m_fonts.parseFontsRes("./data/ui_res.json");
-    ui.loadWindow("./data/test_win.json", "Test", "default");
+    ui.parseUIResources("./data/ui_res.json");
+    ui.loadWindow("./data/test_win.json");
 
     glfwSetErrorCallback(error_callback);
 
