@@ -7,6 +7,8 @@
 #include <stdio.h>
 #undef __STRICT_ANSI__
 
+#include <iostream>
+
 #include "Shader.h"
 #include "gui/fontmanager.h"
 #include "gui/imagedata.h"
@@ -420,11 +422,32 @@ static void error_callback(int error, char const * description)
     printf("%d: %s", error, description);
 }
 
+static void print_widget_size(Widget const * widget, uint32_t level = 0)
+{
+    if(!(widget->getType() == ElementType::VerticalLayoutee
+         || widget->getType() == ElementType::HorizontalLayoutee))
+    {
+        for(uint32_t i = 0; i < level - 1; ++i)
+            std::cout << "\t";
+        std::cout << "pos: " << widget->pos().x << " " << widget->pos().y << "  ";
+        std::cout << "size: " << widget->size().x << " " << widget->size().y << std::endl;
+    }
+
+    if(uint32_t num_ch = widget->getNumChildren(); num_ch > 0)
+    {
+        for(uint32_t i = 0; i < num_ch; ++i)
+        {
+            print_widget_size(widget->getChild(i), level + 1);
+        }
+    }
+}
+
 int main()
 {
     UI ui;
     ui.parseUIResources("./data/ui_res.json");
     ui.loadWindow("./data/test_win.json");
+    print_widget_size(ui.m_layers[0].front()->getRootWidget());
 
     glfwSetErrorCallback(error_callback);
 

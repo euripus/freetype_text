@@ -49,6 +49,8 @@ public:
     virtual bool isChild(Widget * widget);
 
     Widget * parent() const { return m_parent; }
+    uint32_t getNumChildren() const { return m_children.size(); }
+    Widget * getChild(uint32_t num) const { return m_children[num].get(); }
 
     void show() { m_visible = true; }
     void hide() { m_visible = false; }
@@ -58,7 +60,9 @@ public:
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     std::string getId() const { return m_id; }
-    glm::vec2   pos() const { return m_pos; }
+    glm::vec2   pos() const { return m_rect.m_pos; }
+
+    ElementType getType() const { return m_type; }
 
 protected:
     UIWindow & m_owner;
@@ -67,7 +71,7 @@ protected:
     Rect2D      m_rect      = {};
     glm::vec2   m_pos       = {};   // draw position
     std::string m_id        = {};
-	std::string m_region ={};
+    std::string m_region    = {};
 
     bool        m_visible    = true;
     bool        m_focused    = false;

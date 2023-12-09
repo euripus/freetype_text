@@ -68,7 +68,7 @@ void FontManager::parseFontsRes(std::string const & file_name)
                     {
                         desc.filename = kvp.value().as_string();
                     }
-					else if(kvp.key() == sid_font_id)
+                    else if(kvp.key() == sid_font_id)
                     {
                         desc.font_id = kvp.value().as_string();
                     }

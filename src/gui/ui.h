@@ -22,7 +22,7 @@ public:
     glm::ivec2     m_screen_size;
     UIImageManager m_ui_image_atlas;
     FontManager    m_fonts;
-	Packer         m_packer;
+    Packer         m_packer;
 
     std::vector<std::unique_ptr<UIWindow>> m_windows;
     std::vector<std::vector<UIWindow *>>   m_layers;

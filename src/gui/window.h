@@ -32,6 +32,8 @@ public:
     glm::vec2 size() const { return m_rect.m_extent; }
     glm::vec2 pos() const { return m_rect.m_pos; }
 
+    Widget * getRootWidget() const { return m_root.get(); }
+
     void loadWindowFromDesc(std::string const & file_name);
 
 private:

@@ -55,12 +55,12 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
                                              || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
             {
                 if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
-                    addSubTree(ls, cur_ch_ptr, level++);
+                    addSubTree(ls, cur_ch_ptr, level + 1);
                 else
                 {
                     for(auto const & ch2 : cur_ch_ptr->m_children)
                     {
-                        addSubTree(ls, ch2.get(), level++);
+                        addSubTree(ls, ch2.get(), level + 1);
                     }
                 }
             }
@@ -81,7 +81,7 @@ float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
     float width = m_horizontal_spacing;
 
     for(auto const * widget : row)
-        width += widget->size().x + m_horizontal_spacing;
+        width += widget->sizeHint().x + m_horizontal_spacing;
 
     return width;
 }
@@ -91,7 +91,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
     float height = 0.0f;
 
     for(auto const * widget : row)
-        height = glm::max(height, widget->size().y);
+        height = glm::max(height, widget->sizeHint().y);
 
     return height;
 }
@@ -120,10 +120,10 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
             }
             else if(widget->m_scale == SizePolicy::none)
             {
-                if(widget->m_size_hint.x < element_width)
+                if(widget->sizeHint().x < element_width)
                 {
                     // vertical align
-                    float vertical_delta = row_height - widget->m_size_hint.y;
+                    float vertical_delta = row_height - widget->sizeHint().y;
                     float widget_y       = current_height;
                     if(vertical_delta > 0)
                     {
@@ -134,7 +134,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     }
 
                     // horizontal align
-                    float horizontal_delta = element_width - widget->m_size_hint.x;
+                    float horizontal_delta = element_width - widget->sizeHint().x;
                     float widget_x         = current_pos;
                     if(horizontal_delta > 0)
                     {
@@ -145,7 +145,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     }
 
                     glm::vec2 pos(widget_x, widget_y);
-                    glm::vec2 size(widget->m_size_hint);
+                    glm::vec2 size(widget->sizeHint());
 
                     Rect2D new_rect{pos, size};
                     widget->m_rect = new_rect;
@@ -153,7 +153,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                 else
                 {
                     // vertical align
-                    float vertical_delta = row_height - widget->m_size_hint.y;
+                    float vertical_delta = row_height - widget->sizeHint().y;
                     float widget_y       = current_height;
                     if(vertical_delta > 0)
                     {
@@ -164,7 +164,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     }
 
                     glm::vec2 pos(current_pos, widget_y);
-                    glm::vec2 size(widget->m_size_hint);
+                    glm::vec2 size(widget->sizeHint());
 
                     Rect2D new_rect{pos, size};
                     widget->m_rect = new_rect;

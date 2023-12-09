@@ -70,3 +70,7 @@ HEADERS += \
     src/gui/widget.h \
     src/gui/window.h \
     src/input/input.h
+
+DISTFILES += \
+    bin/data/test_win.json \
+    bin/data/ui_res.json

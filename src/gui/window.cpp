@@ -3,8 +3,7 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-UIWindow::UIWindow(UI & owner, std::string const & image_group) :
-    m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
 {
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
@@ -42,20 +41,20 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
     }
 
     assert(!jv.is_null());
-	
-	if(auto const & win_obj = jv.get_object(); !win_obj.empty())
-	{
-		auto const & val = *win_obj.begin();
-		
-		m_caption = std::string(val.key());
-		auto const & arr = val.value().as_array();
-		if(!arr.empty())
+
+    if(auto const & win_obj = jv.get_object(); !win_obj.empty())
+    {
+        auto const & val = *win_obj.begin();
+
+        m_caption        = std::string(val.key());
+        auto const & arr = val.value().as_array();
+        if(!arr.empty())
         {
             auto const & root_entry = arr[0];
-			m_root = Widget::GetWidgetFromDesc(root_entry.as_object(), *this);
-			
-			auto const & background_entry = arr[1];
-			m_background = Widget::GetWidgetFromDesc(background_entry.as_object(), *this);
-		}
-	}
+            m_root                  = Widget::GetWidgetFromDesc(root_entry.as_object(), *this);
+
+            auto const & background_entry = arr[1];
+            m_background                  = Widget::GetWidgetFromDesc(background_entry.as_object(), *this);
+        }
+    }
 }

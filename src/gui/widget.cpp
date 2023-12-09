@@ -79,7 +79,7 @@ Widget::Widget(UIWindow & owner, WidgetDesc const & desc) : Widget(owner)
 {
     m_size_hint  = desc.size_hint;
     m_id         = desc.id_name;
-	m_region = desc.region_name;
+    m_region     = desc.region_name;
     m_visible    = desc.visible;
     m_horizontal = desc.horizontal;
     m_vertical   = desc.vertical;

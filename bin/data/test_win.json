@@ -41,7 +41,7 @@
                     "font_size": 24,
                     "children": [
                         {
-                            "size": [25, 25],
+                            "size": [25, 15],
                             "type": "Button",
                             "visible": true,
                             "texture": "button",
@@ -55,7 +55,7 @@
                             "children": []
                         },
                         {
-                            "size": [25, 25],
+                            "size": [25, 15],
                             "type": "Button",
                             "visible": true,
                             "texture": "button",

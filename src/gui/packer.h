@@ -21,8 +21,8 @@ protected:
     float        getRowMaxHeight(std::vector<Widget *> const & row) const;
     void         adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const;
 
-    float m_horizontal_spacing = 0.0f;
-    float m_vertical_spacing   = 0.0f;
+    float m_horizontal_spacing = 1.0f;
+    float m_vertical_spacing   = 1.0f;
 };
 
 #endif
