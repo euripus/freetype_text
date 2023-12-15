@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "window.h"
 #include "ui.h"
+#include <algorithm>
 
 struct WidgetDesc
 {
@@ -90,7 +91,12 @@ Widget::Widget(UIWindow & owner, WidgetDesc const & desc) : Widget(owner)
     // texture
 }
 
-void Widget::update(float time, bool check_cursor) {}
+void Widget::update(float time, bool check_cursor) 
+{
+	if(check_cursor)
+	{
+	}
+}
 
 void Widget::draw() {}
 
@@ -100,10 +106,25 @@ void Widget::addWidget(std::unique_ptr<Widget> widget)
     m_children.push_back(std::move(widget));
 }
 
-void Widget::removeWidget(Widget * widget) {}
-
-bool Widget::isChild(Widget * widget)
+void Widget::removeWidget(Widget * widget) 
 {
+	auto it = std::remove_if(m_children.begin(), m_children.end(), [widget](auto & ptr) { return widget == ptr.get();});
+    c.erase(it, m_children.end());
+	// std::erase_if(m_children, [widget](auto & ptr) { return widget == ptr.get();}) c++20
+}
+
+bool Widget::isChild(Widget * parent_widget)
+{
+	const Widget* parent = parent();
+	while (parent)
+	{
+		if (parent == parent_widget)
+		{
+			return true;
+		}
+		parent = parent->parent();
+	}
+
     return false;
 }
 

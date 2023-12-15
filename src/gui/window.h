@@ -3,7 +3,6 @@
 
 #include <string>
 #include "widget.h"
-#include "packer.h"
 
 class UI;
 class UIImageGroup;
@@ -21,24 +20,22 @@ public:
     void        setCaption(std::string caption) { m_caption = std::move(caption); }
     std::string getCaption() const { return m_caption; }
 
-    void show();
-    void hide();
-    bool visible() const;
+    void show() { m_visible = true;}
+    void hide() { m_visible = false;}
+    bool visible() const { return m_visible; }
 
-    void move(glm::vec2 const & point);
-    void resize(glm::vec2 const & new_size);
+    void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
+    //void resize(glm::vec2 const & new_size);
 
     Rect2D    getRect() const { return m_rect; }
     glm::vec2 size() const { return m_rect.m_extent; }
-    glm::vec2 pos() const { return m_rect.m_pos; }
+    glm::vec2 pos() const { return m_pos; }
 
     Widget * getRootWidget() const { return m_root.get(); }
 
     void loadWindowFromDesc(std::string const & file_name);
 
 private:
-    std::unique_ptr<Widget> CreateNullWidget();
-
     std::string m_caption;
     bool        m_visible      = false;
     bool        m_draw_caption = false;

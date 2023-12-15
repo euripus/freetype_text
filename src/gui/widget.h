@@ -32,6 +32,8 @@ private:
     static ElementType GetElementTypeFromString(std::string_view name);
     static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
+	
+	//std::unique_ptr<Widget> CreateNullWidget(ElementType type);
 
 public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
@@ -46,11 +48,11 @@ public:
 
     virtual void addWidget(std::unique_ptr<Widget> widget);
     virtual void removeWidget(Widget * widget);
-    virtual bool isChild(Widget * widget);
+    virtual bool isChild(Widget * parent_widget);
 
     Widget * parent() const { return m_parent; }
-    uint32_t getNumChildren() const { return m_children.size(); }
-    Widget * getChild(uint32_t num) const { return m_children[num].get(); }
+    int32_t getNumChildren() const { return m_children.size(); }
+    Widget * getChild(int32_t num) const { return m_children[num].get(); }
 
     void show() { m_visible = true; }
     void hide() { m_visible = false; }
@@ -59,8 +61,9 @@ public:
 
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
+	Rect2D      getRect() const { return m_rect; }
     std::string getId() const { return m_id; }
-    glm::vec2   pos() const { return m_rect.m_pos; }
+    glm::vec2   pos() const { return m_pos; }
 
     ElementType getType() const { return m_type; }
 

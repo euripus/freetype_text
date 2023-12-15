@@ -34,9 +34,9 @@ bool                is_full_screen = false;
 GLFWvidmode const * cur_mode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
-unsigned int        g_width, g_height;
 
 Input g_input_state;
+UI    g_ui;
 
 // clang-format off
 GLfloat pyr_vert[] = {
@@ -209,8 +209,7 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    g_width  = width;
-    g_height = height;
+	g_ui.resize(width, height);
 }
 
 void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
@@ -381,7 +380,7 @@ void DrawScene(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0.0, g_width, 0, g_height, -1.0, 1.0);
+    glOrtho(0.0, g_ui.m_screen_size.x, 0, g_ui.m_screen_size.y, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -422,12 +421,12 @@ static void error_callback(int error, char const * description)
     printf("%d: %s", error, description);
 }
 
-static void print_widget_size(Widget const * widget, uint32_t level = 0)
+static void print_widget_size(Widget const * widget, int32_t level = 0)
 {
     if(!(widget->getType() == ElementType::VerticalLayoutee
          || widget->getType() == ElementType::HorizontalLayoutee))
     {
-        for(uint32_t i = 0; i < level - 1; ++i)
+        for(int32_t i = 0; i < level - 1; ++i)
             std::cout << "\t";
         std::cout << "pos: " << widget->pos().x << " " << widget->pos().y << "  ";
         std::cout << "size: " << widget->size().x << " " << widget->size().y << std::endl;
@@ -444,9 +443,8 @@ static void print_widget_size(Widget const * widget, uint32_t level = 0)
 
 int main()
 {
-    UI ui;
-    ui.parseUIResources("./data/ui_res.json");
-    ui.loadWindow("./data/test_win.json");
+    g_ui.parseUIResources("./data/ui_res.json");
+    g_ui.loadWindow("./data/test_win.json");
     print_widget_size(ui.m_layers[0].front()->getRootWidget());
 
     glfwSetErrorCallback(error_callback);
