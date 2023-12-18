@@ -10,15 +10,15 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
 
 void UIWindow::draw() {}
 
-void UIWindow::update(float time, bool check_cursor) 
+void UIWindow::update(float time, bool check_cursor)
 {
-	if(!m_visible)
-		return;
-	
-	if(m_root)
-		m_root->update(time, check_cursor);
-	if(m_background)
-		m_background->update(time, check_cursor);
+    if(!m_visible)
+        return;
+
+    if(m_root)
+        m_root->update(time, check_cursor);
+    if(m_background)
+        m_background->update(time, check_cursor);
 }
 
 void UIWindow::loadWindowFromDesc(std::string const & file_name)

@@ -5,6 +5,7 @@
 #include "src/VertexBuffer.h"
 #include "fontmanager.h"
 #include "uiimagemanager.h"
+#include "packer.h"
 #include "window.h"
 
 class UI
@@ -12,9 +13,9 @@ class UI
 public:
     void update(float time);
     void draw(VertexBuffer & vb);
-	void resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
+    void resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
 
-    UIWindow * loadWindow(std::string const & widgets_filename, uint32_t layer = 0,
+    UIWindow * loadWindow(std::string const & widgets_filename, int32_t layer = 0,
                           std::string const & image_group = std::string("default"));
     void       parseUIResources(std::string const & file_name);
 

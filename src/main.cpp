@@ -209,7 +209,7 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-	g_ui.resize(width, height);
+    g_ui.resize(width, height);
 }
 
 void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
@@ -444,8 +444,9 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
 int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
-    g_ui.loadWindow("./data/test_win.json");
-    print_widget_size(ui.m_layers[0].front()->getRootWidget());
+    auto win = g_ui.loadWindow("./data/test_win.json");
+    win->show();
+    print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
 
     glfwSetErrorCallback(error_callback);
 
@@ -465,6 +466,7 @@ int main()
 
     while(!glfwWindowShouldClose(g_window) && running)
     {
+        g_ui.update(glfwGetTime());
         DrawScene();
 
         glfwSwapBuffers(g_window);

@@ -20,12 +20,12 @@ public:
     void        setCaption(std::string caption) { m_caption = std::move(caption); }
     std::string getCaption() const { return m_caption; }
 
-    void show() { m_visible = true;}
-    void hide() { m_visible = false;}
+    void show() { m_visible = true; }
+    void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
 
     void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
-    //void resize(glm::vec2 const & new_size);
+    // void resize(glm::vec2 const & new_size);
 
     Rect2D    getRect() const { return m_rect; }
     glm::vec2 size() const { return m_rect.m_extent; }
