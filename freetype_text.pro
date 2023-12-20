@@ -45,6 +45,7 @@ SOURCES += \
     src/gui/packer.cpp \
     src/gui/rect2d.cpp \
     src/gui/texfont.cpp \
+    src/gui/text_box.cpp \
     src/gui/ui.cpp \
     src/gui/uiimagemanager.cpp \
     src/gui/utf8_utils.cpp \
@@ -64,6 +65,7 @@ HEADERS += \
     src/gui/packer.h \
     src/gui/rect2d.h \
     src/gui/texfont.h \
+    src/gui/text_box.h \
     src/gui/ui.h \
     src/gui/uiimagemanager.h \
     src/gui/utf8_utils.h \
