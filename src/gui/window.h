@@ -25,7 +25,8 @@ public:
     bool visible() const { return m_visible; }
 
     void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
-    // void resize(glm::vec2 const & new_size);
+	void adjustSize();
+    //void resize(glm::vec2 const & new_size);
 
     Rect2D    getRect() const { return m_rect; }
     glm::vec2 size() const { return m_rect.m_extent; }

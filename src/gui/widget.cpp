@@ -3,21 +3,6 @@
 #include "ui.h"
 #include <algorithm>
 
-struct WidgetDesc
-{
-    glm::vec2   size_hint    = {};
-    ElementType type         = ElementType::Unknown;
-    bool        visible      = true;
-    std::string region_name  = {};
-    std::string id_name      = {};
-    SizePolicy  scale        = SizePolicy::scale;
-    Align       horizontal   = Align::left;
-    Align       vertical     = Align::top;
-    std::string font_name    = {};
-    std::string texture_name = {};   // texture name from gui_set
-    float       size         = 0.0f;
-};
-
 ElementType Widget::GetElementTypeFromString(std::string_view name)
 {
     ElementType type = ElementType::Unknown;
@@ -98,6 +83,12 @@ void Widget::update(float time, bool check_cursor)
 
 void Widget::draw() {}
 
+void Widget::adjustSize()
+{
+	for(auto & ch : m_children)
+		ch->adjustSize();
+}
+
 void Widget::addWidget(std::unique_ptr<Widget> widget)
 {
     widget->m_parent = this;
@@ -125,6 +116,28 @@ bool Widget::isChild(Widget * parent_widget)
     }
 
     return false;
+}
+
+Widget * Widget::getWidgetFromIDName(std::string const & id_name) const
+{
+	if(m_id == id_name)
+		return this;
+	
+	for(auto const & ch : m_children)
+	{
+		if(auto * ptr = ch.getWidgetFromIDName(id_name); ptr != nullptr)
+			return ptr;
+	}
+	
+	return nullptr;
+}
+
+std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & obj, UIWindow & owner);
+{
+	auto widg_ptr = std::make_unique<Widget>(owner, desc);
+	// type dependent creation
+
+    return widg_ptr;
 }
 
 std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner)
@@ -184,7 +197,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
         }
     }
 
-    auto widg_ptr = std::make_unique<Widget>(owner, desc);
+    auto widg_ptr = GetWidgetFromDesc(desc, owner);
 
     auto const children_it = obj.find(sid_children);
     assert(children_it != obj.end());
