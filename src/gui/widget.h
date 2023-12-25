@@ -51,7 +51,7 @@ private:
 
 public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
-	static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & obj, UIWindow & owner);
+    static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
 public:
     Widget(UIWindow & owner) : m_owner(owner) {}
@@ -60,7 +60,7 @@ public:
 
     virtual void update(float time, bool check_cursor);
     virtual void draw();
-	virtual void adjustSize();
+    virtual void adjustSize();
 
     virtual void addWidget(std::unique_ptr<Widget> widget);
     virtual void removeWidget(Widget * widget);
@@ -69,19 +69,19 @@ public:
     Widget * parent() const { return m_parent; }
     int32_t  getNumChildren() const { return m_children.size(); }
     Widget * getChild(int32_t num) const { return m_children[num].get(); }
-	Widget * getWidgetFromIDName(std::string const & id_name) const; // recursive search in the child tree
+    Widget * getWidgetFromIDName(std::string const & id_name);   // recursive search in the child tree
 
     void show() { m_visible = true; }
     void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
     bool focused() const { return m_focused; }
-	
-	void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
+
+    void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
 
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     Rect2D      getRect() const { return m_rect; }
-	void        setRect(Rect2D const & rect) { m_rect = rect; }
+    void        setRect(Rect2D const & rect) { m_rect = rect; }
     std::string getId() const { return m_id; }
     glm::vec2   pos() const { return m_pos; }
 

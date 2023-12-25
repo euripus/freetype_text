@@ -11,9 +11,9 @@ public:
     // Widget interface
     void update(float time, bool check_cursor) override;
     void draw() override;
-	void adjustSize() override;
+    void adjustSize() override;
 
-	void setText(std::string const & new_text);
+    void setText(std::string const & new_text);
 
 private:
     void adjustTextToLines();

@@ -23,10 +23,10 @@ void UIWindow::update(float time, bool check_cursor)
 
 void UIWindow::adjustSize()
 {
-	m_root->adjustSize();
-	
-	m_background->setRect(m_root->getRect());
-	m_background->adjustSize();
+    m_root->adjustSize();
+
+    m_background->setRect(m_root->getRect());
+    m_background->adjustSize();
 }
 
 void UIWindow::loadWindowFromDesc(std::string const & file_name)

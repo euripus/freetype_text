@@ -18,7 +18,7 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
 
     auto * win_ptr = m_windows.back().get();
     m_packer.fitWidgets(win_ptr);
-	win_ptr->adjustSize();
+    win_ptr->adjustSize();
 
     if(layer + 1 > static_cast<int32_t>(m_layers.size()))
         m_layers.resize(layer + 1);

@@ -85,8 +85,8 @@ void Widget::draw() {}
 
 void Widget::adjustSize()
 {
-	for(auto & ch : m_children)
-		ch->adjustSize();
+    for(auto & ch : m_children)
+        ch->adjustSize();
 }
 
 void Widget::addWidget(std::unique_ptr<Widget> widget)
@@ -118,24 +118,24 @@ bool Widget::isChild(Widget * parent_widget)
     return false;
 }
 
-Widget * Widget::getWidgetFromIDName(std::string const & id_name) const
+Widget * Widget::getWidgetFromIDName(std::string const & id_name)
 {
-	if(m_id == id_name)
-		return this;
-	
-	for(auto const & ch : m_children)
-	{
-		if(auto * ptr = ch.getWidgetFromIDName(id_name); ptr != nullptr)
-			return ptr;
-	}
-	
-	return nullptr;
+    if(m_id == id_name)
+        return this;
+
+    for(auto const & ch : m_children)
+    {
+        if(auto * ptr = ch->getWidgetFromIDName(id_name); ptr != nullptr)
+            return ptr;
+    }
+
+    return nullptr;
 }
 
-std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & obj, UIWindow & owner);
+std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)
 {
-	auto widg_ptr = std::make_unique<Widget>(owner, desc);
-	// type dependent creation
+    auto widg_ptr = std::make_unique<Widget>(owner, desc);
+    // type dependent creation
 
     return widg_ptr;
 }
