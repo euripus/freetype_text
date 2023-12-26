@@ -13,8 +13,6 @@ void TextBox::draw() {}
 void TextBox::adjustSize()
 {
     adjustTextToLines();
-
-    Widget::adjustSize();   // forward message to children
 }
 
 void TextBox::setText(std::string const & new_text)
@@ -42,6 +40,10 @@ static std::vector<std::string> split_string(std::string const & s, char delim)
 
 void TextBox::adjustTextToLines()
 {
+	// S = wh
+	// fixed_width   h = S/w
+	// fixed_height  w = S/h
+	// fixed_area
     auto const size        = m_rect.m_extent;
     auto const words       = split_string(m_text, ' ');
     auto const blank_width = m_font->getTextSize(" ").x;
@@ -64,4 +66,8 @@ void TextBox::adjustTextToLines()
             current_width += blank_width;
         }
     }
+
+	float const text_height = (m_lines.size() + 1) * (m_font->getHeight() + m_font->getLineGap());	
+	m_rect.m_extent = std::vec2(size.x, glm::max(size.y, text_height));
+	m_owner.childResized();  // resize text area
 }

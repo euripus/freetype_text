@@ -29,6 +29,9 @@ enum class Align
 enum class SizePolicy
 {
     scale,
+	fixed_width,
+	fixed_height,
+	fixed_area,
     none
 };
 

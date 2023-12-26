@@ -26,6 +26,7 @@ public:
 
     void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
     void adjustSize();
+	void childResized();
     // void resize(glm::vec2 const & new_size);
 
     Rect2D    getRect() const { return m_rect; }

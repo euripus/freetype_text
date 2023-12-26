@@ -39,6 +39,12 @@ SizePolicy Widget::GetSizePolicyFromString(std::string_view name)
 
     if(name == "scale")
         policy = SizePolicy::scale;
+	else if(name == "fixed_width")
+        policy = SizePolicy::fixed_width;
+	else if(name == "fixed_height")
+        policy = SizePolicy::fixed_height;
+	else if(name == "fixed_area")
+        policy = SizePolicy::fixed_area;
 
     return policy;
 }

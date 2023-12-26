@@ -29,6 +29,11 @@ void UIWindow::adjustSize()
     m_background->adjustSize();
 }
 
+void UIWindow::childResized()
+{
+	m_owner.fitWidgets(this);
+}
+
 void UIWindow::loadWindowFromDesc(std::string const & file_name)
 {
     boost::json::value jv;

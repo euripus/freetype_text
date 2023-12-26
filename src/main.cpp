@@ -345,11 +345,11 @@ void DrawScene(void)
         auto      mt = MarkupText(tf, MarkupText::LineType::UNDERLINE);
         mt.addText(text_buf, buffer, pen);
 
-        pen = glm::vec2(10, 40);
+        pen = glm::vec2(10, 10 + tf.getHeight() + tf.getLineGap());
         auto key_desc = std::string("Последняя клавиша: ") + KeyDescription(g_input_state.getKeyPressed());
         tf.addText(text_buf, key_desc.c_str(), pen);
 
-        pen             = glm::vec2(10, 70);
+        pen             = glm::vec2(10, 10 + 2.0f * (tf.getHeight() + tf.getLineGap()));
         auto cursor_pos = g_input_state.getMousePosition();
         std::sprintf(buffer, "Cursor pos: %d, %d", cursor_pos.x, cursor_pos.y);
         tf.addText(text_buf, buffer, pen);
