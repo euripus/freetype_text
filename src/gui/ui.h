@@ -18,8 +18,8 @@ public:
     UIWindow * loadWindow(std::string const & widgets_filename, int32_t layer = 0,
                           std::string const & image_group = std::string("default"));
     void       parseUIResources(std::string const & file_name);
-	
-	void fitWidgets(UIWindow * win_ptr) const;
+
+    void fitWidgets(UIWindow * win_ptr) const;
 
     // Input * m_input;
 

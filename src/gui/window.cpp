@@ -31,7 +31,7 @@ void UIWindow::adjustSize()
 
 void UIWindow::childResized()
 {
-	m_owner.fitWidgets(this);
+    m_owner.fitWidgets(this);
 }
 
 void UIWindow::loadWindowFromDesc(std::string const & file_name)

@@ -1,4 +1,5 @@
 #include "text_box.h"
+#include "window.h"
 #include <sstream>
 
 TextBox::TextBox(std::string const & text, UIWindow & owner) : Widget(owner), m_text(text)
@@ -40,10 +41,10 @@ static std::vector<std::string> split_string(std::string const & s, char delim)
 
 void TextBox::adjustTextToLines()
 {
-	// S = wh
-	// fixed_width   h = S/w
-	// fixed_height  w = S/h
-	// fixed_area
+    // S = wh
+    // fixed_width   h = S/w
+    // fixed_height  w = S/h
+    // fixed_area
     auto const size        = m_rect.m_extent;
     auto const words       = split_string(m_text, ' ');
     auto const blank_width = m_font->getTextSize(" ").x;
@@ -67,7 +68,7 @@ void TextBox::adjustTextToLines()
         }
     }
 
-	float const text_height = (m_lines.size() + 1) * (m_font->getHeight() + m_font->getLineGap());	
-	m_rect.m_extent = std::vec2(size.x, glm::max(size.y, text_height));
-	m_owner.childResized();  // resize text area
+    float const text_height = (m_lines.size() + 1) * (m_font->getHeight() + m_font->getLineGap());
+    m_rect.m_extent         = glm::vec2(size.x, glm::max(size.y, text_height));
+    m_owner.childResized();   // resize text area
 }

@@ -100,9 +100,9 @@ public:
                        glm::vec2 & pos) const;
 
     void reloadGlyphs();
-	
-	float getHeight() const { return m_height; }
-	float getLineGap() const { return m_linegap; }
+
+    float getHeight() const { return m_height * 100.f; }
+    float getLineGap() const { return m_linegap; }
 
 private:
     bool initFont();
