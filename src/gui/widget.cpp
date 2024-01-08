@@ -89,10 +89,12 @@ void Widget::update(float time, bool check_cursor)
 
 void Widget::draw() {}
 
-void Widget::adjustSize()
+void Widget::move(glm::vec2 const & new_origin)
 {
+	m_pos = m_rect.m_pos + new_origin;
+
     for(auto & ch : m_children)
-        ch->adjustSize();
+        ch->move(new_origin);
 }
 
 void Widget::addWidget(std::unique_ptr<Widget> widget)

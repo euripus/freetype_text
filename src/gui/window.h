@@ -24,8 +24,7 @@ public:
     void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
 
-    void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
-    void adjustSize();
+    void move(glm::vec2 const & new_origin);
     void childResized();
     // void resize(glm::vec2 const & new_size);
 

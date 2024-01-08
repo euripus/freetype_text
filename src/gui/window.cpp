@@ -21,12 +21,14 @@ void UIWindow::update(float time, bool check_cursor)
         m_background->update(time, check_cursor);
 }
 
-void UIWindow::adjustSize()
+void UIWindow::move(glm::vec2 const & new_origin)
 {
-    m_root->adjustSize();
+	m_pos = new_origin;
+
+    m_root->move(new_origin);
 
     m_background->setRect(m_root->getRect());
-    m_background->adjustSize();
+    m_background->move(new_origin);
 }
 
 void UIWindow::childResized()

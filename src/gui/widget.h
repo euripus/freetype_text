@@ -60,7 +60,7 @@ public:
 
     virtual void update(float time, bool check_cursor);
     virtual void draw();
-    virtual void adjustSize();
+    virtual void move(glm::vec2 const & new_origin);
 
     virtual void addWidget(std::unique_ptr<Widget> widget);
     virtual void removeWidget(Widget * widget);
@@ -75,8 +75,6 @@ public:
     void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
     bool focused() const { return m_focused; }
-
-    void move(glm::vec2 const & new_origin) { m_pos = new_origin; }
 
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }

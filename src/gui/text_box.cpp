@@ -11,8 +11,10 @@ void TextBox::update(float time, bool check_cursor) {}
 
 void TextBox::draw() {}
 
-void TextBox::adjustSize()
+void TextBox::move(glm::vec2 const & new_origin)
 {
+	Widget::move(new_origin);
+
     adjustTextToLines();
 }
 

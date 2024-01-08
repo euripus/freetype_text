@@ -29,6 +29,13 @@ const struct {
 constexpr float             HRESf = 64.0f;
 constexpr std::uint32_t     DPI   = 72;
 
+// https://stackoverflow.com/questions/8638792/how-to-convert-packed-integer-16-16-fixed-point-to-float
+auto convert = [](auto const & fixed, int fraction = 6)
+{
+	auto const delim = 1.f / static_cast<float>( 1 << fraction );
+	return static_cast<float>(fixed) * delim;
+};
+
 static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, TexFont::FontLocation location,
                             std::string const & filename, std::vector<unsigned char> const & data)
 {
@@ -192,9 +199,9 @@ bool TexFont::initFont()
     }
 
     metrics     = face->size->metrics;
-    m_ascender  = (metrics.ascender >> 6) / 100.0f;
-    m_descender = (metrics.descender >> 6) / 100.0f;
-    m_height    = (metrics.height >> 6) / 100.0f;
+    m_ascender  = convert(metrics.ascender);
+    m_descender = convert(metrics.descender);
+    m_height    = convert(metrics.height);
     m_linegap   = m_height - m_ascender + m_descender;
     FT_Done_Face(face);
     FT_Done_FreeType(library);
