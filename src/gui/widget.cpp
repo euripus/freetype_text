@@ -91,7 +91,7 @@ void Widget::draw() {}
 
 void Widget::move(glm::vec2 const & new_origin)
 {
-	m_pos = m_rect.m_pos + new_origin;
+    m_pos = m_rect.m_pos + new_origin;
 
     for(auto & ch : m_children)
         ch->move(new_origin);

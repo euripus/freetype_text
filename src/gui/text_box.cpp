@@ -13,7 +13,7 @@ void TextBox::draw() {}
 
 void TextBox::move(glm::vec2 const & new_origin)
 {
-	Widget::move(new_origin);
+    Widget::move(new_origin);
 
     adjustTextToLines();
 }

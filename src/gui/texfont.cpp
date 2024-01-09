@@ -27,13 +27,12 @@ const struct {
 
     constexpr std::uint32_t HRES  = 64;
 constexpr float             HRESf = 64.0f;
-constexpr std::uint32_t     DPI   = 72;
+constexpr std::int32_t      DPI   = 72;
 
 // https://stackoverflow.com/questions/8638792/how-to-convert-packed-integer-16-16-fixed-point-to-float
-auto convert = [](auto const & fixed, int fraction = 6)
-{
-	auto const delim = 1.f / static_cast<float>( 1 << fraction );
-	return static_cast<float>(fixed) * delim;
+auto convert = [](auto const & fixed, int fraction = 6) {
+    auto const delim = 1.f / static_cast<float>(1 << fraction);
+    return static_cast<float>(fixed) * delim;
 };
 
 static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, TexFont::FontLocation location,
@@ -590,7 +589,7 @@ void TexFont::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * pre
     pos.x += kerning;
     float x0 = pos.x + glyph.offset_x;
     float y0 = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
-    float x1 = x0 + static_cast<int>(glyph.width);
+    float x1 = x0 + static_cast<int32_t>(glyph.width);
     float y1 = pos.y + glyph.offset_y;
     float s0 = glyph.s0;
     float t0 = glyph.t0;

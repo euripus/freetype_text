@@ -23,7 +23,7 @@ void UIWindow::update(float time, bool check_cursor)
 
 void UIWindow::move(glm::vec2 const & new_origin)
 {
-	m_pos = new_origin;
+    m_pos = new_origin;
 
     m_root->move(new_origin);
 
