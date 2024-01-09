@@ -17,12 +17,13 @@ public:
 
 private:
     void adjustTextToLines();
+	void splitTextForWidth(std::vector<std::string> const & words, float width, float max_height = 0.f, bool trim = false);
 
 protected:
     std::string m_text = {};
 
-    bool                     m_formated = false;
-    std::vector<std::string> m_lines;
+    std::vector<std::string> m_lines = {};
+	bool                     m_formated = false;
 };
 
 #endif

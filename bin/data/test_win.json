@@ -20,7 +20,7 @@
                     "texture": "",
                     "region_name": "background",
                     "id_name": "text_window",
-                    "size_policy": "scale",
+                    "size_policy": "fixed_width",
                     "align_horizontal": "left",
                     "align_vertical": "top",
                     "font": "liberation",

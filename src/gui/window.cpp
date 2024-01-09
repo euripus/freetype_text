@@ -25,15 +25,16 @@ void UIWindow::move(glm::vec2 const & new_origin)
 {
     m_pos = new_origin;
 
-    m_root->move(new_origin);
+    m_root->move(m_pos);
 
     m_background->setRect(m_root->getRect());
-    m_background->move(new_origin);
+    m_background->move(m_pos);
 }
 
 void UIWindow::childResized()
 {
     m_owner.fitWidgets(this);
+	move(m_pos);
 }
 
 void UIWindow::loadWindowFromDesc(std::string const & file_name)
