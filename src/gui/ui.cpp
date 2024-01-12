@@ -2,7 +2,7 @@
 
 void UI::update(float time)
 {
-    for(auto & ptr : m_windows)
+    for(auto & ptr: m_windows)
     {
         ptr->update(time, true);
     }

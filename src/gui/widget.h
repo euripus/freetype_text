@@ -54,7 +54,9 @@ public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
 public:
-    Widget(UIWindow & owner) : m_owner(owner) {}
+    Widget(UIWindow & owner)
+        : m_owner(owner)
+    {}
     Widget(UIWindow & owner, WidgetDesc const & desc);
     virtual ~Widget() = default;
 

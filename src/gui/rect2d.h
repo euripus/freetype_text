@@ -11,12 +11,14 @@ struct Rect2D
 
     Rect2D() noexcept = default;
 
-    constexpr Rect2D(glm::vec2 const & position, glm::vec2 const & extent) noexcept :
-        m_pos(position), m_extent(extent)
+    constexpr Rect2D(glm::vec2 const & position, glm::vec2 const & extent) noexcept
+        : m_pos(position),
+          m_extent(extent)
     {}
 
-    constexpr Rect2D(float const x, float const y, float const width, float const height) noexcept :
-        m_pos(x, y), m_extent(width, height)
+    constexpr Rect2D(float const x, float const y, float const width, float const height) noexcept
+        : m_pos(x, y),
+          m_extent(width, height)
     {}
 
     static Rect2D FromLeftBottomRightTop(float const left, float const bottom, float const right,

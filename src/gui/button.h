@@ -12,13 +12,13 @@ public:
     void update(float time, bool check_cursor) override;
     void draw() override;
     void move(glm::vec2 const & new_origin) override;
-	
-	void setCallback(std::function<void(void)> click_callback);
+
+    void setCallback(std::function<void(void)> click_callback);
 
 protected:
-	std::string m_caption;
-	std::function<void(void)> m_click_callback;
-    bool m_enabled;
+    std::string               m_caption;
+    std::function<void(void)> m_click_callback;
+    bool                      m_enabled;
 };
 
 #endif

@@ -11,7 +11,7 @@ void Packer::fitWidgets(UIWindow * win) const
     auto list = getMatrixFromTree(win->m_root.get());
 
     float max_width = 0.0f;
-    for(auto const & row : list)
+    for(auto const & row: list)
         max_width = glm::max(max_width, getRowMaxWidth(row));
 
     adjustWidgetsInRow(win, list, max_width);
@@ -49,7 +49,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
 
     if(root->m_type == ElementType::VerticalLayoutee || root->m_type == ElementType::HorizontalLayoutee)
     {
-        for(auto const & ch : root->m_children)
+        for(auto const & ch: root->m_children)
         {
             if(auto * cur_ch_ptr = ch.get(); cur_ch_ptr->m_type == ElementType::VerticalLayoutee
                                              || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
@@ -58,7 +58,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
                     addSubTree(ls, cur_ch_ptr, level + 1);
                 else
                 {
-                    for(auto const & ch2 : cur_ch_ptr->m_children)
+                    for(auto const & ch2: cur_ch_ptr->m_children)
                     {
                         addSubTree(ls, ch2.get(), level + 1);
                     }
@@ -80,7 +80,7 @@ float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
 {
     float width = m_horizontal_spacing;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         width += widget->sizeHint().x + m_horizontal_spacing;
 
     return width;
@@ -90,7 +90,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
 {
     float height = 0.0f;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         height = glm::max(height, widget->sizeHint().y);
 
     return height;
@@ -101,14 +101,14 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
     float current_height = m_vertical_spacing;
     float final_width    = 0.0f;
 
-    for(auto & row : ls)
+    for(auto & row: ls)
     {
         auto  num_widgets   = row.size();
         float row_height    = getRowMaxHeight(row);
         float element_width = (new_width - m_horizontal_spacing * (num_widgets + 1)) / num_widgets;
         float current_pos   = m_horizontal_spacing;
 
-        for(auto * widget : row)
+        for(auto * widget: row)
         {
             if(widget->m_scale == SizePolicy::scale)
             {
@@ -174,7 +174,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
             current_pos += widget->size().x + m_horizontal_spacing;
         }
 
-        final_width = glm::max(current_pos, new_width);
+        final_width     = glm::max(current_pos, new_width);
         current_height += row_height + m_vertical_spacing;
     }
 

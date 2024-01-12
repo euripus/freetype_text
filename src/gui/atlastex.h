@@ -26,6 +26,7 @@ public:
     void UploadTexture();
     void DeleteTexture();
     void BindTexture();
+
 private:
     int32_t atlasFit(uint32_t index, uint32_t width, uint32_t height);
     void    atlasMerge();

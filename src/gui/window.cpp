@@ -3,7 +3,8 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group)
+    : m_owner(owner)
 {
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
@@ -34,7 +35,7 @@ void UIWindow::move(glm::vec2 const & new_origin)
 void UIWindow::childResized()
 {
     m_owner.fitWidgets(this);
-	move(m_pos);
+    move(m_pos);
 }
 
 void UIWindow::loadWindowFromDesc(std::string const & file_name)

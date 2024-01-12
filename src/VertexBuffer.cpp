@@ -34,13 +34,13 @@ char * strdup(char const * s)
     return static_cast<char *>(std::memcpy(result, s, len));
 }
 
-VertexBuffer::VertexBuffer(char const * format) :
-    m_vertices_id(0),
-    m_indices_id(0),
-    m_mode(0),
-    m_state(VertexBuffer::State::VB_NOINIT),
-    m_num_vert_comp(0),
-    m_is_generated(false)
+VertexBuffer::VertexBuffer(char const * format)
+    : m_vertices_id(0),
+      m_indices_id(0),
+      m_mode(0),
+      m_state(VertexBuffer::State::VB_NOINIT),
+      m_num_vert_comp(0),
+      m_is_generated(false)
 {
     assert(format);
 
@@ -65,8 +65,8 @@ VertexBuffer::VertexBuffer(char const * format) :
         start    = end + 1;
         delete[] desc;
 
-        new_attr.pointer = sizeof(float) * m_num_vert_comp;
-        m_num_vert_comp += new_attr.size;
+        new_attr.pointer  = sizeof(float) * m_num_vert_comp;
+        m_num_vert_comp  += new_attr.size;
         m_attributes.push_back(new_attr);
     } while(end);
 
@@ -97,7 +97,7 @@ void VertexBuffer::Clear()
     m_indices.clear();
 }
 
-void VertexBuffer::VertexBufferInsertVertices(const size_t index, float const * vertices, const size_t vcount)
+void VertexBuffer::VertexBufferInsertVertices(size_t const index, float const * vertices, size_t const vcount)
 {
     assert(index * m_num_vert_comp < m_vertices.size());
     assert(vertices);
@@ -106,8 +106,8 @@ void VertexBuffer::VertexBufferInsertVertices(const size_t index, float const * 
     m_vertices.insert(flt_it, vertices, vertices + vcount);
 }
 
-void VertexBuffer::VertexBufferInsertIndices(const size_t index, unsigned int const * indices,
-                                             const size_t icount)
+void VertexBuffer::VertexBufferInsertIndices(size_t const index, unsigned int const * indices,
+                                             size_t const icount)
 {
     assert(index < m_indices.size());
     assert(indices);
@@ -116,8 +116,8 @@ void VertexBuffer::VertexBufferInsertIndices(const size_t index, unsigned int co
     m_indices.insert(ind_it, indices, indices + icount);
 }
 
-void VertexBuffer::VertexBufferPushBack(float const * vertices, const size_t vcount,
-                                        unsigned int const * indices, const size_t icount)
+void VertexBuffer::VertexBufferPushBack(float const * vertices, size_t const vcount,
+                                        unsigned int const * indices, size_t const icount)
 {
     assert(vertices);
     assert(indices);
@@ -137,7 +137,7 @@ void VertexBuffer::VertexBufferPushBack(float const * vertices, const size_t vco
     m_state = VertexBuffer::State::VB_INITDATA;
 }
 
-void VertexBuffer::EraseVertices(const size_t first, const size_t last)
+void VertexBuffer::EraseVertices(size_t const first, size_t const last)
 {
     assert(last * m_num_vert_comp < m_vertices.size());
     assert(last < m_indices.size());

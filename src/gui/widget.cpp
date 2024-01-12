@@ -43,8 +43,8 @@ SizePolicy Widget::GetSizePolicyFromString(std::string_view name)
         policy = SizePolicy::fixed_width;
     else if(name == "fixed_height")
         policy = SizePolicy::fixed_height;
-    else if(name == "fixed_area")
-        policy = SizePolicy::fixed_area;
+    else if(name == "trim")
+        policy = SizePolicy::trim;
 
     return policy;
 }
@@ -67,7 +67,8 @@ Align Widget::GetAlignFromString(std::string_view name)
     return align;
 }
 
-Widget::Widget(UIWindow & owner, WidgetDesc const & desc) : Widget(owner)
+Widget::Widget(UIWindow & owner, WidgetDesc const & desc)
+    : Widget(owner)
 {
     m_size_hint  = desc.size_hint;
     m_id         = desc.id_name;
@@ -84,7 +85,8 @@ Widget::Widget(UIWindow & owner, WidgetDesc const & desc) : Widget(owner)
 
 void Widget::update(float time, bool check_cursor)
 {
-    if(check_cursor) {}
+    if(check_cursor)
+    {}
 }
 
 void Widget::draw() {}
@@ -93,7 +95,7 @@ void Widget::move(glm::vec2 const & new_origin)
 {
     m_pos = m_rect.m_pos + new_origin;
 
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->move(new_origin);
 }
 
@@ -131,7 +133,7 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     if(m_id == id_name)
         return this;
 
-    for(auto const & ch : m_children)
+    for(auto const & ch: m_children)
     {
         if(auto * ptr = ch->getWidgetFromIDName(id_name); ptr != nullptr)
             return ptr;
@@ -153,7 +155,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
     assert(!obj.empty());
 
     WidgetDesc desc;
-    for(auto const & kvp : obj)
+    for(auto const & kvp: obj)
     {
         if(kvp.key() == sid_size)
         {
@@ -213,7 +215,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
     auto const & arr = children_it->value().as_array();
     if(!arr.empty())
     {
-        for(auto const & child_entry : arr)
+        for(auto const & child_entry: arr)
         {
             auto const & widget_obj = child_entry.as_object();
             if(!widget_obj.empty())

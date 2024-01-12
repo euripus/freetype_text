@@ -36,12 +36,12 @@ public:
     // unsigned int NumTris() const { return _indices.size()/3; }
     unsigned int GetNumVertComponents() const { return m_num_vert_comp; }
 
-    void VertexBufferInsertVertices(const size_t index, float const * vertices, const size_t vcount);
-    void VertexBufferInsertIndices(const size_t index, unsigned int const * indices, const size_t icount);
-    void VertexBufferPushBack(float const * vertices, const size_t vcount, unsigned int const * indices,
-                              const size_t icount);
+    void VertexBufferInsertVertices(size_t const index, float const * vertices, size_t const vcount);
+    void VertexBufferInsertIndices(size_t const index, unsigned int const * indices, size_t const icount);
+    void VertexBufferPushBack(float const * vertices, size_t const vcount, unsigned int const * indices,
+                              size_t const icount);
 
-    void EraseVertices(const size_t first, const size_t last);
+    void EraseVertices(size_t const first, size_t const last);
     void Clear();
 
     void InitAttribLocation();

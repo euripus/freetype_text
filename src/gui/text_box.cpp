@@ -2,7 +2,9 @@
 #include "window.h"
 #include <sstream>
 
-TextBox::TextBox(std::string const & text, UIWindow & owner) : Widget(owner), m_text(text)
+TextBox::TextBox(std::string const & text, UIWindow & owner)
+    : Widget(owner),
+      m_text(text)
 {
     adjustTextToLines();
 }
@@ -15,16 +17,16 @@ void TextBox::move(glm::vec2 const & new_origin)
 {
     Widget::move(new_origin);
 
-	if(!m_formated)
-		adjustTextToLines();
+    if(!m_formated)
+        adjustTextToLines();
 }
 
 void TextBox::setText(std::string const & new_text)
 {
     m_text     = new_text;
     m_formated = false;
-	
-	adjustTextToLines();
+
+    adjustTextToLines();
 }
 
 // boost::split() analogue
@@ -42,80 +44,87 @@ static std::vector<std::string> split_string(std::string const & s, char delim)
     return result;
 }
 
-void splitTextForWidth(std::vector<std::string> const & words, float width, float max_height, bool trim)
+void TextBox::splitTextForWidth(std::vector<std::string> const & words, float width, float max_height,
+                                bool trim)
 {
-	auto const blank_width = m_font->getTextSize(" ").x;
-	auto const string_height = m_font->getHeight() + m_font->getLineGap();
-	std::string current_string;
-	float       current_width = 0.f;
-	float       current_height = string_height;
+    auto const  blank_width    = m_font->getTextSize(" ").x;
+    auto const  string_height  = m_font->getHeight() + m_font->getLineGap();
+    std::string current_string = {};
+    float       current_width  = 0.f;
+    float       current_height = string_height;
 
-	for(auto const & word : words)
-	{
-		float const word_width = m_font->getTextSize(word.c_str()).x;
+    for(auto const & word: words)
+    {
+        float const word_width = m_font->getTextSize(word.c_str()).x;
 
-		current_width += word_width;
-		if(current_width > width)
-		{
-			current_width = word_width;
-			m_lines.push_back(std::move(current_string));
-			
-			if(trim)
-			{
-				current_height += string_height;
-				if(current_height > max_height)
-					return;
-			}
-		}
-		else
-		{
-			current_string += word + ' ';
-			current_width += blank_width;
-		}
-	}
+        current_width += word_width;
+        if(current_width > width)
+        {
+            current_width = word_width;
+            m_lines.push_back(std::move(current_string));
+
+            if(trim)
+            {
+                current_height += string_height;
+                if(current_height > max_height)
+                    return;
+            }
+        }
+        else
+        {
+            current_string += word + ' ';
+            current_width  += blank_width;
+        }
+    }
 }
 
 void TextBox::adjustTextToLines()
 {
-    auto const string_width  = m_font->getTextSize(m_text.c_str()).x;
-	if(string_width <= m_rect.m_extent.x) // text size is smaller than area size
-	{
-		m_lines.push_back(m_text);
-	}
-	else
-	{
-		auto size        = m_rect.m_extent;
-		auto const words = split_string(m_text, ' ');
+    auto const string_width = m_font->getTextSize(m_text.c_str()).x;
+    auto       size         = m_rect.m_extent;
 
-		switch(m_scale)
-		{
-			case fixed_width:
-			{
-				splitTextForWidth(words, size.x);
+    if(string_width <= m_rect.m_extent.x)   // text size is smaller than area size
+    {
+        m_lines.push_back(m_text);
+    }
+    else
+    {
+        auto const words = split_string(m_text, ' ');
 
-				break;
-			}
-			case fixed_height:
-			{
-				auto const text_area = string_width * (m_font->getHeight() + m_font->getLineGap());
-				size.x = text_area / size.y;
-				
-				splitTextForWidth(words, size.x);
-				
-				break;
-			}
-			case fixed_area:
-			{
-				splitTextForWidth(words, size.x, size.y, true);
-				
-				break;
-			}
-		}
-	}
+        switch(m_scale)
+        {
+            case SizePolicy::fixed_width:
+            {
+                splitTextForWidth(words, size.x);
+
+                break;
+            }
+            case SizePolicy::fixed_height:
+            {
+                auto const text_area = string_width * (m_font->getHeight() + m_font->getLineGap());
+                size.x               = text_area / size.y;
+
+                splitTextForWidth(words, size.x);
+
+                break;
+            }
+            case SizePolicy::trim:
+            {
+                splitTextForWidth(words, size.x, size.y, true);
+
+                break;
+            }
+            case SizePolicy::none:
+            case SizePolicy::scale:
+            {
+                break;
+            }
+        }
+    }
 
     float const text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
     m_rect.m_extent         = glm::vec2(size.x, glm::max(size.y, text_height));
-	m_formated = true;
+    m_formated              = true;
 
     m_owner.childResized();   // resize text area message
 }

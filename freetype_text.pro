@@ -40,6 +40,7 @@ SOURCES += \
     src/VertexAttrib.cpp \
     src/VertexBuffer.cpp \
     src/gui/atlastex.cpp \
+    src/gui/button.cpp \
     src/gui/fontmanager.cpp \
     src/gui/imagedata.cpp \
     src/gui/packer.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     src/VertexBuffer.h \
     src/gui/atlastex.h \
     src/gui/basic_types.h \
+    src/gui/button.h \
     src/gui/fontmanager.h \
     src/gui/imagedata.h \
     src/gui/packer.h \

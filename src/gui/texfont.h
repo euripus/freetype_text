@@ -84,7 +84,7 @@ public:
             bool hinting = true, bool kerning = true, float outline_thickness = 0.0f,
             Glyph::OutlineType outline_type = Glyph::OutlineType::NONE);
 
-    Glyph const & getGlyph(const std::uint32_t ucodepoint) const;
+    Glyph const & getGlyph(std::uint32_t const ucodepoint) const;
     std::int32_t  loadGlyph(char const * charcode);
     std::int32_t  loadGlyph(std::uint32_t ucodepoint);
 
@@ -92,7 +92,7 @@ public:
 
     float glyphGetKerning(
         Glyph const &       glyph,
-        const std::uint32_t left_charcode) const;   // charcode  codepoint of the peceding glyph
+        std::uint32_t const left_charcode) const;   // charcode  codepoint of the peceding glyph
 
     glm::vec2 getTextSize(char const * text) const;
     void      addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
@@ -148,7 +148,10 @@ struct MarkupText
         STRIKETHROUGH
     };
 
-    MarkupText(TexFont & font, LineType line = LineType::UNDERLINE) : m_font(font), m_line(line) {}
+    MarkupText(TexFont & font, LineType line = LineType::UNDERLINE)
+        : m_font(font),
+          m_line(line)
+    {}
 
     void addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
     void addGlyph(VertexBuffer & vb, std::uint32_t ucodepoint, Glyph const * prev_glyph,

@@ -12,7 +12,12 @@ struct VertexAttrib
     size_t        stride;   // vertex size
     size_t        pointer;
 
-    VertexAttrib() : location(0), size(0), stride(0), pointer(0) {}
+    VertexAttrib()
+        : location(0),
+          size(0),
+          stride(0),
+          pointer(0)
+    {}
 
     static VertexAttrib VertexAttribParse(char const * format);
     void                VertexAttribEnable() const;

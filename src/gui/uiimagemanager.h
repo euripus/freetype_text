@@ -45,7 +45,9 @@ struct RegionDataOfUITexture
 class UIImageGroup   // a group of images of the same style
 {
 public:
-    UIImageGroup(UIImageManager & owner) : m_owner(owner) {}
+    UIImageGroup(UIImageManager & owner)
+        : m_owner(owner)
+    {}
 
     UIImageManager & getOwner() { return m_owner; }
 
