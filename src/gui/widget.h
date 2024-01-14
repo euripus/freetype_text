@@ -78,7 +78,7 @@ public:
     bool visible() const { return m_visible; }
     bool focused() const { return m_focused; }
 
-    glm::vec2   size() const { return m_rect.m_extent; }
+    glm::vec2   size() const;
     glm::vec2   sizeHint() const { return m_size_hint; }
     Rect2D      getRect() const { return m_rect; }
     void        setRect(Rect2D const & rect) { m_rect = rect; }

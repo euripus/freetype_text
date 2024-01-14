@@ -142,10 +142,39 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     return nullptr;
 }
 
+glm::vec2 Widget::size() const 
+{ 
+    if(glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon()))
+        return sizeHint();
+
+    return m_rect.m_extent;
+}
+
 std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)
 {
-    auto widg_ptr = std::make_unique<Widget>(owner, desc);
-    // type dependent creation
+    std::unique_ptr<Widget> widg_ptr;
+	
+	switch(desc.type)
+	{
+		case ElementType::TextBox:
+		{
+			widg_ptr = std::make_unique<TextBox>(std::string(), owner);
+		}
+		case ElementType::ImageBox:
+		{
+			widg_ptr = std::make_unique<ImageBox>(std::string(), owner);
+		}
+		case ElementType::Button:
+		{
+			widg_ptr = std::make_unique<Button>(std::string(), owner);
+		}
+		case ElementType::VerticalLayoutee:
+		case ElementType::HorizontalLayoutee:
+		case ElementType::Unknown:
+		{
+			widg_ptr = std::make_unique<Widget>(owner, desc);
+		}
+	}
 
     return widg_ptr;
 }

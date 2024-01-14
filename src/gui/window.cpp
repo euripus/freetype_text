@@ -38,6 +38,17 @@ void UIWindow::childResized()
     move(m_pos);
 }
 
+Widget * getWidgetFromID(std::string const & id_name) const
+{
+	if(auto ptr = m_root->getWidgetFromIDName(id_name); ptr != nullptr)
+		return ptr;
+	
+	if(auto ptr = m_background->getWidgetFromIDName(id_name); ptr != nullptr)
+		return ptr;
+
+    return nullptr;
+}
+
 void UIWindow::loadWindowFromDesc(std::string const & file_name)
 {
     boost::json::value jv;

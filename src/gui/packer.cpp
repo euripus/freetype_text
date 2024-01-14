@@ -81,7 +81,7 @@ float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
     float width = m_horizontal_spacing;
 
     for(auto const * widget: row)
-        width += widget->sizeHint().x + m_horizontal_spacing;
+        width += widget->size().x + m_horizontal_spacing;
 
     return width;
 }
@@ -91,7 +91,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
     float height = 0.0f;
 
     for(auto const * widget: row)
-        height = glm::max(height, widget->sizeHint().y);
+        height = glm::max(height, widget->size().y);
 
     return height;
 }
@@ -110,64 +110,74 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
         for(auto * widget: row)
         {
-            if(widget->m_scale == SizePolicy::scale)
+            switch(widget->m_scale)
             {
-                glm::vec2 pos(current_pos, current_height);
-                glm::vec2 size(element_width, row_height);
-
-                Rect2D new_rect{pos, size};
-                widget->m_rect = new_rect;
-            }
-            else if(widget->m_scale == SizePolicy::none)
-            {
-                if(widget->sizeHint().x < element_width)
+                case SizePolicy::scale:    // resizing branch
                 {
-                    // vertical align
-                    float vertical_delta = row_height - widget->sizeHint().y;
-                    float widget_y       = current_height;
-                    if(vertical_delta > 0)
-                    {
-                        if(widget->m_vertical == Align::top)
-                            widget_y += vertical_delta;
-                        else if(widget->m_vertical == Align::center)
-                            widget_y += vertical_delta / 2.0f;
-                    }
-
-                    // horizontal align
-                    float horizontal_delta = element_width - widget->sizeHint().x;
-                    float widget_x         = current_pos;
-                    if(horizontal_delta > 0)
-                    {
-                        if(widget->m_horizontal == Align::right)
-                            widget_x += horizontal_delta;
-                        else if(widget->m_horizontal == Align::center)
-                            widget_x += horizontal_delta / 2.0f;
-                    }
-
-                    glm::vec2 pos(widget_x, widget_y);
-                    glm::vec2 size(widget->sizeHint());
+                    glm::vec2 pos(current_pos, current_height);
+                    glm::vec2 size(element_width, row_height);
 
                     Rect2D new_rect{pos, size};
                     widget->m_rect = new_rect;
+                    
+                    break;
                 }
-                else
+                case SizePolicy::none:     // fixed size branch, change only position
+                case SizePolicy::fixed_width:
+                case SizePolicy::fixed_height:
+                case SizePolicy::trim:
                 {
-                    // vertical align
-                    float vertical_delta = row_height - widget->sizeHint().y;
-                    float widget_y       = current_height;
-                    if(vertical_delta > 0)
+					glm::vec2 size(widget->size());
+					
+                    if(widget->size().x < element_width)
                     {
-                        if(widget->m_vertical == Align::top)
-                            widget_y += vertical_delta;
-                        else if(widget->m_vertical == Align::center)
-                            widget_y += vertical_delta / 2.0f;
+                        // vertical align
+                        float vertical_delta = row_height - widget->size().y;
+                        float widget_y       = current_height;
+                        if(vertical_delta > 0)
+                        {
+                            if(widget->m_vertical == Align::top)
+                                widget_y += vertical_delta;
+                            else if(widget->m_vertical == Align::center)
+                                widget_y += vertical_delta / 2.0f;
+                        }
+
+                        // horizontal align
+                        float horizontal_delta = element_width - widget->size().x;
+                        float widget_x         = current_pos;
+                        if(horizontal_delta > 0)
+                        {
+                            if(widget->m_horizontal == Align::right)
+                                widget_x += horizontal_delta;
+                            else if(widget->m_horizontal == Align::center)
+                                widget_x += horizontal_delta / 2.0f;
+                        }
+
+                        glm::vec2 pos(widget_x, widget_y);
+
+                        Rect2D new_rect{pos, size};
+                        widget->m_rect = new_rect;
                     }
+                    else
+                    {
+                        // vertical align
+                        float vertical_delta = row_height - widget->size().y;
+                        float widget_y       = current_height;
+                        if(vertical_delta > 0)
+                        {
+                            if(widget->m_vertical == Align::top)
+                                widget_y += vertical_delta;
+                            else if(widget->m_vertical == Align::center)
+                                widget_y += vertical_delta / 2.0f;
+                        }
 
-                    glm::vec2 pos(current_pos, widget_y);
-                    glm::vec2 size(widget->sizeHint());
+                        glm::vec2 pos(current_pos, widget_y);
 
-                    Rect2D new_rect{pos, size};
-                    widget->m_rect = new_rect;
+                        Rect2D new_rect{pos, size};
+                        widget->m_rect = new_rect;
+                    }
+                    
+                    break;
                 }
             }
 

@@ -29,101 +29,13 @@ void TextBox::setText(std::string const & new_text)
     adjustTextToLines();
 }
 
-// boost::split() analogue
-static std::vector<std::string> split_string(std::string const & s, char delim)
-{
-    std::vector<std::string> result;
-
-    std::stringstream ss(s);
-    std::string       item;
-    while(getline(ss, item, delim))
-    {
-        result.push_back(item);
-    }
-
-    return result;
-}
-
-void TextBox::splitTextForWidth(std::vector<std::string> const & words, float width, float max_height,
-                                bool trim)
-{
-    auto const  blank_width    = m_font->getTextSize(" ").x;
-    auto const  string_height  = m_font->getHeight() + m_font->getLineGap();
-    std::string current_string = {};
-    float       current_width  = 0.f;
-    float       current_height = string_height;
-
-    for(auto const & word: words)
-    {
-        float const word_width = m_font->getTextSize(word.c_str()).x;
-
-        current_width += word_width;
-        if(current_width > width)
-        {
-            current_width = word_width;
-            m_lines.push_back(std::move(current_string));
-
-            if(trim)
-            {
-                current_height += string_height;
-                if(current_height > max_height)
-                    return;
-            }
-        }
-        else
-        {
-            current_string += word + ' ';
-            current_width  += blank_width;
-        }
-    }
-}
-
 void TextBox::adjustTextToLines()
 {
-    auto const string_width = m_font->getTextSize(m_text.c_str()).x;
-    auto       size         = m_rect.m_extent;
-
-    if(string_width <= m_rect.m_extent.x)   // text size is smaller than area size
-    {
-        m_lines.push_back(m_text);
-    }
-    else
-    {
-        auto const words = split_string(m_text, ' ');
-
-        switch(m_scale)
-        {
-            case SizePolicy::fixed_width:
-            {
-                splitTextForWidth(words, size.x);
-
-                break;
-            }
-            case SizePolicy::fixed_height:
-            {
-                auto const text_area = string_width * (m_font->getHeight() + m_font->getLineGap());
-                size.x               = text_area / size.y;
-
-                splitTextForWidth(words, size.x);
-
-                break;
-            }
-            case SizePolicy::trim:
-            {
-                splitTextForWidth(words, size.x, size.y, true);
-
-                break;
-            }
-            case SizePolicy::none:
-            case SizePolicy::scale:
-            {
-                break;
-            }
-        }
-    }
+    m_lines = TextFitter::AdjustTextToRect(*m_font, m_rect, m_scale, m_text);
 
     float const text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
-    m_rect.m_extent         = glm::vec2(size.x, glm::max(size.y, text_height));
+	float const text_width  = TextFitter::MaxStringWidthInLines(*m_font, m_lines);
+    m_rect.m_extent         = glm::vec2(text_width, text_height);
     m_formated              = true;
 
     m_owner.childResized();   // resize text area message

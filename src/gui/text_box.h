@@ -15,11 +15,6 @@ public:
 
     void setText(std::string const & new_text);
 
-private:
-    void adjustTextToLines();
-    void splitTextForWidth(std::vector<std::string> const & words, float width, float max_height = 0.f,
-                           bool trim = false);
-
 protected:
     std::string m_text = {};
 

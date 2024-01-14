@@ -36,5 +36,5 @@ void UI::parseUIResources(std::string const & file_name)
 void UI::fitWidgets(UIWindow * win_ptr) const
 {
     m_packer.fitWidgets(win_ptr);
-    win_ptr->move({0.f, 0.f});
+    win_ptr->move(win_ptr->pos());
 }

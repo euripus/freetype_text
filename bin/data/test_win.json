@@ -18,7 +18,7 @@
                     "type": "TextBox",
                     "visible": true,
                     "texture": "",
-                    "region_name": "background",
+                    "region_name": "",
                     "id_name": "text_window",
                     "size_policy": "fixed_width",
                     "align_horizontal": "left",

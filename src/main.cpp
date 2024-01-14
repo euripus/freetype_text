@@ -445,6 +445,10 @@ int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
     auto win = g_ui.loadWindow("./data/test_win.json");
+
+    if(auto * text_box = win->getWidgetFromID("text_window"); text_box != nullptr)
+        static_cast<TextBox *>(text_box)->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy loooooooooonnnnnnnnnnggggggggggggg!");
+
     win->show();
     print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
 

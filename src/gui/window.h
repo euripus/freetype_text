@@ -33,6 +33,7 @@ public:
     glm::vec2 pos() const { return m_pos; }
 
     Widget * getRootWidget() const { return m_root.get(); }
+	Widget * getWidgetFromID(std::string const & id_name) const;
 
     void loadWindowFromDesc(std::string const & file_name);
 
