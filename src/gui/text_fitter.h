@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include "basic_types.h"
+#include "rect2d.h"
+#include "texfont.h"
 
 namespace TextFitter
 {
@@ -10,6 +13,6 @@ using Lines = std::vector<std::string>;
 
 float MaxStringWidthInLines(TexFont const & font, Lines const & lines);
 Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode, std::string text);
-}
+}   // namespace TextFitter
 
 #endif

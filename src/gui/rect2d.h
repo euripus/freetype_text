@@ -6,7 +6,7 @@
 struct Rect2D
 {
     // Cartesian coordinates
-    glm::vec2 m_pos = {0.f, 0.f};
+    glm::vec2 m_pos    = {0.f, 0.f};
     glm::vec2 m_extent = {0.f, 0.f};
 
     Rect2D() noexcept = default;

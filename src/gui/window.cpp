@@ -26,10 +26,14 @@ void UIWindow::move(glm::vec2 const & new_origin)
 {
     m_pos = new_origin;
 
-    m_root->move(m_pos);
+    if(m_root)
+        m_root->move(m_pos);
 
-    m_background->setRect(m_root->getRect());
-    m_background->move(m_pos);
+    if(m_background)
+    {
+        m_background->setRect(m_root->getRect());
+        m_background->move(m_pos);
+    }
 }
 
 void UIWindow::childResized()
@@ -38,13 +42,13 @@ void UIWindow::childResized()
     move(m_pos);
 }
 
-Widget * getWidgetFromID(std::string const & id_name) const
+Widget * UIWindow::getWidgetFromID(std::string const & id_name) const
 {
-	if(auto ptr = m_root->getWidgetFromIDName(id_name); ptr != nullptr)
-		return ptr;
-	
-	if(auto ptr = m_background->getWidgetFromIDName(id_name); ptr != nullptr)
-		return ptr;
+    if(auto ptr = m_root->getWidgetFromIDName(id_name); ptr != nullptr)
+        return ptr;
+
+    if(auto ptr = m_background->getWidgetFromIDName(id_name); ptr != nullptr)
+        return ptr;
 
     return nullptr;
 }

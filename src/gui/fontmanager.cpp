@@ -125,17 +125,16 @@ TexFont & FontManager::addFont(FontDataDesc const & desc)
     return *m_fonts[hash_val].get();
 }
 
-TexFont & FontManager::getFont(std::string name, uint32_t size)
+TexFont * FontManager::getFont(std::string name, uint32_t size)
 {
     std::string hash_string = name + ' ' + std::to_string(size);
     std::size_t hash_val    = std::hash<std::string>{}(hash_string);
 
     if(auto search = m_fonts.find(hash_val); search != m_fonts.end())
-        return *search->second.get();
+        return search->second.get();
     else
     {
-        std::string error_msg = "Font not found: " + hash_string;
-        throw std::runtime_error(error_msg);
+        return nullptr;
     }
 }
 

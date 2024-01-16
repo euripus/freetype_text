@@ -13,6 +13,7 @@
 #include "gui/fontmanager.h"
 #include "gui/imagedata.h"
 #include "gui/ui.h"
+#include "gui/text_box.h"
 #include "VertexBuffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
@@ -338,7 +339,7 @@ void DrawScene(void)
         g_num_frames = 0;
 
         text_buf.Clear();
-        auto & tf = fm.getFont("damase", 24);
+        auto & tf = *fm.getFont("damase", 24);
 
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
@@ -447,7 +448,9 @@ int main()
     auto win = g_ui.loadWindow("./data/test_win.json");
 
     if(auto * text_box = win->getWidgetFromID("text_window"); text_box != nullptr)
-        static_cast<TextBox *>(text_box)->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy loooooooooonnnnnnnnnnggggggggggggg!");
+        static_cast<TextBox *>(text_box)->setText(
+            "New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
+            "loooooooooonnnnnnnnnnggggggggggggg!");
 
     win->show();
     print_widget_size(g_ui.m_layers[0].front()->getRootWidget());

@@ -1,11 +1,12 @@
 #include "text_box.h"
 #include "window.h"
-#include <sstream>
+#include "text_fitter.h"
 
-TextBox::TextBox(std::string const & text, UIWindow & owner)
+TextBox::TextBox(std::string const & text, TexFont * font, UIWindow & owner)
     : Widget(owner),
       m_text(text)
 {
+    m_font = font;
     adjustTextToLines();
 }
 
@@ -34,7 +35,7 @@ void TextBox::adjustTextToLines()
     m_lines = TextFitter::AdjustTextToRect(*m_font, m_rect, m_scale, m_text);
 
     float const text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
-	float const text_width  = TextFitter::MaxStringWidthInLines(*m_font, m_lines);
+    float const text_width  = TextFitter::MaxStringWidthInLines(*m_font, m_lines);
     m_rect.m_extent         = glm::vec2(text_width, text_height);
     m_formated              = true;
 

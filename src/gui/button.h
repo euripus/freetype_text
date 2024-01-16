@@ -18,7 +18,7 @@ public:
 protected:
     std::string               m_caption;
     std::function<void(void)> m_click_callback;
-    bool                      m_enabled;
+    bool                      m_enabled = true;
 };
 
 #endif

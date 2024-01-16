@@ -1,4 +1,5 @@
 #include "text_fitter.h"
+#include <sstream>
 
 namespace TextFitter
 {
@@ -10,7 +11,7 @@ float MaxStringWidthInLines(TexFont const & font, Lines const & lines)
     {
         result = glm::max(result, font.getTextSize(line.c_str()).x);
     }
-    
+
     return result;
 }
 
@@ -29,8 +30,8 @@ static Lines split_string(std::string const & s, char delim)
     return result;
 }
 
-static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const & font, float width, float max_height = 0.f,
-                       bool trim = false)
+static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const & font, float width,
+                              float max_height = 0.f, bool trim = false)
 {
     auto const  blank_width    = font.getTextSize(" ").x;
     auto const  string_height  = font.getHeight() + font.getLineGap();
@@ -65,7 +66,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
 
 Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode, std::string text)
 {
-    Lines result;   
+    Lines      result;
     auto const string_width = font.getTextSize(text.c_str()).x;
 
     if(string_width <= rect.m_extent.x)   // text size is smaller than area size
@@ -76,13 +77,13 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
     {
         auto const words = split_string(text, ' ');
 
-        switch(m_scale)
+        switch(scale_mode)
         {
             case SizePolicy::scale:
             {
-                float const k = rect.m_extent.y / rect.m_extent.x; // maintaining the specified proportions
+                float const k = rect.m_extent.y / rect.m_extent.x;   // maintaining the specified proportions
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
-                float const width  = glm::sqrt(text_area / k);
+                float const width     = glm::sqrt(text_area / k);
 
                 SplitTextForWidth(result, words, font, width);
 
@@ -97,7 +98,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
             case SizePolicy::fixed_height:
             {
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
-                float const width  =  text_area / rect.m_extent.y;
+                float const width     = text_area / rect.m_extent.y;
 
                 SplitTextForWidth(result, words, font, width);
 
@@ -115,4 +116,4 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
     return result;
 }
-}
+}   // namespace TextFitter

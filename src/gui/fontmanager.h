@@ -37,7 +37,7 @@ public:
     void parseFontsRes(std::string const & file_name);
 
     TexFont & addFont(FontDataDesc const & desc);
-    TexFont & getFont(std::string name, uint32_t size);
+    TexFont * getFont(std::string name, uint32_t size);
 
     AtlasTex & getAtlas() { return m_atlas; }
     void       resizeAtlas();

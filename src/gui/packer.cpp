@@ -112,27 +112,27 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
         {
             switch(widget->m_scale)
             {
-                case SizePolicy::scale:    // resizing branch
+                case SizePolicy::scale:   // resizing branch
                 {
                     glm::vec2 pos(current_pos, current_height);
                     glm::vec2 size(element_width, row_height);
 
                     Rect2D new_rect{pos, size};
                     widget->m_rect = new_rect;
-                    
+
                     break;
                 }
-                case SizePolicy::none:     // fixed size branch, change only position
+                case SizePolicy::none:   // fixed size branch, change only position
                 case SizePolicy::fixed_width:
                 case SizePolicy::fixed_height:
                 case SizePolicy::trim:
                 {
-					glm::vec2 size(widget->size());
-					
-                    if(widget->size().x < element_width)
+                    glm::vec2 size(widget->size());
+
+                    if(size.x < element_width)
                     {
                         // vertical align
-                        float vertical_delta = row_height - widget->size().y;
+                        float vertical_delta = row_height - size.y;
                         float widget_y       = current_height;
                         if(vertical_delta > 0)
                         {
@@ -143,7 +143,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                         }
 
                         // horizontal align
-                        float horizontal_delta = element_width - widget->size().x;
+                        float horizontal_delta = element_width - size.x;
                         float widget_x         = current_pos;
                         if(horizontal_delta > 0)
                         {
@@ -161,7 +161,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                     else
                     {
                         // vertical align
-                        float vertical_delta = row_height - widget->size().y;
+                        float vertical_delta = row_height - size.y;
                         float widget_y       = current_height;
                         if(vertical_delta > 0)
                         {
@@ -176,7 +176,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
                         Rect2D new_rect{pos, size};
                         widget->m_rect = new_rect;
                     }
-                    
+
                     break;
                 }
             }

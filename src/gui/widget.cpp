@@ -2,6 +2,10 @@
 #include "window.h"
 #include "ui.h"
 #include <algorithm>
+#include <glm/gtc/epsilon.hpp>
+
+#include "text_box.h"
+#include "button.h"
 
 ElementType Widget::GetElementTypeFromString(std::string_view name)
 {
@@ -79,7 +83,7 @@ Widget::Widget(UIWindow & owner, WidgetDesc const & desc)
     m_scale      = desc.scale;
     m_type       = desc.type;
 
-    m_font = &m_owner.getOwner().m_fonts.getFont(desc.font_name, desc.size);
+    m_font = m_owner.getOwner().m_fonts.getFont(desc.font_name, desc.size);
     // texture
 }
 
@@ -142,9 +146,11 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     return nullptr;
 }
 
-glm::vec2 Widget::size() const 
-{ 
-    if(glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon()))
+glm::vec2 Widget::size() const
+{
+    auto const cmp =
+        glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
+    if(cmp.x && cmp.y)
         return sizeHint();
 
     return m_rect.m_extent;
@@ -153,28 +159,54 @@ glm::vec2 Widget::size() const
 std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)
 {
     std::unique_ptr<Widget> widg_ptr;
-	
-	switch(desc.type)
-	{
-		case ElementType::TextBox:
-		{
-			widg_ptr = std::make_unique<TextBox>(std::string(), owner);
-		}
-		case ElementType::ImageBox:
-		{
-			widg_ptr = std::make_unique<ImageBox>(std::string(), owner);
-		}
-		case ElementType::Button:
-		{
-			widg_ptr = std::make_unique<Button>(std::string(), owner);
-		}
-		case ElementType::VerticalLayoutee:
-		case ElementType::HorizontalLayoutee:
-		case ElementType::Unknown:
-		{
-			widg_ptr = std::make_unique<Widget>(owner, desc);
-		}
-	}
+
+    switch(desc.type)
+    {
+        case ElementType::TextBox:
+        {
+            widg_ptr = std::make_unique<TextBox>(
+                std::string(), owner.getOwner().m_fonts.getFont(desc.font_name, desc.size), owner);
+
+            widg_ptr->m_size_hint  = desc.size_hint;
+            widg_ptr->m_id         = desc.id_name;
+            widg_ptr->m_region     = desc.region_name;
+            widg_ptr->m_visible    = desc.visible;
+            widg_ptr->m_horizontal = desc.horizontal;
+            widg_ptr->m_vertical   = desc.vertical;
+            widg_ptr->m_scale      = desc.scale;
+            widg_ptr->m_type       = desc.type;
+
+            break;
+        }
+        // case ElementType::ImageBox:
+        // {
+        //     // widg_ptr = std::make_unique<ImageBox>(std::string(), owner);
+        //     break;
+        // }
+        case ElementType::Button:
+        {
+            widg_ptr = std::make_unique<Button>(std::string(), owner);
+
+            widg_ptr->m_size_hint  = desc.size_hint;
+            widg_ptr->m_id         = desc.id_name;
+            widg_ptr->m_region     = desc.region_name;
+            widg_ptr->m_visible    = desc.visible;
+            widg_ptr->m_horizontal = desc.horizontal;
+            widg_ptr->m_vertical   = desc.vertical;
+            widg_ptr->m_scale      = desc.scale;
+            widg_ptr->m_type       = desc.type;
+
+            break;
+        }
+        case ElementType::VerticalLayoutee:
+        case ElementType::HorizontalLayoutee:
+        case ElementType::Unknown:
+        case ElementType::ImageBox:
+        {
+            widg_ptr = std::make_unique<Widget>(owner, desc);
+            break;
+        }
+    }
 
     return widg_ptr;
 }

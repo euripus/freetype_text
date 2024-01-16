@@ -6,7 +6,7 @@
 class TextBox : public Widget
 {
 public:
-    TextBox(std::string const & text, UIWindow & owner);
+    TextBox(std::string const & text, TexFont * font, UIWindow & owner);
 
     // Widget interface
     void update(float time, bool check_cursor) override;
@@ -14,6 +14,9 @@ public:
     void move(glm::vec2 const & new_origin) override;
 
     void setText(std::string const & new_text);
+
+private:
+    void adjustTextToLines();
 
 protected:
     std::string m_text = {};

@@ -19,6 +19,8 @@ public:
                           std::string const & image_group = std::string("default"));
     void       parseUIResources(std::string const & file_name);
 
+    // get font
+
     void fitWidgets(UIWindow * win_ptr) const;
 
     // Input * m_input;
