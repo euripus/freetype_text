@@ -1,4 +1,5 @@
 #include "ui.h"
+#include <boost/json.hpp>
 
 void UI::update(float time)
 {
@@ -27,10 +28,51 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
     return win_ptr;
 }
 
+void UI::parseDefaultUISetID(std::string const & file_name)
+{
+	boost::json::value jv;
+
+    try
+    {
+        std::ifstream ifile(file_name, std::ios::in);
+        std::string   file_data;
+
+        if(ifile.is_open())
+        {
+            std::string tp;
+            while(std::getline(ifile, tp))
+            {
+                file_data += tp;
+            }
+        }
+        else
+        {
+            std::string err = "File: " + file_name + " - not found!";
+            throw std::runtime_error(err);
+        }
+
+        jv = boost::json::parse(file_data);
+    }
+    catch(std::exception const & e)
+    {
+        throw std::runtime_error(e.what());
+    }
+
+    assert(!jv.is_null());
+	
+	auto const & obj          = jv.get_object();
+    auto const   fonts_set_it = obj.find(sid_gui_set);
+    if(fonts_set_it != obj.end())
+    {
+		m_current_gui_set = fonts_set_it->value().as_string();
+	}
+}
+
 void UI::parseUIResources(std::string const & file_name)
 {
     m_ui_image_atlas.parseUIRes(file_name);
     m_fonts.parseFontsRes(file_name);
+	parseDefaultUISetID(file_name);
 }
 
 void UI::fitWidgets(UIWindow * win_ptr) const

@@ -6,7 +6,7 @@
 class TextBox : public Widget
 {
 public:
-    TextBox(std::string const & text, TexFont * font, UIWindow & owner);
+    TextBox(std::string text, WidgetDesc const & desc, UIWindow & owner);
 
     // Widget interface
     void update(float time, bool check_cursor) override;

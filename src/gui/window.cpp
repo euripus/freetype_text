@@ -100,4 +100,6 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
             m_background                  = Widget::GetWidgetFromDesc(background_entry.as_object(), *this);
         }
     }
+
+	childResized();
 }

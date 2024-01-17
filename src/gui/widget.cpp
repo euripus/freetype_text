@@ -72,11 +72,11 @@ Align Widget::GetAlignFromString(std::string_view name)
 }
 
 Widget::Widget(UIWindow & owner, WidgetDesc const & desc)
-    : Widget(owner)
+    : m_owner(owner)
 {
     m_size_hint  = desc.size_hint;
     m_id         = desc.id_name;
-    m_region     = desc.region_name;
+    m_region_name     = desc.region_name;
     m_visible    = desc.visible;
     m_horizontal = desc.horizontal;
     m_vertical   = desc.vertical;
@@ -84,7 +84,7 @@ Widget::Widget(UIWindow & owner, WidgetDesc const & desc)
     m_type       = desc.type;
 
     m_font = m_owner.getOwner().m_fonts.getFont(desc.font_name, desc.size);
-    // texture
+    m_region_ptr = &m_owner.getOwner().m_ui_image_atlas.getImageGroup(m_owner.getOwner().m_current_gui_set).getImageRegion(m_region_name);
 }
 
 void Widget::update(float time, bool check_cursor)
@@ -165,16 +165,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
         case ElementType::TextBox:
         {
             widg_ptr = std::make_unique<TextBox>(
-                std::string(), owner.getOwner().m_fonts.getFont(desc.font_name, desc.size), owner);
-
-            widg_ptr->m_size_hint  = desc.size_hint;
-            widg_ptr->m_id         = desc.id_name;
-            widg_ptr->m_region     = desc.region_name;
-            widg_ptr->m_visible    = desc.visible;
-            widg_ptr->m_horizontal = desc.horizontal;
-            widg_ptr->m_vertical   = desc.vertical;
-            widg_ptr->m_scale      = desc.scale;
-            widg_ptr->m_type       = desc.type;
+			{}, desc, owner);
 
             break;
         }
@@ -187,15 +178,6 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
         {
             widg_ptr = std::make_unique<Button>(std::string(), owner);
 
-            widg_ptr->m_size_hint  = desc.size_hint;
-            widg_ptr->m_id         = desc.id_name;
-            widg_ptr->m_region     = desc.region_name;
-            widg_ptr->m_visible    = desc.visible;
-            widg_ptr->m_horizontal = desc.horizontal;
-            widg_ptr->m_vertical   = desc.vertical;
-            widg_ptr->m_scale      = desc.scale;
-            widg_ptr->m_type       = desc.type;
-
             break;
         }
         case ElementType::VerticalLayoutee:
@@ -203,7 +185,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
         case ElementType::Unknown:
         case ElementType::ImageBox:
         {
-            widg_ptr = std::make_unique<Widget>(owner, desc);
+            widg_ptr = std::make_unique<Widget>(desc, owner);
             break;
         }
     }

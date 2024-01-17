@@ -37,7 +37,6 @@ char * strdup(char const * s)
 VertexBuffer::VertexBuffer(char const * format)
     : m_vertices_id(0),
       m_indices_id(0),
-      m_mode(0),
       m_state(VertexBuffer::State::VB_NOINIT),
       m_num_vert_comp(0),
       m_is_generated(false)

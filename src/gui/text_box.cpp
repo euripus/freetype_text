@@ -2,11 +2,10 @@
 #include "window.h"
 #include "text_fitter.h"
 
-TextBox::TextBox(std::string const & text, TexFont * font, UIWindow & owner)
-    : Widget(owner),
-      m_text(text)
+TextBox::TextBox(std::string text, WidgetDesc const & desc, UIWindow & owner)
+    : Widget(desc, owner),
+      m_text(std::move(text))
 {
-    m_font = font;
     adjustTextToLines();
 }
 

@@ -22,7 +22,6 @@ private:
     std::vector<unsigned int> m_indices;
     GLuint                    m_indices_id;
 
-    GLenum        m_mode;
     State         m_state;
     std::uint32_t m_num_vert_comp;
     bool          m_is_generated;

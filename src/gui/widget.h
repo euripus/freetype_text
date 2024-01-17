@@ -54,10 +54,7 @@ public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
 public:
-    Widget(UIWindow & owner)
-        : m_owner(owner)
-    {}
-    Widget(UIWindow & owner, WidgetDesc const & desc);
+    Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
     virtual void update(float time, bool check_cursor);
@@ -94,7 +91,7 @@ protected:
     Rect2D      m_rect      = {};
     glm::vec2   m_pos       = {};   // draw position
     std::string m_id        = {};
-    std::string m_region    = {};
+    std::string m_region_name    = {};
 
     bool        m_visible    = true;
     bool        m_focused    = false;
@@ -102,7 +99,9 @@ protected:
     Align       m_vertical   = Align::top;
     SizePolicy  m_scale      = SizePolicy::scale;
     ElementType m_type       = ElementType::Unknown;
+
     TexFont *   m_font       = nullptr;
+	RegionDataOfUITexture * m_region_ptr = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

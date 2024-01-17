@@ -23,7 +23,7 @@ private:
     void worker();
 
 public:
-    ThreadPool(std::size_t nr_threads = std::thread::hardware_concurrency());
+    ThreadPool(std::size_t nr_threads = std::max(1, std::thread::hardware_concurrency()-1));
     ~ThreadPool();
 
     template<typename F, typename... Args>
