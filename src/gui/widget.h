@@ -8,6 +8,7 @@
 #include "basic_types.h"
 #include "rect2d.h"
 #include "texfont.h"
+#include "uiimagemanager.h"
 
 class UIWindow;
 
@@ -87,11 +88,11 @@ public:
 protected:
     UIWindow & m_owner;
 
-    glm::vec2   m_size_hint = {};
-    Rect2D      m_rect      = {};
-    glm::vec2   m_pos       = {};   // draw position
-    std::string m_id        = {};
-    std::string m_region_name    = {};
+    glm::vec2   m_size_hint   = {};
+    Rect2D      m_rect        = {};
+    glm::vec2   m_pos         = {};   // draw position
+    std::string m_id          = {};
+    std::string m_region_name = {};
 
     bool        m_visible    = true;
     bool        m_focused    = false;
@@ -100,8 +101,8 @@ protected:
     SizePolicy  m_scale      = SizePolicy::scale;
     ElementType m_type       = ElementType::Unknown;
 
-    TexFont *   m_font       = nullptr;
-	RegionDataOfUITexture * m_region_ptr = nullptr;
+    TexFont *                     m_font       = nullptr;
+    RegionDataOfUITexture const * m_region_ptr = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

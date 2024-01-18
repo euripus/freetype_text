@@ -23,7 +23,7 @@ private:
     void worker();
 
 public:
-    ThreadPool(std::size_t nr_threads = std::max(1, std::thread::hardware_concurrency()-1));
+    ThreadPool(std::size_t nr_threads = std::max(1, std::thread::hardware_concurrency() - 1));
     ~ThreadPool();
 
     template<typename F, typename... Args>
@@ -88,7 +88,7 @@ ThreadPool::~ThreadPool()
     stop = true;
 
     cv.notify_all();
-    for(auto & worker : workers)
+    for(auto & worker: workers)
     {
         worker.join();
     }
@@ -105,7 +105,7 @@ int main()
         results.emplace_back(std::move(future));
     }
 
-    for(auto & result : results)
+    for(auto & result: results)
         std::cout << result.get() << ' ';
     std::cout << std::endl;
 }

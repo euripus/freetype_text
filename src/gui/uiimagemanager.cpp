@@ -150,7 +150,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             std::vector<int32_t> margins;
 
             auto const it = kvp.get_object().begin();
-            name          = boost::json::serialize(it->key());
+            name          = it->key();
 
             for(auto const & kvp2: it->value().as_object())
             {

@@ -71,20 +71,24 @@ Align Widget::GetAlignFromString(std::string_view name)
     return align;
 }
 
-Widget::Widget(UIWindow & owner, WidgetDesc const & desc)
+Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     : m_owner(owner)
 {
-    m_size_hint  = desc.size_hint;
-    m_id         = desc.id_name;
-    m_region_name     = desc.region_name;
-    m_visible    = desc.visible;
-    m_horizontal = desc.horizontal;
-    m_vertical   = desc.vertical;
-    m_scale      = desc.scale;
-    m_type       = desc.type;
+    m_size_hint   = desc.size_hint;
+    m_id          = desc.id_name;
+    m_region_name = desc.region_name;
+    m_visible     = desc.visible;
+    m_horizontal  = desc.horizontal;
+    m_vertical    = desc.vertical;
+    m_scale       = desc.scale;
+    m_type        = desc.type;
 
     m_font = m_owner.getOwner().m_fonts.getFont(desc.font_name, desc.size);
-    m_region_ptr = &m_owner.getOwner().m_ui_image_atlas.getImageGroup(m_owner.getOwner().m_current_gui_set).getImageRegion(m_region_name);
+
+    if(!m_region_name.empty())
+        m_region_ptr = &m_owner.getOwner()
+                            .m_ui_image_atlas.getImageGroup(m_owner.getOwner().m_current_gui_set)
+                            .getImageRegion(m_region_name);
 }
 
 void Widget::update(float time, bool check_cursor)
@@ -164,8 +168,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
     {
         case ElementType::TextBox:
         {
-            widg_ptr = std::make_unique<TextBox>(
-			{}, desc, owner);
+            widg_ptr = std::make_unique<TextBox>(std::string(), desc, owner);
 
             break;
         }
@@ -176,7 +179,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
         // }
         case ElementType::Button:
         {
-            widg_ptr = std::make_unique<Button>(std::string(), owner);
+            widg_ptr = std::make_unique<Button>(std::string(), desc, owner);
 
             break;
         }

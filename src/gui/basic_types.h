@@ -4,7 +4,7 @@
 enum class ElementType
 {
     TextBox,
-    ImageBox,  // animated/static image and/or internal rendered frame
+    ImageBox,   // animated/static image and/or internal rendered frame
     Button,
     CheckBox,
     RadioButton,

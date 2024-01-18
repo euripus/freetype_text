@@ -10,10 +10,10 @@
 
 class UI
 {
-	void parseDefaultUISetID(std::string const & file_name);
+    void parseDefaultUISetID(std::string const & file_name);
 
 public:
-    static constexpr char const * sid_gui_set        = "current_gui_set";
+    static constexpr char const * sid_gui_set = "current_gui_set";
 
     void update(float time);
     void draw(VertexBuffer & vb);
@@ -33,7 +33,7 @@ public:
     UIImageManager m_ui_image_atlas;
     FontManager    m_fonts;
     Packer         m_packer;
-	std::string m_current_gui_set={"default"};
+    std::string    m_current_gui_set = {"default"};
 
     std::vector<std::unique_ptr<UIWindow>> m_windows;
     std::vector<std::vector<UIWindow *>>   m_layers;

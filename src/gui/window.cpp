@@ -101,5 +101,5 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
         }
     }
 
-	childResized();
+    childResized();
 }
