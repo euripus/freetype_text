@@ -45,6 +45,8 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
 
         if(word_width > width)
         {
+            if(!current_string.empty())
+                result.push_back(std::move(current_string));
             result.push_back(TrimWordToWidth(font, width, word));
             current_width = 0.f;
             continue;
