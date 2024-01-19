@@ -11,8 +11,10 @@ namespace TextFitter
 {
 using Lines = std::vector<std::string>;
 
-float MaxStringWidthInLines(TexFont const & font, Lines const & lines);
-Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode, std::string text);
+float       MaxStringWidthInLines(TexFont const & font, Lines const & lines);
+std::string TrimWordToWidth(TexFont const & font, float const width, std::string const & word);
+Lines       AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode,
+                             std::string const & text);
 }   // namespace TextFitter
 
 #endif

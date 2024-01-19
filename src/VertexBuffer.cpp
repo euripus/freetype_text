@@ -34,12 +34,12 @@ char * strdup(char const * s)
     return static_cast<char *>(std::memcpy(result, s, len));
 }
 
-VertexBuffer::VertexBuffer(char const * format) :
-    m_vertices_id(0),
-    m_indices_id(0),
-    m_state(VertexBuffer::State::VB_NOINIT),
-    m_num_vert_comp(0),
-    m_is_generated(false)
+VertexBuffer::VertexBuffer(char const * format)
+    : m_vertices_id(0),
+      m_indices_id(0),
+      m_state(VertexBuffer::State::VB_NOINIT),
+      m_num_vert_comp(0),
+      m_is_generated(false)
 {
     assert(format);
 
@@ -64,8 +64,8 @@ VertexBuffer::VertexBuffer(char const * format) :
         start    = end + 1;
         delete[] desc;
 
-        new_attr.pointer = sizeof(float) * m_num_vert_comp;
-        m_num_vert_comp += new_attr.size;
+        new_attr.pointer  = sizeof(float) * m_num_vert_comp;
+        m_num_vert_comp  += new_attr.size;
         m_attributes.push_back(new_attr);
     } while(end);
 

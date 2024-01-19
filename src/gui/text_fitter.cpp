@@ -30,8 +30,8 @@ static Lines split_string(std::string const & s, char delim)
     return result;
 }
 
-static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const & font, float width,
-                              float max_height = 0.f, bool trim = false)
+static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const & font, float const width,
+                              float const max_height = 0.f, bool trim = false)
 {
     auto const  blank_width    = font.getTextSize(" ").x;
     auto const  string_height  = font.getHeight() + font.getLineGap();
@@ -43,11 +43,19 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
     {
         float const word_width = font.getTextSize(word.c_str()).x;
 
+        if(word_width > width)
+        {
+            result.push_back(TrimWordToWidth(font, width, word));
+            current_width = 0.f;
+            continue;
+        }
+
         current_width += word_width;
         if(current_width > width)
         {
-            current_width = word_width;
+            current_width = word_width + blank_width;
             result.push_back(std::move(current_string));
+            current_string += word + ' ';
 
             if(trim)
             {
@@ -64,7 +72,8 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
     }
 }
 
-Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode, std::string text)
+Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode,
+                       std::string const & text)
 {
     Lines      result;
     auto const string_width = font.getTextSize(text.c_str()).x;
@@ -116,4 +125,32 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
     return result;
 }
+
+std::string TrimWordToWidth(TexFont const & font, float const width, std::string const & word)
+{
+    std::string result;
+    auto const  ellipsis_width = font.getTextSize("...").x;
+    float       cur_width      = 0.f;
+
+    if(width < ellipsis_width)
+        return result;
+
+    for(uint32_t i = 0; i < word.size(); i += utf8_surrogate_len(word.c_str() + i))
+    {
+        std::uint32_t ucodepoint = utf8_to_utf32(word.c_str() + i);
+        Glyph const & glyph      = font.getGlyph(ucodepoint);
+
+        if(cur_width + ellipsis_width > width)
+        {
+            result += std::string("...");
+            break;
+        }
+
+        cur_width += glyph.advance_x;
+        result    += std::string(word.c_str() + i, word.c_str() + i + utf8_surrogate_len(word.c_str() + i));
+    }
+
+    return result;
+}
+
 }   // namespace TextFitter

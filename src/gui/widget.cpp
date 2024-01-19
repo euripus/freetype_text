@@ -154,7 +154,7 @@ glm::vec2 Widget::size() const
 {
     auto const cmp =
         glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
-    if(cmp.x && cmp.y)
+    if(cmp.x || cmp.y)
         return sizeHint();
 
     return m_rect.m_extent;

@@ -2,14 +2,14 @@
 #include <GL/glew.h>
 #include <assert.h>
 
-GL15VertexBuffer::GL15VertexBuffer(ComponentsFlags format) :
-    m_pos_id(0),
-    m_tex_id(0),
-    m_norm_id(0),
-    m_indices_id(0),
-    m_components(format),
-    m_is_generated(false),
-    m_state(GL15VertexBuffer::State::NOINIT)
+GL15VertexBuffer::GL15VertexBuffer(ComponentsFlags format)
+    : m_pos_id(0),
+      m_tex_id(0),
+      m_norm_id(0),
+      m_indices_id(0),
+      m_components(format),
+      m_is_generated(false),
+      m_state(State::NOINIT)
 {}
 
 GL15VertexBuffer::~GL15VertexBuffer()
@@ -24,8 +24,8 @@ GL15VertexBuffer::~GL15VertexBuffer()
     glDeleteBuffers(1, &m_indices_id);
 }
 
-void GL15VertexBuffer::insertVertices(const size_t index, float const * pos, float const * tex,
-                                      float const * norm, const size_t vcount)
+void GL15VertexBuffer::insertVertices(size_t const index, float const * pos, float const * tex,
+                                      float const * norm, size_t const vcount)
 {
     assert(index * 3 < m_pos.size());
     assert(pos);
@@ -49,10 +49,10 @@ void GL15VertexBuffer::insertVertices(const size_t index, float const * pos, flo
         m_norm.insert(norm_it, norm, norm + vcount * 3);
     }
 
-    m_state = GL15VertexBuffer::State::INITDATA;
+    m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::insertIndices(const size_t index, unsigned int const * indices, const size_t icount)
+void GL15VertexBuffer::insertIndices(size_t const index, unsigned int const * indices, size_t const icount)
 {
     assert(index < m_indices.size());
     assert(indices);
@@ -60,11 +60,11 @@ void GL15VertexBuffer::insertIndices(const size_t index, unsigned int const * in
     auto ind_it = m_indices.begin() + index;
     m_indices.insert(ind_it, indices, indices + icount);
 
-    m_state = GL15VertexBuffer::State::INITDATA;
+    m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::pushBack(float const * pos, float const * tex, float const * norm, const size_t vcount,
-                                unsigned int const * indices, const size_t icount)
+void GL15VertexBuffer::pushBack(float const * pos, float const * tex, float const * norm, size_t const vcount,
+                                unsigned int const * indices, size_t const icount)
 {
     assert(pos);
     assert(indices);
@@ -84,10 +84,10 @@ void GL15VertexBuffer::pushBack(float const * pos, float const * tex, float cons
         m_indices[istart + i] += vstart;
     }
 
-    m_state = GL15VertexBuffer::State::INITDATA;
+    m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::eraseVertices(const size_t first, const size_t last)
+void GL15VertexBuffer::eraseVertices(size_t const first, size_t const last)
 {
     assert(last > first);
     assert(last * 3 < m_pos.size());
@@ -108,12 +108,12 @@ void GL15VertexBuffer::eraseVertices(const size_t first, const size_t last)
         }
     }
 
-    m_state = GL15VertexBuffer::State::INITDATA;
+    m_state = State::INITDATA;
 }
 
 void GL15VertexBuffer::clear()
 {
-    m_state = GL15VertexBuffer::State::NOINIT;
+    m_state = State::NOINIT;
     if(m_is_generated)
     {
         glBindBuffer(GL_ARRAY_BUFFER_ARB, m_pos_id);
@@ -141,7 +141,7 @@ void GL15VertexBuffer::clear()
 
 void GL15VertexBuffer::upload()
 {
-    assert(m_state == GL15VertexBuffer::State::INITDATA);
+    assert(m_state == State::INITDATA);
 
     if(!m_is_generated)
         glGenBuffers(1, &m_pos_id);
@@ -171,12 +171,12 @@ void GL15VertexBuffer::upload()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_indices.size(), &m_indices[0],
                  GL_STATIC_DRAW);
 
-    m_state = GL15VertexBuffer::State::UPLOAD;
+    m_state = State::UPLOAD;
 }
 
 void GL15VertexBuffer::drawBuffer()
 {
-    if(m_state == GL15VertexBuffer::State::UPLOAD)
+    if(m_state == State::UPLOAD)
     {
         glBindBuffer(GL_ARRAY_BUFFER, m_pos_id);
         glEnableClientState(GL_VERTEX_ARRAY);

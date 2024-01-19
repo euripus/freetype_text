@@ -57,8 +57,8 @@ private:
     uint32_t                  m_indices_id;
 
     ComponentsFlags const m_components;
-    bool            m_is_generated;
-    State           m_state;
+    bool                  m_is_generated;
+    State                 m_state;
 };
 
 #endif
