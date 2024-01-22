@@ -3,7 +3,7 @@
 #include <boost/json.hpp>
 #include <algorithm>
 
-#include "src/VertexBuffer.h"
+#include "src/vertex_buffer.h"
 
 void parseImages(boost::json::value const & jv, UIImageGroup & group);
 

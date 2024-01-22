@@ -36,9 +36,6 @@ unix:{
 }
 
 SOURCES += \
-    src/Shader.cpp \
-    src/VertexAttrib.cpp \
-    src/VertexBuffer.cpp \
     src/gui/atlastex.cpp \
     src/gui/button.cpp \
     src/gui/fontmanager.cpp \
@@ -54,12 +51,10 @@ SOURCES += \
     src/gui/widget.cpp \
     src/gui/window.cpp \
     src/input/input.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/vertex_buffer.cpp
 
 HEADERS += \
-    src/Shader.h \
-    src/VertexAttrib.h \
-    src/VertexBuffer.h \
     src/gui/atlastex.h \
     src/gui/basic_types.h \
     src/gui/button.h \
@@ -75,7 +70,8 @@ HEADERS += \
     src/gui/utf8_utils.h \
     src/gui/widget.h \
     src/gui/window.h \
-    src/input/input.h
+    src/input/input.h \
+    src/vertex_buffer.h
 
 DISTFILES += \
     bin/data/test_win.json \

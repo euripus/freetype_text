@@ -79,8 +79,8 @@ GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3
 
 FontManager  fm;
 GLuint       tex_base;
-GL15VertexBuffer pyramid_buf(GL15VertexBuffer::pos_tex_norm);
-GL15VertexBuffer text_buf(GL15VertexBuffer::pos_tex);
+VertexBuffer pyramid_buf(VertexBuffer::pos_tex_norm);
+VertexBuffer text_buf(VertexBuffer::pos_tex);
 
 /*-----------------------------------------------------------
 /
@@ -304,8 +304,8 @@ bool InitWindow()
         return false;
     }
 
-    pyramid_buf.pushBack(pyr_vert_pos, pyr_vert_tex, pyr_vert_norm,  sizeof(pyr_vert_pos) / 3,
-                         pyr_index, sizeof(pyr_index) / sizeof(GLuint));
+    pyramid_buf.pushBack(pyr_vert_pos, pyr_vert_tex, pyr_vert_norm, sizeof(pyr_vert_pos) / 3, pyr_index,
+                         sizeof(pyr_index) / sizeof(GLuint));
     pyramid_buf.upload();
 
     fm.parseFontsRes("./data/ui_res.json");
@@ -318,8 +318,8 @@ bool InitWindow()
 
 bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 {
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 1);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 5);
+    // glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 1);
+    // glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 5);
     /*glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
     glfwWindowHint(GLFW_SAMPLES, 4);

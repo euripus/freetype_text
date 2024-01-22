@@ -2,7 +2,6 @@
 #define GUI_H
 
 #include <glm/glm.hpp>
-#include "src/VertexBuffer.h"
 #include "fontmanager.h"
 #include "uiimagemanager.h"
 #include "packer.h"

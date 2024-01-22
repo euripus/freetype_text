@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <assert.h>
 
-GL15VertexBuffer::GL15VertexBuffer(ComponentsFlags format)
+VertexBuffer::VertexBuffer(ComponentsFlags format)
     : m_pos_id(0),
       m_tex_id(0),
       m_norm_id(0),
@@ -12,7 +12,7 @@ GL15VertexBuffer::GL15VertexBuffer(ComponentsFlags format)
       m_state(State::NOINIT)
 {}
 
-GL15VertexBuffer::~GL15VertexBuffer()
+VertexBuffer::~VertexBuffer()
 {
     clear();
 
@@ -24,8 +24,8 @@ GL15VertexBuffer::~GL15VertexBuffer()
     glDeleteBuffers(1, &m_indices_id);
 }
 
-void GL15VertexBuffer::insertVertices(size_t const index, float const * pos, float const * tex,
-                                      float const * norm, size_t const vcount)
+void VertexBuffer::insertVertices(size_t const index, float const * pos, float const * tex,
+                                  float const * norm, size_t const vcount)
 {
     assert(index * 3 < m_pos.size());
     assert(pos);
@@ -52,7 +52,7 @@ void GL15VertexBuffer::insertVertices(size_t const index, float const * pos, flo
     m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::insertIndices(size_t const index, unsigned int const * indices, size_t const icount)
+void VertexBuffer::insertIndices(size_t const index, unsigned int const * indices, size_t const icount)
 {
     assert(index < m_indices.size());
     assert(indices);
@@ -63,8 +63,8 @@ void GL15VertexBuffer::insertIndices(size_t const index, unsigned int const * in
     m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::pushBack(float const * pos, float const * tex, float const * norm, size_t const vcount,
-                                unsigned int const * indices, size_t const icount)
+void VertexBuffer::pushBack(float const * pos, float const * tex, float const * norm, size_t const vcount,
+                            unsigned int const * indices, size_t const icount)
 {
     assert(pos);
     assert(indices);
@@ -87,7 +87,7 @@ void GL15VertexBuffer::pushBack(float const * pos, float const * tex, float cons
     m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::eraseVertices(size_t const first, size_t const last)
+void VertexBuffer::eraseVertices(size_t const first, size_t const last)
 {
     assert(last > first);
     assert(last * 3 < m_pos.size());
@@ -111,7 +111,7 @@ void GL15VertexBuffer::eraseVertices(size_t const first, size_t const last)
     m_state = State::INITDATA;
 }
 
-void GL15VertexBuffer::clear()
+void VertexBuffer::clear()
 {
     m_state = State::NOINIT;
     if(m_is_generated)
@@ -139,7 +139,7 @@ void GL15VertexBuffer::clear()
     m_indices.clear();
 }
 
-void GL15VertexBuffer::upload()
+void VertexBuffer::upload()
 {
     assert(m_state == State::INITDATA);
 
@@ -174,7 +174,7 @@ void GL15VertexBuffer::upload()
     m_state = State::UPLOAD;
 }
 
-void GL15VertexBuffer::drawBuffer()
+void VertexBuffer::drawBuffer()
 {
     if(m_state == State::UPLOAD)
     {
@@ -216,11 +216,9 @@ void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, f
 {
     unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
 
-    float vertices[4 * 3] = {x0, y0, 0.f, x1, y1, 0.f,
-                             x0, y1, 0.f, x1, y0, 0.f};
-				 
-	float tex_coord[4 * 2] = {s0, t0, s1, t1,
-                              s0, t1, s1, t0};
+    float vertices[4 * 3] = {x0, y0, 0.f, x1, y1, 0.f, x0, y1, 0.f, x1, y0, 0.f};
+
+    float tex_coord[4 * 2] = {s0, t0, s1, t1, s0, t1, s1, t0};
 
     vb.pushBack(vertices, tex_coord, nullptr, 4, indices, 6);
 }

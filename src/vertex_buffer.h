@@ -4,7 +4,7 @@
 #include <vector>
 #include <bitset>
 
-class GL15VertexBuffer
+class VertexBuffer
 {
 public:
     enum class State
@@ -27,8 +27,8 @@ public:
     constexpr static ComponentsFlags pos_tex      = 0b000011;   // pos + tex
     constexpr static ComponentsFlags pos_tex_norm = 0b000111;   // pos + tex + norm
 
-    GL15VertexBuffer(ComponentsFlags format);
-    virtual ~GL15VertexBuffer();
+    VertexBuffer(ComponentsFlags format);
+    virtual ~VertexBuffer();
 
     void insertVertices(size_t const index, float const * pos, float const * tex, float const * norm,
                         size_t const vcount);
