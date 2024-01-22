@@ -61,4 +61,7 @@ private:
     State                 m_state;
 };
 
+void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
+                    float t1);
+
 #endif

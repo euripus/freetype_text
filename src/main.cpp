@@ -9,12 +9,11 @@
 
 #include <iostream>
 
-#include "Shader.h"
 #include "gui/fontmanager.h"
 #include "gui/imagedata.h"
 #include "gui/ui.h"
 #include "gui/text_box.h"
-#include "VertexBuffer.h"
+#include "vertex_buffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
 constexpr char const *  TEXNAME     = "./data/base.tga";
@@ -79,10 +78,9 @@ GLfloat pyr_vert_tex[] = {0.5, 0.8, 0.2, 0.5, 0.5, 0.2, 0.8, 0.5, 0.5, 0.8, 0, 1
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
 FontManager  fm;
-Shader       shd, shd_txt;
 GLuint       tex_base;
-VertexBuffer pyramid_buf("Pos:3,Norm:3,Tex:2");
-VertexBuffer text_buf("Pos:3,Tex:2");
+GL15VertexBuffer pyramid_buf(GL15VertexBuffer::pos_tex_norm);
+GL15VertexBuffer text_buf(GL15VertexBuffer::pos_tex);
 
 /*-----------------------------------------------------------
 /
@@ -306,27 +304,23 @@ bool InitWindow()
         return false;
     }
 
-    pyramid_buf.VertexBufferPushBack(pyr_vert, sizeof(pyr_vert) / pyramid_buf.GetNumVertComponents(),
-                                     pyr_index, sizeof(pyr_index) / sizeof(GLuint));
-    pyramid_buf.VertexBufferUpload();
-    pyramid_buf.InitAttribLocation();
-
-    shd.Init("./data/vert.glsl", "./data/frag.glsl");
+    pyramid_buf.pushBack(pyr_vert_pos, pyr_vert_tex, pyr_vert_norm,  sizeof(pyr_vert_pos) / 3,
+                         pyr_index, sizeof(pyr_index) / sizeof(GLuint));
+    pyramid_buf.upload();
 
     fm.parseFontsRes("./data/ui_res.json");
 
     // fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     fm.getAtlas().UploadTexture();
-    shd_txt.Init("./data/vertTxt.glsl", "./data/fragTxt.glsl");
 
     return LoadTexture();
 }
 
 bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 {
-    /*glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 1);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 5);
+    /*glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
     glfwWindowHint(GLFW_SAMPLES, 4);
 
@@ -354,7 +348,7 @@ void DrawScene(void)
         g_num_FPS    = g_num_frames;
         g_num_frames = 0;
 
-        text_buf.Clear();
+        text_buf.clear();
         auto & tf = *fm.getFont("damase", 24);
 
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
@@ -371,8 +365,7 @@ void DrawScene(void)
         std::sprintf(buffer, "Cursor pos: %d, %d", cursor_pos.x, cursor_pos.y);
         tf.addText(text_buf, buffer, pen);
 
-        text_buf.VertexBufferUpload();
-        text_buf.InitAttribLocation();
+        text_buf.upload();
     }
     g_num_frames++;
 
@@ -384,15 +377,10 @@ void DrawScene(void)
     glRotatef(rty, 0.0f, 1.0f, 0.0f);
     glRotatef(rtx, 1.0f, 0.0f, 0.0f);
 
-    shd.Bind();
-
-    glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-    glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
     glBindTexture(GL_TEXTURE_2D, tex_base);
 
-    pyramid_buf.DrawBuffer();
-    shd.Unbind();
+    pyramid_buf.drawBuffer();
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -405,13 +393,10 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    shd_txt.Bind();
-    glUniform1i(glGetUniformLocation(shd.Id(), "baseMap"), 0);
     fm.getAtlas().BindTexture();
 
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    text_buf.DrawBuffer();
-    shd_txt.Unbind();
+    text_buf.drawBuffer();
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glDisable(GL_BLEND);
@@ -423,11 +408,8 @@ void DrawScene(void)
 
 void KillWindow(void)
 {
-    pyramid_buf.DeleteGPUBuffers();
-    shd.DeInit();
     glDeleteTextures(1, &tex_base);
     fm.getAtlas().DeleteTexture();
-    shd_txt.DeInit();
 
     glfwDestroyWindow(g_window);
     g_window = nullptr;
