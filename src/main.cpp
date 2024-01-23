@@ -304,7 +304,8 @@ bool InitWindow()
         return false;
     }
 
-    pyramid_buf.pushBack(pyr_vert_pos, pyr_vert_tex, pyr_vert_norm, sizeof(pyr_vert_pos) / 3, pyr_index,
+    pyramid_buf.pushBack(pyr_vert_pos, pyr_vert_tex, pyr_vert_norm,
+                         sizeof(pyr_vert_pos) / (sizeof(float) * 3), pyr_index,
                          sizeof(pyr_index) / sizeof(GLuint));
     pyramid_buf.upload();
 
@@ -445,10 +446,9 @@ int main()
     g_ui.parseUIResources("./data/ui_res.json");
     auto win = g_ui.loadWindow("./data/test_win.json");
 
-    if(auto * text_box = win->getWidgetFromID("text_window"); text_box != nullptr)
-        static_cast<TextBox *>(text_box)->setText(
-            "New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
-            "loooooooooonnnnnnnnnnggggggggggggg!");
+    if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
+        text_box->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
+                          "loooooooooonnnnnnnnnnggggggggggggg!");
 
     win->show();
     print_widget_size(g_ui.m_layers[0].front()->getRootWidget());

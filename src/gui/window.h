@@ -35,6 +35,17 @@ public:
     Widget * getRootWidget() const { return m_root.get(); }
     Widget * getWidgetFromID(std::string const & id_name) const;
 
+    template<typename Ret>
+    Ret * getWidgetFromID(std::string const & id_name) const
+    {
+        auto * ptr = getWidgetFromID(id_name);
+
+        if(ptr != nullptr)
+            return static_cast<Ret *>(ptr);
+
+        return nullptr;
+    }
+
     void loadWindowFromDesc(std::string const & file_name);
 
 private:
