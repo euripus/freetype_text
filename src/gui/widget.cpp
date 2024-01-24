@@ -6,6 +6,7 @@
 
 #include "text_box.h"
 #include "button.h"
+#include "../vertex_buffer.h"
 
 ElementType Widget::GetElementTypeFromString(std::string_view name)
 {
@@ -83,11 +84,12 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     m_scale       = desc.scale;
     m_type        = desc.type;
 
-    m_font = m_owner.getOwner().m_fonts.getFont(desc.font_name, desc.size);
+	UI & ui = m_owner.getOwner();
+	if(!desc.font_name.empty())
+		m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
 
     if(!m_region_name.empty())
-        m_region_ptr = &m_owner.getOwner()
-                            .m_ui_image_atlas.getImageGroup(m_owner.getOwner().m_current_gui_set)
+        m_region_ptr = &ui.m_ui_image_atlas.getImageGroup(ui.m_current_gui_set)
                             .getImageRegion(m_region_name);
 }
 
@@ -97,7 +99,19 @@ void Widget::update(float time, bool check_cursor)
     {}
 }
 
-void Widget::draw() {}
+void Widget::draw(VertexBuffer & vb) 
+{
+	// draw background
+	if(m_region_ptr != nullptr && visible())
+	{
+		glm::vec2 pos = m_pos;
+		m_region_ptr->addBlock(vb, pos, m_rect.m_extent);
+	}
+
+	// draw child
+	for(auto & ch: m_children)
+        ch->draw(vb);
+}
 
 void Widget::move(glm::vec2 const & new_origin)
 {
@@ -168,7 +182,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
     {
         case ElementType::TextBox:
         {
-            widg_ptr = std::make_unique<TextBox>(std::string(), desc, owner);
+            widg_ptr = std::make_unique<TextBox>(desc, owner);
 
             break;
         }
@@ -179,7 +193,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWin
         // }
         case ElementType::Button:
         {
-            widg_ptr = std::make_unique<Button>(std::string(), desc, owner);
+            widg_ptr = std::make_unique<Button>(desc, owner);
 
             break;
         }
@@ -251,25 +265,29 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
         {
             desc.size = static_cast<float>(kvp.value().as_int64());
         }
+		else if(kvp.key() == sid_static_text)
+        {
+            desc.static_text = kvp.value().as_string();
+        }
     }
 
     auto widg_ptr = GetWidgetFromDesc(desc, owner);
 
-    auto const children_it = obj.find(sid_children);
-    assert(children_it != obj.end());
-
-    auto const & arr = children_it->value().as_array();
-    if(!arr.empty())
-    {
-        for(auto const & child_entry: arr)
-        {
-            auto const & widget_obj = child_entry.as_object();
-            if(!widget_obj.empty())
-            {
-                widg_ptr->addWidget(GetWidgetFromDesc(widget_obj, owner));
-            }
-        }
-    }
+    if(auto const children_it = obj.find(sid_children); children_it != obj.end())
+	{
+		auto const & arr = children_it->value().as_array();
+		if(!arr.empty())
+		{
+			for(auto const & child_entry: arr)
+			{
+				auto const & widget_obj = child_entry.as_object();
+				if(!widget_obj.empty())
+				{
+					widg_ptr->addWidget(GetWidgetFromDesc(widget_obj, owner));
+				}
+			}
+		}
+	}
 
     return widg_ptr;
 }

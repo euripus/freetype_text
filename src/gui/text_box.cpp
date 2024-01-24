@@ -4,7 +4,7 @@
 
 TextBox::TextBox(std::string text, WidgetDesc const & desc, UIWindow & owner)
     : Widget(desc, owner),
-      m_text(std::move(text))
+      m_text(std::move(desc.static_text))
 {
     adjustTextToLines();
 }

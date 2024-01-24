@@ -3,15 +3,6 @@
         {
             "size": [0, 0],
             "type": "VerticalLayoutee",
-            "visible": false,
-            "texture": "",
-            "region_name": "",
-            "id_name": "",
-            "size_policy": "scale",
-            "align_horizontal": "left",
-            "align_vertical": "top",
-            "font": "liberation",
-            "font_size": 24,
             "children": [
                 {
                     "size": [100, 100],
@@ -25,20 +16,12 @@
                     "align_vertical": "top",
                     "font": "liberation",
                     "font_size": 24,
-                    "children": []
+                    "static_text": "Sample text!"
                 },
                 {
                     "size": [0, 0],
                     "type": "HorizontalLayoutee",
                     "visible": false,
-                    "texture": "",
-                    "region_name": "",
-                    "id_name": "",
-                    "size_policy": "scale",
-                    "align_horizontal": "left",
-                    "align_vertical": "top",
-                    "font": "liberation",
-                    "font_size": 24,
                     "children": [
                         {
                             "size": [25, 15],
@@ -52,7 +35,7 @@
                             "align_vertical": "top",
                             "font": "liberation",
                             "font_size": 24,
-                            "children": []
+                            "static_text": "OK"
                         },
                         {
                             "size": [25, 15],
@@ -66,7 +49,7 @@
                             "align_vertical": "top",
                             "font": "liberation",
                             "font_size": 24,
-                            "children": []
+                            "static_text": "Cancel"
                         }
                     ]
                 }
@@ -81,10 +64,7 @@
             "id_name": "background",
             "size_policy": "scale",
             "align_horizontal": "left",
-            "align_vertical": "top",
-            "font": "liberation",
-            "font_size": 24,
-            "children": []
+            "align_vertical": "top"
         }
     ]
 }

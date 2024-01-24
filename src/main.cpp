@@ -2,10 +2,8 @@
 #include "src/input/input.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/ext.hpp>
+#include <glm/glm.hpp>
 #include <memory>
-#include <stdio.h>
-#undef __STRICT_ANSI__
 
 #include <iostream>
 
@@ -190,7 +188,7 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
                 }
                 if(!CreateGLFWWindow(width, height, is_full_screen))
                 {
-                    printf("error!");
+                    std::cerr << "error!" << std::endl;
                     running = false;
                 }
             }
@@ -329,7 +327,7 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
     g_window          = glfwCreateWindow(width, height, WINDOWTITLE, mon, NULL);
     if(g_window == nullptr)
     {
-        printf("error!");
+        std::cerr << "error!\n";
         glfwTerminate();
         return false;
     }
@@ -418,7 +416,7 @@ void KillWindow(void)
 
 static void error_callback(int error, char const * description)
 {
-    printf("%d: %s", error, description);
+    std::cout << error << ": " << description << std::endl;
 }
 
 static void print_widget_size(Widget const * widget, int32_t level = 0)
@@ -457,7 +455,7 @@ int main()
 
     if(!glfwInit())
     {
-        fprintf(stderr, "Failed to initialize GLFW\n");
+        std::cerr << "Failed to initialize GLFW\n" << std::endl;
         return 0;
     }
 

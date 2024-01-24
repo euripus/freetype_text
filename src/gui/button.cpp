@@ -1,9 +1,9 @@
 #include "button.h"
 #include "text_fitter.h"
 
-Button::Button(std::string name, WidgetDesc const & desc, UIWindow & owner)
+Button::Button(WidgetDesc const & desc, UIWindow & owner)
     : Widget(desc, owner),
-      m_caption(std::move(name))
+      m_caption(std::move(desc.static_text))
 {
     // Trim text to button size
     auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, SizePolicy::trim, m_caption);

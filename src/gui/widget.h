@@ -11,6 +11,7 @@
 #include "uiimagemanager.h"
 
 class UIWindow;
+class VertexBuffer;
 
 struct WidgetDesc
 {
@@ -25,6 +26,7 @@ struct WidgetDesc
     std::string font_name    = {};
     std::string texture_name = {};   // texture name from gui_set
     float       size         = 0.0f;
+	std::string static_text  = {};
 };
 
 class Widget
@@ -42,6 +44,7 @@ private:
     static constexpr char const * sid_align_vertical   = "align_vertical";
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
+	static constexpr char const * sid_static_text      = "static_text";
     static constexpr char const * sid_children         = "children";
 
     static ElementType GetElementTypeFromString(std::string_view name);
@@ -59,7 +62,7 @@ public:
     virtual ~Widget() = default;
 
     virtual void update(float time, bool check_cursor);
-    virtual void draw();
+    virtual void draw(VertexBuffer & vb);
     virtual void move(glm::vec2 const & new_origin);
 
     virtual void addWidget(std::unique_ptr<Widget> widget);

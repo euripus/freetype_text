@@ -6,7 +6,7 @@
 class Button : public Widget
 {
 public:
-    Button(std::string name, WidgetDesc const & desc, UIWindow & owner);
+    Button(WidgetDesc const & desc, UIWindow & owner);
 
     // Widget interface
     void update(float time, bool check_cursor) override;
