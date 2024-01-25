@@ -76,6 +76,7 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     : m_owner(owner)
 {
     m_size_hint   = desc.size_hint;
+    m_rect        = Rect2D(glm::vec2(0.f, 0.f), m_size_hint);
     m_id          = desc.id_name;
     m_region_name = desc.region_name;
     m_visible     = desc.visible;
@@ -84,13 +85,12 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     m_scale       = desc.scale;
     m_type        = desc.type;
 
-	UI & ui = m_owner.getOwner();
-	if(!desc.font_name.empty())
-		m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
+    UI & ui = m_owner.getOwner();
+    if(!desc.font_name.empty())
+        m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
 
     if(!m_region_name.empty())
-        m_region_ptr = &ui.m_ui_image_atlas.getImageGroup(ui.m_current_gui_set)
-                            .getImageRegion(m_region_name);
+        m_region_ptr = &ui.m_ui_image_atlas.getImageGroup(ui.m_current_gui_set).getImageRegion(m_region_name);
 }
 
 void Widget::update(float time, bool check_cursor)
@@ -99,17 +99,17 @@ void Widget::update(float time, bool check_cursor)
     {}
 }
 
-void Widget::draw(VertexBuffer & vb) 
+void Widget::draw(VertexBuffer & vb)
 {
-	// draw background
-	if(m_region_ptr != nullptr && visible())
-	{
-		glm::vec2 pos = m_pos;
-		m_region_ptr->addBlock(vb, pos, m_rect.m_extent);
-	}
+    // draw background
+    if(m_region_ptr != nullptr && visible())
+    {
+        glm::vec2 pos = m_pos;
+        m_region_ptr->addBlock(vb, pos, m_rect.m_extent);
+    }
 
-	// draw child
-	for(auto & ch: m_children)
+    // draw child
+    for(auto & ch: m_children)
         ch->draw(vb);
 }
 
@@ -166,10 +166,10 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
 
 glm::vec2 Widget::size() const
 {
-    auto const cmp =
-        glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
-    if(cmp.x || cmp.y)
-        return sizeHint();
+    // auto const cmp =
+    //     glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
+    // if(cmp.x || cmp.y)
+    //     return sizeHint();
 
     return m_rect.m_extent;
 }
@@ -265,7 +265,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
         {
             desc.size = static_cast<float>(kvp.value().as_int64());
         }
-		else if(kvp.key() == sid_static_text)
+        else if(kvp.key() == sid_static_text)
         {
             desc.static_text = kvp.value().as_string();
         }
@@ -274,20 +274,20 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
     auto widg_ptr = GetWidgetFromDesc(desc, owner);
 
     if(auto const children_it = obj.find(sid_children); children_it != obj.end())
-	{
-		auto const & arr = children_it->value().as_array();
-		if(!arr.empty())
-		{
-			for(auto const & child_entry: arr)
-			{
-				auto const & widget_obj = child_entry.as_object();
-				if(!widget_obj.empty())
-				{
-					widg_ptr->addWidget(GetWidgetFromDesc(widget_obj, owner));
-				}
-			}
-		}
-	}
+    {
+        auto const & arr = children_it->value().as_array();
+        if(!arr.empty())
+        {
+            for(auto const & child_entry: arr)
+            {
+                auto const & widget_obj = child_entry.as_object();
+                if(!widget_obj.empty())
+                {
+                    widg_ptr->addWidget(GetWidgetFromDesc(widget_obj, owner));
+                }
+            }
+        }
+    }
 
     return widg_ptr;
 }

@@ -1,12 +1,13 @@
-#include "src/gui/uiimagemanager.h"
-#include "src/input/input.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <memory>
 
 #include <iostream>
 
+#include "src/gui/uiimagemanager.h"
+#include "src/input/input.h"
 #include "gui/fontmanager.h"
 #include "gui/imagedata.h"
 #include "gui/ui.h"

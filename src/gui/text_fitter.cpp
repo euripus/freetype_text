@@ -72,6 +72,9 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
             current_width  += blank_width;
         }
     }
+
+    if(!current_string.empty())
+        result.push_back(current_string);
 }
 
 Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode,

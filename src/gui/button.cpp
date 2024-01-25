@@ -12,6 +12,6 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
 
 void Button::update(float time, bool check_cursor) {}
 
-void Button::draw() {}
+void Button::draw(VertexBuffer & vb) {}
 
 void Button::move(glm::vec2 const & new_origin) {}

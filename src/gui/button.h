@@ -10,7 +10,7 @@ public:
 
     // Widget interface
     void update(float time, bool check_cursor) override;
-    void draw() override;
+    void draw(VertexBuffer & vb) override;
     void move(glm::vec2 const & new_origin) override;
 
     void setCallback(std::function<void(void)> click_callback);
