@@ -114,87 +114,87 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
     switch(key)
     {
         case GLFW_KEY_ESCAPE:
-        {
-            if(action == GLFW_PRESS)
             {
-                running = false;
-            }
-            break;
-        }
-        case GLFW_KEY_LEFT:
-        {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rty -= 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_RIGHT:
-        {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rty += 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_DOWN:
-        {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rtx -= 5.0f;
-            }
-            break;
-        }
-        case GLFW_KEY_UP:
-        {
-            if(action == GLFW_PRESS || action == GLFW_REPEAT)
-            {
-                rtx += 5.0f;
-            }
-            break;
-        }
-        case 'W':
-        {
-            if(action == GLFW_PRESS)
-            {
-                g_wire = (!g_wire);
-                if(g_wire)
+                if(action == GLFW_PRESS)
                 {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                }
-                else
-                {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                }
-            }
-            break;
-        }
-        case GLFW_KEY_F1:
-        {
-            if(action == GLFW_PRESS)
-            {
-                is_full_screen = !is_full_screen;
-
-                KillWindow();
-
-                if(is_full_screen)
-                {
-                    width  = cur_mode->width;
-                    height = cur_mode->height;
-                }
-                else
-                {
-                    width  = WINDOWWIDTH;
-                    height = WINDOWHEIGT;
-                }
-                if(!CreateGLFWWindow(width, height, is_full_screen))
-                {
-                    std::cerr << "error!" << std::endl;
                     running = false;
                 }
+                break;
             }
-            break;
-        }
+        case GLFW_KEY_LEFT:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rty -= 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_RIGHT:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rty += 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_DOWN:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rtx -= 5.0f;
+                }
+                break;
+            }
+        case GLFW_KEY_UP:
+            {
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                {
+                    rtx += 5.0f;
+                }
+                break;
+            }
+        case 'W':
+            {
+                if(action == GLFW_PRESS)
+                {
+                    g_wire = (!g_wire);
+                    if(g_wire)
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    }
+                    else
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                    }
+                }
+                break;
+            }
+        case GLFW_KEY_F1:
+            {
+                if(action == GLFW_PRESS)
+                {
+                    is_full_screen = !is_full_screen;
+
+                    KillWindow();
+
+                    if(is_full_screen)
+                    {
+                        width  = cur_mode->width;
+                        height = cur_mode->height;
+                    }
+                    else
+                    {
+                        width  = WINDOWWIDTH;
+                        height = WINDOWHEIGT;
+                    }
+                    if(!CreateGLFWWindow(width, height, is_full_screen))
+                    {
+                        std::cerr << "error!" << std::endl;
+                        running = false;
+                    }
+                }
+                break;
+            }
     }
 
     bool pressed = (action != GLFW_RELEASE);
@@ -318,10 +318,10 @@ bool InitWindow()
 
 bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 {
-    // glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 1);
-    // glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 5);
-    /*glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    /*glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWmonitor * mon = fullscreenflag ? glfwGetPrimaryMonitor() : NULL;
@@ -465,7 +465,7 @@ int main()
     if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
         return 0;
 
-    // auto device = glGetString(GL_VENDOR);
+    // auto device   = glGetString(GL_VENDOR);
     // auto renderer = glGetString(GL_RENDERER);
 
     while(!glfwWindowShouldClose(g_window) && running)
