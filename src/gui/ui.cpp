@@ -61,11 +61,11 @@ void UI::parseDefaultUISetID(std::string const & file_name)
 
     assert(!jv.is_null());
 
-    auto const & obj          = jv.get_object();
-    auto const   fonts_set_it = obj.find(sid_gui_set);
-    if(fonts_set_it != obj.end())
+    auto const & obj        = jv.get_object();
+    auto const   gui_set_it = obj.find(sid_gui_set);
+    if(gui_set_it != obj.end())
     {
-        m_current_gui_set = fonts_set_it->value().as_string();
+        m_current_gui_set = gui_set_it->value().as_string();
     }
 }
 

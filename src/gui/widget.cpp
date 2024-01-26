@@ -101,7 +101,6 @@ void Widget::update(float time, bool check_cursor)
 
 void Widget::draw(VertexBuffer & vb)
 {
-    // draw background
     if(m_region_ptr != nullptr && visible())
     {
         glm::vec2 pos = m_pos;

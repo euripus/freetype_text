@@ -9,7 +9,14 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group)
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
 
-void UIWindow::draw() {}
+void UIWindow::draw(VertexBuffer & vb)
+{
+    if(m_background)
+        m_background->draw(vb);
+
+    if(m_root)
+        m_root->draw(vb);
+}
 
 void UIWindow::update(float time, bool check_cursor)
 {

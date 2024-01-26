@@ -14,7 +14,7 @@ public:
 
     UI & getOwner() { return m_owner; }
 
-    void draw();
+    void draw(VertexBuffer & vb);
     void update(float time, bool check_cursor);
 
     void        setCaption(std::string caption) { m_caption = std::move(caption); }

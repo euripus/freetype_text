@@ -3,6 +3,7 @@
         {
             "size": [0, 0],
             "type": "VerticalLayoutee",
+            "visible": false,
             "children": [
                 {
                     "size": [100, 100],
