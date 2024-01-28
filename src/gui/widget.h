@@ -27,6 +27,7 @@ struct WidgetDesc
     std::string texture_name = {};   // texture name from gui_set
     float       size         = 0.0f;
     std::string static_text  = {};
+	Align       text_hor     = Align::left;
 };
 
 class Widget
@@ -45,6 +46,7 @@ private:
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
     static constexpr char const * sid_static_text      = "static_text";
+	static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
 
     static ElementType GetElementTypeFromString(std::string_view name);
@@ -56,13 +58,17 @@ private:
 public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
+	
+private:
+	virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
+	void draw(VertexBuffer & background, VertexBuffer & text) const;
+
     virtual void update(float time, bool check_cursor);
-    virtual void draw(VertexBuffer & vb);
     virtual void move(glm::vec2 const & new_origin);
 
     virtual void addWidget(std::unique_ptr<Widget> widget);
@@ -79,7 +85,7 @@ public:
     bool visible() const { return m_visible; }
     bool focused() const { return m_focused; }
 
-    glm::vec2   size() const;
+    glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
     Rect2D      getRect() const { return m_rect; }
     void        setRect(Rect2D const & rect) { m_rect = rect; }
@@ -104,8 +110,8 @@ protected:
     SizePolicy  m_scale      = SizePolicy::scale;
     ElementType m_type       = ElementType::Unknown;
 
-    TexFont *                     m_font       = nullptr;
-    RegionDataOfUITexture const * m_region_ptr = nullptr;
+    TexFont *                m_font       = nullptr;
+    RegionDataOfUITexture  const * m_region_ptr = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

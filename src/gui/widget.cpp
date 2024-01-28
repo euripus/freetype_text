@@ -90,7 +90,7 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
         m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
 
     if(!m_region_name.empty())
-        m_region_ptr = &ui.m_ui_image_atlas.getImageGroup(ui.m_current_gui_set).getImageRegion(m_region_name);
+        m_region_ptr = ui.getImageRegion(m_region_name);
 }
 
 void Widget::update(float time, bool check_cursor)
@@ -99,17 +99,20 @@ void Widget::update(float time, bool check_cursor)
     {}
 }
 
-void Widget::draw(VertexBuffer & vb)
+void Widget::draw(VertexBuffer & background, VertexBuffer & text) const
 {
     if(m_region_ptr != nullptr && visible())
     {
         glm::vec2 pos = m_pos;
-        m_region_ptr->addBlock(vb, pos, m_rect.m_extent);
+        m_region_ptr->addBlock(background, pos, m_rect.m_extent);
     }
 
-    // draw child
+    // draw children
     for(auto & ch: m_children)
-        ch->draw(vb);
+        ch->draw(background, text);
+
+	if(visible())
+		subClassDraw(background, text);
 }
 
 void Widget::move(glm::vec2 const & new_origin)
@@ -163,7 +166,7 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     return nullptr;
 }
 
-glm::vec2 Widget::size() const
+/*glm::vec2 Widget::size() const
 {
     // auto const cmp =
     //     glm::epsilonEqual(m_rect.m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
@@ -171,7 +174,7 @@ glm::vec2 Widget::size() const
     //     return sizeHint();
 
     return m_rect.m_extent;
-}
+}*/
 
 std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)
 {
@@ -267,6 +270,10 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
         else if(kvp.key() == sid_static_text)
         {
             desc.static_text = kvp.value().as_string();
+        }
+		else if(kvp.key() == sid_text_horizontal)
+        {
+            desc.text_hor = GetAlignFromString(kvp.value().as_string());
         }
     }
 

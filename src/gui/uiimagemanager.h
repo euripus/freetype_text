@@ -54,7 +54,7 @@ public:
     int32_t addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left,
                      int32_t right, int32_t bottom, int32_t top);
 
-    RegionDataOfUITexture const & getImageRegion(std::string const & name) const;
+    RegionDataOfUITexture const * getImageRegion(std::string const & name) const;
 
     void reloadImages();
 

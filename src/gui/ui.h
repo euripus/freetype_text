@@ -23,10 +23,11 @@ public:
     void       parseUIResources(std::string const & file_name);
 
     // get font
+	RegionDataOfUITexture const * getImageRegion(std::string const & name) const;
 
     void fitWidgets(UIWindow * win_ptr) const;
 
-    // Input * m_input;
+    // Input & m_input;
 
     glm::ivec2     m_screen_size = {};
     UIImageManager m_ui_image_atlas;

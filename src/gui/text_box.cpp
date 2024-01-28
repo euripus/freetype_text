@@ -4,26 +4,60 @@
 
 TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)
     : Widget(desc, owner),
-      m_text(desc.static_text)
+      m_text(desc.static_text),
+      m_text_horizontal_align(desc.text_hor)
 {
     adjustTextToLines();
 }
 
 void TextBox::update(float time, bool check_cursor) {}
 
-void TextBox::draw(VertexBuffer & vb) {}
-
-void TextBox::move(glm::vec2 const & new_origin)
+void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) 
 {
-    Widget::move(new_origin);
+    if(m_font == nullptr || !m_formated)
+        return;
 
-    if(!m_formated)
-        adjustTextToLines();
+    //draw text
+    float const line_height = m_font->getHeight() + m_font->getLineGap();
+    glm::vec2 pen_pos(0.f, 0.f);    
+    pen_pos.y = m_pos.y + m_rect.height() - line_height;
+
+    for(auto const & line : m_lines)
+    {
+        switch(m_text_horizontal_align)
+        {
+            case Align::left:
+            case Align::top:          // horizontal align only
+            case Align::bottom:
+            {
+                pen_pos.x = m_pos.x;
+
+                break;
+            }
+            case Align::center:
+            {
+                float const line_width = m_font->getTextSize(line.c_str()).x;
+                pen_pos.x = m_pos.x + (m_rect.width() - line_width)/2.f;
+
+                break;
+            }
+            case Align::right:
+            {
+                float const line_width = m_font->getTextSize(line.c_str()).x;
+                pen_pos.x = m_pos.x + (m_rect.width() - line_width);
+
+                break;
+            }
+        }
+
+        m_font->addText(text, line.c_str(), pen_pos);
+        pen_pos.y -= line_height;
+    }
 }
 
-void TextBox::setText(std::string const & new_text)
+void TextBox::setText(std::string new_text)
 {
-    m_text     = new_text;
+    m_text     = std::move(new_text);
     m_formated = false;
 
     adjustTextToLines();

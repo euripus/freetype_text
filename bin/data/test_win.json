@@ -17,7 +17,8 @@
                     "align_vertical": "top",
                     "font": "liberation",
                     "font_size": 24,
-                    "static_text": "Sample text!"
+                    "static_text": "Sample text!",
+                    "text_horizontal": "left"
                 },
                 {
                     "size": [0, 0],
@@ -29,28 +30,30 @@
                             "type": "Button",
                             "visible": true,
                             "texture": "button",
-                            "region_name": "button",
+                            "region_name": "button_unclicked",
                             "id_name": "button_ok",
                             "size_policy": "scale",
                             "align_horizontal": "left",
                             "align_vertical": "top",
                             "font": "liberation",
                             "font_size": 24,
-                            "static_text": "OK"
+                            "static_text": "OK",
+                            "text_horizontal": "center"
                         },
                         {
                             "size": [25, 15],
                             "type": "Button",
                             "visible": true,
                             "texture": "button",
-                            "region_name": "button",
+                            "region_name": "button_unclicked",
                             "id_name": "button_cancel",
                             "size_policy": "scale",
                             "align_horizontal": "left",
                             "align_vertical": "top",
                             "font": "liberation",
                             "font_size": 24,
-                            "static_text": "Cancel"
+                            "static_text": "Cancel",
+                            "text_horizontal": "center"
                         }
                     ]
                 }

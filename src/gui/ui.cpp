@@ -76,6 +76,11 @@ void UI::parseUIResources(std::string const & file_name)
     parseDefaultUISetID(file_name);
 }
 
+RegionDataOfUITexture const * UI::getImageRegion(std::string const & name) const
+{
+	return m_ui_image_atlas.getImageGroup(m_current_gui_set).getImageRegion(name);
+}
+
 void UI::fitWidgets(UIWindow * win_ptr) const
 {
     m_packer.fitWidgets(win_ptr);

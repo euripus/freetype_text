@@ -241,15 +241,15 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     return m_regions.size() - 1;
 }
 
-RegionDataOfUITexture const & UIImageGroup::getImageRegion(std::string const & name) const
+RegionDataOfUITexture const * UIImageGroup::getImageRegion(std::string const & name) const
 {
     auto it = std::find_if(begin(m_regions), end(m_regions),
                            [&name](auto & region) { return name == region.name; });
 
     if(it != m_regions.end())
-        return *it;
+        return &(*it);
 
-    throw std::runtime_error("Region with requested name not found");
+    return nullptr;
 }
 
 void UIImageGroup::reloadImages()

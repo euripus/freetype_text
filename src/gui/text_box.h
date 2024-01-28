@@ -10,16 +10,16 @@ public:
 
     // Widget interface
     void update(float time, bool check_cursor) override;
-    void draw(VertexBuffer & vb) override;
-    void move(glm::vec2 const & new_origin) override;
 
-    void setText(std::string const & new_text);
+    void setText(std::string new_text);
 
 private:
     void adjustTextToLines();
+	void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
 
 protected:
     std::string m_text = {};
+	Align       m_text_horizontal_align = Align::left;
 
     std::vector<std::string> m_lines    = {};
     bool                     m_formated = false;

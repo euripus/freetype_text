@@ -246,20 +246,18 @@ void AtlasTex::writeAtlasToTGA(std::string const & name)
 }
 
 ////////////////////////
-static GLuint atlas_tex_id{};
-
 void AtlasTex::BindTexture()
 {
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, atlas_tex_id);
+    glBindTexture(GL_TEXTURE_2D, m_atlas_tex_id);
 }
 
 void AtlasTex::UploadTexture()
 {
-    glGenTextures(1, &atlas_tex_id);
+    glGenTextures(1, &m_atlas_tex_id);
 
-    glBindTexture(GL_TEXTURE_2D, atlas_tex_id);
+    glBindTexture(GL_TEXTURE_2D, m_atlas_tex_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -270,5 +268,5 @@ void AtlasTex::UploadTexture()
 
 void AtlasTex::DeleteTexture()
 {
-    glDeleteTextures(1, &atlas_tex_id);
+    glDeleteTextures(1, &m_atlas_tex_id);
 }

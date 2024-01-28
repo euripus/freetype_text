@@ -445,6 +445,10 @@ int main()
                           "loooooooooonnnnnnnnnnggggggggggggg!");
 
     win->show();
+    win->move({10.f, 10.f});
+
+    VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex);
+    win->draw(win_buf, text_win_buf);
     print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
 
     glfwSetErrorCallback(error_callback);
