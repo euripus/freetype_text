@@ -111,8 +111,8 @@ void Widget::draw(VertexBuffer & background, VertexBuffer & text) const
     for(auto & ch: m_children)
         ch->draw(background, text);
 
-	if(visible())
-		subClassDraw(background, text);
+    if(visible())
+        subClassDraw(background, text);
 }
 
 void Widget::move(glm::vec2 const & new_origin)
@@ -271,7 +271,7 @@ std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & ob
         {
             desc.static_text = kvp.value().as_string();
         }
-		else if(kvp.key() == sid_text_horizontal)
+        else if(kvp.key() == sid_text_horizontal)
         {
             desc.text_hor = GetAlignFromString(kvp.value().as_string());
         }

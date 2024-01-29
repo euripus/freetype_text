@@ -15,11 +15,11 @@ public:
 
 private:
     void adjustTextToLines();
-	void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
+    void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
 
 protected:
-    std::string m_text = {};
-	Align       m_text_horizontal_align = Align::left;
+    std::string m_text                  = {};
+    Align       m_text_horizontal_align = Align::left;
 
     std::vector<std::string> m_lines    = {};
     bool                     m_formated = false;

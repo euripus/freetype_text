@@ -27,8 +27,8 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
     //  |  |              |  |
     //  |  |              |  |
     // 0----------------------
-    float inv_new_width    = 1.0f / new_size.x;
-    float inv_new_height   = 1.0f / new_size.y;
+    float inv_new_width    = 1.f / new_size.x;
+    float inv_new_height   = 1.f / new_size.y;
     float tex_coord_width  = tx1.s - tx0.s;
     float tex_coord_height = tx1.t - tx0.t;
 

@@ -6,25 +6,25 @@
         {
           "background": {
             "texture": "./data/background.tga",
-            "9slice_margins": [ 10, 10, 10, 10 ]
+            "9slice_margins": [ 5, 5, 5, 5 ]
           }
         },
         {
           "button_clicked": {
             "texture": "./data/button.tga",
-            "9slice_margins": [ 10, 10, 10, 10 ]
+            "9slice_margins": [ 5, 5, 5, 5 ]
           }
         },
         {
           "button_unclicked": {
             "texture": "./data/button.tga",
-            "9slice_margins": [ 10, 10, 10, 10 ]
+            "9slice_margins": [ 5, 5, 5, 5 ]
           }
         },
         {
           "button_disabled": {
             "texture": "./data/button.tga",
-            "9slice_margins": [ 10, 10, 10, 10 ]
+            "9slice_margins": [ 5, 5, 5, 5 ]
           }
         }
       ]

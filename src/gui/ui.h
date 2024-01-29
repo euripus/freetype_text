@@ -23,7 +23,7 @@ public:
     void       parseUIResources(std::string const & file_name);
 
     // get font
-	RegionDataOfUITexture const * getImageRegion(std::string const & name) const;
+    RegionDataOfUITexture const * getImageRegion(std::string const & name) const;
 
     void fitWidgets(UIWindow * win_ptr) const;
 

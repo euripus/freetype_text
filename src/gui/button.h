@@ -6,14 +6,14 @@
 class Button : public Widget
 {
 public:
-	enum class ButtonState
-	{
-		clicked,
-		unclicked,
-		disabled
-	};
+    enum class ButtonState
+    {
+        clicked,
+        unclicked,
+        disabled
+    };
 
-	Button(WidgetDesc const & desc, UIWindow & owner);
+    Button(WidgetDesc const & desc, UIWindow & owner);
 
     // Widget interface
     void update(float time, bool check_cursor) override;
@@ -23,12 +23,13 @@ public:
 private:
     void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
 
-	RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;
+    RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;
 
 protected:
     std::string               m_caption;
     std::function<void(void)> m_click_callback;
-    ButtonState               m_state = ButtonState::unclicked;
+    Align                     m_text_horizontal_align = Align::left;
+    ButtonState               m_state                 = ButtonState::unclicked;
 };
 
 #endif

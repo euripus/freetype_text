@@ -34,8 +34,8 @@ private:
     uint32_t                   m_size = 0;
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;
-	
-	uint32_t m_atlas_tex_id = 0;
+
+    uint32_t m_atlas_tex_id = 0;
 };
 
 #endif   // ATLASTEX_H

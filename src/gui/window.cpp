@@ -9,13 +9,13 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group)
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
 
-void UIWindow::draw(VertexBuffer & vb)
+void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 {
     if(m_background)
-        m_background->draw(vb);
+        m_background->draw(background, text);
 
-    if(m_root)
-        m_root->draw(vb);
+    // if(m_root)
+    //   m_root->draw(background, text);
 }
 
 void UIWindow::update(float time, bool check_cursor)
@@ -38,7 +38,7 @@ void UIWindow::move(glm::vec2 const & new_origin)
 
     if(m_background)
     {
-        m_background->setRect(m_root->getRect());
+        m_background->setRect(getRect());
         m_background->move(m_pos);
     }
 }

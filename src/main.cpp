@@ -31,8 +31,9 @@ GLFWvidmode const * cur_mode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 
-Input g_input_state;
-UI    g_ui;
+Input        g_input_state;
+UI           g_ui;
+VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex);
 
 // clang-format off
 GLfloat pyr_vert[] = {
@@ -310,6 +311,13 @@ bool InitWindow()
     // fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     fm.getAtlas().UploadTexture();
 
+    //
+    g_ui.m_ui_image_atlas.getAtlas().UploadTexture();
+    g_ui.m_fonts.getAtlas().UploadTexture();
+
+    win_buf.upload();
+    //text_win_buf.upload();
+
     return LoadTexture();
 }
 
@@ -388,11 +396,14 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    fm.getAtlas().BindTexture();
+    // fm.getAtlas().BindTexture();
+    // text_buf.drawBuffer();
 
-    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    text_buf.drawBuffer();
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    g_ui.m_ui_image_atlas.getAtlas().BindTexture();
+    win_buf.drawBuffer();
+
+    //g_ui.m_fonts.getAtlas().BindTexture();
+    //text_win_buf.drawBuffer();
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
@@ -445,9 +456,8 @@ int main()
                           "loooooooooonnnnnnnnnnggggggggggggg!");
 
     win->show();
-    win->move({10.f, 10.f});
+    win->move({10.f, 150.f});
 
-    VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex);
     win->draw(win_buf, text_win_buf);
     print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
 

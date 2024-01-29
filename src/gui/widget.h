@@ -27,7 +27,7 @@ struct WidgetDesc
     std::string texture_name = {};   // texture name from gui_set
     float       size         = 0.0f;
     std::string static_text  = {};
-	Align       text_hor     = Align::left;
+    Align       text_hor     = Align::left;
 };
 
 class Widget
@@ -46,7 +46,7 @@ private:
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
     static constexpr char const * sid_static_text      = "static_text";
-	static constexpr char const * sid_text_horizontal  = "text_horizontal";
+    static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
 
     static ElementType GetElementTypeFromString(std::string_view name);
@@ -58,15 +58,15 @@ private:
 public:
     static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
-	
+
 private:
-	virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
+    virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
-	void draw(VertexBuffer & background, VertexBuffer & text) const;
+    void draw(VertexBuffer & background, VertexBuffer & text) const;
 
     virtual void update(float time, bool check_cursor);
     virtual void move(glm::vec2 const & new_origin);
@@ -110,8 +110,8 @@ protected:
     SizePolicy  m_scale      = SizePolicy::scale;
     ElementType m_type       = ElementType::Unknown;
 
-    TexFont *                m_font       = nullptr;
-    RegionDataOfUITexture  const * m_region_ptr = nullptr;
+    TexFont *                     m_font       = nullptr;
+    RegionDataOfUITexture const * m_region_ptr = nullptr;
 
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;

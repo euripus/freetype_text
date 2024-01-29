@@ -12,22 +12,22 @@ TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)
 
 void TextBox::update(float time, bool check_cursor) {}
 
-void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) 
+void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
 {
     if(m_font == nullptr || !m_formated)
         return;
 
-    //draw text
+    // draw text
     float const line_height = m_font->getHeight() + m_font->getLineGap();
-    glm::vec2 pen_pos(0.f, 0.f);    
+    glm::vec2   pen_pos(0.f, 0.f);
     pen_pos.y = m_pos.y + m_rect.height() - line_height;
 
-    for(auto const & line : m_lines)
+    for(auto const & line: m_lines)
     {
         switch(m_text_horizontal_align)
         {
             case Align::left:
-            case Align::top:          // horizontal align only
+            case Align::top:   // horizontal align only
             case Align::bottom:
             {
                 pen_pos.x = m_pos.x;
@@ -37,14 +37,14 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text)
             case Align::center:
             {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
-                pen_pos.x = m_pos.x + (m_rect.width() - line_width)/2.f;
+                pen_pos.x              = m_pos.x + (m_rect.width() - line_width) / 2.f;
 
                 break;
             }
             case Align::right:
             {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
-                pen_pos.x = m_pos.x + (m_rect.width() - line_width);
+                pen_pos.x              = m_pos.x + (m_rect.width() - line_width);
 
                 break;
             }

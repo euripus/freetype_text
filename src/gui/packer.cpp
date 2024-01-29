@@ -188,5 +188,7 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
         current_height += row_height + m_vertical_spacing;
     }
 
+    if(win->m_background)
+        win->m_background->m_rect.m_extent = glm::vec2(final_width, current_height);
     win->m_rect.m_extent = glm::vec2(final_width, current_height);
 }
