@@ -316,7 +316,7 @@ bool InitWindow()
     g_ui.m_fonts.getAtlas().UploadTexture();
 
     win_buf.upload();
-    //text_win_buf.upload();
+    text_win_buf.upload();
 
     return LoadTexture();
 }
@@ -396,14 +396,16 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    // fm.getAtlas().BindTexture();
-    // text_buf.drawBuffer();
+    fm.getAtlas().BindTexture();
+    text_buf.drawBuffer();
 
     g_ui.m_ui_image_atlas.getAtlas().BindTexture();
     win_buf.drawBuffer();
 
-    //g_ui.m_fonts.getAtlas().BindTexture();
-    //text_win_buf.drawBuffer();
+    glColor3f(1.f, 1.f, 0.f);
+    g_ui.m_fonts.getAtlas().BindTexture();
+    text_win_buf.drawBuffer();
+    glColor3f(1.f, 1.f, 1.f);
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);

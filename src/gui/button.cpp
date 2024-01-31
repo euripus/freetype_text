@@ -10,6 +10,10 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
     // Trim text to button size
     auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, SizePolicy::trim, m_caption);
     m_caption  = lines[0];
+
+    float const line_height = m_font->getHeight() + m_font->getLineGap();
+    if(m_rect.height() < line_height)
+        m_rect.m_extent.y = line_height;
 }
 
 void Button::update(float time, bool check_cursor) {}

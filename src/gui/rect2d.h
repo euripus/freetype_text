@@ -53,9 +53,9 @@ struct Rect2D
     bool isEmpty() const noexcept
     {
         auto const cmp_ext =
-           glm::epsilonEqual(m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
+            glm::epsilonEqual(m_extent, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
         auto const cmp_pos =
-           glm::epsilonEqual(m_pos, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
+            glm::epsilonEqual(m_pos, glm::vec2(0.f, 0.f), std::numeric_limits<float>::epsilon());
         return (cmp_ext.x && cmp_ext.y && cmp_pos.x && cmp_pos.y == 0);
     }
 
