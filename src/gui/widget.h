@@ -100,6 +100,7 @@ protected:
     glm::vec2   m_size_hint   = {};
     Rect2D      m_rect        = {};
     glm::vec2   m_pos         = {};   // draw position
+	glm::vec4   m_fields = {1.f, 1.f, 1.f, 1.f};   // left, right, bottom, top
     std::string m_id          = {};
     std::string m_region_name = {};
 

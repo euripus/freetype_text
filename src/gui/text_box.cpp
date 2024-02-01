@@ -20,7 +20,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     // draw text
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     glm::vec2   pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + m_rect.height() - line_height;
+    pen_pos.y = m_pos.y + m_fields.w + m_rect.height() - line_height;
 
     for(auto const & line: m_lines)
     {
@@ -30,7 +30,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
             case Align::top:   // horizontal align only
             case Align::bottom:
             {
-                pen_pos.x = m_pos.x;
+                pen_pos.x = m_pos.x + m_fields.x;
 
                 break;
             }
@@ -44,7 +44,8 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
             case Align::right:
             {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
-                pen_pos.x              = m_pos.x + (m_rect.width() - line_width);
+				float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+                pen_pos.x              = m_pos.x + delta;
 
                 break;
             }
@@ -74,7 +75,7 @@ void TextBox::adjustTextToLines()
     else if(m_scale == SizePolicy::fixed_height)
         text_height = glm::max(text_height, m_size_hint.y);
 
-    m_rect.m_extent = glm::vec2(text_width, text_height);
+    m_rect.m_extent = glm::vec2(text_width+m_fields.x+m_fields.y, text_height+m_fields.z+m_fields.w);
     m_formated      = true;
 
     m_owner.childResized();   // resize text area message

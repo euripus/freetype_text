@@ -12,8 +12,9 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
     m_caption  = lines[0];
 
     float const line_height = m_font->getHeight() + m_font->getLineGap();
-    if(m_rect.height() < line_height)
-        m_rect.m_extent.y = line_height;
+	float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
+
+    m_rect.m_extent = glm::vec2(line_width+m_fields.x+m_fields.y, line_height+m_fields.z+m_fields.w);
 }
 
 void Button::update(float time, bool check_cursor) {}
@@ -57,7 +58,7 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
     glm::vec2   pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + m_rect.height() - line_height;
+    pen_pos.y = m_pos.y + (m_rect.height() - line_height)/2.f;
 
     switch(m_text_horizontal_align)
     {
@@ -65,7 +66,7 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
         case Align::top:   // horizontal align only
         case Align::bottom:
         {
-            pen_pos.x = m_pos.x;
+            pen_pos.x = m_pos.x + m_fields.x;
 
             break;
         }
@@ -77,7 +78,8 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
         }
         case Align::right:
         {
-            pen_pos.x = m_pos.x + (m_rect.width() - line_width);
+			float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+            pen_pos.x = m_pos.x + delta;
 
             break;
         }

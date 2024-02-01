@@ -27,7 +27,7 @@ public:
 
     void fitWidgets(UIWindow * win_ptr) const;
 
-    // Input & m_input;
+    // Input const & m_input;
 
     glm::ivec2     m_screen_size = {};
     UIImageManager m_ui_image_atlas;
