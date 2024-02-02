@@ -32,7 +32,7 @@ GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 
 Input        g_input_state;
-UI           g_ui;
+UI           g_ui(g_input_state);
 VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex);
 
 // clang-format off
@@ -74,7 +74,7 @@ GLfloat pyr_vert_tex[] = {0.5, 0.8, 0.2, 0.5, 0.5, 0.2, 0.8, 0.5, 0.5, 0.8, 0, 1
 
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-FontManager  fm;
+UIWindow *   win = nullptr;
 GLuint       tex_base;
 VertexBuffer pyramid_buf(VertexBuffer::pos_tex_norm);
 VertexBuffer text_buf(VertexBuffer::pos_tex);
@@ -221,6 +221,7 @@ void WindowSizeCallback(GLFWwindow * win, int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    g_input_state.resize(width, height);
     g_ui.resize(width, height);
 }
 
@@ -306,12 +307,6 @@ bool InitWindow()
                          sizeof(pyr_index) / sizeof(GLuint));
     pyramid_buf.upload();
 
-    fm.parseFontsRes("./data/ui_res.json");
-
-    // fm.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
-    fm.getAtlas().UploadTexture();
-
-    //
     g_ui.m_ui_image_atlas.getAtlas().UploadTexture();
     g_ui.m_fonts.getAtlas().UploadTexture();
 
@@ -352,7 +347,7 @@ void DrawScene(void)
         g_num_frames = 0;
 
         text_buf.clear();
-        auto & tf = *fm.getFont("damase", 24);
+        auto & tf = *g_ui.m_fonts.getFont("damase", 24);
 
         std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
         glm::vec2 pen(10, 10);
@@ -371,6 +366,13 @@ void DrawScene(void)
         text_buf.upload();
     }
     g_num_frames++;
+
+    win_buf.clear();
+    text_win_buf.clear();
+    g_ui.update(glfwGetTime());
+    win->draw(win_buf, text_win_buf);
+    win_buf.upload();
+    text_win_buf.upload();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -396,14 +398,14 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    fm.getAtlas().BindTexture();
-    text_buf.drawBuffer();
-
     g_ui.m_ui_image_atlas.getAtlas().BindTexture();
     win_buf.drawBuffer();
 
-    glColor3f(1.f, 1.f, 0.f);
+    glColor3f(0.5f, 0.5f, 0.5f);
     g_ui.m_fonts.getAtlas().BindTexture();
+    text_buf.drawBuffer();
+
+    // g_ui.m_fonts.getAtlas().BindTexture();
     text_win_buf.drawBuffer();
     glColor3f(1.f, 1.f, 1.f);
 
@@ -417,7 +419,8 @@ void DrawScene(void)
 void KillWindow(void)
 {
     glDeleteTextures(1, &tex_base);
-    fm.getAtlas().DeleteTexture();
+    g_ui.m_fonts.getAtlas().DeleteTexture();
+    g_ui.m_ui_image_atlas.getAtlas().DeleteTexture();
 
     glfwDestroyWindow(g_window);
     g_window = nullptr;
@@ -451,17 +454,18 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
 int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
-    auto win = g_ui.loadWindow("./data/test_win.json");
+    win = g_ui.loadWindow("./data/test_win.json");
 
     if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
-        text_box->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
+        text_box->setText("Cursor pos. New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
                           "loooooooooonnnnnnnnnnggggggggggggg!");
 
     win->show();
     win->move({10.f, 150.f});
 
-    win->draw(win_buf, text_win_buf);
-    print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
+    // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
+    // g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
+    g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
 
     glfwSetErrorCallback(error_callback);
 

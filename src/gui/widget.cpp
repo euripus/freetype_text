@@ -94,8 +94,10 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
 
 void Widget::update(float time, bool check_cursor)
 {
-    if(check_cursor)
-    {}
+    for(auto & ch: m_children)
+        ch->update(time, check_cursor);
+
+    subClassUdate(time, check_cursor);
 }
 
 void Widget::draw(VertexBuffer & background, VertexBuffer & text) const

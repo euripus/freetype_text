@@ -102,6 +102,7 @@ public:
     void reloadGlyphs();
 
     float getHeight() const { return m_height; }
+    float getSize() const { return m_size; }
     float getLineGap() const { return m_linegap; }
 
 private:

@@ -6,7 +6,7 @@
         {
           "background": {
             "texture": "./data/background.tga",
-            "9slice_margins": [ 5, 5, 5, 5 ]
+            "9slice_margins": [ 10, 10, 10, 10 ]
           }
         },
         {
@@ -17,7 +17,7 @@
         },
         {
           "button_unclicked": {
-            "texture": "./data/button.tga",
+            "texture": "./data/button_unp.tga",
             "9slice_margins": [ 5, 5, 5, 5 ]
           }
         },
@@ -37,7 +37,7 @@
       "hinting": true,
       "kerning": true,
       "outline_thickness": 0.0,
-      "outline_type": "NONE",
+      "outline_type": "OUTER",
       "font_size": 24,
       "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
     },

@@ -144,13 +144,15 @@ public:
     Input()          = default;
     virtual ~Input() = default;
 
+    void resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
+
     // Keyboard
     KeyboardKey getKeyPressed() const { return m_last_key; }
     bool        isKeyPressed(KeyboardKey key_id) const { return m_keys_states[static_cast<size_t>(key_id)]; }
     bool        isAnyKeyPressed() const;
 
     // Mouse
-    glm::ivec2 getMousePosition() const { return m_mouse_position; }
+    glm::ivec2 getMousePosition() const { return {m_mouse_position.x, m_screen_size.y - m_mouse_position.y}; }
     bool       isMouseButtonPressed(MouseButton button_id) const;
     bool       isMouseWheel() const { return !m_mouse_wheel.empty(); }
     int32_t    getMouseWheel() { return 0; }
@@ -162,6 +164,7 @@ public:
     void keyEvent(KeyboardKey key, bool press);
 
 protected:
+    glm::ivec2 m_screen_size;
     // Keyboard states
     KeyboardKey m_last_key                                                     = KeyboardKey::Key_MaxKeyNum;
     bool        m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};

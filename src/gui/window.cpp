@@ -11,8 +11,8 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group)
 
 void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 {
-    // if(m_background)
-    // m_background->draw(background, text);
+    if(m_background)
+        m_background->draw(background, text);
 
     if(m_root)
         m_root->draw(background, text);

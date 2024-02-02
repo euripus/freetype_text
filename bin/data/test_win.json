@@ -6,7 +6,7 @@
             "visible": false,
             "children": [
                 {
-                    "size": [100, 100],
+                    "size": [300, 100],
                     "type": "TextBox",
                     "visible": true,
                     "texture": "",
@@ -15,7 +15,7 @@
                     "size_policy": "fixed_width",
                     "align_horizontal": "left",
                     "align_vertical": "top",
-                    "font": "liberation",
+                    "font": "damase",
                     "font_size": 24,
                     "static_text": "Sample text!",
                     "text_horizontal": "left"
@@ -26,7 +26,7 @@
                     "visible": false,
                     "children": [
                         {
-                            "size": [25, 15],
+                            "size": [100, 15],
                             "type": "Button",
                             "visible": true,
                             "texture": "button",
@@ -41,7 +41,7 @@
                             "text_horizontal": "center"
                         },
                         {
-                            "size": [25, 15],
+                            "size": [100, 15],
                             "type": "Button",
                             "visible": true,
                             "texture": "button",

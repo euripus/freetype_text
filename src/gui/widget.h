@@ -61,15 +61,15 @@ public:
 
 private:
     virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
+    virtual void subClassUdate(float time, bool check_cursor) {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
     void draw(VertexBuffer & background, VertexBuffer & text) const;
-
-    virtual void update(float time, bool check_cursor);
-    virtual void move(glm::vec2 const & new_origin);
+    void update(float time, bool check_cursor);
+    void move(glm::vec2 const & new_origin);
 
     virtual void addWidget(std::unique_ptr<Widget> widget);
     virtual void removeWidget(Widget * widget);
@@ -99,8 +99,8 @@ protected:
 
     glm::vec2   m_size_hint   = {};
     Rect2D      m_rect        = {};
-    glm::vec2   m_pos         = {};   // draw position
-	glm::vec4   m_fields = {1.f, 1.f, 1.f, 1.f};   // left, right, bottom, top
+    glm::vec2   m_pos         = {};                     // draw position
+    glm::vec4   m_fields      = {1.f, 1.f, 1.f, 1.f};   // left, right, bottom, top
     std::string m_id          = {};
     std::string m_region_name = {};
 

@@ -10,8 +10,6 @@ TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)
     adjustTextToLines();
 }
 
-void TextBox::update(float time, bool check_cursor) {}
-
 void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
 {
     if(m_font == nullptr || !m_formated)
@@ -44,7 +42,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
             case Align::right:
             {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
-				float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+                float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
                 pen_pos.x              = m_pos.x + delta;
 
                 break;
@@ -75,7 +73,7 @@ void TextBox::adjustTextToLines()
     else if(m_scale == SizePolicy::fixed_height)
         text_height = glm::max(text_height, m_size_hint.y);
 
-    m_rect.m_extent = glm::vec2(text_width+m_fields.x+m_fields.y, text_height+m_fields.z+m_fields.w);
+    m_rect.m_extent = glm::vec2(text_width + m_fields.x + m_fields.y, text_height + m_fields.z + m_fields.w);
     m_formated      = true;
 
     m_owner.childResized();   // resize text area message

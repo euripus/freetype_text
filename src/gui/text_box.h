@@ -8,9 +8,6 @@ class TextBox : public Widget
 public:
     TextBox(WidgetDesc const & desc, UIWindow & owner);
 
-    // Widget interface
-    void update(float time, bool check_cursor) override;
-
     void setText(std::string new_text);
 
 private:

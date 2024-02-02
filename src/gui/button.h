@@ -15,13 +15,11 @@ public:
 
     Button(WidgetDesc const & desc, UIWindow & owner);
 
-    // Widget interface
-    void update(float time, bool check_cursor) override;
-
     void setCallback(std::function<void(void)> click_callback);
 
 private:
     void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
+    void subClassUdate(float time, bool check_cursor) override;
 
     RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;
 

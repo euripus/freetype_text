@@ -2,6 +2,7 @@
 #define GUI_H
 
 #include <glm/glm.hpp>
+#include "../input/input.h"
 #include "fontmanager.h"
 #include "uiimagemanager.h"
 #include "packer.h"
@@ -14,6 +15,10 @@ class UI
 public:
     static constexpr char const * sid_gui_set = "current_gui_set";
 
+    UI(Input const & inp)
+        : m_input(inp)
+    {}
+
     void update(float time);
     void draw(VertexBuffer & vb);
     void resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
@@ -22,12 +27,11 @@ public:
                           std::string const & image_group = std::string("default"));
     void       parseUIResources(std::string const & file_name);
 
-    // get font
     RegionDataOfUITexture const * getImageRegion(std::string const & name) const;
 
     void fitWidgets(UIWindow * win_ptr) const;
 
-    // Input const & m_input;
+    Input const & m_input;
 
     glm::ivec2     m_screen_size = {};
     UIImageManager m_ui_image_atlas;

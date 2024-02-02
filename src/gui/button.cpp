@@ -12,12 +12,39 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
     m_caption  = lines[0];
 
     float const line_height = m_font->getHeight() + m_font->getLineGap();
-	float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
+    float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
 
-    m_rect.m_extent = glm::vec2(line_width+m_fields.x+m_fields.y, line_height+m_fields.z+m_fields.w);
+    m_rect.m_extent = glm::vec2(line_width + m_fields.x + m_fields.y, line_height + m_fields.z + m_fields.w);
 }
 
-void Button::update(float time, bool check_cursor) {}
+void Button::subClassUdate(float time, bool check_cursor)
+{
+    if(check_cursor)
+    {
+        auto const & inp     = m_owner.getOwner().m_input;
+        glm::vec2    cur_pos = inp.getMousePosition();
+
+        Rect2D widget_area{m_pos, m_rect.m_extent};
+        if(widget_area.contains(cur_pos))
+        {
+            if(inp.isMouseButtonPressed(MouseButton::Left))
+            {
+                m_state = ButtonState::clicked;
+
+                m_region_ptr = getRegionFromState(m_state);
+            }
+        }
+        else
+        {
+            if(m_state == ButtonState::clicked)
+            {
+                m_state = ButtonState::unclicked;
+
+                m_region_ptr = getRegionFromState(m_state);
+            }
+        }
+    }
+}
 
 RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) const
 {
@@ -55,10 +82,11 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
         return;
 
     // draw text
-    float const line_height = m_font->getHeight() + m_font->getLineGap();
+    float const line_height = m_font->getSize();
     float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
-    glm::vec2   pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + (m_rect.height() - line_height)/2.f;
+
+    glm::vec2 pen_pos(0.f, 0.f);
+    pen_pos.y = m_pos.y + (m_rect.height() - line_height) / 2.f;
 
     switch(m_text_horizontal_align)
     {
@@ -78,8 +106,8 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
         }
         case Align::right:
         {
-			float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
-            pen_pos.x = m_pos.x + delta;
+            float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+            pen_pos.x         = m_pos.x + delta;
 
             break;
         }

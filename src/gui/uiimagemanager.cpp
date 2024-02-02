@@ -27,30 +27,30 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
     //  |  |              |  |
     //  |  |              |  |
     // 0----------------------
-    float inv_new_width    = 1.f / new_size.x;
-    float inv_new_height   = 1.f / new_size.y;
-    float tex_coord_width  = tx1.s - tx0.s;
-    float tex_coord_height = tx1.t - tx0.t;
+    float const inv_new_width    = 1.f / new_size.x;
+    float const inv_new_height   = 1.f / new_size.y;
+    float const tex_coord_width  = tx1.s - tx0.s;
+    float const tex_coord_height = tx1.t - tx0.t;
 
-    float x0 = pos.x;
-    float y0 = pos.y;
-    float s0 = tx0.s;
-    float t0 = tx0.t;
+    float const x0 = pos.x;
+    float const y0 = pos.y;
+    float const s0 = tx0.s;
+    float const t0 = tx0.t;
 
-    float x1 = x0 + static_cast<float>(left);
-    float y1 = y0 + static_cast<float>(bottom);
-    float s1 = s0 + inv_new_width * static_cast<float>(left) * tex_coord_width;
-    float t1 = t0 + inv_new_height * static_cast<float>(bottom) * tex_coord_height;
+    float const x1 = x0 + static_cast<float>(left);
+    float const y1 = y0 + static_cast<float>(bottom);
+    float const s1 = s0 + inv_new_width * static_cast<float>(left) * tex_coord_width;
+    float const t1 = t0 + inv_new_height * static_cast<float>(bottom) * tex_coord_height;
 
-    float x3 = x0 + new_size.x;
-    float y3 = y0 + new_size.y;
-    float s3 = tx1.s;
-    float t3 = tx1.t;
+    float const x3 = x0 + new_size.x;
+    float const y3 = y0 + new_size.y;
+    float const s3 = tx1.s;
+    float const t3 = tx1.t;
 
-    float x2 = x3 - static_cast<float>(right);
-    float y2 = y3 - static_cast<float>(top);
-    float s2 = s0 + inv_new_width * (new_size.x - static_cast<float>(right)) * tex_coord_width;
-    float t2 = t0 + inv_new_height * (new_size.y - static_cast<float>(top)) * tex_coord_height;
+    float const x2 = x3 - static_cast<float>(right);
+    float const y2 = y3 - static_cast<float>(top);
+    float const s2 = s0 + inv_new_width * (new_size.x - static_cast<float>(right)) * tex_coord_width;
+    float const t2 = t0 + inv_new_height * (new_size.y - static_cast<float>(top)) * tex_coord_height;
 
     // add 9 rectangles to the vertex buffer
     // bottom row
