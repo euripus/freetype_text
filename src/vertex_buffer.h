@@ -61,6 +61,14 @@ private:
     State                 m_state;
 };
 
+struct VertexBufferClearer
+{
+	VertexBufferClearer(VertexBuffer & vb) : m_vb(vb) {}
+	~VertexBufferClearer() { vb.clear(); }
+	
+	VertexBuffer & m_vb;
+};
+
 void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
                     float t1);
 

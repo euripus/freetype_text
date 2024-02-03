@@ -31,18 +31,26 @@ void Button::subClassUdate(float time, bool check_cursor)
             {
                 m_state = ButtonState::clicked;
 
-                m_region_ptr = getRegionFromState(m_state);
+				if(m_click_callback)
+					m_owner.addCallBack(m_click_callback);
             }
+			else
+			{
+				if(m_state == ButtonState::clicked)
+				{
+					m_state = ButtonState::unclicked;
+				}
+			}
         }
         else
         {
             if(m_state == ButtonState::clicked)
             {
                 m_state = ButtonState::unclicked;
-
-                m_region_ptr = getRegionFromState(m_state);
             }
         }
+
+		m_region_ptr = getRegionFromState(m_state);
     }
 }
 
@@ -51,24 +59,27 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     static constexpr char const * sid_button_clicked   = "button_clicked";
     static constexpr char const * sid_button_unclicked = "button_unclicked";
     static constexpr char const * sid_button_disabled  = "button_disabled";
+	
+	if(!m_owner.isImageGroupExist())
+		return nullptr;
 
     RegionDataOfUITexture const * result = nullptr;
-    UI const &                    ui     = m_owner.getOwner();
+	auto const & images = m_owner.getImageGroup();
     switch(state)
     {
         case ButtonState::clicked:
         {
-            result = ui.getImageRegion(sid_button_clicked);
+			result = images.getImageRegion(sid_button_clicked);
             break;
         }
         case ButtonState::unclicked:
         {
-            result = ui.getImageRegion(sid_button_unclicked);
+            result = images.getImageRegion(sid_button_unclicked);
             break;
         }
         case ButtonState::disabled:
         {
-            result = ui.getImageRegion(sid_button_disabled);
+            result = images.getImageRegion(sid_button_disabled);
             break;
         }
     }

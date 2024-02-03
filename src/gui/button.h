@@ -15,7 +15,7 @@ public:
 
     Button(WidgetDesc const & desc, UIWindow & owner);
 
-    void setCallback(std::function<void(void)> click_callback);
+    void setCallback(std::function<void(void)> click_callback) { m_click_callback = click_callback; }
 
 private:
     void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;

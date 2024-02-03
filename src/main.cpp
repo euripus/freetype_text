@@ -31,10 +31,6 @@ GLFWvidmode const * cur_mode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 
-Input        g_input_state;
-UI           g_ui(g_input_state);
-VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex);
-
 // clang-format off
 GLfloat pyr_vert[] = {
     1.41421,  -1,        0,        0,         -1,       0,         0.5,      0.8,
@@ -74,10 +70,11 @@ GLfloat pyr_vert_tex[] = {0.5, 0.8, 0.2, 0.5, 0.5, 0.2, 0.8, 0.5, 0.5, 0.8, 0, 1
 
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
-UIWindow *   win = nullptr;
+Input        g_input_state;
+UI           g_ui(g_input_state);
+VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex),
+             pyramid_buf(VertexBuffer::pos_tex_norm), text_buf(VertexBuffer::pos_tex);
 GLuint       tex_base;
-VertexBuffer pyramid_buf(VertexBuffer::pos_tex_norm);
-VertexBuffer text_buf(VertexBuffer::pos_tex);
 
 /*-----------------------------------------------------------
 /
@@ -366,11 +363,11 @@ void DrawScene(void)
         text_buf.upload();
     }
     g_num_frames++;
+	
+	VertexBufferClearer win_buf_cl(win_buf), text_win_buf_cl(text_win_buf);
 
-    win_buf.clear();
-    text_win_buf.clear();
     g_ui.update(glfwGetTime());
-    win->draw(win_buf, text_win_buf);
+    g_ui.draw(win_buf, text_win_buf);
     win_buf.upload();
     text_win_buf.upload();
 
@@ -390,7 +387,7 @@ void DrawScene(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0.0, g_ui.m_screen_size.x, 0, g_ui.m_screen_size.y, -1.0, 1.0);
+    glOrtho(0.0, g_ui.getScreenSize().x, 0, g_ui.getScreenSize().y, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -454,18 +451,23 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
 int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
-    win = g_ui.loadWindow("./data/test_win.json");
+    UIWindow * win = g_ui.loadWindow("./data/test_win.json");
 
     if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
         text_box->setText("Cursor pos. New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
                           "loooooooooonnnnnnnnnnggggggggggggg!");
+						  
+	if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
+	{
+        ok_button->setCallback([win]{win->hide();});
+	}
 
     win->show();
     win->move({10.f, 150.f});
 
     // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
     // g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
-    g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
+    // g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
 
     glfwSetErrorCallback(error_callback);
 

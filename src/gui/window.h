@@ -13,6 +13,8 @@ public:
     UIWindow(UI & owner, std::string const & image_group);
 
     UI & getOwner() { return m_owner; }
+	bool isImageGroupExist() const { return m_images != nullptr; }
+	UIImageGroup const & getImageGroup() const { return *m_images; }
 
     void draw(VertexBuffer & background, VertexBuffer & text) const;
     void update(float time, bool check_cursor);
@@ -48,6 +50,8 @@ public:
 
     void loadWindowFromDesc(std::string const & file_name);
 
+    void addCallBack(std::function<void(void)> fn);
+
 private:
     std::string m_caption;
     bool        m_visible      = false;
@@ -61,6 +65,8 @@ private:
 
     UI &                 m_owner;
     UIImageGroup const * m_images = nullptr;
+	
+	std::vector<std::function<void(void)>> m_callbacks;
 
     friend class Packer;
 };

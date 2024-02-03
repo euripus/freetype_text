@@ -88,8 +88,8 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     if(!desc.font_name.empty())
         m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
 
-    if(!m_region_name.empty())
-        m_region_ptr = ui.getImageRegion(m_region_name);
+    if(!m_region_name.empty() && m_owner.isImageGroupExist())
+        m_region_ptr = m_owner.getImageGroup().getImageRegion(m_region_name);
 }
 
 void Widget::update(float time, bool check_cursor)
