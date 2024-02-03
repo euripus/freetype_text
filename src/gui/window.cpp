@@ -11,8 +11,8 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group)
 
 void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 {
-	if(!m_visible)
-		return;
+    if(!m_visible)
+        return;
 
     if(m_background)
         m_background->draw(background, text);
@@ -30,14 +30,14 @@ void UIWindow::update(float time, bool check_cursor)
         m_root->update(time, check_cursor);
     if(m_background)
         m_background->update(time, check_cursor);
-	
-	if(!m_callbacks.empty())
-	{
-		for(auto & fn : m_callbacks)
-			fn();
-		
-		m_callbacks.clear();
-	}
+
+    if(!m_callbacks.empty())
+    {
+        for(auto & fn: m_callbacks)
+            fn();
+
+        m_callbacks.clear();
+    }
 }
 
 void UIWindow::move(glm::vec2 const & new_origin)
@@ -62,8 +62,8 @@ void UIWindow::childResized()
 
 void UIWindow::addCallBack(std::function<void(void)> fn)
 {
-	if(fn)
-		m_callbacks.push_back(fn);
+    if(fn)
+        m_callbacks.push_back(fn);
 }
 
 Widget * UIWindow::getWidgetFromID(std::string const & id_name) const

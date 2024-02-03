@@ -12,7 +12,7 @@ void UI::update(float time)
 
 void UI::draw(VertexBuffer & background, VertexBuffer & text) const
 {
-	for(auto const & ptr: m_windows)
+    for(auto const & ptr: m_windows)
     {
         ptr->draw(background, text);
     }
@@ -21,10 +21,11 @@ void UI::draw(VertexBuffer & background, VertexBuffer & text) const
 UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
                           std::string const & image_group)
 {
-	if(image_group.empty())
-		auto win = std::make_unique<UIWindow>(*this, m_current_gui_set);
-	else
-		auto win = std::make_unique<UIWindow>(*this, image_group);
+    std::unique_ptr<UIWindow> win;
+    if(image_group.empty())
+        win = std::make_unique<UIWindow>(*this, m_current_gui_set);
+    else
+        win = std::make_unique<UIWindow>(*this, image_group);
     win->loadWindowFromDesc(widgets_filename);
 
     m_windows.push_back(std::move(win));

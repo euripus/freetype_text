@@ -141,7 +141,7 @@ void VertexBuffer::clear()
 
 void VertexBuffer::upload()
 {
-    //assert(m_state == State::INITDATA);
+    // assert(m_state == State::INITDATA);
 
     if(!m_is_generated)
         glGenBuffers(1, &m_pos_id);

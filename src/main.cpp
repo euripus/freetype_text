@@ -9,6 +9,7 @@
 #include "src/input/input.h"
 #include "gui/ui.h"
 #include "gui/text_box.h"
+#include "gui/button.h"
 #include "vertex_buffer.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
@@ -73,8 +74,8 @@ GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3
 Input        g_input_state;
 UI           g_ui(g_input_state);
 VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex),
-             pyramid_buf(VertexBuffer::pos_tex_norm), text_buf(VertexBuffer::pos_tex);
-GLuint       tex_base;
+    pyramid_buf(VertexBuffer::pos_tex_norm), text_buf(VertexBuffer::pos_tex);
+GLuint tex_base;
 
 /*-----------------------------------------------------------
 /
@@ -363,8 +364,8 @@ void DrawScene(void)
         text_buf.upload();
     }
     g_num_frames++;
-	
-	VertexBufferClearer win_buf_cl(win_buf), text_win_buf_cl(text_win_buf);
+
+    VertexBufferClearer win_buf_cl(win_buf), text_win_buf_cl(text_win_buf);
 
     g_ui.update(glfwGetTime());
     g_ui.draw(win_buf, text_win_buf);
@@ -456,11 +457,11 @@ int main()
     if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
         text_box->setText("Cursor pos. New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
                           "loooooooooonnnnnnnnnnggggggggggggg!");
-						  
-	if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
-	{
-        ok_button->setCallback([win]{win->hide();});
-	}
+
+    if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
+    {
+        ok_button->setCallback([win] { win->hide(); });
+    }
 
     win->show();
     win->move({10.f, 150.f});
