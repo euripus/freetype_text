@@ -184,7 +184,7 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int32_t s
             bytes[1] = data[src_shift + 1];
             bytes[2] = data[src_shift + 2];
             if(bytes_ppx == 3)
-                bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+                bytes[3] = std::min((bytes[0] + bytes[1] + bytes[2]) / 3, 255);
             else
                 bytes[3] = data[src_shift + 3];
 
@@ -220,7 +220,7 @@ void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int32_t s
             bytes[1] = data[src_shift + 1];
             bytes[2] = data[src_shift + 2];
             if(bytes_ppx == 3)
-                bytes[3] = std::min(bytes[0] + bytes[1] + bytes[2], 255);
+                bytes[3] = std::min((bytes[0] + bytes[1] + bytes[2]) / 3, 255);
             else
                 bytes[3] = data[src_shift + 3];
 

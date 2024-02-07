@@ -57,11 +57,11 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     /* Load face */
     switch(location)
     {
-        case TexFont::FontLocation::TEXTURE_FONT_FILE:
+        case TexFont::FontLocation::FONT_FILE:
             error = FT_New_Face(*library, filename.c_str(), 0, face);
             break;
 
-        case TexFont::FontLocation::TEXTURE_FONT_MEMORY:
+        case TexFont::FontLocation::FONT_MEMORY:
             error = FT_New_Memory_Face(*library, data.data(), static_cast<FT_Long>(data.size()), 0, face);
             break;
     }
@@ -104,7 +104,7 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
 }
 
 TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_size, bool hinting, bool kerning,
-                 float outline_thickness, Glyph::OutlineType outline_type)
+                 float outline_thickness, Glyph::OutlineType outline_type, RenderMode mode)
     : m_owner{owner},
       m_size{pt_size},
       m_hinting{hinting},
@@ -118,7 +118,8 @@ TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_siz
       m_descender{0.0f},
       m_underline_position{0.0f},
       m_underline_thickness{0.0f},
-      m_location{FontLocation::TEXTURE_FONT_FILE},
+      m_render_mode{mode},
+      m_location{FontLocation::FONT_FILE},
       m_filename{filename}
 {
     assert(!filename.empty());
@@ -137,7 +138,8 @@ TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_siz
 }
 
 TexFont::TexFont(FontManager & owner, unsigned char const * memory_base, size_t memory_size, float pt_size,
-                 bool hinting, bool kerning, float outline_thickness, Glyph::OutlineType outline_type)
+                 bool hinting, bool kerning, float outline_thickness, Glyph::OutlineType outline_type,
+                 RenderMode mode)
     : m_owner{owner},
       m_size{pt_size},
       m_hinting{hinting},
@@ -151,7 +153,8 @@ TexFont::TexFont(FontManager & owner, unsigned char const * memory_base, size_t 
       m_descender{0.0f},
       m_underline_position{0.0f},
       m_underline_thickness{0.0f},
-      m_location{FontLocation::TEXTURE_FONT_MEMORY}
+      m_render_mode{mode},
+      m_location{FontLocation::FONT_MEMORY}
 {
     assert(pt_size > 0);
     assert(memory_base);
@@ -245,7 +248,7 @@ std::int32_t TexFont::loadGlyph(char const * charcode)
 
 std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
 {
-    int32_t      x, y, w, h, size;
+    int32_t      x, y, w, h;
     FT_Library   library;
     FT_Error     error;
     FT_Face      face;
@@ -256,7 +259,7 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     FT_UInt    glyph_index;
     glm::ivec4 region;
 
-    size = m_owner.getAtlas().getSize();
+    float size = m_owner.getAtlas().getSize();
 
     // Check if charcode has been already loaded
     for(std::uint32_t i = 0; i < m_glyphs.size(); ++i)
@@ -436,10 +439,10 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     glyph.outline_thickness = m_outline_thickness;
     glyph.offset_x          = ft_glyph_left;
     glyph.offset_y          = ft_glyph_top;
-    glyph.s0                = x / static_cast<float>(size);
-    glyph.t0                = (y + 1) / static_cast<float>(size);   // one black pixel margin
-    glyph.s1                = (x + glyph.width) / static_cast<float>(size);
-    glyph.t1                = (y + 1 + glyph.height) / static_cast<float>(size);
+    glyph.s0                = x / size;
+    glyph.t0                = (y + 1) / size;   // one black pixel margin
+    glyph.s1                = (x + glyph.width) / size;
+    glyph.t1                = (y + 1 + glyph.height) / size;
 
     // Discard hinting to get advance
     FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);

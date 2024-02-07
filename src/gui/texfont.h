@@ -73,16 +73,22 @@ class TexFont
 public:
     enum class FontLocation
     {
-        TEXTURE_FONT_FILE,
-        TEXTURE_FONT_MEMORY
+        FONT_FILE,
+        FONT_MEMORY
+    };
+
+    enum class RenderMode
+    {
+        LCD,
+        NORMAL
     };
 
     TexFont(FontManager & owner, std::string const & filename, float pt_size, bool hinting = true,
             bool kerning = true, float outline_thickness = 0.0f,
-            Glyph::OutlineType outline_type = Glyph::OutlineType::NONE);
+            Glyph::OutlineType outline_type = Glyph::OutlineType::NONE, RenderMode mode = RenderMode::NORMAL);
     TexFont(FontManager & owner, unsigned char const * memory_base, size_t memory_size, float pt_size,
             bool hinting = true, bool kerning = true, float outline_thickness = 0.0f,
-            Glyph::OutlineType outline_type = Glyph::OutlineType::NONE);
+            Glyph::OutlineType outline_type = Glyph::OutlineType::NONE, RenderMode mode = RenderMode::NORMAL);
 
     Glyph const & getGlyph(std::uint32_t const ucodepoint) const;
     std::int32_t  loadGlyph(char const * charcode);
@@ -132,6 +138,7 @@ private:
     float m_underline_position;    // The position of the underline line for this face.
     float m_underline_thickness;   // The thickness of the underline for this face.
 
+    RenderMode                 m_render_mode;
     FontLocation               m_location;
     std::string                m_filename;   // Font filename, for when location == TEXTURE_FONT_FILE
     std::vector<unsigned char> m_memory;     // Font memory, for when location == TEXTURE_FONT_MEMORY
