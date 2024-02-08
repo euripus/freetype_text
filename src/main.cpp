@@ -467,8 +467,8 @@ int main()
     win->move({10.f, 150.f});
 
     // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
-    // g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
-    // g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
+    g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
+    g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
 
     glfwSetErrorCallback(error_callback);
 
