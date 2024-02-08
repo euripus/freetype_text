@@ -219,8 +219,7 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     h = h - 1;
     x = region.x;
     y = region.y;
-    m_owner.getAtlas().setRegionBL(glm::ivec4(x, y, w, h), image.data.get(), image.width * bytes_per_pixel,
-                                   bytes_per_pixel);
+    m_owner.getAtlas().setRegionBL(glm::ivec4(x, y, w, h), image.data.get(), image.width, bytes_per_pixel);
 
     RegionDataOfUITexture tex_region;
     tex_region.name        = std::move(name);

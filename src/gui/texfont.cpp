@@ -103,25 +103,23 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
     return true;
 }
 
-static void SetBuffer(std::vector<unsigned char> & buffer, int32_t width, int32_t height, unsigned char const * data, int32_t stride)
+static void SetBuffer(std::vector<unsigned char> & buffer, int32_t width, int32_t height,
+                      unsigned char const * data, int32_t stride)
 {
-    assert(width > 0);
-    assert(stride > 0);
-    assert(height > 0);
-
     if(data == nullptr)
         return;
-    
+
     for(int32_t i = 0; i < height; ++i)
     {
-        int32_t dst_shift = i * width * 4;
-        int32_t src_shift = i * width;
         for(int32_t j = 0; j < stride; ++j)
         {
-            //buffer[dst_shift + j * 4 + 0] = data[src_shift + j];
-            //buffer[dst_shift + j * 4 + 1] = data[src_shift + j];
-            //buffer[dst_shift + j * 4 + 2] = data[src_shift + j];
-            buffer[dst_shift + j * 4 + 3] = data[src_shift + j];
+            int32_t dst_shift = (i * width + j) * 4;
+            int32_t src_shift = i * width + j;
+
+            // buffer[dst_shift + 0] = data[src_shift];
+            // buffer[dst_shift + 1] = data[src_shift];
+            // buffer[dst_shift + 2] = data[src_shift];
+            buffer[dst_shift + 3] = data[src_shift];
         }
     }
 }
@@ -438,14 +436,13 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
         }
         else
         {
-            error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
-            if( error )
+            error = FT_Glyph_To_Bitmap(&ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+            if(error)
             {
-                fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                        FT_Errors[error].code, FT_Errors[error].message);
-                FT_Done_Face( face );
-                FT_Stroker_Done( stroker );
-                FT_Done_FreeType( library );
+                fprintf(stderr, "FT_Error (0x%02x) : %s\n", FT_Errors[error].code, FT_Errors[error].message);
+                FT_Done_Face(face);
+                FT_Stroker_Done(stroker);
+                FT_Done_FreeType(library);
                 return 0;
             }
         }
@@ -459,9 +456,9 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
 
     // We want each glyph to be separated by at least one black pixel
     int32_t const depth = m_render_mode == RenderMode::LCD ? 3 : 1;
-    w      = ft_bitmap.width / depth + 1;
-    h      = ft_bitmap.rows + 1;
-    region = m_owner.getAtlas().getRegion(w, h);
+    w                   = ft_bitmap.width / depth + 1;
+    h                   = ft_bitmap.rows + 1;
+    region              = m_owner.getAtlas().getRegion(w, h);
     if(region.x < 0)
     {
         std::cerr << "Texture atlas is full " << __LINE__ << std::endl;
@@ -478,10 +475,10 @@ std::int32_t TexFont::loadGlyph(std::uint32_t ucodepoint)
     }
     else
     {
-        std::vector<unsigned char> bufffer(ft_bitmap.width * ft_bitmap.rows * 4, static_cast<unsigned char>(255));
+        std::vector<unsigned char> buffer(w * h * 4, static_cast<unsigned char>(255));
         SetBuffer(buffer, w, h, ft_bitmap.buffer, ft_bitmap.pitch);
 
-        m_owner.getAtlas().setRegionTL(glm::ivec4(x, y, w, h), bufffer.data(), w, 4);
+        m_owner.getAtlas().setRegionTL(glm::ivec4(x, y, w, h), buffer.data(), w, 4);
     }
 
     Glyph glyph;

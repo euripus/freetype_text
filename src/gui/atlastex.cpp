@@ -168,17 +168,16 @@ void AtlasTex::setRegionTL(glm::ivec4 reg, unsigned char const * data, int32_t s
     assert(reg.y < (static_cast<int32_t>(m_size) - 1));
     assert((reg.y + reg.w) <= (static_cast<int32_t>(m_size) - 1));
 
-    int32_t charsize = sizeof(char);
-    int32_t y        = reg.y + reg.w;
+    int32_t       charsize = sizeof(unsigned char);
+    int32_t       y        = reg.y + reg.w;
+    unsigned char bytes[4] = {0};   // 4 - alpha
 
     for(int32_t i = 0; i < reg.w; ++i)
     {
-        unsigned char bytes[4] = {0};   // 4 - alpha
-
         for(int32_t j = 0; j < reg.z; ++j)
         {
-            uint32_t dst_shift = (((y - i) * m_size + reg.x + j) * charsize * 4);
-            uint32_t src_shift = ((i * stride) + j * bytes_ppx * charsize);
+            uint32_t dst_shift = ((y - i) * m_size + reg.x + j) * charsize * 4;
+            uint32_t src_shift = (i * stride + j) * bytes_ppx * charsize;
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
@@ -213,8 +212,8 @@ void AtlasTex::setRegionBL(glm::ivec4 reg, unsigned char const * data, int32_t s
 
         for(int32_t j = 0; j < reg.z; ++j)
         {
-            uint32_t dst_shift = (((reg.y + i) * m_size + reg.x + j) * charsize * 4);
-            uint32_t src_shift = ((i * stride) + j * bytes_ppx * charsize);
+            uint32_t dst_shift = ((reg.y + i) * m_size + reg.x + j) * charsize * 4;
+            uint32_t src_shift = (i * stride + j) * bytes_ppx * charsize;
 
             bytes[0] = data[src_shift + 0];
             bytes[1] = data[src_shift + 1];
