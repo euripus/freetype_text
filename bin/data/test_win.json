@@ -52,7 +52,7 @@
                             "align_vertical": "top",
                             "font": "liberation",
                             "font_size": 24,
-                            "static_text": "Cancel",
+                            "static_text": "Отмена",
                             "text_horizontal": "center"
                         }
                     ]

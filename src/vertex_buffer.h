@@ -49,16 +49,16 @@ private:
     std::vector<float> m_pos;
     std::vector<float> m_tex;
     std::vector<float> m_norm;
-    uint32_t           m_pos_id;
-    uint32_t           m_tex_id;
-    uint32_t           m_norm_id;
+    uint32_t           m_pos_id  = 0;
+    uint32_t           m_tex_id  = 0;
+    uint32_t           m_norm_id = 0;
 
     std::vector<unsigned int> m_indices;
-    uint32_t                  m_indices_id;
+    uint32_t                  m_indices_id = 0;
 
     ComponentsFlags const m_components;
-    bool                  m_is_generated;
-    State                 m_state;
+    bool                  m_is_generated = false;
+    State                 m_state        = State::NOINIT;
 };
 
 struct VertexBufferClearer

@@ -454,7 +454,7 @@ int main()
     UIWindow * win = g_ui.loadWindow("./data/test_win.json");
 
     if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
-        text_box->setText("Cursor pos. New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
+        text_box->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
                           "loooooooooonnnnnnnnnnggggggggggggg!");
 
     if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
