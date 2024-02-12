@@ -110,6 +110,7 @@ public:
     float getHeight() const { return m_height; }
     float getSize() const { return m_size; }
     float getLineGap() const { return m_linegap; }
+	RenderMode getRenderMode() const { return m_render_mode; }
 
 private:
     bool initFont();

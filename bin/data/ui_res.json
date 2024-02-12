@@ -1,56 +1,59 @@
 {
-  "gui_sets": [
-    {
-      "set_name": "default",
-      "images": [
+    "gui_sets": [
         {
-          "background": {
-            "texture": "./data/background.tga",
-            "9slice_margins": [ 10, 10, 10, 10 ]
-          }
-        },
-        {
-          "button_clicked": {
-            "texture": "./data/button.tga",
-            "9slice_margins": [ 5, 5, 5, 5 ]
-          }
-        },
-        {
-          "button_unclicked": {
-            "texture": "./data/button_unp.tga",
-            "9slice_margins": [ 5, 5, 5, 5 ]
-          }
-        },
-        {
-          "button_disabled": {
-            "texture": "./data/button.tga",
-            "9slice_margins": [ 5, 5, 5, 5 ]
-          }
+            "set_name": "default",
+            "images": [
+                {
+                    "background": {
+                        "texture": "./data/background.tga",
+                        "9slice_margins": [ 10, 10, 10, 10 ]
+                    }
+                },
+                {
+                    "button_clicked": {
+                        "texture": "./data/button.tga",
+                        "9slice_margins": [ 5, 5, 5, 5 ]
+                    }
+                },
+                {
+                    "button_unclicked": {
+                        "texture": "./data/button_unp.tga",
+                        "9slice_margins": [ 5, 5, 5, 5 ]
+                    }
+                },
+                {
+                    "button_disabled": {
+                        "texture": "./data/button.tga",
+                        "9slice_margins": [ 5, 5, 5, 5 ]
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "fonts": [
-    {
-      "file_name": "./data/liberation.ttf",
-      "font_id": "liberation",
-      "hinting": true,
-      "kerning": true,
-      "outline_thickness": 0.0,
-      "outline_type": "OUTER",
-      "font_size": 24,
-      "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
-    },
-    {
-      "file_name": "./data/damase.ttf",
-      "font_id": "damase",
-      "hinting": true,
-      "kerning": false,
-      "outline_thickness": 0.0,
-      "outline_type": "NONE",
-      "font_size": 24,
-      "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
-    }
-  ],
-  "current_gui_set": "default"
+    ],
+    "fonts": [
+        {
+            "file_name": "./data/liberation.ttf",
+            "font_id": "liberation",
+            "hinting": true,
+            "kerning": true,
+            "outline_thickness": 0,
+            "outline_type": "OUTER",
+            "font_size": 24,
+            "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
+        },
+        {
+            "file_name": "./data/damase.ttf",
+            "font_id": "damase",
+            "hinting": true,
+            "kerning": false,
+            "outline_thickness": 0,
+            "outline_type": "NONE",
+            "font_size": 24,
+            "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
+        }
+    ],
+    "current_gui_set": "default",
+    "defult_window_font": "liberation",
+    "defult_window_font_size": 24
 }
+

@@ -2,12 +2,9 @@
 #include "window.h"
 #include "ui.h"
 #include <algorithm>
-
-#include "text_box.h"
-#include "button.h"
 #include "../vertex_buffer.h"
 
-ElementType Widget::GetElementTypeFromString(std::string_view name)
+ElementType WidgetDesc::GetElementTypeFromString(std::string_view name)
 {
     ElementType type = ElementType::Unknown;
 
@@ -37,7 +34,7 @@ ElementType Widget::GetElementTypeFromString(std::string_view name)
     return type;
 }
 
-SizePolicy Widget::GetSizePolicyFromString(std::string_view name)
+SizePolicy WidgetDesc::GetSizePolicyFromString(std::string_view name)
 {
     SizePolicy policy = SizePolicy::none;
 
@@ -53,7 +50,7 @@ SizePolicy Widget::GetSizePolicyFromString(std::string_view name)
     return policy;
 }
 
-Align Widget::GetAlignFromString(std::string_view name)
+Align WidgetDesc::GetAlignFromString(std::string_view name)
 {
     Align align = Align::left;
 
@@ -167,124 +164,3 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     return nullptr;
 }
 
-std::unique_ptr<Widget> Widget::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)
-{
-    std::unique_ptr<Widget> widg_ptr;
-
-    switch(desc.type)
-    {
-        case ElementType::TextBox:
-        {
-            widg_ptr = std::make_unique<TextBox>(desc, owner);
-
-            break;
-        }
-        // case ElementType::ImageBox:
-        // {
-        //     // widg_ptr = std::make_unique<ImageBox>(std::string(), owner);
-        //     break;
-        // }
-        case ElementType::Button:
-        {
-            widg_ptr = std::make_unique<Button>(desc, owner);
-
-            break;
-        }
-        case ElementType::VerticalLayoutee:
-        case ElementType::HorizontalLayoutee:
-        case ElementType::Unknown:
-        case ElementType::ImageBox:
-        {
-            widg_ptr = std::make_unique<Widget>(desc, owner);
-            break;
-        }
-    }
-
-    return widg_ptr;
-}
-
-std::unique_ptr<Widget> Widget::GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner)
-{
-    assert(!obj.empty());
-
-    WidgetDesc desc;
-    for(auto const & kvp: obj)
-    {
-        if(kvp.key() == sid_size)
-        {
-            std::vector<int32_t> vec;
-            vec = boost::json::value_to<std::vector<int32_t>>(kvp.value());
-
-            desc.size_hint.x = static_cast<float>(vec[0]);
-            desc.size_hint.y = static_cast<float>(vec[1]);
-        }
-        else if(kvp.key() == sid_type)
-        {
-            desc.type = GetElementTypeFromString(kvp.value().as_string());
-        }
-        else if(kvp.key() == sid_visible)
-        {
-            desc.visible = kvp.value().as_bool();
-        }
-        else if(kvp.key() == sid_texture)
-        {
-            desc.texture_name = kvp.value().as_string();
-        }
-        else if(kvp.key() == sid_region_name)
-        {
-            desc.region_name = kvp.value().as_string();
-        }
-        else if(kvp.key() == sid_id_name)
-        {
-            desc.id_name = kvp.value().as_string();
-        }
-        else if(kvp.key() == sid_size_policy)
-        {
-            desc.scale = GetSizePolicyFromString(kvp.value().as_string());
-        }
-        else if(kvp.key() == sid_align_horizontal)
-        {
-            desc.horizontal = GetAlignFromString(kvp.value().as_string());
-        }
-        else if(kvp.key() == sid_align_vertical)
-        {
-            desc.vertical = GetAlignFromString(kvp.value().as_string());
-        }
-        else if(kvp.key() == sid_font)
-        {
-            desc.font_name = kvp.value().as_string();
-        }
-        else if(kvp.key() == sid_font_size)
-        {
-            desc.size = static_cast<float>(kvp.value().as_int64());
-        }
-        else if(kvp.key() == sid_static_text)
-        {
-            desc.static_text = kvp.value().as_string();
-        }
-        else if(kvp.key() == sid_text_horizontal)
-        {
-            desc.text_hor = GetAlignFromString(kvp.value().as_string());
-        }
-    }
-
-    auto widg_ptr = GetWidgetFromDesc(desc, owner);
-
-    if(auto const children_it = obj.find(sid_children); children_it != obj.end())
-    {
-        auto const & arr = children_it->value().as_array();
-        if(!arr.empty())
-        {
-            for(auto const & child_entry: arr)
-            {
-                auto const & widget_obj = child_entry.as_object();
-                if(!widget_obj.empty())
-                {
-                    widg_ptr->addWidget(GetWidgetFromDesc(widget_obj, owner));
-                }
-            }
-        }
-    }
-
-    return widg_ptr;
-}

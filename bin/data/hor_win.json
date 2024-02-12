@@ -1,0 +1,141 @@
+{
+   "Info Window HorizontalLayoutee":[
+      {
+         "size":[ 0, 0 ],
+         "type":"HorizontalLayoutee",
+         "visible":false,
+         "children":[
+            {
+               "size":[ 0, 0 ],
+               "type":"VerticalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "size":[ 100, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"pos_text",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation",
+                     "font_size":24,
+                     "static_text":"Cursor pos: ",
+                     "text_horizontal":"left"
+                  },
+                  {
+                     "size":[ 100, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"key_text",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Последняя клавиша: ",
+                     "text_horizontal":"left"
+                  },
+                  {
+                     "size":[ 100, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"fps_text",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Καρε ανα δευτερολεπτο: ",
+                     "text_horizontal":"left"
+                  }
+               ]
+            },
+            {
+               "size":[ 0, 0 ],
+               "type":"VerticalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "size":[ 10, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"pos_x",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation",
+                     "font_size":24,
+                     "static_text":" ",
+                     "text_horizontal":"left"
+                  },
+                  {
+                     "size":[ 10, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"key_num",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":" ",
+                     "text_horizontal":"left"
+                  },
+				  {
+                     "size":[ 10, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"fps_num",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":" ",
+                     "text_horizontal":"left"
+                  }
+               ]
+            },
+            {
+               "size":[ 0, 0 ],
+               "type":"VerticalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "size":[ 10, 30 ],
+                     "type":"TextBox",
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"pos_y",
+                     "size_policy":"scale",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation",
+                     "font_size":24,
+                     "static_text":" ",
+                     "text_horizontal":"left"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "size":[ 0, 0 ],
+         "type":"ImageBox",
+         "visible":true,
+         "texture":"background",
+         "region_name":"background",
+         "id_name":"background",
+         "size_policy":"scale",
+         "align_horizontal":"left",
+         "align_vertical":"top"
+      }
+   ]
+}

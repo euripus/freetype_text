@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <string>
+#include <boost/json.hpp>
 #include "widget.h"
 
 class UI;
@@ -9,6 +10,10 @@ class UIImageGroup;
 
 class UIWindow
 {
+public:
+    static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
+    static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
+
 public:
     UIWindow(UI & owner, std::string const & image_group);
 
@@ -28,7 +33,6 @@ public:
 
     void move(glm::vec2 const & new_origin);
     void childResized();
-    // void resize(glm::vec2 const & new_size);
 
     Rect2D    getRect() const { return m_rect; }
     glm::vec2 size() const { return m_rect.m_extent; }

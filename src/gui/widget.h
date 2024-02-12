@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
-#include <boost/json.hpp>
 #include "basic_types.h"
 #include "rect2d.h"
 #include "texfont.h"
@@ -15,29 +14,10 @@ class VertexBuffer;
 
 struct WidgetDesc
 {
-    glm::vec2   size_hint    = {};
-    ElementType type         = ElementType::Unknown;
-    bool        visible      = true;
-    std::string region_name  = {};
-    std::string id_name      = {};
-    SizePolicy  scale        = SizePolicy::scale;
-    Align       horizontal   = Align::left;
-    Align       vertical     = Align::top;
-    std::string font_name    = {};
-    std::string texture_name = {};   // texture name from gui_set
-    float       size         = 0.0f;
-    std::string static_text  = {};
-    Align       text_hor     = Align::left;
-};
-
-class Widget
-{
-private:
-    // json keys
+	    // json keys
     static constexpr char const * sid_size             = "size";
     static constexpr char const * sid_type             = "type";
     static constexpr char const * sid_visible          = "visible";
-    static constexpr char const * sid_texture          = "texture";
     static constexpr char const * sid_region_name      = "region_name";
     static constexpr char const * sid_id_name          = "id_name";
     static constexpr char const * sid_size_policy      = "size_policy";
@@ -49,16 +29,26 @@ private:
     static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
 
-    static ElementType GetElementTypeFromString(std::string_view name);
+	static ElementType GetElementTypeFromString(std::string_view name);
     static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
-    // std::unique_ptr<Widget> CreateNullWidget(ElementType type);
+    glm::vec2   size_hint    = {};
+    ElementType type         = ElementType::Unknown;
+    bool        visible      = true;
+    std::string region_name  = {};
+    std::string id_name      = {};
+    SizePolicy  scale        = SizePolicy::scale;
+    Align       horizontal   = Align::left;
+    Align       vertical     = Align::top;
+    std::string font_name    = {};
+    float       size         = 0.0f;
+    std::string static_text  = {};
+    Align       text_hor     = Align::left;
+};
 
-public:
-    static std::unique_ptr<Widget> GetWidgetFromDesc(boost::json::object const & obj, UIWindow & owner);
-    static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
-
+class Widget
+{
 private:
     virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
     virtual void subClassUdate(float time, bool check_cursor) {}

@@ -25,14 +25,6 @@ packer
         - union childs sizes
         - arrange elements with desired spacing
 
-// window tree
-window
-    vert_slider
-        text_area
-        hor_slider
-            button1
-            button2
-
 GUI
     draw()
     update()
@@ -40,34 +32,28 @@ GUI
     create_widget()
     create_window()
 
-// draw
-for(layer : overlays)
-    for(window : layer)
-        window.draw(vertex_buffer, text_buffer, layer)
+hor_lay
+    ver_lay
+        text_win    // pos_text
+        text_win    // key_text
+        text_win    // fps_text
+    ver_lay
+        text_win    // pos_x
+        text_win    // key_val
+        text_win    // fps_val
+    ver_lay
+        text_win    // pos_y
 
-TextBox
-ImageBox
-Button
-CheckBox
-RadioButton
-Slider
-ProgressBar
-InputBox
-ScrollView
-VerticalLayoutee
-HorizontalLayoutee
+ver_lay
+    hor_lay
+        text_win    // pos_text
+        text_win    // pos_x
+        text_win    // pos_y
+    hor_lay
+        text_win    // key_text
+        text_win    // key_val
+    hor_lay
+        text_win    // fps_text
+        text_win    // fps_val
 
-v_box
-    textBox
-    h_box
-        button1
-        button2
-
-v_box
-    v_box
-        textBox
-        textBox
-    h_box
-        button1
-        button2
 
