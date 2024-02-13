@@ -173,7 +173,7 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
     WidgetDesc desc;
     for(auto const & kvp: obj)
     {
-        if(kvp.key() == sid_size)
+        if(kvp.key() == WidgetDesc::sid_size)
         {
             std::vector<int32_t> vec;
             vec = boost::json::value_to<std::vector<int32_t>>(kvp.value());
@@ -205,7 +205,7 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
         {
             desc.horizontal = WidgetDesc::GetAlignFromString(kvp.value().as_string());
         }
-        else if(kvp.key() == sid_align_vertical)
+        else if(kvp.key() == WidgetDesc::sid_align_vertical)
         {
             desc.vertical = WidgetDesc::GetAlignFromString(kvp.value().as_string());
         }
@@ -229,7 +229,7 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
 
     auto widg_ptr = GetWidgetFromDesc(desc, owner);
 
-    if(auto const children_it = obj.find(sid_children); children_it != obj.end())
+    if(auto const children_it = obj.find(WidgetDesc::sid_children); children_it != obj.end())
     {
         auto const & arr = children_it->value().as_array();
         if(!arr.empty())
@@ -247,4 +247,3 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
 
     return widg_ptr;
 }
-

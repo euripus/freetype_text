@@ -163,4 +163,3 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
 
     return nullptr;
 }
-

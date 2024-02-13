@@ -14,7 +14,7 @@ class VertexBuffer;
 
 struct WidgetDesc
 {
-	    // json keys
+    // json keys
     static constexpr char const * sid_size             = "size";
     static constexpr char const * sid_type             = "type";
     static constexpr char const * sid_visible          = "visible";
@@ -29,22 +29,22 @@ struct WidgetDesc
     static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
 
-	static ElementType GetElementTypeFromString(std::string_view name);
+    static ElementType GetElementTypeFromString(std::string_view name);
     static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
-    glm::vec2   size_hint    = {};
-    ElementType type         = ElementType::Unknown;
-    bool        visible      = true;
-    std::string region_name  = {};
-    std::string id_name      = {};
-    SizePolicy  scale        = SizePolicy::scale;
-    Align       horizontal   = Align::left;
-    Align       vertical     = Align::top;
-    std::string font_name    = {};
-    float       size         = 0.0f;
-    std::string static_text  = {};
-    Align       text_hor     = Align::left;
+    glm::vec2   size_hint   = {};
+    ElementType type        = ElementType::Unknown;
+    bool        visible     = true;
+    std::string region_name = {};
+    std::string id_name     = {};
+    SizePolicy  scale       = SizePolicy::scale;
+    Align       horizontal  = Align::left;
+    Align       vertical    = Align::top;
+    std::string font_name   = {};
+    float       size        = 0.0f;
+    std::string static_text = {};
+    Align       text_hor    = Align::left;
 };
 
 class Widget

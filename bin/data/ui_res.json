@@ -36,7 +36,7 @@
             "font_id": "liberation",
             "hinting": true,
             "kerning": true,
-            "outline_thickness": 0,
+            "outline_thickness": 0.0,
             "outline_type": "OUTER",
             "font_size": 24,
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
@@ -46,7 +46,7 @@
             "font_id": "damase",
             "hinting": true,
             "kerning": false,
-            "outline_thickness": 0,
+            "outline_thickness": 0.0,
             "outline_type": "NONE",
             "font_size": 24,
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"

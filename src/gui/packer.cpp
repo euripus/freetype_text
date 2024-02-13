@@ -54,7 +54,8 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) c
             if(auto * cur_ch_ptr = ch.get(); cur_ch_ptr->m_type == ElementType::VerticalLayoutee
                                              || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
             {
-                if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
+                if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee
+                   || cur_ch_ptr->m_type == ElementType::VerticalLayoutee)
                     addSubTree(ls, cur_ch_ptr, level + 1);
                 else
                 {

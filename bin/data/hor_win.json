@@ -16,7 +16,7 @@
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_text",
-                     "size_policy":"scale",
+                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
@@ -30,7 +30,7 @@
                      "visible":true,
                      "region_name":"",
                      "id_name":"key_text",
-                     "size_policy":"scale",
+                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -44,7 +44,7 @@
                      "visible":true,
                      "region_name":"",
                      "id_name":"fps_text",
-                     "size_policy":"scale",
+                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -87,7 +87,7 @@
                      "static_text":" ",
                      "text_horizontal":"left"
                   },
-				  {
+                  {
                      "size":[ 10, 30 ],
                      "type":"TextBox",
                      "visible":true,

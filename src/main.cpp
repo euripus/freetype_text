@@ -451,7 +451,7 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
 int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
-    UIWindow * win = g_ui.loadWindow("./data/test_win.json");
+    UIWindow * win = g_ui.loadWindow("./data/hor_win.json");
 
     if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
         text_box->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
