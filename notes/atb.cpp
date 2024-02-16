@@ -23,8 +23,8 @@ std::array<float, 10> getTurnTimes(unit const & u, float const actual_time = 0.f
 //========================================================================//
 enum class collection_type
 {
-	collumn,
-	row
+    collumn,
+    row
 };
 
 using collection = std::pair<std::vector<Widget *>, collection_type>;
@@ -39,20 +39,14 @@ WidgetList list = getWidgetListFromTree(...);
 
 if(!list.empty())
 {
-	for(auto & el : list)
-	{
-		if(auto ptr = std::get_if<collection>(el); ptr != nullptr) //?????
-		{
-		}
-		else
-		{
-			// matrix size 1x1
-			Widget * ptr = std::get_if<Widget>(el);
-		}
-	}
+    for(auto & el: list)
+    {
+        if(auto ptr = std::get_if<collection>(el); ptr != nullptr)   //?????
+        {}
+        else
+        {
+            // matrix size 1x1
+            Widget * ptr = std::get_if<Widget>(el);
+        }
+    }
 }
-
-
-
-
-
