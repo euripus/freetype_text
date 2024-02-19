@@ -21,32 +21,92 @@ std::array<float, 10> getTurnTimes(unit const & u, float const actual_time = 0.f
 }
 
 //========================================================================//
-enum class collection_type
+enum class ElementType
 {
     collumn,
-    row
+    row,
+	widget
 };
 
-using collection = std::pair<std::vector<Widget *>, collection_type>;
+enum class Direction
+{
+	vertical,
+	horizontal,
+	not_defined
+};
 
-std::variant<Widget *, collection> element;
+struct element
+{
+	ElementType type;
+	std::vector <element_ptr> elements;
+	Widget * ptr = nullptr;
+	
+	glm::ivec2 size() const
+	{
+		if(ptr != nullptr)
+			return {1, 1};
+		else
+		{
+			if(type == ElementType::collumn)
+				return {1, widget_set.size()};
+			else
+				return {widget_set.size(), 1};
+		}
+	}
+};
 
 using WidgetList = std::vector<element>;
-
-auto ptr = std::get_if<Widget>(&elem);
+using WidgetMatrix = std::vector<std::vector<Widget *>>;
 
 WidgetList list = getWidgetListFromTree(...);
 
-if(!list.empty())
+void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y);
+
+WidgetMatrix getWidgetMatrix(element const & root)
 {
-    for(auto & el: list)
-    {
-        if(auto ptr = std::get_if<collection>(el); ptr != nullptr)   //?????
-        {}
-        else
-        {
-            // matrix size 1x1
-            Widget * ptr = std::get_if<Widget>(el);
-        }
-    }
+	WidgetMatrix result;
+	Direction dir = Direction::not_defined;
+	int32_t x = 0;
+	int32_t y = 0;
+
+	if(root.type == ElementType::widget)
+	{
+		addElement(result, root, 0, 0);
+		return result;
+	}
+	else
+	{	
+		if(root.type == ElementType::collumn)
+			dir = Direction::vertical;
+		else
+			dir = Direction::horizontal;
+	}
+
+	for(auto const & el: root.elements)
+	{
+		addElement(result, el, x, y);
+
+		switch el.type
+		{
+			case ElementType::widget:
+			{
+				if(dir == Direction::vertical)
+					y += 1;
+				else
+					x += 1;
+
+				break;
+			}
+			case ElementType::collumn:
+			{
+				y += el.size().y;
+				break;
+			}
+			case ElementType::row:
+			{
+				x += el.size().x;
+				break;
+			}
+		}
+	}
 }
