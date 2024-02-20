@@ -25,37 +25,37 @@ enum class ElementType
 {
     collumn,
     row,
-	widget
+    widget
 };
 
 enum class Direction
 {
-	vertical,
-	horizontal,
-	not_defined
+    vertical,
+    horizontal,
+    not_defined
 };
 
 struct element
 {
-	ElementType type;
-	std::vector <element_ptr> elements;
-	Widget * ptr = nullptr;
-	
-	glm::ivec2 size() const
-	{
-		if(ptr != nullptr)
-			return {1, 1};
-		else
-		{
-			if(type == ElementType::collumn)
-				return {1, widget_set.size()};
-			else
-				return {widget_set.size(), 1};
-		}
-	}
+    ElementType              type;
+    std::vector<element_ptr> elements;
+    Widget *                 ptr = nullptr;
+
+    glm::ivec2 size() const
+    {
+        if(ptr != nullptr)
+            return {1, 1};
+        else
+        {
+            if(type == ElementType::collumn)
+                return {1, widget_set.size()};
+            else
+                return {widget_set.size(), 1};
+        }
+    }
 };
 
-using WidgetList = std::vector<element>;
+using WidgetList   = std::vector<element>;
 using WidgetMatrix = std::vector<std::vector<Widget *>>;
 
 WidgetList list = getWidgetListFromTree(...);
@@ -64,49 +64,52 @@ void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y);
 
 WidgetMatrix getWidgetMatrix(element const & root)
 {
-	WidgetMatrix result;
-	Direction dir = Direction::not_defined;
-	int32_t x = 0;
-	int32_t y = 0;
+    WidgetMatrix result;
 
-	if(root.type == ElementType::widget)
-	{
-		addElement(result, root, 0, 0);
-		return result;
-	}
-	else
-	{	
-		if(root.type == ElementType::collumn)
-			dir = Direction::vertical;
-		else
-			dir = Direction::horizontal;
-	}
+    if(root.type == ElementType::widget)
+    {
+        addElement(result, root, 0, 0);
+        return result;
+    }
+    else
+    {
+        Direction dir = Direction::not_defined;
+        int32_t   x   = 0;
+        int32_t   y   = 0;
 
-	for(auto const & el: root.elements)
-	{
-		addElement(result, el, x, y);
+        if(root.type == ElementType::collumn)
+            dir = Direction::vertical;
+        else
+            dir = Direction::horizontal;
 
-		switch el.type
-		{
-			case ElementType::widget:
-			{
-				if(dir == Direction::vertical)
-					y += 1;
-				else
-					x += 1;
+        for(auto const & el: root.elements)
+        {
+            addElement(result, el, x, y);
 
-				break;
-			}
-			case ElementType::collumn:
-			{
-				y += el.size().y;
-				break;
-			}
-			case ElementType::row:
-			{
-				x += el.size().x;
-				break;
-			}
-		}
-	}
+            switch(el.type)
+            {
+                case ElementType::widget:
+                {
+                    if(dir == Direction::vertical)
+                        y += 1;
+                    else if(dir == Direction::horizontal)
+                        x += 1;
+
+                    break;
+                }
+                case ElementType::collumn:
+                {
+                    y += el.size().y;
+                    break;
+                }
+                case ElementType::row:
+                {
+                    x += el.size().x;
+                    break;
+                }
+            }
+        }
+    }
+
+    return result;
 }
