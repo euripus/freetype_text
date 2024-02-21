@@ -60,33 +60,28 @@ using WidgetMatrix = std::vector<std::vector<Widget *>>;
 
 WidgetList list = getWidgetListFromTree(...);
 
-void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y);
+void addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y);
 
-WidgetMatrix getWidgetMatrix(element const & root)
+void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
 {
-    WidgetMatrix result;
-
-    if(root.type == ElementType::widget)
+	if(el.type == ElementType::widget)
     {
-        addElement(result, root, 0, 0);
-        return result;
+        addWidgetPtr(result, el.ptr, x, y);
     }
     else
     {
         Direction dir = Direction::not_defined;
-        int32_t   x   = 0;
-        int32_t   y   = 0;
 
-        if(root.type == ElementType::collumn)
+        if(el.type == ElementType::collumn)
             dir = Direction::vertical;
         else
             dir = Direction::horizontal;
 
-        for(auto const & el: root.elements)
+        for(auto const & elm: el.elements)
         {
-            addElement(result, el, x, y);
+            addElement(result, elm, x, y);
 
-            switch(el.type)
+            switch(elm.type)
             {
                 case ElementType::widget:
                 {
@@ -99,17 +94,24 @@ WidgetMatrix getWidgetMatrix(element const & root)
                 }
                 case ElementType::collumn:
                 {
-                    y += el.size().y;
+                    y += elm.size().y;
                     break;
                 }
                 case ElementType::row:
                 {
-                    x += el.size().x;
+                    x += elm.size().x;
                     break;
                 }
             }
         }
     }
+}
+
+WidgetMatrix getWidgetMatrix(element const & root)
+{
+    WidgetMatrix result;
+
+	addElement(result, root, 0, 0);
 
     return result;
 }
