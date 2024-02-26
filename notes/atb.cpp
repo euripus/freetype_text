@@ -48,9 +48,9 @@ struct element
         else
         {
             if(type == ElementType::collumn)
-                return {1, widget_set.size()};
+                return {1, elements.size()};
             else
-                return {widget_set.size(), 1};
+                return {elements.size(), 1};
         }
     }
 };
@@ -60,11 +60,20 @@ using WidgetMatrix = std::vector<std::vector<Widget *>>;
 
 WidgetList list = getWidgetListFromTree(...);
 
-void addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y);
+void addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y)
+{
+    if(mtx.size() < y)
+        mtx.resize(y+1);
+
+    if(mtx[y].size() < x)
+        mtx[y].resize(x+1, nullptr);
+
+    mtx[y][x] = ptr;
+}
 
 void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
 {
-	if(el.type == ElementType::widget)
+    if(el.type == ElementType::widget)
     {
         addWidgetPtr(result, el.ptr, x, y);
     }
@@ -94,12 +103,20 @@ void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
                 }
                 case ElementType::collumn:
                 {
-                    y += elm.size().y;
+                    if(dir == Direction::vertical)
+                        y += elm.size().y;
+                    else
+                        x += elm.size().x;
+
                     break;
                 }
                 case ElementType::row:
                 {
-                    x += elm.size().x;
+                    if(dir == Direction::horizontal)
+                        x += elm.size().x;
+                    else
+                        y += elm.size().y;
+
                     break;
                 }
             }
@@ -111,7 +128,7 @@ WidgetMatrix getWidgetMatrix(element const & root)
 {
     WidgetMatrix result;
 
-	addElement(result, root, 0, 0);
+    addElement(result, root, 0, 0);
 
     return result;
 }

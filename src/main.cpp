@@ -289,7 +289,7 @@ bool InitWindow()
     glfwSetWindowSizeCallback(g_window, WindowSizeCallback);
 
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.0f, 0.1f, 0.4f, 0.5f);
+    glClearColor(0.0f, 0.1f, 0.4f, 1.0f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);

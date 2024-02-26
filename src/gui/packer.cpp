@@ -3,6 +3,13 @@
 #include "basic_types.h"
 #include <algorithm>
 
+enum class Direction
+{
+    vertical,
+    horizontal,
+    not_defined
+};
+
 void Packer::fitWidgets(UIWindow * win) const
 {
     if(win == nullptr)
@@ -10,7 +17,7 @@ void Packer::fitWidgets(UIWindow * win) const
 
     auto list = getMatrixFromTree(win->m_root.get());
 
-    float max_width = 0.0f;
+    float max_width = 0.f;
     for(auto const & row: list)
         max_width = glm::max(max_width, getRowMaxWidth(row));
 
@@ -22,58 +29,75 @@ Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
     WidgetMatrix list;
 
     if(root != nullptr)
-        addSubTree(list, root);
-
-    std::reverse(std::begin(list), std::end(list));
+        addSubTree(list, root, 0, 0);
 
     return list;
 }
 
-void Packer::addSubTree(WidgetMatrix & ls, Widget * root, std::uint32_t level) const
+void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y) const
+{
+    if(mtx.size() < y)
+        mtx.resize(y+1);
+
+    if(mtx[y].size() < x)
+        mtx[y].resize(x+1, nullptr);
+
+    mtx[y][x] = ptr;
+}
+
+void Packer::addSubTree(WidgetMatrix & ls, Widget const * root, int32_t x, int32_t y) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
 
-    std::vector<Widget *> * row = nullptr;
-    if(level < ls.size())
-    {
-        row = &ls[level];
-    }
-    else
-    {
-        ls.push_back({});
-        row = &ls.back();
-    }
-
-    auto & ch_list = *row;
-
     if(root->m_type == ElementType::VerticalLayoutee || root->m_type == ElementType::HorizontalLayoutee)
     {
+        Direction dir = Direction::not_defined;
+
+        if(root->m_type == ElementType::VerticalLayoutee)
+            dir = Direction::vertical;
+        else
+            dir = Direction::horizontal;
+
         for(auto const & ch: root->m_children)
         {
-            if(auto * cur_ch_ptr = ch.get(); cur_ch_ptr->m_type == ElementType::VerticalLayoutee
-                                             || cur_ch_ptr->m_type == ElementType::HorizontalLayoutee)
+            addSubTree(ls, ch.get(), x, y);
+
+            switch(ch->m_type)
             {
-                if(cur_ch_ptr->m_type == ElementType::HorizontalLayoutee
-                   || cur_ch_ptr->m_type == ElementType::VerticalLayoutee)
-                    addSubTree(ls, cur_ch_ptr, level + 1);
-                else
+                case ElementType::VerticalLayoutee:
                 {
-                    for(auto const & ch2: cur_ch_ptr->m_children)
-                    {
-                        addSubTree(ls, ch2.get(), level + 1);
-                    }
+                    if(dir == Direction::vertical)
+                        y += ch->m_children.size();
+                    else
+                        x += 1;
+
+                    break;
                 }
-            }
-            else
-            {
-                ch_list.push_back(cur_ch_ptr);
+                case ElementType::HorizontalLayoutee:
+                {
+                    if(dir == Direction::horizontal)
+                        x += ch->m_children.size();
+                    else
+                        y += 1;
+
+                    break;
+                }
+                case default:
+                {
+                    if(dir == Direction::vertical)
+                        y += 1;
+                    else if(dir == Direction::horizontal)
+                        x += 1;
+
+                    break;
+                }
             }
         }
     }
-    else
+    else  // if widget - add to matrix
     {
-        ch_list.push_back(root);
+        addWidgetPtr(ls, root, x, y);
     }
 }
 
@@ -89,7 +113,7 @@ float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
 
 float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
 {
-    float height = 0.0f;
+    float height = 0.f;
 
     for(auto const * widget: row)
         height = glm::max(height, widget->size().y);
@@ -100,7 +124,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
 void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
 {
     float current_height = m_vertical_spacing;
-    float final_width    = 0.0f;
+    float final_width    = 0.f;
 
     for(auto & row: ls)
     {

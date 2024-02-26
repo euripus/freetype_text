@@ -152,7 +152,7 @@ public:
     bool        isAnyKeyPressed() const;
 
     // Mouse
-    glm::ivec2 getMousePosition() const { return {m_mouse_position.x, m_screen_size.y - m_mouse_position.y}; }
+    glm::ivec2 getMousePosition() const { return {m_mouse_position.x, m_screen_size.y - m_mouse_position.y - 1}; }
     bool       isMouseButtonPressed(MouseButton button_id) const;
     bool       isMouseWheel() const { return !m_mouse_wheel.empty(); }
     int32_t    getMouseWheel() { return 0; }
