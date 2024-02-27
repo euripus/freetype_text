@@ -31,21 +31,23 @@ Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
     if(root != nullptr)
         addSubTree(list, root, 0, 0);
 
+    std::reverse(std::begin(list), std::end(list));
+
     return list;
 }
 
-void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y) const
+void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y) const
 {
-    if(mtx.size() < y)
-        mtx.resize(y+1);
+    if(static_cast<int32_t>(mtx.size()) <= y)
+        mtx.resize(y + 1);
 
-    if(mtx[y].size() < x)
-        mtx[y].resize(x+1, nullptr);
+    if(static_cast<int32_t>(mtx[y].size()) <= x)
+        mtx[y].resize(x + 1, nullptr);
 
     mtx[y][x] = ptr;
 }
 
-void Packer::addSubTree(WidgetMatrix & ls, Widget const * root, int32_t x, int32_t y) const
+void Packer::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
@@ -83,7 +85,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget const * root, int32_t x, int32
 
                     break;
                 }
-                case default:
+                default:
                 {
                     if(dir == Direction::vertical)
                         y += 1;
@@ -95,7 +97,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget const * root, int32_t x, int32
             }
         }
     }
-    else  // if widget - add to matrix
+    else   // if widget - add to matrix
     {
         addWidgetPtr(ls, root, x, y);
     }

@@ -10,26 +10,26 @@
 
 namespace ColorMap
 {
-    // Standart colors
-    constexpr glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
-    constexpr glm::vec4 silver = glm::vec4(.75f, .75f, .75f, 1.0f);
-    constexpr glm::vec4 gray = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-    constexpr glm::vec4 white = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    constexpr glm::vec4 maroon = glm::vec4(0.5f, 0.0f, 0.0f, 1.0f);
-    constexpr glm::vec4 red = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    constexpr glm::vec4 purple = glm::vec4(0.5f, 0.0f, 0.5f, 1.0f);
-    constexpr glm::vec4 fuchsia = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
-    constexpr glm::vec4 green = glm::vec4(0.0f, 0.5f, 0.0f, 1.0f);
-    constexpr glm::vec4 lime = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    constexpr glm::vec4 olive = glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
-    constexpr glm::vec4 yellow = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    constexpr glm::vec4 navy = glm::vec4(0.0f, 0.0f, 0.5f, 1.0f);
-    constexpr glm::vec4 blue = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    constexpr glm::vec4 teal = glm::vec4(0.0f, 0.5f, 0.5f, 1.0f);
-    constexpr glm::vec4 aqua = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+// Standart colors
+constexpr glm::vec4 black   = glm::vec4(0.f, 0.f, 0.f, 1.f);
+constexpr glm::vec4 silver  = glm::vec4(.75f, .75f, .75f, 1.0f);
+constexpr glm::vec4 gray    = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+constexpr glm::vec4 white   = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+constexpr glm::vec4 maroon  = glm::vec4(0.5f, 0.0f, 0.0f, 1.0f);
+constexpr glm::vec4 red     = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+constexpr glm::vec4 purple  = glm::vec4(0.5f, 0.0f, 0.5f, 1.0f);
+constexpr glm::vec4 fuchsia = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+constexpr glm::vec4 green   = glm::vec4(0.0f, 0.5f, 0.0f, 1.0f);
+constexpr glm::vec4 lime    = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+constexpr glm::vec4 olive   = glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
+constexpr glm::vec4 yellow  = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+constexpr glm::vec4 navy    = glm::vec4(0.0f, 0.0f, 0.5f, 1.0f);
+constexpr glm::vec4 blue    = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+constexpr glm::vec4 teal    = glm::vec4(0.0f, 0.5f, 0.5f, 1.0f);
+constexpr glm::vec4 aqua    = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
 
-    using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
-}
+using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
+}   // namespace ColorMap
 
 class UI
 {

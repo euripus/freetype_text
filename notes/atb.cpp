@@ -63,10 +63,10 @@ WidgetList list = getWidgetListFromTree(...);
 void addWidgetPtr(WidgetMatrix & mtx, Widget const * ptr, int32_t x, int32_t y)
 {
     if(mtx.size() < y)
-        mtx.resize(y+1);
+        mtx.resize(y + 1);
 
     if(mtx[y].size() < x)
-        mtx[y].resize(x+1, nullptr);
+        mtx[y].resize(x + 1, nullptr);
 
     mtx[y][x] = ptr;
 }
