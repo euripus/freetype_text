@@ -25,6 +25,12 @@ void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 
 void UIWindow::update(float time, bool check_cursor)
 {
+	if(m_child_resized)
+	{
+		m_owner.fitWidgets(this);
+        move(m_pos);
+	}
+
     if(!m_visible)
         return;
 
@@ -54,12 +60,6 @@ void UIWindow::move(glm::vec2 const & new_origin)
         m_background->setRect(getRect());
         m_background->move(m_pos);
     }
-}
-
-void UIWindow::childResized()
-{
-    m_owner.fitWidgets(this);
-    move(m_pos);
 }
 
 void UIWindow::addCallBack(std::function<void(void)> fn)

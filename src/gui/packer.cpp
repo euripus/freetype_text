@@ -38,10 +38,10 @@ Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
 
 void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y) const
 {
-    if(static_cast<int32_t>(mtx.size()) <= y)
+    if(static_cast<int32_t>(mtx.size()) < y + 1)
         mtx.resize(y + 1);
 
-    if(static_cast<int32_t>(mtx[y].size()) <= x)
+    if(static_cast<int32_t>(mtx[y].size()) < x + 1)
         mtx[y].resize(x + 1, nullptr);
 
     mtx[y][x] = ptr;
