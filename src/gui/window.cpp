@@ -25,11 +25,11 @@ void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 
 void UIWindow::update(float time, bool check_cursor)
 {
-	if(m_child_resized)
-	{
-		m_owner.fitWidgets(this);
+    if(m_child_resized)
+    {
+        m_owner.fitWidgets(this);
         move(m_pos);
-	}
+    }
 
     if(!m_visible)
         return;

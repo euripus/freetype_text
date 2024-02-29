@@ -58,9 +58,9 @@ public:
 
 private:
     std::string m_caption;
-    bool        m_visible      = false;
-    bool        m_draw_caption = false;
-	bool m_child_resized = false;
+    bool        m_visible       = false;
+    bool        m_draw_caption  = false;
+    bool        m_child_resized = false;
 
     std::unique_ptr<Widget> m_root;
     std::unique_ptr<Widget> m_background;
