@@ -108,7 +108,7 @@ float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
     float width = m_horizontal_spacing;
 
     for(auto const * widget: row)
-        width += widget->size().x + m_horizontal_spacing;
+        width += widget->sizeHint().x + m_horizontal_spacing;
 
     return width;
 }
