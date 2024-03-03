@@ -19,7 +19,7 @@ void Packer::fitWidgets(UIWindow * win) const
 
     float max_width = 0.f;
     for(auto const & row: list)
-        max_width = glm::max(max_width, getRowMaxWidth(row));
+        max_width = glm::max(max_width, getRowSumWidth(row));
 
     adjustWidgetsInRow(win, list, max_width);
 }
@@ -103,7 +103,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) 
     }
 }
 
-float Packer::getRowMaxWidth(std::vector<Widget *> const & row) const
+float Packer::getRowSumWidth(std::vector<Widget *> const & row) const
 {
     float width = m_horizontal_spacing;
 
@@ -123,6 +123,28 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
     return height;
 }
 
+float Packer::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const
+{
+    float result = 0.f;
+
+    for(auto const * widget: row)
+        if(widget->m_scale != SizePolicy::scale)
+            result += widget->size().x;
+
+    return result;
+}
+
+int32_t Packer::getNumOfScaledElementsInRow(std::vector<Widget *> const & row) const
+{
+    int32_t result = 0;
+
+    for(auto const * widget: row)
+        if(widget->m_scale == SizePolicy::scale)
+            result++;
+
+    return result;
+}
+
 void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
 {
     float current_height = m_vertical_spacing;
@@ -132,82 +154,29 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
     {
         auto  num_widgets   = row.size();
         float row_height    = getRowMaxHeight(row);
-        float element_width = (new_width - m_horizontal_spacing * (num_widgets + 1)) / num_widgets;
+        float remaining_width = new_width - m_horizontal_spacing * (num_widgets + 1);
+        int32_t num_scaled_elements = getNumOfScaledElementsInRow(row);
+        num_scaled_elements = num_scaled_elements == 0 ? 1 : num_scaled_elements; // avoid division by zero
+        float scaled_element_width = (remaining_width - getSumOfFixedWidthInRow(row)) / num_scaled_elements;
         float current_pos   = m_horizontal_spacing;
 
         for(auto * widget: row)
         {
-            switch(widget->m_scale)
-            {
-                case SizePolicy::scale:   // resizing branch
-                {
-                    glm::vec2 pos(current_pos, current_height);
-                    glm::vec2 size(element_width, row_height);
+            glm::vec2 pos, size;
 
-                    Rect2D new_rect{pos, size};
-                    widget->m_rect = new_rect;
-
-                    break;
-                }
-                case SizePolicy::none:   // fixed size branch, change only position
-                case SizePolicy::fixed_width:
-                case SizePolicy::fixed_height:
-                case SizePolicy::trim:
-                {
-                    glm::vec2 size(widget->size());
-
-                    if(size.x < element_width)
-                    {
-                        // vertical align
-                        float vertical_delta = row_height - size.y;
-                        float widget_y       = current_height;
-                        if(vertical_delta > 0)
-                        {
-                            if(widget->m_vertical == Align::top)
-                                widget_y += vertical_delta;
-                            else if(widget->m_vertical == Align::center)
-                                widget_y += vertical_delta / 2.0f;
-                        }
-
-                        // horizontal align
-                        float horizontal_delta = element_width - size.x;
-                        float widget_x         = current_pos;
-                        if(horizontal_delta > 0)
-                        {
-                            if(widget->m_horizontal == Align::right)
-                                widget_x += horizontal_delta;
-                            else if(widget->m_horizontal == Align::center)
-                                widget_x += horizontal_delta / 2.0f;
-                        }
-
-                        glm::vec2 pos(widget_x, widget_y);
-
-                        Rect2D new_rect{pos, size};
-                        widget->m_rect = new_rect;
-                    }
-                    else
-                    {
-                        // vertical align
-                        float vertical_delta = row_height - size.y;
-                        float widget_y       = current_height;
-                        if(vertical_delta > 0)
-                        {
-                            if(widget->m_vertical == Align::top)
-                                widget_y += vertical_delta;
-                            else if(widget->m_vertical == Align::center)
-                                widget_y += vertical_delta / 2.0f;
-                        }
-
-                        glm::vec2 pos(current_pos, widget_y);
-
-                        Rect2D new_rect{pos, size};
-                        widget->m_rect = new_rect;
-                    }
-
-                    break;
-                }
+            if(widget->m_scale == SizePolicy::scale)
+			{   // resizing branch
+                    pos = glm::vec2(current_pos, current_height);
+                    size = glm::vec2(scaled_element_width, row_height);
+            }
+			else
+			{   // fixed size branch, change only position
+                    pos = glm::vec2(current_pos, current_height);
+                    size = m_rect.m_extent;
             }
 
+            Rect2D new_rect{pos, size};
+            widget->m_rect = new_rect;
             current_pos += widget->size().x + m_horizontal_spacing;
         }
 

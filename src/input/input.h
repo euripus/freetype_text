@@ -170,6 +170,7 @@ protected:
     glm::ivec2 m_screen_size;
     // Keyboard states
     KeyboardKey m_last_key                                                     = KeyboardKey::Key_MaxKeyNum;
+	// std::queue<std::string> m_last_symbols;
     bool        m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};
     // Mouse states
     glm::ivec2          m_mouse_position                                                      = {};
