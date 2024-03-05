@@ -96,29 +96,32 @@ std::uint32_t utf8_to_utf32(char const * character)
 std::string utf32_to_utf8(std::uint32_t cp)
 {
     std::string result;
-    
-    if (!is_code_point_valid(cp))
+
+    if(!is_code_point_valid(cp))
     {
         return result;
     }
-    
-    if (cp < 0x80)                        // one octet
+
+    if(cp < 0x80)   // one octet
         result += static_cast<char>(cp);
-    else if (cp < 0x800) {                // two octets
-        result += static_cast<char>((cp >> 6)            | 0xc0);
-        result += static_cast<char>((cp & 0x3f)          | 0x80);
+    else if(cp < 0x800)
+    {   // two octets
+        result += static_cast<char>((cp >> 6) | 0xc0);
+        result += static_cast<char>((cp & 0x3f) | 0x80);
     }
-    else if (cp < 0x10000) {              // three octets
-        result += static_cast<char>((cp >> 12)           | 0xe0);
-        result += static_cast<char>(((cp >> 6) & 0x3f)   | 0x80);
-        result += static_cast<char>((cp & 0x3f)          | 0x80);
+    else if(cp < 0x10000)
+    {   // three octets
+        result += static_cast<char>((cp >> 12) | 0xe0);
+        result += static_cast<char>(((cp >> 6) & 0x3f) | 0x80);
+        result += static_cast<char>((cp & 0x3f) | 0x80);
     }
-    else {                                // four octets
-        result += static_cast<char>((cp >> 18)           | 0xf0);
-        result += static_cast<char>(((cp >> 12) & 0x3f)  | 0x80);
-        result += static_cast<char>(((cp >> 6) & 0x3f)   | 0x80);
-        result += static_cast<char>((cp & 0x3f)          | 0x80);
+    else
+    {   // four octets
+        result += static_cast<char>((cp >> 18) | 0xf0);
+        result += static_cast<char>(((cp >> 12) & 0x3f) | 0x80);
+        result += static_cast<char>(((cp >> 6) & 0x3f) | 0x80);
+        result += static_cast<char>((cp & 0x3f) | 0x80);
     }
-    
+
     return result;
 }

@@ -19,11 +19,11 @@ protected:
     void         addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y) const;
     void         addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) const;
     float        getRowSumWidth(std::vector<Widget *> const & row) const;
-	float        getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const;
-	int32_t      getNumOfScaledElementsInRow(std::vector<Widget *> const & row) const;
-	// bool         isFixedElementInRow(std::vector<Widget *> const & row) const;
-    float        getRowMaxHeight(std::vector<Widget *> const & row) const;
-    void         adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const;
+    float        getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const;
+    int32_t      getNumOfScaledElementsInRow(std::vector<Widget *> const & row) const;
+    // bool         isFixedElementInRow(std::vector<Widget *> const & row) const;
+    float getRowMaxHeight(std::vector<Widget *> const & row) const;
+    void  adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const;
 
     float m_horizontal_spacing = 1.0f;
     float m_vertical_spacing   = 1.0f;

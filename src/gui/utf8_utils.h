@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
 std::size_t   utf8_surrogate_len(char const * character);
 size_t        utf8_strlen(char const * string);

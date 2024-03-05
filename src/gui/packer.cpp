@@ -108,7 +108,7 @@ float Packer::getRowSumWidth(std::vector<Widget *> const & row) const
     float width = m_horizontal_spacing;
 
     for(auto const * widget: row)
-        width += widget->sizeHint().x + m_horizontal_spacing;
+        width += widget->size().x + m_horizontal_spacing;
 
     return width;
 }
@@ -152,32 +152,32 @@ void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_wid
 
     for(auto & row: ls)
     {
-        auto  num_widgets   = row.size();
-        float row_height    = getRowMaxHeight(row);
-        float remaining_width = new_width - m_horizontal_spacing * (num_widgets + 1);
+        auto    num_widgets         = row.size();
+        float   row_height          = getRowMaxHeight(row);
+        float   remaining_width     = new_width - m_horizontal_spacing * (num_widgets + 1);
         int32_t num_scaled_elements = getNumOfScaledElementsInRow(row);
-        num_scaled_elements = num_scaled_elements == 0 ? 1 : num_scaled_elements; // avoid division by zero
+        num_scaled_elements = num_scaled_elements == 0 ? 1 : num_scaled_elements;   // avoid division by zero
         float scaled_element_width = (remaining_width - getSumOfFixedWidthInRow(row)) / num_scaled_elements;
-        float current_pos   = m_horizontal_spacing;
+        float current_pos          = m_horizontal_spacing;
 
         for(auto * widget: row)
         {
             glm::vec2 pos, size;
 
             if(widget->m_scale == SizePolicy::scale)
-			{   // resizing branch
-                    pos = glm::vec2(current_pos, current_height);
-                    size = glm::vec2(scaled_element_width, row_height);
+            {   // resizing branch
+                pos  = glm::vec2(current_pos, current_height);
+                size = glm::vec2(scaled_element_width, row_height);
             }
-			else
-			{   // fixed size branch, change only position
-                    pos = glm::vec2(current_pos, current_height);
-                    size = m_rect.m_extent;
+            else
+            {   // fixed size branch, change only position
+                pos  = glm::vec2(current_pos, current_height);
+                size = widget->m_rect.m_extent;
             }
 
             Rect2D new_rect{pos, size};
-            widget->m_rect = new_rect;
-            current_pos += widget->size().x + m_horizontal_spacing;
+            widget->m_rect  = new_rect;
+            current_pos    += widget->size().x + m_horizontal_spacing;
         }
 
         final_width     = glm::max(current_pos, new_width);
