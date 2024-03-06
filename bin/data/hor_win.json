@@ -60,7 +60,7 @@
                "visible":false,
                "children":[
                   {
-                     "size":[ 30, 30 ],
+                     "size":[ 50, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
@@ -74,7 +74,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 30, 30 ],
+                     "size":[ 50, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
@@ -88,7 +88,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 30, 30 ],
+                     "size":[ 50, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
@@ -109,7 +109,7 @@
                "visible":false,
                "children":[
                   {
-                     "size":[ 30, 30 ],
+                     "size":[ 50, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",

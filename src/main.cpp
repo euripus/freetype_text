@@ -14,17 +14,13 @@
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
 constexpr char const *  TEXNAME     = "./data/base.tga";
-constexpr char const *  TEXTSAMPLE  = "Καρε ανα δευτερολεπτο: %d";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
 GLFWwindow * g_window = nullptr;
 
 bool g_wire = false;
-// Fps counter
-double       g_last_time  = 0.0;
-unsigned int g_num_frames = 0;
-unsigned int g_num_FPS    = 0;
+unsigned int g_num_fps    = 0; // Fps counter
 
 bool                running        = true;
 bool                is_full_screen = false;
@@ -74,7 +70,7 @@ GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3
 Input        g_input_state;
 UI           g_ui(g_input_state);
 VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex),
-    pyramid_buf(VertexBuffer::pos_tex_norm), text_buf(VertexBuffer::pos_tex);
+    pyramid_buf(VertexBuffer::pos_tex_norm);
 GLuint tex_base;
 
 /*-----------------------------------------------------------
@@ -289,7 +285,7 @@ bool InitWindow()
     glfwSetWindowSizeCallback(g_window, WindowSizeCallback);
 
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.0f, 0.1f, 0.4f, 1.0f);
+    glClearColor(ColorMap::navy.r, ColorMap::navy.g, ColorMap::navy.b, ColorMap::navy.a);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -335,42 +331,41 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
     return InitWindow();
 }
 
+void SetUIData(UIWindow * win)
+{
+    std::string const fps = std::to_string(g_num_fps);
+    std::string const key = KeyDescription(g_input_state.getKeyPressed());
+    std::string const cur_x = std::to_string(g_input_state.getMousePosition().x);
+    std::string const cur_y = std::to_string(g_input_state.getMousePosition().y);
+    
+    if(auto * text_box = win->getWidgetFromID<TextBox>("fps_num"); text_box != nullptr)
+        text_box->setText(fps);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("key_num"); text_box != nullptr)
+        text_box->setText(key);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("pos_x"); text_box != nullptr)
+        text_box->setText(cur_x);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("pos_y"); text_box != nullptr)
+        text_box->setText(cur_y);
+}
+
 void DrawScene(void)
 {
-    static char buffer[100];
-    if(glfwGetTime() - g_last_time > 1.0)
+    static unsigned int num_frames = 0;
+    static double       last_time  = 0.0;
+
+    if(glfwGetTime() - last_time > 1.0)
     {
-        g_last_time  = glfwGetTime();
-        g_num_FPS    = g_num_frames;
-        g_num_frames = 0;
-
-        text_buf.clear();
-        auto & tf = *g_ui.m_fonts.getFont("damase", 24);
-
-        std::sprintf(buffer, TEXTSAMPLE, g_num_FPS);
-        glm::vec2 pen(10, 10);
-        auto      mt = MarkupText(tf, MarkupText::LineType::UNDERLINE);
-        mt.addText(text_buf, buffer, pen);
-
-        pen = glm::vec2(10, 10 + tf.getHeight() + tf.getLineGap());
-        auto key_desc = std::string("Последняя клавиша: ") + KeyDescription(g_input_state.getKeyPressed());
-        tf.addText(text_buf, key_desc.c_str(), pen);
-
-        pen             = glm::vec2(10, 10 + 2.0f * (tf.getHeight() + tf.getLineGap()));
-        auto cursor_pos = g_input_state.getMousePosition();
-        std::sprintf(buffer, "Cursor pos: %d, %d", cursor_pos.x, cursor_pos.y);
-        tf.addText(text_buf, buffer, pen);
-
-        text_buf.upload();
+        last_time  = glfwGetTime();
+        g_num_fps    = num_frames;
+        num_frames = 0;
     }
-    g_num_frames++;
+    num_frames++;
 
-    VertexBufferClearer win_buf_cl(win_buf), text_win_buf_cl(text_win_buf);
-
-    g_ui.update(glfwGetTime());
     g_ui.draw(win_buf, text_win_buf);
-    win_buf.upload();
-    text_win_buf.upload();
+	VertexBufferBinder win_buf_bind(win_buf), text_win_buf_bind(text_win_buf);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -399,12 +394,9 @@ void DrawScene(void)
     g_ui.m_ui_image_atlas.getAtlas().BindTexture();
     win_buf.drawBuffer();
 
-    g_ui.m_fonts.getAtlas().BindTexture();
-    text_buf.drawBuffer();
-
-    glColor3f(0.0f, 0.0f, 0.0f);
+    glColor4fv(glm::value_ptr(ColorMap::black));
     text_win_buf.drawBuffer();
-    glColor3f(1.f, 1.f, 1.f);
+    glColor4fv(glm::value_ptr(ColorMap::white));
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
@@ -453,17 +445,13 @@ int main()
     g_ui.parseUIResources("./data/ui_res.json");
     UIWindow * win = g_ui.loadWindow("./data/hor_win.json");
 
-    if(auto * text_box = win->getWidgetFromID<TextBox>("text_window"); text_box != nullptr)
-        text_box->setText("New text in widget! Veeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrryyyyyyyyy "
-                          "loooooooooonnnnnnnnnnggggggggggggg!");
-
     if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
     {
         ok_button->setCallback([win] { win->hide(); });
     }
 
     win->show();
-    win->move({10.f, 150.f});
+    win->move({10.f, 10.f});
 
     // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
     // g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
@@ -482,11 +470,9 @@ int main()
     if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
         return 0;
 
-    // auto device   = glGetString(GL_VENDOR);
-    // auto renderer = glGetString(GL_RENDERER);
-
     while(!glfwWindowShouldClose(g_window) && running)
     {
+        SetUIData(win);
         g_ui.update(glfwGetTime());
         DrawScene();
 

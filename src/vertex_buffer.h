@@ -61,11 +61,13 @@ private:
     State                 m_state        = State::NOINIT;
 };
 
-struct VertexBufferClearer
+struct VertexBufferBinder
 {
     VertexBufferClearer(VertexBuffer & vb)
         : m_vb(vb)
-    {}
+    {
+		m_vb.upload();
+	}
     ~VertexBufferClearer() { m_vb.clear(); }
 
     VertexBuffer & m_vb;
