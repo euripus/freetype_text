@@ -60,12 +60,12 @@
                "visible":false,
                "children":[
                   {
-                     "size":[ 50, 30 ],
+                     "size":[ 75, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_x",
-                     "size_policy":"scale",
+                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
@@ -74,7 +74,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 50, 30 ],
+                     "size":[ 100, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
@@ -88,7 +88,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 50, 30 ],
+                     "size":[ 100, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
@@ -109,12 +109,12 @@
                "visible":false,
                "children":[
                   {
-                     "size":[ 50, 30 ],
+                     "size":[ 75, 30 ],
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_y",
-                     "size_policy":"scale",
+                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",

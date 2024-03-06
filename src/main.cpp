@@ -19,8 +19,8 @@ constexpr std::uint32_t WINDOWWIDTH = 800;
 
 GLFWwindow * g_window = nullptr;
 
-bool g_wire = false;
-unsigned int g_num_fps    = 0; // Fps counter
+bool         g_wire    = false;
+unsigned int g_num_fps = 0;   // Fps counter
 
 bool                running        = true;
 bool                is_full_screen = false;
@@ -333,11 +333,11 @@ bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
 
 void SetUIData(UIWindow * win)
 {
-    std::string const fps = std::to_string(g_num_fps);
-    std::string const key = KeyDescription(g_input_state.getKeyPressed());
+    std::string const fps   = std::to_string(g_num_fps);
+    std::string const key   = KeyDescription(g_input_state.getKeyPressed());
     std::string const cur_x = std::to_string(g_input_state.getMousePosition().x);
     std::string const cur_y = std::to_string(g_input_state.getMousePosition().y);
-    
+
     if(auto * text_box = win->getWidgetFromID<TextBox>("fps_num"); text_box != nullptr)
         text_box->setText(fps);
 
@@ -353,19 +353,19 @@ void SetUIData(UIWindow * win)
 
 void DrawScene(void)
 {
-    static unsigned int num_frames = 0;
-    static double       last_time  = 0.0;
+    static uint32_t num_frames = 0;
+    static double   last_time  = 0.0;
 
     if(glfwGetTime() - last_time > 1.0)
     {
         last_time  = glfwGetTime();
-        g_num_fps    = num_frames;
+        g_num_fps  = num_frames;
         num_frames = 0;
     }
     num_frames++;
 
     g_ui.draw(win_buf, text_win_buf);
-	VertexBufferBinder win_buf_bind(win_buf), text_win_buf_bind(text_win_buf);
+    VertexBufferBinder win_buf_bind(win_buf), text_win_buf_bind(text_win_buf);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -394,6 +394,7 @@ void DrawScene(void)
     g_ui.m_ui_image_atlas.getAtlas().BindTexture();
     win_buf.drawBuffer();
 
+    g_ui.m_fonts.getAtlas().BindTexture();
     glColor4fv(glm::value_ptr(ColorMap::black));
     text_win_buf.drawBuffer();
     glColor4fv(glm::value_ptr(ColorMap::white));
