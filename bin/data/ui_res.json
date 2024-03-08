@@ -37,8 +37,18 @@
             "hinting": true,
             "kerning": true,
             "outline_thickness": 0.0,
-            "outline_type": "OUTER",
+            "outline_type": "NONE",
             "font_size": 24,
+            "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
+        },
+        {
+            "file_name": "./data/liberation.ttf",
+            "font_id": "liberation_16",
+            "hinting": true,
+            "kerning": true,
+            "outline_thickness": 0.0,
+            "outline_type": "NONE",
+            "font_size": 16,
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         },
         {

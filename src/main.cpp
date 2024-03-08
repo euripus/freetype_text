@@ -22,7 +22,7 @@ GLFWwindow * g_window = nullptr;
 bool         g_wire    = false;
 unsigned int g_num_fps = 0;   // Fps counter
 
-bool                running        = true;
+bool                g_running      = true;
 bool                is_full_screen = false;
 GLFWvidmode const * cur_mode;
 GLfloat             rty = 0.0f;
@@ -109,7 +109,7 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
         {
             if(action == GLFW_PRESS)
             {
-                running = false;
+                g_running = false;
             }
             break;
         }
@@ -182,7 +182,7 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
                 if(!CreateGLFWWindow(width, height, is_full_screen))
                 {
                     std::cerr << "error!" << std::endl;
-                    running = false;
+                    g_running = false;
                 }
             }
             break;
@@ -446,9 +446,13 @@ int main()
     g_ui.parseUIResources("./data/ui_res.json");
     UIWindow * win = g_ui.loadWindow("./data/hor_win.json");
 
-    if(auto * ok_button = win->getWidgetFromID<Button>("button_ok"); ok_button != nullptr)
+    if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {
-        ok_button->setCallback([win] { win->hide(); });
+        button->setCallback([win] { win->hide(); });
+    }
+    if(auto * button = win->getWidgetFromID<Button>("button_close"); button != nullptr)
+    {
+        button->setCallback([] { g_running = false; });
     }
 
     win->show();
@@ -471,7 +475,7 @@ int main()
     if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
         return 0;
 
-    while(!glfwWindowShouldClose(g_window) && running)
+    while(!glfwWindowShouldClose(g_window) && g_running)
     {
         SetUIData(win);
         g_ui.update(glfwGetTime());

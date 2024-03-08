@@ -247,7 +247,6 @@ void AtlasTex::writeAtlasToTGA(std::string const & name)
 ////////////////////////
 void AtlasTex::BindTexture()
 {
-    glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_atlas_tex_id);
 }

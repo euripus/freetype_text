@@ -19,9 +19,9 @@
                      "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
-                     "font":"liberation",
-                     "font_size":24,
-                     "static_text":"Cursor pos: ",
+                     "font":"liberation_16",
+                     "font_size":16,
+                     "static_text":"Cursor pos",
                      "text_horizontal":"left"
                   },
                   {
@@ -35,7 +35,7 @@
                      "align_vertical":"top",
                      "font":"damase",
                      "font_size":24,
-                     "static_text":"Последняя клавиша: ",
+                     "static_text":"Последняя клавиша",
                      "text_horizontal":"left"
                   },
                   {
@@ -49,8 +49,23 @@
                      "align_vertical":"top",
                      "font":"damase",
                      "font_size":24,
-                     "static_text":"Καρε ανα δευτερολεπτο: ",
+                     "static_text":"Καρε ανα δευτερολεπτο",
                      "text_horizontal":"left"
+                  },
+                  {
+                     "size": [ 100, 15 ],
+                     "type": "Button",
+                     "visible": true,
+                     "texture": "button",
+                     "region_name": "button_unclicked",
+                     "id_name": "button_ok",
+                     "size_policy": "scale",
+                     "align_horizontal": "left",
+                     "align_vertical": "top",
+                     "font": "liberation",
+                     "font_size": 24,
+                     "static_text": "Ok",
+                     "text_horizontal": "center"
                   }
                ]
             },
@@ -100,6 +115,21 @@
                      "font_size":24,
                      "static_text":"fps",
                      "text_horizontal":"left"
+                  },
+                  {
+                     "size": [ 100, 15 ],
+                     "type": "Button",
+                     "visible": true,
+                     "texture": "button",
+                     "region_name": "button_unclicked",
+                     "id_name": "button_close",
+                     "size_policy": "scale",
+                     "align_horizontal": "left",
+                     "align_vertical": "top",
+                     "font": "liberation",
+                     "font_size": 24,
+                     "static_text": "Close",
+                     "text_horizontal": "center"
                   }
                ]
             },
