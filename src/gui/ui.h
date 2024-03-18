@@ -53,6 +53,9 @@ public:
 
     void fitWidgets(UIWindow * win_ptr) const;
 
+	AtlasTex & getUIImageAtlas() { return m_ui_image_atlas.getAtlas(); }
+	AtlasTex & getFontImageAtlas() { return m_fonts.getAtlas(); }
+
     Input const & m_input;
 
     glm::ivec2     m_screen_size = {};

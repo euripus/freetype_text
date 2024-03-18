@@ -301,8 +301,8 @@ bool InitWindow()
                          sizeof(pyr_index) / sizeof(GLuint));
     pyramid_buf.upload();
 
-    g_ui.m_ui_image_atlas.getAtlas().UploadTexture();
-    g_ui.m_fonts.getAtlas().UploadTexture();
+    g_ui.getUIImageAtlas().UploadTexture();
+    g_ui.getFontImageAtlas().UploadTexture();
 
     win_buf.upload();
     text_win_buf.upload();
@@ -391,10 +391,10 @@ void DrawScene(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    g_ui.m_ui_image_atlas.getAtlas().BindTexture();
+    g_ui.getUIImageAtlas().BindTexture();
     win_buf.drawBuffer();
 
-    g_ui.m_fonts.getAtlas().BindTexture();
+    g_ui.getFontImageAtlas().BindTexture();
     glColor4fv(glm::value_ptr(ColorMap::black));
     text_win_buf.drawBuffer();
     glColor4fv(glm::value_ptr(ColorMap::white));
@@ -409,8 +409,8 @@ void DrawScene(void)
 void KillWindow(void)
 {
     glDeleteTextures(1, &tex_base);
-    g_ui.m_fonts.getAtlas().DeleteTexture();
-    g_ui.m_ui_image_atlas.getAtlas().DeleteTexture();
+    g_ui.getFontImageAtlas().DeleteTexture();
+    g_ui.getUIImageAtlas().DeleteTexture();
 
     glfwDestroyWindow(g_window);
     g_window = nullptr;
@@ -459,8 +459,8 @@ int main()
     win->move({10.f, 10.f});
 
     // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
-    // g_ui.m_fonts.getAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
-    // g_ui.m_ui_image_atlas.getAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
+    // g_ui.getFontImageAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
+    // g_ui.getUIImageAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
 
     glfwSetErrorCallback(error_callback);
 

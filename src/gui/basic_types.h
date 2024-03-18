@@ -7,7 +7,7 @@ enum class ElementType
     ImageBox,   // animated/static image and/or internal rendered frame
     Button,
     CheckBox,
-    RadioButton,
+    // RadioButton,
     Slider,
     ProgressBar,
     InputBox,
