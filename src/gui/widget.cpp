@@ -16,8 +16,8 @@ ElementType WidgetDesc::GetElementTypeFromString(std::string_view name)
         type = ElementType::Button;
     else if(name == "CheckBox")
         type = ElementType::CheckBox;
-    else if(name == "RadioButton")
-        type = ElementType::RadioButton;
+    // else if(name == "RadioButton")
+    // type = ElementType::RadioButton;
     else if(name == "Slider")
         type = ElementType::Slider;
     else if(name == "ProgressBar")
