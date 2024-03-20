@@ -10,7 +10,7 @@ enum class Direction
     not_defined
 };
 
-void Packer::fitWidgets(UIWindow * win) const
+void MatrixPacker::fitWidgets(UIWindow * win) const
 {
     if(win == nullptr)
         return;
@@ -24,7 +24,7 @@ void Packer::fitWidgets(UIWindow * win) const
     adjustWidgetsInRow(win, list, max_width);
 }
 
-Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
+MatrixPacker::WidgetMatrix MatrixPacker::getMatrixFromTree(Widget * root) const
 {
     WidgetMatrix list;
 
@@ -36,7 +36,7 @@ Packer::WidgetMatrix Packer::getMatrixFromTree(Widget * root) const
     return list;
 }
 
-void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y) const
+void MatrixPacker::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y) const
 {
     if(static_cast<int32_t>(mtx.size()) < y + 1)
         mtx.resize(y + 1);
@@ -47,7 +47,7 @@ void Packer::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int32_t y
     mtx[y][x] = ptr;
 }
 
-void Packer::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) const
+void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) const
 {
     if(root == nullptr || root->m_type == ElementType::Unknown)
         return;
@@ -103,7 +103,7 @@ void Packer::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) 
     }
 }
 
-float Packer::getRowSumWidth(std::vector<Widget *> const & row) const
+float MatrixPacker::getRowSumWidth(std::vector<Widget *> const & row) const
 {
     float width = m_horizontal_spacing;
 
@@ -113,7 +113,7 @@ float Packer::getRowSumWidth(std::vector<Widget *> const & row) const
     return width;
 }
 
-float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
+float MatrixPacker::getRowMaxHeight(std::vector<Widget *> const & row) const
 {
     float height = 0.f;
 
@@ -123,7 +123,7 @@ float Packer::getRowMaxHeight(std::vector<Widget *> const & row) const
     return height;
 }
 
-float Packer::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const
+float MatrixPacker::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const
 {
     float result = 0.f;
 
@@ -134,7 +134,7 @@ float Packer::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) const
     return result;
 }
 
-int32_t Packer::getNumOfScaledElementsInRow(std::vector<Widget *> const & row) const
+int32_t MatrixPacker::getNumOfScaledElementsInRow(std::vector<Widget *> const & row) const
 {
     int32_t result = 0;
 
@@ -145,7 +145,7 @@ int32_t Packer::getNumOfScaledElementsInRow(std::vector<Widget *> const & row) c
     return result;
 }
 
-void Packer::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
+void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float new_width) const
 {
     float current_height = m_vertical_spacing;
     float final_width    = 0.f;
