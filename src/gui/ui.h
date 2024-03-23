@@ -38,9 +38,7 @@ class UI
 public:
     static constexpr char const * sid_gui_set = "current_gui_set";
 
-    UI(Input const & inp)
-        : m_input(inp)
-    {}
+    UI(Input const & inp);
 
     void       update(float time);
     void       draw(VertexBuffer & background, VertexBuffer & text) const;
@@ -58,11 +56,11 @@ public:
 
     Input const & m_input;
 
-    glm::ivec2     m_screen_size = {};
-    UIImageManager m_ui_image_atlas;
-    FontManager    m_fonts;
-    Packer         m_packer;
-    std::string    m_current_gui_set = {"default"};
+    glm::ivec2              m_screen_size = {};
+    UIImageManager          m_ui_image_atlas;
+    FontManager             m_fonts;
+    std::unique_ptr<Packer> m_packer;
+    std::string             m_current_gui_set = {"default"};
 
     std::vector<std::unique_ptr<UIWindow>> m_windows;
     std::vector<std::vector<UIWindow *>>   m_layers;

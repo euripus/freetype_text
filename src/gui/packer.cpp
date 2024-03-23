@@ -3,19 +3,13 @@
 #include "basic_types.h"
 #include <algorithm>
 
-enum class Direction
-{
-    vertical,
-    horizontal,
-    not_defined
-};
-
+// -------------------MatrixPacker-------------------
 void MatrixPacker::fitWidgets(UIWindow * win) const
 {
     if(win == nullptr)
         return;
 
-    auto list = getMatrixFromTree(win->m_root.get());
+    auto list = getMatrixFromTree(win->getRootWidget());
 
     float max_width = 0.f;
     for(auto const & row: list)
@@ -49,28 +43,35 @@ void MatrixPacker::addWidgetPtr(WidgetMatrix & mtx, Widget * ptr, int32_t x, int
 
 void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32_t y) const
 {
-    if(root == nullptr || root->m_type == ElementType::Unknown)
+    enum class Direction
+    {
+        vertical,
+        horizontal,
+        not_defined
+    };
+
+    if(root == nullptr || root->getType() == ElementType::Unknown)
         return;
 
-    if(root->m_type == ElementType::VerticalLayoutee || root->m_type == ElementType::HorizontalLayoutee)
+    if(root->getType() == ElementType::VerticalLayoutee || root->getType() == ElementType::HorizontalLayoutee)
     {
         Direction dir = Direction::not_defined;
 
-        if(root->m_type == ElementType::VerticalLayoutee)
+        if(root->getType() == ElementType::VerticalLayoutee)
             dir = Direction::vertical;
         else
             dir = Direction::horizontal;
 
-        for(auto const & ch: root->m_children)
+        for(auto const & ch: root->getChildren())
         {
             addSubTree(ls, ch.get(), x, y);
 
-            switch(ch->m_type)
+            switch(ch->getType())
             {
                 case ElementType::VerticalLayoutee:
                 {
                     if(dir == Direction::vertical)
-                        y += ch->m_children.size();
+                        y += ch->getChildren().size();
                     else
                         x += 1;
 
@@ -79,7 +80,7 @@ void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32
                 case ElementType::HorizontalLayoutee:
                 {
                     if(dir == Direction::horizontal)
-                        x += ch->m_children.size();
+                        x += ch->getChildren().size();
                     else
                         y += 1;
 
@@ -128,7 +129,7 @@ float MatrixPacker::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) c
     float result = 0.f;
 
     for(auto const * widget: row)
-        if(widget->m_scale != SizePolicy::scale)
+        if(widget->getSizePolicy() != SizePolicy::scale)
             result += widget->size().x;
 
     return result;
@@ -139,7 +140,7 @@ int32_t MatrixPacker::getNumOfScaledElementsInRow(std::vector<Widget *> const & 
     int32_t result = 0;
 
     for(auto const * widget: row)
-        if(widget->m_scale == SizePolicy::scale)
+        if(widget->getSizePolicy() == SizePolicy::scale)
             result++;
 
     return result;
@@ -164,7 +165,7 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
         {
             glm::vec2 pos, size;
 
-            if(widget->m_scale == SizePolicy::scale)
+            if(widget->getSizePolicy() == SizePolicy::scale)
             {   // resizing branch
                 pos  = glm::vec2(current_pos, current_height);
                 size = glm::vec2(scaled_element_width, row_height);
@@ -172,19 +173,30 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
             else
             {   // fixed size branch, change only position
                 pos  = glm::vec2(current_pos, current_height);
-                size = widget->m_rect.m_extent;
+                size = widget->getRect().m_extent;
             }
 
             Rect2D new_rect{pos, size};
-            widget->m_rect  = new_rect;
-            current_pos    += widget->size().x + m_horizontal_spacing;
+            widget->setRect(new_rect);
+            current_pos += widget->size().x + m_horizontal_spacing;
         }
 
         final_width     = glm::max(current_pos, new_width);
         current_height += row_height + m_vertical_spacing;
     }
 
-    if(win->m_background)
-        win->m_background->m_rect.m_extent = glm::vec2(final_width, current_height);
-    win->m_rect.m_extent = glm::vec2(final_width, current_height);
+    if(auto backround = win->getBackgroundWidget(); backround != nullptr)
+    {
+        auto rect     = backround->getRect();
+        rect.m_extent = glm::vec2(final_width, current_height);
+        backround->setRect(rect);
+    }
+    auto rect     = win->getRect();
+    rect.m_extent = glm::vec2(final_width, current_height);
+    win->setRect(rect);
 }
+
+// -------------------TreePacker-------------------
+void TreePacker::fitWidgets(UIWindow * win) const {}
+
+void TreePacker::setChildGeometry(Rect2D const & r, Widget * wdg) const {}

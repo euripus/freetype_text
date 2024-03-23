@@ -82,7 +82,9 @@ public:
     std::string getId() const { return m_id; }
     glm::vec2   pos() const { return m_pos; }
 
-    ElementType getType() const { return m_type; }
+    ElementType  getType() const { return m_type; }
+    SizePolicy   getSizePolicy() const { return m_scale; }
+    auto const & getChildren() const { return m_children; }
 
 protected:
     UIWindow & m_owner;
@@ -107,7 +109,6 @@ protected:
     Widget *                             m_parent = nullptr;
     std::vector<std::unique_ptr<Widget>> m_children;
 
-    friend class Packer;
     friend class UIWindow;
 };
 

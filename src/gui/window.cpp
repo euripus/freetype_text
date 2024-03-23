@@ -62,6 +62,22 @@ void UIWindow::move(glm::vec2 const & new_origin)
     }
 }
 
+Widget * UIWindow::getRootWidget() const
+{
+    if(m_root)
+        return m_root.get();
+    else
+        return nullptr;
+}
+
+Widget * UIWindow::getBackgroundWidget() const
+{
+    if(m_background)
+        return m_background.get();
+    else
+        return nullptr;
+}
+
 void UIWindow::addCallBack(std::function<void(void)> fn)
 {
     if(fn)

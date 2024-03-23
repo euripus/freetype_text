@@ -35,10 +35,12 @@ public:
     void childResized() { m_child_resized = true; }
 
     Rect2D    getRect() const { return m_rect; }
+    void      setRect(Rect2D const & rect) { m_rect = rect; }
     glm::vec2 size() const { return m_rect.m_extent; }
     glm::vec2 pos() const { return m_pos; }
 
-    Widget * getRootWidget() const { return m_root.get(); }
+    Widget * getRootWidget() const;
+    Widget * getBackgroundWidget() const;
     Widget * getWidgetFromID(std::string const & id_name) const;
 
     template<typename Ret>
@@ -72,8 +74,6 @@ private:
     UIImageGroup const * m_images = nullptr;
 
     std::vector<std::function<void(void)>> m_callbacks;
-
-    friend class Packer;
 };
 
 #endif

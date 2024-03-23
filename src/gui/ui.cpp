@@ -2,6 +2,12 @@
 #include <fstream>
 #include <boost/json.hpp>
 
+UI::UI(Input const & inp)
+    : m_input(inp)
+{
+    m_packer = std::make_unique<MatrixPacker>();
+}
+
 void UI::update(float time)
 {
     for(auto & ptr: m_windows)
@@ -90,5 +96,5 @@ void UI::parseUIResources(std::string const & file_name)
 
 void UI::fitWidgets(UIWindow * win_ptr) const
 {
-    m_packer.fitWidgets(win_ptr);
+    m_packer->fitWidgets(win_ptr);
 }
