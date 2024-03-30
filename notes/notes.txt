@@ -2,6 +2,11 @@ https://microscopic-haematology.com/paediatric-reference-ranges/
 https://eng.libretexts.org/Bookshelves/Computer_Science
 
 https://doc.qt.io/qt-6/layout.html
+https://ps-group.github.io/opengl/
+https://opengameart.org/content/animated-bezerker
+
+/usr/bin/clangd -log=error --background-index --limit-results=500 --completion-style=bundled
+find . \( -iname *.h -o -iname *.cpp \) -print0 | xargs -0 clang-format -i -style=file
 
 GUI library:
 
