@@ -1,0 +1,111 @@
+cmake_minimum_required(VERSION 3.16)
+project(freetype_text VERSION 1.0 LANGUAGES C CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
+find_package(WrapFreetype 2.2.0 REQUIRED)
+
+qt_standard_project_setup()
+
+qt_add_executable(freetype_text
+    src/gui/atlastex.cpp src/gui/atlastex.h
+    src/gui/basic_types.h
+    src/gui/button.cpp src/gui/button.h
+    src/gui/fontmanager.cpp src/gui/fontmanager.h
+    src/gui/imagedata.cpp src/gui/imagedata.h
+    src/gui/packer.cpp src/gui/packer.h
+    src/gui/rect2d.cpp src/gui/rect2d.h
+    src/gui/texfont.cpp src/gui/texfont.h
+    src/gui/text_box.cpp src/gui/text_box.h
+    src/gui/text_fitter.cpp src/gui/text_fitter.h
+    src/gui/ui.cpp src/gui/ui.h
+    src/gui/uiimagemanager.cpp src/gui/uiimagemanager.h
+    src/gui/utf8_utils.cpp src/gui/utf8_utils.h
+    src/gui/widget.cpp src/gui/widget.h
+    src/gui/window.cpp src/gui/window.h
+    src/input/input.cpp src/input/input.h
+    src/main.cpp
+    src/vertex_buffer.cpp src/vertex_buffer.h
+)
+target_include_directories(freetype_text PRIVATE
+    include
+)
+
+target_link_libraries(freetype_text PRIVATE
+    # Remove: L${CMAKE_CURRENT_SOURCE_DIR}/lib
+    Qt::Core
+    Qt::Gui
+)
+
+target_compile_options(freetype_text
+    -Wno-unused-parameter
+    -Wold-style-cast
+    -std=c++17
+)
+
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+    target_compile_definitions(freetype_text PRIVATE
+        NDEBUG
+    )
+
+    target_compile_options(freetype_text
+        -s
+    )
+endif()
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL Release)
+    target_compile_definitions(freetype_text PRIVATE
+        DEBUG
+    )
+endif()
+
+if(WIN32)
+    target_include_directories(freetype_text PRIVATE
+        ../libs/boost_1_82_0
+        include/freetype
+    )
+
+    target_link_libraries(freetype_text PRIVATE
+        # Remove: L${CMAKE_CURRENT_SOURCE_DIR}/../libs/boost_1_82_0/stage/lib
+        # Remove: static
+        # Remove: static-libgcc
+        # Remove: static-libstdc++
+        boost_json-mgw8-mt-x32-1_82
+        freetype.dll
+        gdi32
+        glew32dll
+        glfw3dll
+        glu32
+        opengl32
+        pthread
+        zlibdll
+    )
+endif()
+
+if(UNIX)
+    target_include_directories(freetype_text PRIVATE
+        /usr/include/freetype2
+    )
+
+    target_link_libraries(freetype_text PRIVATE
+        GL
+        GLEW
+        WrapFreetype::WrapFreetype
+        boost_json
+        glfw
+    )
+endif()
+
+install(TARGETS freetype_text
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+qt_generate_deploy_app_script(
+    TARGET freetype_text
+    FILENAME_VARIABLE deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script})
