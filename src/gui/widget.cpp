@@ -2,6 +2,7 @@
 #include "window.h"
 #include "ui.h"
 #include <algorithm>
+#include <assert>
 #include "../vertex_buffer.h"
 
 ElementType WidgetDesc::GetElementTypeFromString(std::string_view name)
@@ -123,6 +124,8 @@ void Widget::move(glm::vec2 const & new_origin)
 
 void Widget::addWidget(std::unique_ptr<Widget> widget)
 {
+	assert(m_type == VerticalLayoutee || m_type == HorizontalLayoutee);
+
     widget->m_parent = this;
     m_children.push_back(std::move(widget));
 }

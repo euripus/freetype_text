@@ -61,9 +61,10 @@ public:
     void update(float time, bool check_cursor);
     void move(glm::vec2 const & new_origin);
 
-    virtual void addWidget(std::unique_ptr<Widget> widget);
-    virtual void removeWidget(Widget * widget);
-    virtual bool isChild(Widget * parent_widget);
+    // virtual & final - to prevent overriding in descendants
+    virtual void addWidget(std::unique_ptr<Widget> widget) final;
+    virtual void removeWidget(Widget * widget) final;
+    virtual bool isChild(Widget * parent_widget) final;
 
     Widget * parent() const { return m_parent; }
     int32_t  getNumChildren() const { return m_children.size(); }
