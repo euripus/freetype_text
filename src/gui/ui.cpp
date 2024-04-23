@@ -2,15 +2,14 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-UI::UI(Input const & inp)
-    : m_input(inp)
+UI::UI(Input const & inp) : m_input(inp)
 {
     m_packer = std::make_unique<MatrixPacker>();
 }
 
 void UI::update(float time)
 {
-    for(auto & ptr: m_windows)
+    for(auto & ptr : m_windows)
     {
         ptr->update(time, true);
     }
@@ -18,7 +17,7 @@ void UI::update(float time)
 
 void UI::draw(VertexBuffer & background, VertexBuffer & text) const
 {
-    for(auto const & ptr: m_windows)
+    for(auto const & ptr : m_windows)
     {
         ptr->draw(background, text);
     }

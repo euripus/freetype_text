@@ -2,14 +2,14 @@
 #include <GL/glew.h>
 #include <assert.h>
 
-VertexBuffer::VertexBuffer(ComponentsFlags format)
-    : m_pos_id(0),
-      m_tex_id(0),
-      m_norm_id(0),
-      m_indices_id(0),
-      m_components(format),
-      m_is_generated(false),
-      m_state(State::NOINIT)
+VertexBuffer::VertexBuffer(ComponentsFlags format) :
+    m_pos_id(0),
+    m_tex_id(0),
+    m_norm_id(0),
+    m_indices_id(0),
+    m_components(format),
+    m_is_generated(false),
+    m_state(State::NOINIT)
 {}
 
 VertexBuffer::~VertexBuffer()
@@ -211,7 +211,7 @@ void VertexBuffer::drawBuffer()
     }
 }
 
-void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
+void Add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
                     float t1)
 {
     unsigned int indices[6] = {0, 1, 2, 0, 3, 1};

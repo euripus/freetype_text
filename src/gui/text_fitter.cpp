@@ -7,7 +7,7 @@ float MaxStringWidthInLines(TexFont const & font, Lines const & lines)
 {
     float result = 0.f;
 
-    for(auto const & line: lines)
+    for(auto const & line : lines)
     {
         result = glm::max(result, font.getTextSize(line.c_str()).x);
     }
@@ -39,7 +39,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
     float       current_width  = 0.f;
     float       current_height = string_height;
 
-    for(auto const & word: words)
+    for(auto const & word : words)
     {
         float const word_width = font.getTextSize(word.c_str()).x;
 
@@ -69,7 +69,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
         else
         {
             current_string += word + ' ';
-            current_width  += blank_width;
+            current_width += blank_width;
         }
     }
 
@@ -93,8 +93,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
         switch(scale_mode)
         {
-            case SizePolicy::scale:
-            {
+            case SizePolicy::scale: {
                 float const k = rect.m_extent.y / rect.m_extent.x;   // maintaining the specified proportions
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
                 float const width     = glm::sqrt(text_area / k);
@@ -103,14 +102,12 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
                 break;
             }
-            case SizePolicy::fixed_width:
-            {
+            case SizePolicy::fixed_width: {
                 SplitTextForWidth(result, words, font, rect.m_extent.x);
 
                 break;
             }
-            case SizePolicy::fixed_height:
-            {
+            case SizePolicy::fixed_height: {
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
                 float const width     = text_area / rect.m_extent.y;
 
@@ -119,8 +116,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
                 break;
             }
             case SizePolicy::trim:
-            case SizePolicy::none:
-            {
+            case SizePolicy::none: {
                 SplitTextForWidth(result, words, font, rect.m_extent.x, rect.m_extent.y, true);
 
                 break;
@@ -152,7 +148,7 @@ std::string TrimWordToWidth(TexFont const & font, float const width, std::string
         }
 
         cur_width += glyph.advance_x;
-        result    += std::string(word.c_str() + i, word.c_str() + i + utf8_surrogate_len(word.c_str() + i));
+        result += std::string(word.c_str() + i, word.c_str() + i + utf8_surrogate_len(word.c_str() + i));
     }
 
     return result;

@@ -75,6 +75,7 @@ public:
     void hide() { m_visible = false; }
     bool visible() const { return m_visible; }
     bool focused() const { return m_focused; }
+    void sizeUpdated();
 
     glm::vec2   size() const { return m_rect.m_extent; }
     glm::vec2   sizeHint() const { return m_size_hint; }
@@ -86,7 +87,7 @@ public:
     ElementType  getType() const { return m_type; }
     SizePolicy   getSizePolicy() const { return m_scale; }
     auto const & getChildren() const { return m_children; }
-	auto       & getChildren() const { return m_children; }
+    auto &       getChildren() { return m_children; }
 
 protected:
     UIWindow & m_owner;

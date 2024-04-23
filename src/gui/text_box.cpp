@@ -2,10 +2,8 @@
 #include "window.h"
 #include "text_fitter.h"
 
-TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)
-    : Widget(desc, owner),
-      m_text(desc.static_text),
-      m_text_horizontal_align(desc.text_hor)
+TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner) :
+    Widget(desc, owner), m_text(desc.static_text), m_text_horizontal_align(desc.text_hor)
 {
     adjustTextToLines();
 }
@@ -20,27 +18,24 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     glm::vec2   pen_pos(0.f, 0.f);
     pen_pos.y = m_pos.y + m_fields.w + m_rect.height() - line_height;
 
-    for(auto const & line: m_lines)
+    for(auto const & line : m_lines)
     {
         switch(m_text_horizontal_align)
         {
             case Align::left:
             case Align::top:   // horizontal align only
-            case Align::bottom:
-            {
+            case Align::bottom: {
                 pen_pos.x = m_pos.x + m_fields.x;
 
                 break;
             }
-            case Align::center:
-            {
+            case Align::center: {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
                 pen_pos.x              = m_pos.x + (m_rect.width() - line_width) / 2.f;
 
                 break;
             }
-            case Align::right:
-            {
+            case Align::right: {
                 float const line_width = m_font->getTextSize(line.c_str()).x;
                 float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
                 pen_pos.x              = m_pos.x + delta;

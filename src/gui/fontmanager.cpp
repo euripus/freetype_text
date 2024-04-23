@@ -56,13 +56,13 @@ void FontManager::parseFontsRes(std::string const & file_name)
         auto const & arr = fonts_set_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & font_entry: arr)
+            for(auto const & font_entry : arr)
             {
                 auto const & font_obj = font_entry.as_object();
                 FontDataDesc desc;
                 std::string  glyphs;
 
-                for(auto const & kvp: font_obj)
+                for(auto const & kvp : font_obj)
                 {
                     if(kvp.key() == sid_file_name)
                     {
@@ -143,7 +143,7 @@ void FontManager::resizeAtlas()
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & fnt: m_fonts)
+    for(auto & fnt : m_fonts)
     {
         fnt.second->reloadGlyphs();
     }

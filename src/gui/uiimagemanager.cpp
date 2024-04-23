@@ -54,19 +54,19 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
 
     // add 9 rectangles to the vertex buffer
     // bottom row
-    add2DRectangle(vb, x0, y0, x1, y1, s0, t0, s1, t1);
-    add2DRectangle(vb, x1, y0, x2, y1, s1, t0, s2, t1);
-    add2DRectangle(vb, x2, y0, x3, y1, s2, t0, s3, t1);
+    Add2DRectangle(vb, x0, y0, x1, y1, s0, t0, s1, t1);
+    Add2DRectangle(vb, x1, y0, x2, y1, s1, t0, s2, t1);
+    Add2DRectangle(vb, x2, y0, x3, y1, s2, t0, s3, t1);
 
     // middle row
-    add2DRectangle(vb, x0, y1, x1, y2, s0, t1, s1, t2);
-    add2DRectangle(vb, x1, y1, x2, y2, s1, t1, s2, t2);
-    add2DRectangle(vb, x2, y1, x3, y2, s2, t1, s3, t2);
+    Add2DRectangle(vb, x0, y1, x1, y2, s0, t1, s1, t2);
+    Add2DRectangle(vb, x1, y1, x2, y2, s1, t1, s2, t2);
+    Add2DRectangle(vb, x2, y1, x3, y2, s2, t1, s3, t2);
 
     // top row
-    add2DRectangle(vb, x0, y2, x1, y3, s0, t2, s1, t3);
-    add2DRectangle(vb, x1, y2, x2, y3, s1, t2, s2, t3);
-    add2DRectangle(vb, x2, y2, x3, y3, s2, t2, s3, t3);
+    Add2DRectangle(vb, x0, y2, x1, y3, s0, t2, s1, t3);
+    Add2DRectangle(vb, x1, y2, x2, y3, s1, t2, s2, t3);
+    Add2DRectangle(vb, x2, y2, x3, y3, s2, t2, s3, t3);
 
     // move pen position
     pos.x += new_size.x;
@@ -111,12 +111,12 @@ void UIImageManager::parseUIRes(std::string const & file_name)
         auto const & arr = gui_set_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & set_val: arr)
+            for(auto const & set_val : arr)
             {
                 std::string gr_name;
 
                 auto const & array_obj = set_val.as_object();
-                for(auto const & kvp: array_obj)
+                for(auto const & kvp : array_obj)
                 {
                     if(kvp.key() == sid_set_name)
                     {
@@ -143,7 +143,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
     auto const & arr = jv.get_array();
     if(!arr.empty())
     {
-        for(auto const & kvp: arr)
+        for(auto const & kvp : arr)
         {
             std::string          path;
             std::string          name;
@@ -152,7 +152,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             auto const it = kvp.get_object().begin();
             name          = it->key();
 
-            for(auto const & kvp2: it->value().as_object())
+            for(auto const & kvp2 : it->value().as_object())
             {
                 if(kvp2.key() == UIImageManager::sid_texture)
                     path = kvp2.value().as_string();
@@ -191,7 +191,7 @@ void UIImageManager::resizeAtlas()
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & gr: m_groups)
+    for(auto & gr : m_groups)
     {
         gr.second->reloadImages();
     }
@@ -256,7 +256,7 @@ void UIImageGroup::reloadImages()
     auto regions = std::move(m_regions);
     m_regions.clear();
 
-    for(auto & reg: regions)
+    for(auto & reg : regions)
     {
         tex::ImageData image;
         if(!tex::ReadTGA(reg.path, image))

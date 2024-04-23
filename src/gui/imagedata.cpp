@@ -103,9 +103,9 @@ bool ReadBMP(std::string const & file_name, ImageData & image)
 
     auto * buffer = file.data();
 
-    auto *             cur_ptr   = buffer;
-    BITMAPFILEHEADER * p_header  = reinterpret_cast<BITMAPFILEHEADER *>(cur_ptr);
-    cur_ptr                     += sizeof(BITMAPFILEHEADER);
+    auto *             cur_ptr  = buffer;
+    BITMAPFILEHEADER * p_header = reinterpret_cast<BITMAPFILEHEADER *>(cur_ptr);
+    cur_ptr += sizeof(BITMAPFILEHEADER);
     if(p_header->bfSize != file_length || p_header->bfType != 0x4D42)   // little-endian
         return res;
 

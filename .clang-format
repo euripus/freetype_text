@@ -79,7 +79,7 @@ IncludeCategories:
     Priority:        1
 IncludeIsMainRegex: '(Test)?$'
 IndentAccessModifiers: false
-IndentCaseBlocks: true
+IndentCaseBlocks: false
 IndentCaseLabels: true
 IndentExternBlock: Indent
 IndentGotoLabels: false

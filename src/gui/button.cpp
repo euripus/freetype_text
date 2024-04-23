@@ -2,10 +2,8 @@
 #include "text_fitter.h"
 #include "ui.h"
 
-Button::Button(WidgetDesc const & desc, UIWindow & owner)
-    : Widget(desc, owner),
-      m_caption(std::move(desc.static_text)),
-      m_text_horizontal_align(desc.text_hor)
+Button::Button(WidgetDesc const & desc, UIWindow & owner) :
+    Widget(desc, owner), m_caption(std::move(desc.static_text)), m_text_horizontal_align(desc.text_hor)
 {
     // Trim text to button size
     auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, SizePolicy::trim, m_caption);
@@ -67,18 +65,15 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     auto const &                  images = m_owner.getImageGroup();
     switch(state)
     {
-        case ButtonState::clicked:
-        {
+        case ButtonState::clicked: {
             result = images.getImageRegion(sid_button_clicked);
             break;
         }
-        case ButtonState::unclicked:
-        {
+        case ButtonState::unclicked: {
             result = images.getImageRegion(sid_button_unclicked);
             break;
         }
-        case ButtonState::disabled:
-        {
+        case ButtonState::disabled: {
             result = images.getImageRegion(sid_button_disabled);
             break;
         }
@@ -103,20 +98,17 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     {
         case Align::left:
         case Align::top:   // horizontal align only
-        case Align::bottom:
-        {
+        case Align::bottom: {
             pen_pos.x = m_pos.x + m_fields.x;
 
             break;
         }
-        case Align::center:
-        {
+        case Align::center: {
             pen_pos.x = m_pos.x + (m_rect.width() - line_width) / 2.f;
 
             break;
         }
-        case Align::right:
-        {
+        case Align::right: {
             float const delta = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
             pen_pos.x         = m_pos.x + delta;
 

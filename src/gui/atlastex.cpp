@@ -6,8 +6,7 @@
 
 #include <GL/glew.h>
 
-AtlasTex::AtlasTex(uint32_t size)
-    : m_size{size}
+AtlasTex::AtlasTex(uint32_t size) : m_size{size}
 {
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
@@ -77,7 +76,7 @@ void AtlasTex::atlasMerge()
         if(node->y == next->y)
         {
             node->z += next->z;
-            it       = m_nodes.erase(it + 1);
+            it = m_nodes.erase(it + 1);
         }
     }
 }
@@ -134,9 +133,9 @@ glm::ivec4 AtlasTex::getRegion(uint32_t width, uint32_t height)
 
         if(node->x < (prev->x + prev->z))
         {
-            int32_t shrink  = prev->x + prev->z - node->x;
-            node->x        += shrink;
-            node->z        -= shrink;
+            int32_t shrink = prev->x + prev->z - node->x;
+            node->x += shrink;
+            node->z -= shrink;
 
             if(node->z <= 0)
             {

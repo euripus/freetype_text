@@ -86,14 +86,13 @@ void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
         else
             dir = Direction::horizontal;
 
-        for(auto const & elm: el.elements)
+        for(auto const & elm : el.elements)
         {
             addElement(result, elm, x, y);
 
             switch(elm.type)
             {
-                case ElementType::widget:
-                {
+                case ElementType::widget: {
                     if(dir == Direction::vertical)
                         y += 1;
                     else if(dir == Direction::horizontal)
@@ -101,8 +100,7 @@ void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
 
                     break;
                 }
-                case ElementType::collumn:
-                {
+                case ElementType::collumn: {
                     if(dir == Direction::vertical)
                         y += elm.size().y;
                     else
@@ -110,8 +108,7 @@ void addElement(WidgetMatrix & mtx, element & el, int32_t x, int32_t y)
 
                     break;
                 }
-                case ElementType::row:
-                {
+                case ElementType::row: {
                     if(dir == Direction::horizontal)
                         x += elm.size().x;
                     else

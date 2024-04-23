@@ -64,17 +64,13 @@ private:
 
 struct VertexBufferBinder
 {
-    VertexBufferBinder(VertexBuffer & vb)
-        : m_vb(vb)
-    {
-        m_vb.upload();
-    }
+    VertexBufferBinder(VertexBuffer & vb) : m_vb(vb) { m_vb.upload(); }
     ~VertexBufferBinder() { m_vb.clear(); }
 
     VertexBuffer & m_vb;
 };
 
-void add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
+void Add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, float s0, float t0, float s1,
                     float t1);
 
 #endif
