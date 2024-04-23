@@ -32,7 +32,6 @@ public:
     bool visible() const { return m_visible; }
 
     void move(glm::vec2 const & new_origin);
-    void childResized() { m_child_resized = true; }
 
     Rect2D    getRect() const { return m_rect; }
     void      setRect(Rect2D const & rect) { m_rect = rect; }
@@ -60,9 +59,9 @@ public:
 
 private:
     std::string m_caption;
-    bool        m_visible       = false;
-    bool        m_draw_caption  = false;
-    bool        m_child_resized = false;
+    bool        m_visible      = false;
+    bool        m_draw_caption = false;
+    bool        m_size_updated = true;
 
     std::unique_ptr<Widget> m_root;
     std::unique_ptr<Widget> m_background;

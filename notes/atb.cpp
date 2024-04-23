@@ -132,3 +132,5 @@ WidgetMatrix getWidgetMatrix(element const & root)
 
     return result;
 }
+
+// =======================================================

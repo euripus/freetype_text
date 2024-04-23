@@ -3,6 +3,79 @@
 #include "basic_types.h"
 #include <algorithm>
 
+template <typename T>
+T const & GetRef(std::unique_ptr<T> const & ptr)
+{
+    if(ptr)
+    {
+        return *ptr.get();
+    }
+    
+    throw std::runtime_error("Error dereferencing null unique_ptr!");
+}
+
+template <typename T>
+T & GetRef(std::unique_ptr<T> & ptr)
+{
+    if(ptr)
+    {
+        return *ptr.get();
+    }
+    
+    throw std::runtime_error("Error dereferencing null unique_ptr!");
+}
+
+std::vec2 Packer::getWidgetSize(Widget const & w) const
+{
+    std::vec2 result{0.0f};
+
+    switch(w.getType())
+    {
+        case ElementType::VerticalLayoutee:
+        {       
+            for(auto const & ch: w.getChildren())
+            {
+                auto const child_size = getWidgetSize(GetRef(ch));
+
+                result.x = std::max(result.x, child_size.x);
+                result.y += child_size.y;
+            }
+            
+            if(w.getNumChildren() > 1)
+            {
+                result.y += m_horizontal_spacing * (w.getNumChildren() - 1);
+            }
+
+            break;
+        }
+        case ElementType::HorizontalLayoutee:
+        {           
+            for(auto const & ch: w.getChildren())
+            {
+                auto const child_size = getWidgetSize(GetRef(ch));
+
+                result.x += child_size.x;
+                result.y = std::max(result.y, child_size.y);
+            }
+
+            if(w.getNumChildren() > 1)
+            {
+                result.x += m_vertical_spacing * (w.getNumChildren() - 1);
+            }
+
+            break;
+        }
+        default:
+        {
+            result = w.size();
+
+            break;
+        }
+    }
+
+    return result;
+}
+
 // -------------------MatrixPacker-------------------
 void MatrixPacker::fitWidgets(UIWindow * win) const
 {
@@ -197,6 +270,55 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
 }
 
 // -------------------TreePacker-------------------
-void TreePacker::fitWidgets(UIWindow * win) const {}
+void TreePacker::fitWidgets(UIWindow * win) const 
+{
+	if(win->getRootWidget() == nullptr)
+		return;
+
+	auto const window_size = getWidgetSize(*win->getRootWidget());
+}
 
 void TreePacker::setChildGeometry(Rect2D const & r, Widget * wdg) const {}
+
+void TreePacker::arrangeWidgetsInRow(Widget & parent, std::vec2 cur_tlpos) const
+{
+	if(parent.getType() != ElementType::VerticalLayoutee || parent.getType() != ElementType::HorizontalLayoutee)
+		return;
+	
+	float max_height = 0.0f;
+
+	for(auto & ch: parent.getChildren())
+    {
+		Widget & w = GetRef(ch);
+		auto const cur_widget_size = getWidgetSize(w);
+		//max_height = std::max(max_height, cur_widget_size.y);
+		
+		switch(w.getType())
+		{
+			case ElementType::VerticalLayoutee:
+			{
+				arrangeWidgetsInColumn(w, cur_tlpos);
+				cur_tlpos.x += cur_widget_size.x;
+
+				break;
+			}
+			case ElementType::HorizontalLayoutee:
+			{
+				arrangeWidgetsInRow(w, cur_tlpos);
+				cur_tlpos.x += cur_widget_size.x;
+
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+	}
+}
+
+void TreePacker::arrangeWidgetsInColumn(Widget & parent, std::vec2 cur_tlpos) const
+{
+	if(parent.getType() != ElementType::VerticalLayoutee || parent.getType() != ElementType::HorizontalLayoutee)
+		return;
+}

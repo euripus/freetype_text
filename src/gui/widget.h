@@ -86,6 +86,7 @@ public:
     ElementType  getType() const { return m_type; }
     SizePolicy   getSizePolicy() const { return m_scale; }
     auto const & getChildren() const { return m_children; }
+	auto       & getChildren() const { return m_children; }
 
 protected:
     UIWindow & m_owner;

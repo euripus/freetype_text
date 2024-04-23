@@ -25,10 +25,12 @@ void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
 
 void UIWindow::update(float time, bool check_cursor)
 {
-    if(m_child_resized)
+    if(m_size_updated)
     {
         m_owner.fitWidgets(this);
         move(m_pos);
+		
+		m_size_updated = false;
     }
 
     if(!m_visible)
@@ -142,8 +144,6 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
             m_background                  = GetWidgetFromJson(background_entry.as_object(), *this);
         }
     }
-
-    childResized();
 }
 
 std::unique_ptr<Widget> UIWindow::GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner)

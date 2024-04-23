@@ -12,6 +12,8 @@ public:
 
     void setHorizontalSpacing(float val) { m_horizontal_spacing = val; }
     void setVerticalSpacing(float val) { m_vertical_spacing = val; }
+	
+	std::vec2 getWidgetSize(Widget const & w) const;
 
     virtual void fitWidgets(UIWindow * win) const = 0;
 
@@ -45,6 +47,9 @@ public:
 
 protected:
     void setChildGeometry(Rect2D const & r, Widget * wdg) const;
+	
+	void arrangeWidgetsInRow(Widget & parent, std::vec2 cur_tlpos) const;
+	void arrangeWidgetsInColumn(Widget & parent, std::vec2 cur_tlpos) const;
 };
 
 #endif

@@ -78,5 +78,5 @@ void TextBox::adjustTextToLines()
     m_rect.m_extent = glm::vec2(text_width + m_fields.x + m_fields.y, text_height + m_fields.z + m_fields.w);
     m_formated      = true;
 
-    m_owner.childResized();   // resize text area message
+    sizeUpdated();
 }

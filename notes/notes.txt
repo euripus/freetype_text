@@ -1,5 +1,7 @@
 https://microscopic-haematology.com/paediatric-reference-ranges/
 https://eng.libretexts.org/Bookshelves/Computer_Science
+https://github.com/neketka/Snowfall-Public
+https://boards.4chan.org/t/thread/1253884?ref=dtf.ru#p1301988
 
 https://doc.qt.io/qt-6/layout.html
 https://ps-group.github.io/opengl/
