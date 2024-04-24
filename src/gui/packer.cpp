@@ -25,7 +25,7 @@ T & GetRef(std::unique_ptr<T> & ptr)
     throw std::runtime_error("Error dereferencing null unique_ptr!");
 }
 
-glm::vec2 Packer::getWidgetSize(Widget const & w) const
+glm::vec2 Packer::getWidgetSize(Widget const & w, std::function<glm::vec2(Widget const &)> func) const
 {
     glm::vec2 result{0.0f};
 
@@ -64,7 +64,7 @@ glm::vec2 Packer::getWidgetSize(Widget const & w) const
             break;
         }
         default: {
-            result = w.size();
+            result = func(w);
 
             break;
         }
@@ -269,12 +269,13 @@ void TreePacker::fitWidgets(UIWindow * win) const
     if(win->getRootWidget() == nullptr)
         return;
 
-    auto const window_size = getWidgetSize(*win->getRootWidget());
+    auto const min_window_size = getWidgetSize(*win->getRootWidget(), [](Widget const & w){ return w.sizeHint(); });
+	auto const cur_window_size = getWidgetSize(*win->getRootWidget(), [](Widget const & w){ return w.sizeHint(); });
 }
 
 void TreePacker::setChildGeometry(Rect2D const & r, Widget * wdg) const {}
 
-void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos) const
+void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const
 {
     if(parent.getType() != ElementType::VerticalLayoutee
        || parent.getType() != ElementType::HorizontalLayoutee)
@@ -285,24 +286,27 @@ void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos) const
     for(auto & ch : parent.getChildren())
     {
         Widget &   w               = GetRef(ch);
-        auto const cur_widget_size = getWidgetSize(w);
+        auto const cur_widget_size = getWidgetSize(w, [](Widget const & w){ return w.size(); });
         // max_height = std::max(max_height, cur_widget_size.y);
 
         switch(w.getType())
         {
             case ElementType::VerticalLayoutee: {
                 arrangeWidgetsInColumn(w, cur_tlpos);
-                cur_tlpos.x += cur_widget_size.x;
+                cur_tlpos.x += cur_widget_size.x + m_horizontal_spacing;
 
                 break;
             }
             case ElementType::HorizontalLayoutee: {
                 arrangeWidgetsInRow(w, cur_tlpos);
-                cur_tlpos.x += cur_widget_size.x;
+                cur_tlpos.x += cur_widget_size.x + m_horizontal_spacing;
 
                 break;
             }
             default: {
+				pos  = glm::vec2(cur_tlpos.x, cur_tlpos.y);
+                size = glm::vec2(scaled_element_width, row_height);
+				
                 break;
             }
         }

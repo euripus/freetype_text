@@ -13,7 +13,7 @@ public:
     void setHorizontalSpacing(float val) { m_horizontal_spacing = val; }
     void setVerticalSpacing(float val) { m_vertical_spacing = val; }
 
-    glm::vec2 getWidgetSize(Widget const & w) const;
+    glm::vec2 getWidgetSize(Widget const & w, std::function<glm::vec2(Widget const &)> func) const;
 
     virtual void fitWidgets(UIWindow * win) const = 0;
 
