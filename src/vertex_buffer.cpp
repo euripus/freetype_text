@@ -2,14 +2,14 @@
 #include <GL/glew.h>
 #include <assert.h>
 
-VertexBuffer::VertexBuffer(ComponentsFlags format) :
-    m_pos_id(0),
-    m_tex_id(0),
-    m_norm_id(0),
-    m_indices_id(0),
-    m_components(format),
-    m_is_generated(false),
-    m_state(State::NOINIT)
+VertexBuffer::VertexBuffer(ComponentsFlags format)
+    : m_pos_id(0),
+      m_tex_id(0),
+      m_norm_id(0),
+      m_indices_id(0),
+      m_components(format),
+      m_is_generated(false),
+      m_state(State::NOINIT)
 {}
 
 VertexBuffer::~VertexBuffer()

@@ -64,7 +64,11 @@ private:
 
 struct VertexBufferBinder
 {
-    VertexBufferBinder(VertexBuffer & vb) : m_vb(vb) { m_vb.upload(); }
+    VertexBufferBinder(VertexBuffer & vb)
+        : m_vb(vb)
+    {
+        m_vb.upload();
+    }
     ~VertexBufferBinder() { m_vb.clear(); }
 
     VertexBuffer & m_vb;

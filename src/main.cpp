@@ -105,42 +105,48 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
 
     switch(key)
     {
-        case GLFW_KEY_ESCAPE: {
+        case GLFW_KEY_ESCAPE:
+        {
             if(action == GLFW_PRESS)
             {
                 g_running = false;
             }
             break;
         }
-        case GLFW_KEY_LEFT: {
+        case GLFW_KEY_LEFT:
+        {
             if(action == GLFW_PRESS || action == GLFW_REPEAT)
             {
                 rty -= 5.0f;
             }
             break;
         }
-        case GLFW_KEY_RIGHT: {
+        case GLFW_KEY_RIGHT:
+        {
             if(action == GLFW_PRESS || action == GLFW_REPEAT)
             {
                 rty += 5.0f;
             }
             break;
         }
-        case GLFW_KEY_DOWN: {
+        case GLFW_KEY_DOWN:
+        {
             if(action == GLFW_PRESS || action == GLFW_REPEAT)
             {
                 rtx -= 5.0f;
             }
             break;
         }
-        case GLFW_KEY_UP: {
+        case GLFW_KEY_UP:
+        {
             if(action == GLFW_PRESS || action == GLFW_REPEAT)
             {
                 rtx += 5.0f;
             }
             break;
         }
-        case 'W': {
+        case 'W':
+        {
             if(action == GLFW_PRESS)
             {
                 g_wire = (!g_wire);
@@ -155,7 +161,8 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
             }
             break;
         }
-        case GLFW_KEY_F1: {
+        case GLFW_KEY_F1:
+        {
             if(action == GLFW_PRESS)
             {
                 is_full_screen = !is_full_screen;

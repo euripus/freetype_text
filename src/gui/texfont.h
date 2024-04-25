@@ -157,7 +157,10 @@ struct MarkupText
         STRIKETHROUGH
     };
 
-    MarkupText(TexFont & font, LineType line = LineType::UNDERLINE) : m_font(font), m_line(line) {}
+    MarkupText(TexFont & font, LineType line = LineType::UNDERLINE)
+        : m_font(font),
+          m_line(line)
+    {}
 
     void addText(VertexBuffer & vb, char const * text, glm::vec2 & pos) const;
     void addGlyph(VertexBuffer & vb, std::uint32_t ucodepoint, Glyph const * prev_glyph,

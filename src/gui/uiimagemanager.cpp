@@ -111,12 +111,12 @@ void UIImageManager::parseUIRes(std::string const & file_name)
         auto const & arr = gui_set_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & set_val : arr)
+            for(auto const & set_val: arr)
             {
                 std::string gr_name;
 
                 auto const & array_obj = set_val.as_object();
-                for(auto const & kvp : array_obj)
+                for(auto const & kvp: array_obj)
                 {
                     if(kvp.key() == sid_set_name)
                     {
@@ -143,7 +143,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
     auto const & arr = jv.get_array();
     if(!arr.empty())
     {
-        for(auto const & kvp : arr)
+        for(auto const & kvp: arr)
         {
             std::string          path;
             std::string          name;
@@ -152,7 +152,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             auto const it = kvp.get_object().begin();
             name          = it->key();
 
-            for(auto const & kvp2 : it->value().as_object())
+            for(auto const & kvp2: it->value().as_object())
             {
                 if(kvp2.key() == UIImageManager::sid_texture)
                     path = kvp2.value().as_string();
@@ -191,7 +191,7 @@ void UIImageManager::resizeAtlas()
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & gr : m_groups)
+    for(auto & gr: m_groups)
     {
         gr.second->reloadImages();
     }
@@ -256,7 +256,7 @@ void UIImageGroup::reloadImages()
     auto regions = std::move(m_regions);
     m_regions.clear();
 
-    for(auto & reg : regions)
+    for(auto & reg: regions)
     {
         tex::ImageData image;
         if(!tex::ReadTGA(reg.path, image))

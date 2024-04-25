@@ -25,9 +25,9 @@ const struct {
 #include FT_ERRORS_H
     // clang-format on
 
-    constexpr std::uint32_t HRES  = 64;
-constexpr float             HRESf = 64.0f;
-constexpr std::int32_t      DPI   = 72;
+    constexpr std::uint32_t HRES = 64;
+constexpr float        HRESf     = 64.0f;
+constexpr std::int32_t DPI       = 72;
 
 // https://stackoverflow.com/questions/8638792/how-to-convert-packed-integer-16-16-fixed-point-to-float
 auto convert = [](auto const & fixed, int fraction = 6) {
@@ -125,23 +125,23 @@ static void SetBuffer(std::vector<unsigned char> & buffer, int32_t width, int32_
 }
 
 TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_size, bool hinting, bool kerning,
-                 float outline_thickness, Glyph::OutlineType outline_type, RenderMode mode) :
-    m_owner{owner},
-    m_size{pt_size},
-    m_hinting{hinting},
-    m_outline_type{outline_type},
-    m_outline_thickness{outline_thickness},
-    m_kerning{kerning},
-    m_lcd_weights{},
-    m_height{0.0f},
-    m_linegap{0.0f},
-    m_ascender{0.0f},
-    m_descender{0.0f},
-    m_underline_position{0.0f},
-    m_underline_thickness{0.0f},
-    m_render_mode{mode},
-    m_location{FontLocation::FONT_FILE},
-    m_filename{filename}
+                 float outline_thickness, Glyph::OutlineType outline_type, RenderMode mode)
+    : m_owner{owner},
+      m_size{pt_size},
+      m_hinting{hinting},
+      m_outline_type{outline_type},
+      m_outline_thickness{outline_thickness},
+      m_kerning{kerning},
+      m_lcd_weights{},
+      m_height{0.0f},
+      m_linegap{0.0f},
+      m_ascender{0.0f},
+      m_descender{0.0f},
+      m_underline_position{0.0f},
+      m_underline_thickness{0.0f},
+      m_render_mode{mode},
+      m_location{FontLocation::FONT_FILE},
+      m_filename{filename}
 {
     assert(!filename.empty());
     assert(pt_size > 0);
@@ -160,22 +160,22 @@ TexFont::TexFont(FontManager & owner, std::string const & filename, float pt_siz
 
 TexFont::TexFont(FontManager & owner, unsigned char const * memory_base, size_t memory_size, float pt_size,
                  bool hinting, bool kerning, float outline_thickness, Glyph::OutlineType outline_type,
-                 RenderMode mode) :
-    m_owner{owner},
-    m_size{pt_size},
-    m_hinting{hinting},
-    m_outline_type{outline_type},
-    m_outline_thickness{outline_thickness},
-    m_kerning{kerning},
-    m_lcd_weights{},
-    m_height{0.0f},
-    m_linegap{0.0f},
-    m_ascender{0.0f},
-    m_descender{0.0f},
-    m_underline_position{0.0f},
-    m_underline_thickness{0.0f},
-    m_render_mode{mode},
-    m_location{FontLocation::FONT_MEMORY}
+                 RenderMode mode)
+    : m_owner{owner},
+      m_size{pt_size},
+      m_hinting{hinting},
+      m_outline_type{outline_type},
+      m_outline_thickness{outline_thickness},
+      m_kerning{kerning},
+      m_lcd_weights{},
+      m_height{0.0f},
+      m_linegap{0.0f},
+      m_ascender{0.0f},
+      m_descender{0.0f},
+      m_underline_position{0.0f},
+      m_underline_thickness{0.0f},
+      m_render_mode{mode},
+      m_location{FontLocation::FONT_MEMORY}
 {
     assert(pt_size > 0);
     assert(memory_base);
@@ -544,7 +544,7 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
 
 void TexFont::generateKerning()
 {
-    for(auto & glyph : m_glyphs)
+    for(auto & glyph: m_glyphs)
     {
         generateKerning(glyph);
     }
@@ -564,7 +564,7 @@ void TexFont::generateKerning(Glyph & glyph)
     glyph_index = FT_Get_Char_Index(face, glyph.charcode);
     glyph.kerning.clear();
 
-    for(auto & prev_glyph : m_glyphs)
+    for(auto & prev_glyph: m_glyphs)
     {
         prev_index = FT_Get_Char_Index(face, prev_glyph.charcode);
         FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
@@ -605,10 +605,10 @@ glm::vec2 TexFont::getTextSize(char const * text) const
         {
             kerning = glyphGetKerning(glyph, prev_glyph->charcode);
         }
-        prev_glyph = &glyph;
-        size.x += kerning;
+        prev_glyph  = &glyph;
+        size.x     += kerning;
 
-        size.y = glm::max(size.y, static_cast<float>(glyph.offset_y));
+        size.y  = glm::max(size.y, static_cast<float>(glyph.offset_y));
         size.x += glyph.advance_x;
     }
 
@@ -639,15 +639,15 @@ void TexFont::addGlyph(VertexBuffer & vb, uint32_t ucodepoint, Glyph const * pre
         kerning = glyphGetKerning(glyph, prev_glyph->charcode);
     }
 
-    pos.x += kerning;
-    float x0 = pos.x + glyph.offset_x;
-    float y0 = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
-    float x1 = x0 + static_cast<int32_t>(glyph.width);
-    float y1 = pos.y + glyph.offset_y;
-    float s0 = glyph.s0;
-    float t0 = glyph.t0;
-    float s1 = glyph.s1;
-    float t1 = glyph.t1;
+    pos.x    += kerning;
+    float x0  = pos.x + glyph.offset_x;
+    float y0  = pos.y + (glyph.offset_y - static_cast<int>(glyph.height));
+    float x1  = x0 + static_cast<int32_t>(glyph.width);
+    float y1  = pos.y + glyph.offset_y;
+    float s0  = glyph.s0;
+    float t0  = glyph.t0;
+    float s1  = glyph.s1;
+    float t1  = glyph.t1;
 
     Add2DRectangle(vb, x0, y0, x1, y1, s0, t0, s1, t1);
 
@@ -667,7 +667,7 @@ void TexFont::reloadGlyphs()
     m_glyphs.resize(0);
 
     // load glyphs to new atlas
-    for(auto const & ucodepoint : loaded_ucodepoints)
+    for(auto const & ucodepoint: loaded_ucodepoints)
     {
         loadGlyph(ucodepoint);
     }

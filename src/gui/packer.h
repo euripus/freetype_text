@@ -2,6 +2,7 @@
 #define PACKER_H
 
 #include "widget.h"
+#include <functional>
 
 class UIWindow;
 
@@ -48,7 +49,7 @@ public:
 protected:
     void setChildGeometry(Rect2D const & r, Widget * wdg) const;
 
-    void arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos) const;
+    void arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
     void arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) const;
 };
 

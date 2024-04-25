@@ -5,7 +5,8 @@
 #include <fstream>
 #include <boost/json.hpp>
 
-UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group)
+    : m_owner(owner)
 {
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
@@ -42,7 +43,7 @@ void UIWindow::update(float time, bool check_cursor)
 
     if(!m_callbacks.empty())
     {
-        for(auto & fn : m_callbacks)
+        for(auto & fn: m_callbacks)
             fn();
 
         m_callbacks.clear();
@@ -151,7 +152,8 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromDesc(WidgetDesc const & desc, UIW
 
     switch(desc.type)
     {
-        case ElementType::TextBox: {
+        case ElementType::TextBox:
+        {
             result = std::make_unique<TextBox>(desc, owner);
 
             break;
@@ -161,7 +163,8 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromDesc(WidgetDesc const & desc, UIW
         //     // result = std::make_unique<ImageBox>(std::string(), owner);
         //     break;
         // }
-        case ElementType::Button: {
+        case ElementType::Button:
+        {
             result = std::make_unique<Button>(desc, owner);
 
             break;
@@ -169,7 +172,8 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromDesc(WidgetDesc const & desc, UIW
         case ElementType::VerticalLayoutee:
         case ElementType::HorizontalLayoutee:
         case ElementType::Unknown:
-        case ElementType::ImageBox: {
+        case ElementType::ImageBox:
+        {
             result = std::make_unique<Widget>(desc, owner);
             break;
         }
@@ -183,7 +187,7 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
     assert(!obj.empty());
 
     WidgetDesc desc;
-    for(auto const & kvp : obj)
+    for(auto const & kvp: obj)
     {
         if(kvp.key() == WidgetDesc::sid_size)
         {
@@ -246,7 +250,7 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
         auto const & arr = children_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & child_entry : arr)
+            for(auto const & child_entry: arr)
             {
                 auto const & widget_obj = child_entry.as_object();
                 if(!widget_obj.empty())

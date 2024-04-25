@@ -69,7 +69,8 @@ Align WidgetDesc::GetAlignFromString(std::string_view name)
     return align;
 }
 
-Widget::Widget(WidgetDesc const & desc, UIWindow & owner) : m_owner(owner)
+Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
+    : m_owner(owner)
 {
     m_size_hint   = desc.size_hint;
     m_rect        = Rect2D(glm::vec2(0.f, 0.f), m_size_hint);
@@ -91,7 +92,7 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner) : m_owner(owner)
 
 void Widget::update(float time, bool check_cursor)
 {
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->update(time, check_cursor);
 
     subClassUdate(time, check_cursor);
@@ -106,7 +107,7 @@ void Widget::draw(VertexBuffer & background, VertexBuffer & text) const
     }
 
     // draw children
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->draw(background, text);
 
     if(visible())
@@ -117,7 +118,7 @@ void Widget::move(glm::vec2 const & new_origin)
 {
     m_pos = m_rect.m_pos + new_origin;
 
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->move(new_origin);
 }
 
@@ -157,7 +158,7 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     if(m_id == id_name)
         return this;
 
-    for(auto const & ch : m_children)
+    for(auto const & ch: m_children)
     {
         if(auto * ptr = ch->getWidgetFromIDName(id_name); ptr != nullptr)
             return ptr;

@@ -31,12 +31,13 @@ glm::vec2 Packer::getWidgetSize(Widget const & w, std::function<glm::vec2(Widget
 
     switch(w.getType())
     {
-        case ElementType::VerticalLayoutee: {
-            for(auto const & ch : w.getChildren())
+        case ElementType::VerticalLayoutee:
+        {
+            for(auto const & ch: w.getChildren())
             {
-                auto const child_size = getWidgetSize(GetRef(ch));
+                auto const child_size = getWidgetSize(GetRef(ch), func);
 
-                result.x = std::max(result.x, child_size.x);
+                result.x  = std::max(result.x, child_size.x);
                 result.y += child_size.y;
             }
 
@@ -47,13 +48,14 @@ glm::vec2 Packer::getWidgetSize(Widget const & w, std::function<glm::vec2(Widget
 
             break;
         }
-        case ElementType::HorizontalLayoutee: {
-            for(auto const & ch : w.getChildren())
+        case ElementType::HorizontalLayoutee:
+        {
+            for(auto const & ch: w.getChildren())
             {
-                auto const child_size = getWidgetSize(GetRef(ch));
+                auto const child_size = getWidgetSize(GetRef(ch), func);
 
                 result.x += child_size.x;
-                result.y = std::max(result.y, child_size.y);
+                result.y  = std::max(result.y, child_size.y);
             }
 
             if(w.getNumChildren() > 1)
@@ -63,7 +65,8 @@ glm::vec2 Packer::getWidgetSize(Widget const & w, std::function<glm::vec2(Widget
 
             break;
         }
-        default: {
+        default:
+        {
             result = func(w);
 
             break;
@@ -82,7 +85,7 @@ void MatrixPacker::fitWidgets(UIWindow * win) const
     auto list = getMatrixFromTree(win->getRootWidget());
 
     float max_width = 0.f;
-    for(auto const & row : list)
+    for(auto const & row: list)
         max_width = glm::max(max_width, getRowSumWidth(row));
 
     adjustWidgetsInRow(win, list, max_width);
@@ -132,13 +135,14 @@ void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32
         else
             dir = Direction::horizontal;
 
-        for(auto const & ch : root->getChildren())
+        for(auto const & ch: root->getChildren())
         {
             addSubTree(ls, ch.get(), x, y);
 
             switch(ch->getType())
             {
-                case ElementType::VerticalLayoutee: {
+                case ElementType::VerticalLayoutee:
+                {
                     if(dir == Direction::vertical)
                         y += ch->getChildren().size();
                     else
@@ -146,7 +150,8 @@ void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32
 
                     break;
                 }
-                case ElementType::HorizontalLayoutee: {
+                case ElementType::HorizontalLayoutee:
+                {
                     if(dir == Direction::horizontal)
                         x += ch->getChildren().size();
                     else
@@ -154,7 +159,8 @@ void MatrixPacker::addSubTree(WidgetMatrix & ls, Widget * root, int32_t x, int32
 
                     break;
                 }
-                default: {
+                default:
+                {
                     if(dir == Direction::vertical)
                         y += 1;
                     else if(dir == Direction::horizontal)
@@ -175,7 +181,7 @@ float MatrixPacker::getRowSumWidth(std::vector<Widget *> const & row) const
 {
     float width = m_horizontal_spacing;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         width += widget->size().x + m_horizontal_spacing;
 
     return width;
@@ -185,7 +191,7 @@ float MatrixPacker::getRowMaxHeight(std::vector<Widget *> const & row) const
 {
     float height = 0.f;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         height = glm::max(height, widget->size().y);
 
     return height;
@@ -195,7 +201,7 @@ float MatrixPacker::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) c
 {
     float result = 0.f;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         if(widget->getSizePolicy() != SizePolicy::scale)
             result += widget->size().x;
 
@@ -206,7 +212,7 @@ int32_t MatrixPacker::getNumOfScaledElementsInRow(std::vector<Widget *> const & 
 {
     int32_t result = 0;
 
-    for(auto const * widget : row)
+    for(auto const * widget: row)
         if(widget->getSizePolicy() == SizePolicy::scale)
             result++;
 
@@ -218,7 +224,7 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
     float current_height = m_vertical_spacing;
     float final_width    = 0.f;
 
-    for(auto & row : ls)
+    for(auto & row: ls)
     {
         auto    num_widgets         = row.size();
         float   row_height          = getRowMaxHeight(row);
@@ -228,7 +234,7 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
         float scaled_element_width = (remaining_width - getSumOfFixedWidthInRow(row)) / num_scaled_elements;
         float current_pos          = m_horizontal_spacing;
 
-        for(auto * widget : row)
+        for(auto * widget: row)
         {
             glm::vec2 pos, size;
 
@@ -248,7 +254,7 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
             current_pos += widget->size().x + m_horizontal_spacing;
         }
 
-        final_width = glm::max(current_pos, new_width);
+        final_width     = glm::max(current_pos, new_width);
         current_height += row_height + m_vertical_spacing;
     }
 
@@ -269,8 +275,10 @@ void TreePacker::fitWidgets(UIWindow * win) const
     if(win->getRootWidget() == nullptr)
         return;
 
-    auto const min_window_size = getWidgetSize(*win->getRootWidget(), [](Widget const & w){ return w.sizeHint(); });
-	auto const cur_window_size = getWidgetSize(*win->getRootWidget(), [](Widget const & w){ return w.sizeHint(); });
+    auto const min_window_size =
+        getWidgetSize(*win->getRootWidget(), [](Widget const & w) { return w.sizeHint(); });
+    auto const cur_window_size =
+        getWidgetSize(*win->getRootWidget(), [](Widget const & w) { return w.size(); });
 }
 
 void TreePacker::setChildGeometry(Rect2D const & r, Widget * wdg) const {}
@@ -283,30 +291,33 @@ void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::
 
     float max_height = 0.0f;
 
-    for(auto & ch : parent.getChildren())
+    for(auto & ch: parent.getChildren())
     {
         Widget &   w               = GetRef(ch);
-        auto const cur_widget_size = getWidgetSize(w, [](Widget const & w){ return w.size(); });
+        auto const cur_widget_size = getWidgetSize(w, [](Widget const & w) { return w.size(); });
         // max_height = std::max(max_height, cur_widget_size.y);
 
         switch(w.getType())
         {
-            case ElementType::VerticalLayoutee: {
+            case ElementType::VerticalLayoutee:
+            {
                 arrangeWidgetsInColumn(w, cur_tlpos);
                 cur_tlpos.x += cur_widget_size.x + m_horizontal_spacing;
 
                 break;
             }
-            case ElementType::HorizontalLayoutee: {
-                arrangeWidgetsInRow(w, cur_tlpos);
+            case ElementType::HorizontalLayoutee:
+            {
+                arrangeWidgetsInRow(w, cur_tlpos, cur_widget_size);
                 cur_tlpos.x += cur_widget_size.x + m_horizontal_spacing;
 
                 break;
             }
-            default: {
-				pos  = glm::vec2(cur_tlpos.x, cur_tlpos.y);
-                size = glm::vec2(scaled_element_width, row_height);
-				
+            default:
+            {
+                glm::vec2 pos  = glm::vec2(cur_tlpos.x, cur_tlpos.y);
+                glm::vec2 size = glm::vec2(1.f, 1.f);
+
                 break;
             }
         }
