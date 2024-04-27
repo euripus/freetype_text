@@ -47,10 +47,21 @@ public:
     void fitWidgets(UIWindow * win) const override;
 
 protected:
-    void setChildGeometry(Rect2D const & r, Widget * wdg) const;
+    struct TupleProp
+	{
+		bool is_tuple = false;
+		bool is_horizontal = true;
+		int32_t num_children = 0;
+		int32_t num_fixed_size_elements = 0;
+		glm::vec2 size = {0.f, 0.f};
+		glm::vec2 size_hint = {0.f, 0.f};
+		glm::vec2 fixed_elements_size = {0.f, 0.f};
+	};
 
     void arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
     void arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) const;
+	
+	TupleProp getTupleProperties(Widget const & tuple_parent) const;
 };
 
 #endif
