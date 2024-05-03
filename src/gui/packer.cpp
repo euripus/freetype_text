@@ -330,14 +330,12 @@ void TreePacker::arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) co
 
 TupleProp TreePacker::getTupleProperties(Widget const & tuple_parent) const
 {
-	TupleProp result;
+    TupleProp result;
 
-	if(tuple_parent.getType() == ElementType::HorizontalLayoutee)
-	{
-	}
-	else
-	{
-	}
+    if(tuple_parent.getType() == ElementType::HorizontalLayoutee)
+    {}
+    else
+    {}
 
-	return result;
+    return result;
 }
