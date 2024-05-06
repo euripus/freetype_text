@@ -51,7 +51,7 @@ protected:
     {
         bool      is_tuple                = false;
         bool      is_horizontal           = true;
-		bool      is_scalable             = false;
+        bool      is_scalable             = false;
         int32_t   num_children            = 0;
         int32_t   num_fixed_size_elements = 0;
         glm::vec2 size                    = {0.f, 0.f};

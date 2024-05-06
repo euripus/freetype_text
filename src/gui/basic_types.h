@@ -31,7 +31,7 @@ enum class SizePolicy
     scale,   // scalable
     fixed_width,
     fixed_height,
-    trim,    // fixed size
+    trim,   // fixed size
     none
 };
 

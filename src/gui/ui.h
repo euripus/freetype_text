@@ -53,15 +53,15 @@ public:
 
     AtlasTex & getUIImageAtlas() { return m_ui_image_atlas.getAtlas(); }
     AtlasTex & getFontImageAtlas() { return m_fonts.getAtlas(); }
-	
-	glm::vec4 const & getFontColor() const { return m_font_color; }
+
+    glm::vec4 const & getFontColor() const { return m_font_color; }
 
     Input const & m_input;
 
     glm::ivec2              m_screen_size = {};
     UIImageManager          m_ui_image_atlas;
     FontManager             m_fonts;
-	glm::vec4               m_font_color = ColorMap::black;
+    glm::vec4               m_font_color = ColorMap::black;
     std::unique_ptr<Packer> m_packer;
     std::string             m_current_gui_set = {"default"};
 
