@@ -47,10 +47,11 @@ public:
     void fitWidgets(UIWindow * win) const override;
 
 protected:
-    struct TupleProp
+    struct NodeProp
     {
         bool      is_tuple                = false;
         bool      is_horizontal           = true;
+		bool      is_scalable             = false;
         int32_t   num_children            = 0;
         int32_t   num_fixed_size_elements = 0;
         glm::vec2 size                    = {0.f, 0.f};
@@ -61,7 +62,8 @@ protected:
     void arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
     void arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) const;
 
-    TupleProp getTupleProperties(Widget const & tuple_parent) const;
+    bool     isGroupNodeScalable(Widget const & node) const;
+    NodeProp getGroupNodeProperties(Widget const & node) const;
 };
 
 #endif

@@ -395,7 +395,7 @@ void DrawScene(void)
     win_buf.drawBuffer();
 
     g_ui.getFontImageAtlas().BindTexture();
-    glColor4fv(glm::value_ptr(ColorMap::black));
+    glColor4fv(glm::value_ptr(g_ui.getFontColor()));
     text_win_buf.drawBuffer();
     glColor4fv(glm::value_ptr(ColorMap::white));
 

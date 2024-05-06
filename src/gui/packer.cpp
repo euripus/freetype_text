@@ -328,14 +328,130 @@ void TreePacker::arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) co
         return;
 }
 
-TupleProp TreePacker::getTupleProperties(Widget const & tuple_parent) const
-{
-    TupleProp result;
+bool  TreePacker::isGroupNodeScalable(Widget const & node) const
+{  
+	assert(node.getType() == ElementType::HorizontalLayoutee
+		   || node.getType() == ElementType::VerticalLayoutee);
 
-    if(tuple_parent.getType() == ElementType::HorizontalLayoutee)
-    {}
-    else
-    {}
+	bool result = false;
+
+	if(node.getType() == ElementType::HorizontalLayoutee
+	   || node.getType() == ElementType::VerticalLayoutee)
+    {
+		for(auto const & ch: node.getChildren())
+		{
+			Widget const &   w = GetRef(ch);
+			bool is_scalable = false;
+			
+			switch(w.getType())
+			{
+				case ElementType::VerticalLayoutee:
+				case ElementType::HorizontalLayoutee:
+				{
+					is_scalable = isNodeScalable(w);
+
+					break;
+				}
+				default:
+				{
+					auto const policy = ch.getSizePolicy();
+
+					if(node.getType() == ElementType::HorizontalLayoutee
+					   && (policy == SizePolicy::scale || policy == SizePolicy::fixed_height))
+						is_scalable = true;
+
+					if(node.getType() == ElementType::VerticalLayoutee
+					   && (policy == SizePolicy::scale || policy == SizePolicy::fixed_width))
+						is_scalable = true;
+
+					break;
+				}
+			}
+			
+			result = result || is_scalable;
+		}
+	}
+
+    return result;
+}
+
+NodeProp TreePacker::getGroupNodeProperties(Widget const & node) const
+{
+	assert(node.getType() == ElementType::HorizontalLayoutee
+		   || node.getType() == ElementType::VerticalLayoutee);
+
+    NodeProp result;
+
+    if(node.getType() == ElementType::HorizontalLayoutee
+	   || node.getType() == ElementType::VerticalLayoutee)
+    {
+		result.is_tuple = true;
+		result.is_horizontal = node.getType() == ElementType::HorizontalLayoutee;
+		result.is_scalable = isGroupNodeScalable(node);
+		result.num_children = node.getChildren().size();
+		result.size_hint = getWidgetSize(node, [](Widget const & w) { return w.sizeHint(); });
+        result.size = getWidgetSize(node, [](Widget const & w) { return w.size(); });
+
+		// fixed size calculation
+		if(result.is_scalable == false)
+		{
+			result.num_fixed_size_elements = result.num_children;
+			result.fixed_elements_size = result.size;
+		}
+		else
+		{ 
+			for(auto const & ch: node.getChildren())
+			{
+				Widget const &   w = GetRef(ch);
+				auto const policy = ch.getSizePolicy();
+				bool is_fixing = true;
+				auto const node_size = getWidgetSize(w, [](Widget const & w) { return w.size(); });
+
+				if(w.getType() == ElementType::HorizontalLayoutee
+				   || w.getType() == ElementType::VerticalLayoutee)
+			    { // group node
+					if(!isGroupNodeScalable(w))
+					{
+						result.num_fixed_size_elements += 1;
+						
+						if(w.getType() == ElementType::VerticalLayoutee)
+						{
+							result.fixed_elements_size.x  = std::max(result.fixed_elements_size.x, node_size.x);
+							result.fixed_elements_size.y += (node_size.y + m_horizontal_spacing);
+						}
+						else
+						{
+							result.fixed_elements_size.x += (node_size.x + m_vertical_spacing);
+							result.fixed_elements_size.y  = std::max(result.fixed_elements_size.y, node_size.y);
+						}
+					}
+			    }
+				else
+				{ // single node					
+					if(result.is_horizontal)
+					{
+						if(policy == SizePolicy::fixed_width || policy == SizePolicy::trim)
+						{
+							result.num_fixed_size_elements += 1;
+							
+							result.fixed_elements_size.x += (node_size.x + m_vertical_spacing);
+							result.fixed_elements_size.y  = std::max(result.fixed_elements_size.y, node_size.y);
+						}
+					}
+					else
+					{
+						if(policy == SizePolicy::fixed_height || policy == SizePolicy::trim)
+						{
+							result.num_fixed_size_elements += 1;
+							
+							result.fixed_elements_size.x  = std::max(result.fixed_elements_size.x, node_size.x);
+							result.fixed_elements_size.y += (node_size.y + m_horizontal_spacing);
+						}
+					}
+				}
+			}
+		}
+	}
 
     return result;
 }
