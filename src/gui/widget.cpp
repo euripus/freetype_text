@@ -40,13 +40,13 @@ SizePolicy WidgetDesc::GetSizePolicyFromString(std::string_view name)
     SizePolicy policy = SizePolicy::none;
 
     if(name == "scale")
-        policy = SizePolicy::scale;
+        policy = SizePolicy::scalable;
     else if(name == "fixed_width")
         policy = SizePolicy::fixed_width;
     else if(name == "fixed_height")
         policy = SizePolicy::fixed_height;
     else if(name == "trim")
-        policy = SizePolicy::trim;
+        policy = SizePolicy::fixed_size;
 
     return policy;
 }

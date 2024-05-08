@@ -8,7 +8,7 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
       m_text_horizontal_align(desc.text_hor)
 {
     // Trim text to button size
-    auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, SizePolicy::trim, m_caption);
+    auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, SizePolicy::fixed_size, m_caption);
     m_caption  = lines[0];
 
     float const line_height = m_font->getHeight() + m_font->getLineGap();
@@ -97,7 +97,9 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
 
     glm::vec2 pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + (m_rect.height() - line_height) / 2.f;
+    pen_pos.y =   // vertically align to the center only
+        m_pos.y + m_rect.height()
+        - (line_height + m_fields.w + (m_rect.height() - (m_fields.z + m_fields.w + line_height)) / 2.f);
 
     switch(m_text_horizontal_align)
     {

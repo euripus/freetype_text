@@ -202,7 +202,8 @@ float MatrixPacker::getSumOfFixedWidthInRow(std::vector<Widget *> const & row) c
     float result = 0.f;
 
     for(auto const * widget: row)
-        if(widget->getSizePolicy() != SizePolicy::scale)
+        if(widget->getSizePolicy() == SizePolicy::fixed_width
+           || widget->getSizePolicy() == SizePolicy::fixed_size)
             result += widget->size().x;
 
     return result;
@@ -213,7 +214,7 @@ int32_t MatrixPacker::getNumOfScaledElementsInRow(std::vector<Widget *> const & 
     int32_t result = 0;
 
     for(auto const * widget: row)
-        if(widget->getSizePolicy() == SizePolicy::scale)
+        if(widget->getSizePolicy() == SizePolicy::scalable)
             result++;
 
     return result;
@@ -238,7 +239,7 @@ void MatrixPacker::adjustWidgetsInRow(UIWindow * win, WidgetMatrix & ls, float n
         {
             glm::vec2 pos, size;
 
-            if(widget->getSizePolicy() == SizePolicy::scale)
+            if(widget->getSizePolicy() == SizePolicy::scalable)
             {   // resizing branch
                 pos  = glm::vec2(current_pos, current_height);
                 size = glm::vec2(scaled_element_width, row_height);
@@ -281,15 +282,15 @@ void TreePacker::fitWidgets(UIWindow * win) const
         getWidgetSize(*win->getRootWidget(), [](Widget const & w) { return w.size(); });
 }
 
-void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const
+void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const
 {
-    if(parent.getType() != ElementType::VerticalLayoutee
-       || parent.getType() != ElementType::HorizontalLayoutee)
+    if(row_node.getType() != ElementType::VerticalLayoutee
+       || row_node.getType() != ElementType::HorizontalLayoutee)
         return;
 
-    float max_height = 0.0f;
+    auto const row_prop = getGroupNodeProperties(row_node);
 
-    for(auto & ch: parent.getChildren())
+    for(auto & ch: row_node.getChildren())
     {
         Widget &   w               = GetRef(ch);
         auto const cur_widget_size = getWidgetSize(w, [](Widget const & w) { return w.size(); });
@@ -298,7 +299,7 @@ void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::
         {
             case ElementType::VerticalLayoutee:
             {
-                arrangeWidgetsInColumn(w, cur_tlpos);
+                arrangeWidgetsInColumn(w, cur_tlpos, cur_widget_size);
                 cur_tlpos.x += cur_widget_size.x + m_horizontal_spacing;
 
                 break;
@@ -321,10 +322,11 @@ void TreePacker::arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::
     }
 }
 
-void TreePacker::arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) const
+void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpos,
+                                        glm::vec2 const & win_size) const
 {
-    if(parent.getType() != ElementType::VerticalLayoutee
-       || parent.getType() != ElementType::HorizontalLayoutee)
+    if(column_node.getType() != ElementType::VerticalLayoutee
+       || column_node.getType() != ElementType::HorizontalLayoutee)
         return;
 }
 
@@ -356,11 +358,11 @@ bool TreePacker::isGroupNodeScalable(Widget const & node) const
                     auto const policy = w.getSizePolicy();
 
                     if(node.getType() == ElementType::HorizontalLayoutee
-                       && (policy == SizePolicy::scale || policy == SizePolicy::fixed_height))
+                       && (policy == SizePolicy::scalable || policy == SizePolicy::fixed_height))
                         is_scalable = true;
 
                     if(node.getType() == ElementType::VerticalLayoutee
-                       && (policy == SizePolicy::scale || policy == SizePolicy::fixed_width))
+                       && (policy == SizePolicy::scalable || policy == SizePolicy::fixed_width))
                         is_scalable = true;
 
                     break;
@@ -374,16 +376,15 @@ bool TreePacker::isGroupNodeScalable(Widget const & node) const
     return result;
 }
 
-TreePacker::NodeProp TreePacker::getGroupNodeProperties(Widget const & node) const
+TreePacker::GrupNodeProp TreePacker::getGroupNodeProperties(Widget const & node) const
 {
     assert(node.getType() == ElementType::HorizontalLayoutee
            || node.getType() == ElementType::VerticalLayoutee);
 
-    NodeProp result;
+    GrupNodeProp result;
 
     if(node.getType() == ElementType::HorizontalLayoutee || node.getType() == ElementType::VerticalLayoutee)
     {
-        result.is_tuple      = true;
         result.is_horizontal = node.getType() == ElementType::HorizontalLayoutee;
         result.is_scalable   = isGroupNodeScalable(node);
         result.num_children  = node.getChildren().size();
@@ -429,7 +430,7 @@ TreePacker::NodeProp TreePacker::getGroupNodeProperties(Widget const & node) con
                 {   // single node
                     if(result.is_horizontal)
                     {
-                        if(policy == SizePolicy::fixed_width || policy == SizePolicy::trim)
+                        if(policy == SizePolicy::fixed_width || policy == SizePolicy::fixed_size)
                         {
                             result.num_fixed_size_elements += 1;
 
@@ -440,7 +441,7 @@ TreePacker::NodeProp TreePacker::getGroupNodeProperties(Widget const & node) con
                     }
                     else
                     {
-                        if(policy == SizePolicy::fixed_height || policy == SizePolicy::trim)
+                        if(policy == SizePolicy::fixed_height || policy == SizePolicy::fixed_size)
                         {
                             result.num_fixed_size_elements += 1;
 

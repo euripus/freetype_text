@@ -22,9 +22,9 @@ GLFWwindow * g_window = nullptr;
 bool         g_wire    = false;
 unsigned int g_num_fps = 0;   // Fps counter
 
-bool                g_running      = true;
-bool                is_full_screen = false;
-GLFWvidmode const * cur_mode;
+bool                g_running        = true;
+bool                g_is_full_screen = false;
+GLFWvidmode const * g_monitor_mode;
 GLfloat             rty = 0.0f;
 GLfloat             rtx = 0.0f;
 
@@ -165,21 +165,21 @@ void KeyFuncCallback(GLFWwindow * win, int key, int scancode, int action, int mo
         {
             if(action == GLFW_PRESS)
             {
-                is_full_screen = !is_full_screen;
+                g_is_full_screen = !g_is_full_screen;
 
                 KillWindow();
 
-                if(is_full_screen)
+                if(g_is_full_screen)
                 {
-                    width  = cur_mode->width;
-                    height = cur_mode->height;
+                    width  = g_monitor_mode->width;
+                    height = g_monitor_mode->height;
                 }
                 else
                 {
                     width  = WINDOWWIDTH;
                     height = WINDOWHEIGT;
                 }
-                if(!CreateGLFWWindow(width, height, is_full_screen))
+                if(!CreateGLFWWindow(width, height, g_is_full_screen))
                 {
                     std::cerr << "error!" << std::endl;
                     g_running = false;
@@ -256,7 +256,7 @@ bool LoadTexture()
 
             glBindTexture(GL_TEXTURE_2D, tex_base);
 
-            GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGB4;
+            GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
             GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
 
             glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
@@ -310,7 +310,7 @@ bool InitWindow()
     return LoadTexture();
 }
 
-bool CreateGLFWWindow(int width, int height, bool fullscreenflag)
+bool CreateGLFWWindow(int32_t width, int32_t height, bool fullscreenflag)
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
@@ -448,7 +448,28 @@ int main()
 
     if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {
-        button->setCallback([win] { win->hide(); });
+        button->setCallback([] {
+            int32_t width{0}, height{0};
+            g_is_full_screen = !g_is_full_screen;
+
+            KillWindow();
+
+            if(g_is_full_screen)
+            {
+                width  = g_monitor_mode->width;
+                height = g_monitor_mode->height;
+            }
+            else
+            {
+                width  = WINDOWWIDTH;
+                height = WINDOWHEIGT;
+            }
+            if(!CreateGLFWWindow(width, height, g_is_full_screen))
+            {
+                std::cerr << "error!" << std::endl;
+                g_running = false;
+            }
+        });
     }
     if(auto * button = win->getWidgetFromID<Button>("button_close"); button != nullptr)
     {
@@ -470,9 +491,9 @@ int main()
         return 0;
     }
 
-    cur_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    g_monitor_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-    if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, is_full_screen))
+    if(!CreateGLFWWindow(WINDOWWIDTH, WINDOWHEIGT, g_is_full_screen))
         return 0;
 
     while(!glfwWindowShouldClose(g_window) && g_running)

@@ -93,7 +93,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
         switch(scale_mode)
         {
-            case SizePolicy::scale:
+            case SizePolicy::scalable:
             {
                 float const k = rect.m_extent.y / rect.m_extent.x;   // maintaining the specified proportions
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
@@ -118,7 +118,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
 
                 break;
             }
-            case SizePolicy::trim:
+            case SizePolicy::fixed_size:
             case SizePolicy::none:
             {
                 SplitTextForWidth(result, words, font, rect.m_extent.x, rect.m_extent.y, true);

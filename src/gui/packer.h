@@ -47,9 +47,8 @@ public:
     void fitWidgets(UIWindow * win) const override;
 
 protected:
-    struct NodeProp
+    struct GrupNodeProp
     {
-        bool      is_tuple                = false;
         bool      is_horizontal           = true;
         bool      is_scalable             = false;
         int32_t   num_children            = 0;
@@ -59,11 +58,11 @@ protected:
         glm::vec2 fixed_elements_size     = {0.f, 0.f};
     };
 
-    void arrangeWidgetsInRow(Widget & parent, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
-    void arrangeWidgetsInColumn(Widget & parent, glm::vec2 cur_tlpos) const;
+    void arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
+    void arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
 
-    bool     isGroupNodeScalable(Widget const & node) const;
-    NodeProp getGroupNodeProperties(Widget const & node) const;
+    bool         isGroupNodeScalable(Widget const & node) const;
+    GrupNodeProp getGroupNodeProperties(Widget const & node) const;
 };
 
 #endif

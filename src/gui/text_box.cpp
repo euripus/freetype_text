@@ -18,7 +18,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     // draw text
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     glm::vec2   pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + m_fields.w + m_rect.height() - line_height;
+    pen_pos.y = m_pos.y + m_rect.height() - (line_height + m_fields.w);
 
     for(auto const & line: m_lines)
     {

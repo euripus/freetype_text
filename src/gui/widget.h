@@ -38,7 +38,7 @@ struct WidgetDesc
     bool        visible     = true;
     std::string region_name = {};
     std::string id_name     = {};
-    SizePolicy  scale       = SizePolicy::scale;
+    SizePolicy  scale       = SizePolicy::scalable;
     Align       horizontal  = Align::left;
     Align       vertical    = Align::top;
     std::string font_name   = {};
@@ -103,7 +103,7 @@ protected:
     bool        m_focused    = false;
     Align       m_horizontal = Align::left;
     Align       m_vertical   = Align::top;
-    SizePolicy  m_scale      = SizePolicy::scale;
+    SizePolicy  m_scale      = SizePolicy::scalable;
     ElementType m_type       = ElementType::Unknown;
 
     TexFont *                     m_font       = nullptr;

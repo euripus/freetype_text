@@ -19,8 +19,8 @@
                      "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
-                     "font":"liberation_16",
-                     "font_size":16,
+                     "font":"liberation",
+                     "font_size":24,
                      "static_text":"Cursor pos",
                      "text_horizontal":"left"
                   },
@@ -62,9 +62,9 @@
                      "size_policy": "scale",
                      "align_horizontal": "left",
                      "align_vertical": "top",
-                     "font": "liberation",
-                     "font_size": 24,
-                     "static_text": "Ok",
+                     "font":"liberation_16",
+                     "font_size":16,
+                     "static_text": "Fullscreen",
                      "text_horizontal": "center"
                   }
                ]
