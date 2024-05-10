@@ -88,6 +88,8 @@ public:
     SizePolicy   getSizePolicy() const { return m_scale; }
     auto const & getChildren() const { return m_children; }
     auto &       getChildren() { return m_children; }
+	Align getHorizontalAlign() const { return m_horizontal; }
+	Align getVerticalAlign() const { return m_vertical; }
 
 protected:
     UIWindow & m_owner;

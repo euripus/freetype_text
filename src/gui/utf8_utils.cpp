@@ -39,7 +39,6 @@ std::size_t utf8_surrogate_len(char const * character)
     return result;
 }
 
-// ------------------------------------------------------------ utf8_strlen ---
 size_t utf8_strlen(char const * string)
 {
     char const * ptr    = string;

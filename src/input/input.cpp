@@ -559,6 +559,12 @@ bool Input::isMouseButtonPressed(MouseButton button_id) const
     return m_mouse_buttons_state[static_cast<size_t>(button_id)];
 }
 
+void Input::clearEventQueues()
+{
+    m_text_queue.clear();
+    m_wheel_queue.clear();
+}
+
 void Input::buttonEvent(MouseButton button_id, bool press)
 {
     if(press)

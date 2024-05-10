@@ -3,6 +3,7 @@
 
 enum class ElementType
 {
+    Empty,
     TextBox,
     ImageBox,   // animated/static image and/or internal rendered frame
     Button,

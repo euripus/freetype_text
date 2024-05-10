@@ -503,6 +503,8 @@ int main()
         DrawScene();
 
         glfwSwapBuffers(g_window);
+
+		g_input_state.clearEventQueues();
         glfwPollEvents();
     }
 
