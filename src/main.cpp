@@ -504,7 +504,7 @@ int main()
 
         glfwSwapBuffers(g_window);
 
-		g_input_state.clearEventQueues();
+        g_input_state.clearEventQueues();
         glfwPollEvents();
     }
 

@@ -89,9 +89,9 @@ void MatrixPacker::fitWidgets(UIWindow * win) const
         max_width = glm::max(max_width, getRowSumWidth(row));
 
     adjustWidgetsInRow(win, list, max_width);
-	
-	auto w_rect     = win->getRect();
-	if(auto backround = win->getBackgroundWidget(); backround != nullptr)
+
+    auto w_rect = win->getRect();
+    if(auto backround = win->getBackgroundWidget(); backround != nullptr)
     {
         auto rect     = backround->getRect();
         rect.m_extent = w_rect.m_extent;
@@ -278,28 +278,27 @@ void TreePacker::fitWidgets(UIWindow * win) const
     if(win->getRootWidget() == nullptr)
         return;
 
-	Widget & w = *win->getRootWidget();
+    Widget &   w               = *win->getRootWidget();
     auto const cur_window_size = getWidgetSize(w, [](Widget const & w) { return w.size(); });
-	glm::vec2 top_left = {0, cur_window_size.y}; 
-	
-	if(w.getType() == ElementType::VerticalLayoutee
-       || w.getType() == ElementType::HorizontalLayoutee)
-    {
-		if(w.getType() == ElementType::VerticalLayoutee)
-			arrangeWidgetsInColumn(w, top_left, cur_window_size);
-		else
-			arrangeWidgetsInRow(w, top_left, cur_window_size);
-    }
-	else
-	{
-		placeWidgetInCell(w, top_left, cur_window_size);
-	}
+    glm::vec2  top_left        = {0, cur_window_size.y};
 
-	auto w_rect     = win->getRect();
+    if(w.getType() == ElementType::VerticalLayoutee || w.getType() == ElementType::HorizontalLayoutee)
+    {
+        if(w.getType() == ElementType::VerticalLayoutee)
+            arrangeWidgetsInColumn(w, top_left, cur_window_size);
+        else
+            arrangeWidgetsInRow(w, top_left, cur_window_size);
+    }
+    else
+    {
+        placeWidgetInCell(w, top_left, cur_window_size);
+    }
+
+    auto w_rect     = win->getRect();
     w_rect.m_extent = cur_window_size;
     win->setRect(w_rect);
 
-	if(auto backround = win->getBackgroundWidget(); backround != nullptr)
+    if(auto backround = win->getBackgroundWidget(); backround != nullptr)
     {
         auto rect     = backround->getRect();
         rect.m_extent = w_rect.m_extent;
@@ -313,10 +312,13 @@ void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm
        || row_node.getType() != ElementType::HorizontalLayoutee)
         return;
 
-    auto const row_prop = getGroupNodeProperties(row_node);
-	float const available_width = row_prop.size.x - row_prop.fixed_elements_size.x;
-	float const num_scalable_elements = (row_prop.num_children - row_prop.num_fixed_size_elements) > 0 ? row_prop.num_children - row_prop.num_fixed_size_elements : 1.f;
-	float const scaled_widget_width = (available_width - m_horizontal_spacing * (num_scalable_elements - 1.f))/num_scalable_elements;
+    auto const  row_prop              = getGroupNodeProperties(row_node);
+    float const available_width       = row_prop.size.x - row_prop.fixed_elements_size.x;
+    float const num_scalable_elements = (row_prop.num_children - row_prop.num_fixed_size_elements) > 0
+                                            ? row_prop.num_children - row_prop.num_fixed_size_elements
+                                            : 1.f;
+    float const scaled_widget_width =
+        (available_width - m_horizontal_spacing * (num_scalable_elements - 1.f)) / num_scalable_elements;
 
     for(auto & ch: row_node.getChildren())
     {
@@ -327,13 +329,13 @@ void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm
         {
             case ElementType::VerticalLayoutee:
             {
-				auto const ch_prop = getGroupNodeProperties(w);
-				glm::vec2  w_size;
+                auto const ch_prop = getGroupNodeProperties(w);
+                glm::vec2  w_size;
 
-				if(ch_prop.is_scalable)
-					w_size = glm::vec2{scaled_widget_width, win_size.y};
-				else
-					w_size = glm::vec2{cur_widget_size.x, win_size.y};
+                if(ch_prop.is_scalable)
+                    w_size = glm::vec2{scaled_widget_width, win_size.y};
+                else
+                    w_size = glm::vec2{cur_widget_size.x, win_size.y};
 
                 arrangeWidgetsInColumn(w, cur_tlpos, w_size);
                 cur_tlpos.x += w_size.x + m_horizontal_spacing;
@@ -342,13 +344,13 @@ void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm
             }
             case ElementType::HorizontalLayoutee:
             {
-				auto const ch_prop = getGroupNodeProperties(w);
-				glm::vec2  w_size;
-				
-				if(ch_prop.is_scalable)
-					w_size = glm::vec2{scaled_widget_width, win_size.y};
-				else
-					w_size = glm::vec2{cur_widget_size.x, win_size.y};
+                auto const ch_prop = getGroupNodeProperties(w);
+                glm::vec2  w_size;
+
+                if(ch_prop.is_scalable)
+                    w_size = glm::vec2{scaled_widget_width, win_size.y};
+                else
+                    w_size = glm::vec2{cur_widget_size.x, win_size.y};
 
                 arrangeWidgetsInRow(w, cur_tlpos, w_size);
                 cur_tlpos.x += w_size.x + m_horizontal_spacing;
@@ -357,12 +359,12 @@ void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm
             }
             default:
             {
-				bool const is_scalable = w.getSizePolicy() == SizePolicy::fixed_height 
-				                         || w.getSizePolicy() == SizePolicy::scalable;
-                glm::vec2  w_size = glm::vec2{scaled_widget_width, win_size.y};
+                bool const is_scalable = w.getSizePolicy() == SizePolicy::fixed_height
+                                         || w.getSizePolicy() == SizePolicy::scalable;
+                glm::vec2 w_size = glm::vec2{scaled_widget_width, win_size.y};
 
-				placeWidgetInCell(w, cur_tlpos, w_size);
-				cur_tlpos.x += w.size().x + m_horizontal_spacing;				
+                placeWidgetInCell(w, cur_tlpos, w_size);
+                cur_tlpos.x += w.size().x + m_horizontal_spacing;
 
                 break;
             }
@@ -377,10 +379,13 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
        || column_node.getType() != ElementType::HorizontalLayoutee)
         return;
 
-    auto const  column_prop = getGroupNodeProperties(column_node);
-	float const available_height = column_prop.size.y - column_prop.fixed_elements_size.y;
-	float const num_scalable_elements = (column_prop.num_children - column_prop.num_fixed_size_elements) > 0 ? column_prop.num_children - column_prop.num_fixed_size_elements : 1.f;
-	float const scaled_widget_height = (available_height - m_horizontal_spacing * (num_scalable_elements - 1.f))/num_scalable_elements;
+    auto const  column_prop           = getGroupNodeProperties(column_node);
+    float const available_height      = column_prop.size.y - column_prop.fixed_elements_size.y;
+    float const num_scalable_elements = (column_prop.num_children - column_prop.num_fixed_size_elements) > 0
+                                            ? column_prop.num_children - column_prop.num_fixed_size_elements
+                                            : 1.f;
+    float const scaled_widget_height =
+        (available_height - m_horizontal_spacing * (num_scalable_elements - 1.f)) / num_scalable_elements;
 
     for(auto & ch: column_node.getChildren())
     {
@@ -391,13 +396,13 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
         {
             case ElementType::VerticalLayoutee:
             {
-				auto const ch_prop = getGroupNodeProperties(w);
-				glm::vec2  w_size;
+                auto const ch_prop = getGroupNodeProperties(w);
+                glm::vec2  w_size;
 
-				if(ch_prop.is_scalable)
-					w_size = glm::vec2{win_size.x, scaled_widget_height};
-				else
-					w_size = glm::vec2{win_size.x, cur_widget_size.y};
+                if(ch_prop.is_scalable)
+                    w_size = glm::vec2{win_size.x, scaled_widget_height};
+                else
+                    w_size = glm::vec2{win_size.x, cur_widget_size.y};
 
                 arrangeWidgetsInColumn(w, cur_tlpos, w_size);
                 cur_tlpos.y -= (w_size.y + m_vertical_spacing);
@@ -406,13 +411,13 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
             }
             case ElementType::HorizontalLayoutee:
             {
-				auto const ch_prop = getGroupNodeProperties(w);
-				glm::vec2  w_size;
-				
-				if(ch_prop.is_scalable)
-					w_size = glm::vec2{win_size.x, scaled_widget_height};
-				else
-					w_size = glm::vec2{win_size.x, cur_widget_size.y};
+                auto const ch_prop = getGroupNodeProperties(w);
+                glm::vec2  w_size;
+
+                if(ch_prop.is_scalable)
+                    w_size = glm::vec2{win_size.x, scaled_widget_height};
+                else
+                    w_size = glm::vec2{win_size.x, cur_widget_size.y};
 
                 arrangeWidgetsInRow(w, cur_tlpos, w_size);
                 cur_tlpos.y -= (w_size.y + m_vertical_spacing);
@@ -421,10 +426,10 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
             }
             default:
             {
-                glm::vec2  w_size = glm::vec2{win_size.x, scaled_widget_width};
+                glm::vec2 w_size = glm::vec2{win_size.x, scaled_widget_height};
 
-				placeWidgetInCell(w, cur_tlpos, w_size);
-				cur_tlpos.y -= (w.size().y + m_vertical_spacing);				
+                placeWidgetInCell(w, cur_tlpos, w_size);
+                cur_tlpos.y -= (w.size().y + m_vertical_spacing);
 
                 break;
             }
@@ -432,68 +437,68 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
     }
 }
 
-void TreePacker::placeWidgetInCell(Widget &  w, glm::vec2 top_left_pos, glm::vec2 scaled_size) const
+void TreePacker::placeWidgetInCell(Widget & w, glm::vec2 top_left_pos, glm::vec2 scaled_size) const
 {
-	float bottom_y_pos = top_left_pos.y - scaled_size.y;
-	float bottom_x_pos = top_left_pos.x;
+    float bottom_y_pos = top_left_pos.y - scaled_size.y;
+    float bottom_x_pos = top_left_pos.x;
 
-    float const fixed_width = w.sizeHint().x;
-	float const fixed_height = w.sizeHint().y;
-	float width = scaled_size.x;
-	float height = scaled_size.y;
-	
-	float const vert_free_space = scaled_size.y - fixed_height;
-	float const horiz_free_space = scaled_size.x - fixed_width;
-	
-	switch(w.getSizePolicy())
-	{
-		case SizePolicy::fixed_width:
-		{
-			width = fixed_width;
-			break;
-		}
-		case SizePolicy::fixed_height:
-		{
-			height = fixed_height;
-			break;
-		}
-		case SizePolicy::fixed_size:
-		{
-			width = fixed_width;
-			height = fixed_height;
-			break;
-		}
-	}
+    float const fixed_width  = w.sizeHint().x;
+    float const fixed_height = w.sizeHint().y;
+    float       width        = scaled_size.x;
+    float       height       = scaled_size.y;
 
-	switch(w.getVerticalAlign())
-	{
-		case Align::top:
-		{
-			bottom_y_pos += vert_free_space;
-			break;
-		}
-		case Align::center:
-		{
-			bottom_y_pos += vert_free_space/2.f;
-			break;
-		}
-	}
+    float const vert_free_space  = scaled_size.y - fixed_height;
+    float const horiz_free_space = scaled_size.x - fixed_width;
 
-	switch(w.getHorizontalAlign())
-	{
-		case Align::center:
-		{
-			bottom_x_pos += horiz_free_space/2.f;
-			break;
-		}
-		case Align::right:
-		{
-			bottom_x_pos += horiz_free_space;
-			break;
-		}
-	}
+    switch(w.getSizePolicy())
+    {
+        case SizePolicy::fixed_width:
+        {
+            width = fixed_width;
+            break;
+        }
+        case SizePolicy::fixed_height:
+        {
+            height = fixed_height;
+            break;
+        }
+        case SizePolicy::fixed_size:
+        {
+            width  = fixed_width;
+            height = fixed_height;
+            break;
+        }
+    }
 
-	w.setRect(Rect2D{bottom_x_pos, bottom_y_pos, width, height});
+    switch(w.getVerticalAlign())
+    {
+        case Align::top:
+        {
+            bottom_y_pos += vert_free_space;
+            break;
+        }
+        case Align::center:
+        {
+            bottom_y_pos += vert_free_space / 2.f;
+            break;
+        }
+    }
+
+    switch(w.getHorizontalAlign())
+    {
+        case Align::center:
+        {
+            bottom_x_pos += horiz_free_space / 2.f;
+            break;
+        }
+        case Align::right:
+        {
+            bottom_x_pos += horiz_free_space;
+            break;
+        }
+    }
+
+    w.setRect(Rect2D{bottom_x_pos, bottom_y_pos, width, height});
 }
 
 bool TreePacker::isGroupNodeScalable(Widget const & node) const

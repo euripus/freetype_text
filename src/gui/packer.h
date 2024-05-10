@@ -63,7 +63,7 @@ protected:
 
     bool         isGroupNodeScalable(Widget const & node) const;
     GrupNodeProp getGroupNodeProperties(Widget const & node) const;
-	void   placeWidgetInCell(Widget &  w, glm::vec2 top_left_pos, glm::vec2 scaled_size) const;
+    void         placeWidgetInCell(Widget & w, glm::vec2 top_left_pos, glm::vec2 scaled_size) const;
 };
 
 #endif

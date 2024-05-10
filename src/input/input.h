@@ -2,7 +2,7 @@
 #define INPUT_H
 
 #include <glm/glm.hpp>
-#include <deque>
+#include <vector>
 #include <string>
 
 enum class KeyboardKey
@@ -168,12 +168,11 @@ public:
         return {m_mouse_position.x, m_screen_size.y - m_mouse_position.y - 1};
     }
     bool    isMouseButtonPressed(MouseButton button_id) const;
-    bool    isMouseWheel() const { return !m_mouse_wheel.empty(); }
     int32_t getMouseWheel() { return 0; }
-	
-	template<class T>
+
+    template<class T>
     std::vector<T> const & getEventQueue();
-    void clearEventQueues();
+    void                   clearEventQueues();
 
     // functions for platform callbacks to call
     void buttonEvent(MouseButton button_id, bool press);
@@ -184,24 +183,24 @@ public:
 protected:
     glm::ivec2 m_screen_size;
     // Keyboard states
-    KeyboardKey m_last_key = KeyboardKey::Key_MaxKeyNum;
-    bool m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};
+    KeyboardKey m_last_key                                                     = KeyboardKey::Key_MaxKeyNum;
+    bool        m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};
     // Mouse states
-    glm::ivec2          m_mouse_position                                                      = {};
-    bool                m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
+    glm::ivec2 m_mouse_position                                                      = {};
+    bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
 
-	static std::vector<TextInput>        m_text_queue;
-	static std::vector<MouseScrollEvent> m_wheel_queue;
+    static std::vector<TextInput>        m_text_queue;
+    static std::vector<MouseScrollEvent> m_wheel_queue;
 };
 
 template<>
-std::vector<MouseScrollEvent> const & Input::getEventQueue<MouseScrollEvent>()
+inline std::vector<MouseScrollEvent> const & Input::getEventQueue<MouseScrollEvent>()
 {
     return m_wheel_queue;
 }
 
 template<>
-std::vector<TextInput> const & Input::getEventQueue<TextInput>()
+inline std::vector<TextInput> const & Input::getEventQueue<TextInput>()
 {
     return m_text_queue;
 }
