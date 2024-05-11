@@ -309,7 +309,7 @@ void TreePacker::fitWidgets(UIWindow * win) const
 void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const
 {
     if(row_node.getType() != ElementType::VerticalLayoutee
-       || row_node.getType() != ElementType::HorizontalLayoutee)
+       && row_node.getType() != ElementType::HorizontalLayoutee)
         return;
 
     auto const  row_prop              = getGroupNodeProperties(row_node);
@@ -359,8 +359,6 @@ void TreePacker::arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm
             }
             default:
             {
-                bool const is_scalable = w.getSizePolicy() == SizePolicy::fixed_height
-                                         || w.getSizePolicy() == SizePolicy::scalable;
                 glm::vec2 w_size = glm::vec2{scaled_widget_width, win_size.y};
 
                 placeWidgetInCell(w, cur_tlpos, w_size);
@@ -376,7 +374,7 @@ void TreePacker::arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpo
                                         glm::vec2 const & win_size) const
 {
     if(column_node.getType() != ElementType::VerticalLayoutee
-       || column_node.getType() != ElementType::HorizontalLayoutee)
+       && column_node.getType() != ElementType::HorizontalLayoutee)
         return;
 
     auto const  column_prop           = getGroupNodeProperties(column_node);
