@@ -81,6 +81,7 @@ public:
     glm::vec2   sizeHint() const { return m_size_hint; }
     Rect2D      getRect() const { return m_rect; }
     void        setRect(Rect2D const & rect) { m_rect = rect; }
+	void        setSize(glm::vec2 const & size) { m_rect.m_extent = size;}
     std::string getId() const { return m_id; }
     glm::vec2   pos() const { return m_pos; }
 

@@ -58,8 +58,8 @@ protected:
         glm::vec2 fixed_elements_size     = {0.f, 0.f};
     };
 
-    void arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
-    void arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
+    glm::vec2 arrangeWidgetsInRow(Widget & row_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
+    glm::vec2 arrangeWidgetsInColumn(Widget & column_node, glm::vec2 cur_tlpos, glm::vec2 const & win_size) const;
 
     bool         isGroupNodeScalable(Widget const & node) const;
     GrupNodeProp getGroupNodeProperties(Widget const & node) const;
