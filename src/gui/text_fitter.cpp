@@ -83,7 +83,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
     Lines      result;
     auto const string_width = font.getTextSize(text.c_str()).x;
 
-    if(string_width <= rect.m_extent.x)   // text size is smaller than area size
+    if(string_width <= rect.width())   // text size is smaller than area size
     {
         result.push_back(text);
     }
@@ -95,7 +95,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
         {
             case SizePolicy::scalable:
             {
-                float const k = rect.m_extent.y / rect.m_extent.x;   // maintaining the specified proportions
+                float const k = rect.height() / rect.width();   // maintaining the specified proportions
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
                 float const width     = glm::sqrt(text_area / k);
 
@@ -105,14 +105,14 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
             }
             case SizePolicy::fixed_width:
             {
-                SplitTextForWidth(result, words, font, rect.m_extent.x);
+                SplitTextForWidth(result, words, font, rect.width());
 
                 break;
             }
             case SizePolicy::fixed_height:
             {
                 float const text_area = string_width * (font.getHeight() + font.getLineGap());
-                float const width     = text_area / rect.m_extent.y;
+                float const width     = text_area / rect.height();
 
                 SplitTextForWidth(result, words, font, width);
 
@@ -121,7 +121,7 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
             case SizePolicy::fixed_size:
             case SizePolicy::none:
             {
-                SplitTextForWidth(result, words, font, rect.m_extent.x, rect.m_extent.y, true);
+                SplitTextForWidth(result, words, font, rect.width(), rect.height(), true);
 
                 break;
             }

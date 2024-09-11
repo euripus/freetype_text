@@ -64,8 +64,8 @@ void TextBox::setText(std::string new_text)
 
 void TextBox::adjustTextToLines()
 {
-    Rect2D fit_rect{m_rect.m_pos, glm::vec2(m_rect.m_extent.x - m_fields.x - m_fields.y,
-                                            m_rect.m_extent.y - m_fields.z - m_fields.w)};
+    Rect2D fit_rect{m_rect.m_pos, glm::vec2(m_rect.width() - m_fields.x - m_fields.y,
+                                            m_rect.height() - m_fields.z - m_fields.w)};
     m_lines = TextFitter::AdjustTextToRect(*m_font, fit_rect, m_scale, m_text);
 
     float text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
@@ -75,8 +75,8 @@ void TextBox::adjustTextToLines()
     else if(m_scale == SizePolicy::fixed_height)
         text_height = glm::max(text_height, m_size_hint.y);
 
-    m_rect.m_extent = glm::vec2(text_width + m_fields.x + m_fields.y, text_height + m_fields.z + m_fields.w);
-    m_formated      = true;
+    m_rect.m_size = glm::vec2(text_width + m_fields.x + m_fields.y, text_height + m_fields.z + m_fields.w);
+    m_formated    = true;
 
     sizeUpdated();
 }

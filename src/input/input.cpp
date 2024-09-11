@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <algorithm>
 
-std::vector<TextInput> Input::m_text_queue = {};
+std::vector<TextInput>        Input::m_text_queue  = {};
 std::vector<MouseScrollEvent> Input::m_wheel_queue = {};
 
 KeyboardKey MapKeyCode(int32_t platformKeyCode)

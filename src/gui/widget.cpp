@@ -35,22 +35,6 @@ ElementType WidgetDesc::GetElementTypeFromString(std::string_view name)
     return type;
 }
 
-SizePolicy WidgetDesc::GetSizePolicyFromString(std::string_view name)
-{
-    SizePolicy policy = SizePolicy::none;
-
-    if(name == "scale")
-        policy = SizePolicy::scalable;
-    else if(name == "fixed_width")
-        policy = SizePolicy::fixed_width;
-    else if(name == "fixed_height")
-        policy = SizePolicy::fixed_height;
-    else if(name == "trim")
-        policy = SizePolicy::fixed_size;
-
-    return policy;
-}
-
 Align WidgetDesc::GetAlignFromString(std::string_view name)
 {
     Align align = Align::left;
@@ -72,15 +56,16 @@ Align WidgetDesc::GetAlignFromString(std::string_view name)
 Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     : m_owner(owner)
 {
-    m_size_hint   = desc.size_hint;
-    m_rect        = Rect2D(glm::vec2(0.f, 0.f), m_size_hint);
+    m_min_size    = desc.min_size;
+    m_max_size    = desc.max_size;
+    m_rect        = Rect2D(glm::vec2(0.f, 0.f), m_min_size);
     m_id          = desc.id_name;
     m_region_name = desc.region_name;
     m_visible     = desc.visible;
     m_horizontal  = desc.horizontal;
     m_vertical    = desc.vertical;
-    m_scale       = desc.scale;
     m_type        = desc.type;
+    m_stretch     = desc.stretch;
 
     UI & ui = m_owner.getOwner();
     if(!desc.font_name.empty())
@@ -103,7 +88,7 @@ void Widget::draw(VertexBuffer & background, VertexBuffer & text) const
     if(m_region_ptr != nullptr && visible())
     {
         glm::vec2 pos = m_pos;
-        m_region_ptr->addBlock(background, pos, m_rect.m_extent);
+        m_region_ptr->addBlock(background, pos, m_rect.m_size);
     }
 
     // draw children

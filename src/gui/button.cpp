@@ -14,7 +14,7 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     float const line_width  = m_font->getTextSize(m_caption.c_str()).x;
 
-    m_rect.m_extent = glm::vec2(line_width + m_fields.x + m_fields.y, line_height + m_fields.z + m_fields.w);
+    m_rect.m_size = glm::vec2(line_width + m_fields.x + m_fields.y, line_height + m_fields.z + m_fields.w);
 }
 
 void Button::subClassUdate(float time, bool check_cursor)
@@ -24,7 +24,7 @@ void Button::subClassUdate(float time, bool check_cursor)
         auto const & inp     = m_owner.getOwner().m_input;
         glm::vec2    cur_pos = inp.getMousePosition();
 
-        Rect2D widget_area{m_pos, m_rect.m_extent};
+        Rect2D widget_area{m_pos, m_rect.m_size};
         if(widget_area.contains(cur_pos))
         {
             if(inp.isMouseButtonPressed(MouseButton::Left))

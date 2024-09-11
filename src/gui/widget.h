@@ -15,12 +15,13 @@ class VertexBuffer;
 struct WidgetDesc
 {
     // json keys
-    static constexpr char const * sid_size             = "size";
+    static constexpr char const * sid_minimal_size     = "minimal_size";
+    static constexpr char const * sid_maximal_size     = "maximal_size";
     static constexpr char const * sid_type             = "type";
     static constexpr char const * sid_visible          = "visible";
     static constexpr char const * sid_region_name      = "region_name";
     static constexpr char const * sid_id_name          = "id_name";
-    static constexpr char const * sid_size_policy      = "size_policy";
+    static constexpr char const * sid_stretch          = "stretch";
     static constexpr char const * sid_align_horizontal = "align_horizontal";
     static constexpr char const * sid_align_vertical   = "align_vertical";
     static constexpr char const * sid_font             = "font";
@@ -28,17 +29,18 @@ struct WidgetDesc
     static constexpr char const * sid_static_text      = "static_text";
     static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
+    static constexpr float        MaxWidgetSize        = std::numeric_limits<int>::max();
 
     static ElementType GetElementTypeFromString(std::string_view name);
-    static SizePolicy  GetSizePolicyFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
-    glm::vec2   size_hint   = {};
+    glm::vec2   min_size    = {};
+    glm::vec2   max_size    = {MaxWidgetSize, MaxWidgetSize};
     ElementType type        = ElementType::Unknown;
+    float       stretch     = 0.f;
     bool        visible     = true;
     std::string region_name = {};
     std::string id_name     = {};
-    SizePolicy  scale       = SizePolicy::scalable;
     Align       horizontal  = Align::left;
     Align       vertical    = Align::top;
     std::string font_name   = {};
@@ -77,16 +79,18 @@ public:
     bool focused() const { return m_focused; }
     void sizeUpdated();
 
-    glm::vec2   size() const { return m_rect.m_extent; }
-    glm::vec2   sizeHint() const { return m_size_hint; }
+    glm::vec2   minimumSize() const { return m_min_size; }
+    glm::vec2   maximumSize() const { return m_max_size; }
+    float       getStretch() const { return m_stretch; }
+    void        setStretch(float stretch) { m_stretch = stretch; }
+    glm::vec2   getSize() const { return m_rect.m_size; }
     Rect2D      getRect() const { return m_rect; }
     void        setRect(Rect2D const & rect) { m_rect = rect; }
-	void        setSize(glm::vec2 const & size) { m_rect.m_extent = size;}
+    void        setSize(float width, float height) { m_rect.m_size = {width, height}; }
     std::string getId() const { return m_id; }
     glm::vec2   pos() const { return m_pos; }
 
     ElementType  getType() const { return m_type; }
-    SizePolicy   getSizePolicy() const { return m_scale; }
     auto const & getChildren() const { return m_children; }
     auto &       getChildren() { return m_children; }
     Align        getHorizontalAlign() const { return m_horizontal; }
@@ -95,7 +99,8 @@ public:
 protected:
     UIWindow & m_owner;
 
-    glm::vec2   m_size_hint   = {};
+    glm::vec2   m_min_size    = {};
+    glm::vec2   m_max_size    = {};
     Rect2D      m_rect        = {};
     glm::vec2   m_pos         = {};                     // draw position
     glm::vec4   m_fields      = {1.f, 1.f, 1.f, 1.f};   // left, right, bottom, top
@@ -104,9 +109,9 @@ protected:
 
     bool        m_visible    = true;
     bool        m_focused    = false;
+    float       m_stretch    = 0.f;
     Align       m_horizontal = Align::left;
     Align       m_vertical   = Align::top;
-    SizePolicy  m_scale      = SizePolicy::scalable;
     ElementType m_type       = ElementType::Unknown;
 
     TexFont *                     m_font       = nullptr;

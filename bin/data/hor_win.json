@@ -1,22 +1,21 @@
 {
    "Info Window HorizontalLayoutee":[
       {
-         "size":[ 0, 0 ],
          "type":"HorizontalLayoutee",
          "visible":false,
          "children":[
             {
-               "size":[ 0, 0 ],
                "type":"VerticalLayoutee",
                "visible":false,
                "children":[
                   {
-                     "size":[ 150, 20 ],
+                     "minimal_size":[ 150, 20 ],
+                     "maximal_size":[ 2000, 2000 ],
+                     "stretch":1,
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_text",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
@@ -25,12 +24,12 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 150, 20 ],
+                     "minimal_size":[ 150, 20 ],
                      "type":"TextBox",
+                     "stretch":0,
                      "visible":true,
                      "region_name":"",
                      "id_name":"key_text",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -39,12 +38,12 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 150, 20 ],
+                     "minimal_size":[ 150, 20 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"fps_text",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -53,13 +52,13 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size": [ 100, 15 ],
+                     "minimal_size": [ 100, 15 ],
                      "type": "Button",
+                     "stretch":1,
                      "visible": true,
                      "texture": "button",
                      "region_name": "button_unclicked",
                      "id_name": "button_ok",
-                     "size_policy": "scale",
                      "align_horizontal": "left",
                      "align_vertical": "top",
                      "font":"liberation_16",
@@ -70,17 +69,16 @@
                ]
             },
             {
-               "size":[ 0, 0 ],
                "type":"VerticalLayoutee",
                "visible":false,
                "children":[
                   {
-                     "size":[ 75, 30 ],
+                     "minimal_size":[ 75, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_x",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
@@ -89,12 +87,12 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 100, 30 ],
+                     "minimal_size":[ 100, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"key_num",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -103,12 +101,12 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 100, 30 ],
+                     "minimal_size":[ 100, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"fps_num",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"damase",
@@ -117,13 +115,13 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "size": [ 100, 15 ],
+                     "minimal_size": [ 100, 15 ],
                      "type": "Button",
+                     "stretch":1,
                      "visible": true,
                      "texture": "button",
                      "region_name": "button_unclicked",
                      "id_name": "button_close",
-                     "size_policy": "scale",
                      "align_horizontal": "left",
                      "align_vertical": "top",
                      "font": "liberation",
@@ -134,17 +132,16 @@
                ]
             },
             {
-               "size":[ 0, 0 ],
                "type":"VerticalLayoutee",
                "visible":false,
                "children":[
                   {
-                     "size":[ 75, 30 ],
+                     "minimal_size":[ 75, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_y",
-                     "size_policy":"fixed_width",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
@@ -157,15 +154,15 @@
          ]
       },
       {
-         "size":[ 0, 0 ],
          "type":"ImageBox",
+         "stretch":1,
          "visible":true,
          "texture":"background",
          "region_name":"background",
          "id_name":"background",
-         "size_policy":"scale",
          "align_horizontal":"left",
          "align_vertical":"top"
       }
-   ]
+   ],
+   "window_size": [300, 150]
 }

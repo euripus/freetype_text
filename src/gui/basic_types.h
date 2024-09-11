@@ -27,13 +27,4 @@ enum class Align
     bottom
 };
 
-enum class SizePolicy
-{
-    scalable,
-    fixed_width,    // scaled height
-    fixed_height,   // scaled width
-    fixed_size,
-    none
-};
-
 #endif

@@ -189,17 +189,29 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
     WidgetDesc desc;
     for(auto const & kvp: obj)
     {
-        if(kvp.key() == WidgetDesc::sid_size)
+        if(kvp.key() == WidgetDesc::sid_minimal_size)
         {
             std::vector<int32_t> vec;
             vec = boost::json::value_to<std::vector<int32_t>>(kvp.value());
 
-            desc.size_hint.x = static_cast<float>(vec[0]);
-            desc.size_hint.y = static_cast<float>(vec[1]);
+            desc.min_size.x = static_cast<float>(vec[0]);
+            desc.min_size.y = static_cast<float>(vec[1]);
+        }
+        else if(kvp.key() == WidgetDesc::sid_maximal_size)
+        {
+            std::vector<int32_t> vec;
+            vec = boost::json::value_to<std::vector<int32_t>>(kvp.value());
+
+            desc.max_size.x = static_cast<float>(vec[0]);
+            desc.max_size.y = static_cast<float>(vec[1]);
         }
         else if(kvp.key() == WidgetDesc::sid_type)
         {
             desc.type = WidgetDesc::GetElementTypeFromString(kvp.value().as_string());
+        }
+        else if(kvp.key() == WidgetDesc::sid_stretch)
+        {
+            desc.stretch = static_cast<float>(kvp.value().as_int64());
         }
         else if(kvp.key() == WidgetDesc::sid_visible)
         {
@@ -212,10 +224,6 @@ std::unique_ptr<Widget> UIWindow::GetWidgetFromJson(boost::json::object const & 
         else if(kvp.key() == WidgetDesc::sid_id_name)
         {
             desc.id_name = kvp.value().as_string();
-        }
-        else if(kvp.key() == WidgetDesc::sid_size_policy)
-        {
-            desc.scale = WidgetDesc::GetSizePolicyFromString(kvp.value().as_string());
         }
         else if(kvp.key() == WidgetDesc::sid_align_horizontal)
         {

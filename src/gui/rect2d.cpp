@@ -19,10 +19,10 @@ void Rect2D::inflate(float const horizontal_value, float const vertical_value)
         throw std::invalid_argument("arguments out of range");
     }
 
-    m_pos.x    -= horizontal_value;
-    m_pos.y    -= vertical_value;
-    m_extent.x += horizontal_value * 2;
-    m_extent.y += vertical_value * 2;
+    m_pos.x  -= horizontal_value;
+    m_pos.y  -= vertical_value;
+    m_size.x += horizontal_value * 2;
+    m_size.y += vertical_value * 2;
 }
 
 Rect2D Rect2D::Intersect(Rect2D const & rect1, Rect2D const & rect2)

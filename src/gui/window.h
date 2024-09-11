@@ -36,7 +36,8 @@ public:
 
     Rect2D    getRect() const { return m_rect; }
     void      setRect(Rect2D const & rect) { m_rect = rect; }
-    glm::vec2 size() const { return m_rect.m_extent; }
+    void      setSize(float width, float height) { m_rect.m_size = {width, height}; }
+    glm::vec2 size() const { return m_rect.m_size; }
     glm::vec2 pos() const { return m_pos; }
 
     Widget * getRootWidget() const;

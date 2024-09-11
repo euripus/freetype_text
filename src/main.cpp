@@ -429,7 +429,7 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
         for(int32_t i = 0; i < level - 1; ++i)
             std::cout << "\t";
         std::cout << "pos: " << widget->pos().x << " " << widget->pos().y << "  ";
-        std::cout << "size: " << widget->size().x << " " << widget->size().y << std::endl;
+        std::cout << "size: " << widget->getSize().x << " " << widget->getSize().y << std::endl;
     }
 
     if(uint32_t num_ch = widget->getNumChildren(); num_ch > 0)
