@@ -86,7 +86,7 @@ public:
 
     ~StringLayout() {}
 
-    float defaultBorder() const { return m_border; }
+    float border() const { return m_border; }
 
     void      addSpacing(float size);
     void      addStretch(float stretch = 0);

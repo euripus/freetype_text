@@ -52,7 +52,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
             continue;
         }
 
-        current_width += word_width;
+        current_width += (word_width + blank_width);
         if(current_width > width)
         {
             current_width = word_width + blank_width;
@@ -69,7 +69,6 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
         else
         {
             current_string += word + ' ';
-            current_width  += blank_width;
         }
     }
 
@@ -77,7 +76,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
         result.push_back(current_string);
 }
 
-Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy scale_mode,
+Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, bool stretch,
                        std::string const & text)
 {
     Lines      result;
@@ -91,41 +90,18 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, SizePolicy sca
     {
         auto const words = split_string(text, ' ');
 
-        switch(scale_mode)
+        if(stretch)
         {
-            case SizePolicy::scalable:
-            {
-                float const k = rect.height() / rect.width();   // maintaining the specified proportions
-                float const text_area = string_width * (font.getHeight() + font.getLineGap());
-                float const width     = glm::sqrt(text_area / k);
+			float const k = rect.width() > 0 ? rect.height() / rect.width() : 1;   // maintaining the specified proportions
+			float const text_area = string_width * (font.getHeight() + font.getLineGap());
+			float const width     = glm::sqrt(text_area / k);
 
-                SplitTextForWidth(result, words, font, width);
-
-                break;
-            }
-            case SizePolicy::fixed_width:
-            {
-                SplitTextForWidth(result, words, font, rect.width());
-
-                break;
-            }
-            case SizePolicy::fixed_height:
-            {
-                float const text_area = string_width * (font.getHeight() + font.getLineGap());
-                float const width     = text_area / rect.height();
-
-                SplitTextForWidth(result, words, font, width);
-
-                break;
-            }
-            case SizePolicy::fixed_size:
-            case SizePolicy::none:
-            {
-                SplitTextForWidth(result, words, font, rect.width(), rect.height(), true);
-
-                break;
-            }
-        }
+			SplitTextForWidth(result, words, font, width);
+		}
+		else
+		{
+			SplitTextForWidth(result, words, font, rect.width(), rect.height(), true);
+		}
     }
 
     return result;

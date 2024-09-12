@@ -193,9 +193,9 @@ void StringLayout::addWidget(Widget * widget, float stretch, Align alignment)
         return;
     }
 
-    if(defaultBorder())
+    if(border())
         m_ser_chain->add(
-            m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), defaultBorder(), defaultBorder()),
+            m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), border(), border()),
             0);
 
     Chain * sc = m_chains_pool.getChain<SerChain>(Perp(m_dir));
@@ -237,7 +237,7 @@ void StringLayout::resizeAll(float new_width, float new_height)
     m_par_chain->recalc();
     m_ser_chain->recalc();
 
-    float const border = defaultBorder();
+    float const border = border();
 
     float const min_y = mainVerticalChain()->minSize() + 2 * border;
     float const min_x = mainHorizontalChain()->minSize() + 2 * border;

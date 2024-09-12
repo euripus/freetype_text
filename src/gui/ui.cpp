@@ -5,7 +5,7 @@
 UI::UI(Input const & inp)
     : m_input(inp)
 {
-    m_packer = std::make_unique<TreePacker>();
+    m_packer = std::make_unique<ChainsPacker>();
 }
 
 void UI::update(float time)
