@@ -66,13 +66,13 @@ void TextBox::adjustTextToLines()
 {
     Rect2D fit_rect{m_rect.m_pos, glm::vec2(m_rect.width() - m_fields.x - m_fields.y,
                                             m_rect.height() - m_fields.z - m_fields.w)};
-	bool stretch = (m_stretch > 0.f);
-    m_lines = TextFitter::AdjustTextToRect(*m_font, fit_rect, stretch, m_text);
+    bool   stretch = (m_stretch > 0.f);
+    m_lines        = TextFitter::AdjustTextToRect(*m_font, fit_rect, stretch, m_text);
 
     float text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
     float text_width  = TextFitter::MaxStringWidthInLines(*m_font, m_lines);
-    text_width = glm::max(text_width, m_rect.width());
-    text_height = glm::max(text_height, m_rect.height());
+    text_width        = glm::max(text_width, m_rect.width());
+    text_height       = glm::max(text_height, m_rect.height());
 
     m_rect.m_size = glm::vec2(text_width + m_fields.x + m_fields.y, text_height + m_fields.z + m_fields.w);
     m_formated    = true;

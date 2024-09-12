@@ -76,8 +76,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
         result.push_back(current_string);
 }
 
-Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, bool stretch,
-                       std::string const & text)
+Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, bool stretch, std::string const & text)
 {
     Lines      result;
     auto const string_width = font.getTextSize(text.c_str()).x;
@@ -92,16 +91,17 @@ Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, bool stretch,
 
         if(stretch)
         {
-			float const k = rect.width() > 0 ? rect.height() / rect.width() : 1;   // maintaining the specified proportions
-			float const text_area = string_width * (font.getHeight() + font.getLineGap());
-			float const width     = glm::sqrt(text_area / k);
+            float const k         = rect.width() > 0 ? rect.height() / rect.width()
+                                                     : 1;   // maintaining the specified proportions
+            float const text_area = string_width * (font.getHeight() + font.getLineGap());
+            float const width     = glm::sqrt(text_area / k);
 
-			SplitTextForWidth(result, words, font, width);
-		}
-		else
-		{
-			SplitTextForWidth(result, words, font, rect.width(), rect.height(), true);
-		}
+            SplitTextForWidth(result, words, font, width);
+        }
+        else
+        {
+            SplitTextForWidth(result, words, font, rect.width(), rect.height(), true);
+        }
     }
 
     return result;

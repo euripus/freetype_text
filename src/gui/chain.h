@@ -96,7 +96,7 @@ public:
 
     void addStrut(float size);   // Limits the perpendicular dimension of the box
 
-    void resizeAll(float win_width, float win_height);
+    glm::vec2 resizeAll(float win_width, float win_height);
 
 private:
     Chain * mainVerticalChain();

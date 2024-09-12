@@ -194,9 +194,7 @@ void StringLayout::addWidget(Widget * widget, float stretch, Align alignment)
     }
 
     if(border())
-        m_ser_chain->add(
-            m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), border(), border()),
-            0);
+        m_ser_chain->add(m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), border(), border()), 0);
 
     Chain * sc = m_chains_pool.getChain<SerChain>(Perp(m_dir));
     if(alignment == Align::right || alignment == Align::top || alignment == Align::center)
@@ -230,25 +228,25 @@ void StringLayout::addString(StringLayout * layout, float stretch)
     }
 }
 
-void StringLayout::resizeAll(float new_width, float new_height)
+glm::vec2 StringLayout::resizeAll(float new_width, float new_height)
 {
     WDict lookup_table;
 
     m_par_chain->recalc();
     m_ser_chain->recalc();
 
-    float const border = border();
+    float const cur_border = border();
 
-    float const min_y = mainVerticalChain()->minSize() + 2 * border;
-    float const min_x = mainHorizontalChain()->minSize() + 2 * border;
+    float const min_y = mainVerticalChain()->minSize() + 2 * cur_border;
+    float const min_x = mainHorizontalChain()->minSize() + 2 * cur_border;
     float const max_y = mainVerticalChain()->maxSize();
     float const max_x = mainHorizontalChain()->maxSize();
 
     float const width  = std::max(min_x, std::min(new_width, max_x));
     float const height = std::max(min_y, std::min(new_height, max_y));
 
-    mainHorizontalChain()->distribute(lookup_table, border, width - 2 * border);
-    mainVerticalChain()->distribute(lookup_table, border, height - 2 * border);
+    mainHorizontalChain()->distribute(lookup_table, cur_border, width - 2 * cur_border);
+    mainVerticalChain()->distribute(lookup_table, cur_border, height - 2 * cur_border);
 
     for(auto & [key, val]: lookup_table)
     {
@@ -257,6 +255,8 @@ void StringLayout::resizeAll(float new_width, float new_height)
             val.widget->setRect(val.geom);
         }
     }
+
+    return {width, height};
 }
 
 float WidChain::minSize() const

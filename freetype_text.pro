@@ -38,6 +38,7 @@ unix:{
 SOURCES += \
     src/gui/atlastex.cpp \
     src/gui/button.cpp \
+    src/gui/chain.cpp \
     src/gui/fontmanager.cpp \
     src/gui/imagedata.cpp \
     src/gui/packer.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     src/gui/atlastex.h \
     src/gui/basic_types.h \
     src/gui/button.h \
+    src/gui/chain.h \
     src/gui/fontmanager.h \
     src/gui/imagedata.h \
     src/gui/packer.h \

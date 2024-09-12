@@ -54,7 +54,16 @@ void ChainsPacker::fitWidgets(UIWindow * win, float width, float height) const
     }
 
     if(top_string != nullptr)
-        top_string->resizeAll(width, height);
+    {
+        auto new_size = top_string->resizeAll(width, height);
+        win->setSize(new_size.x, new_size.y);
+    }
+
+    auto w_rect = win->getRect();
+    if(auto backround = win->getBackgroundWidget(); backround != nullptr)
+    {
+        backround->setSize(w_rect.width(), w_rect.height());
+    }
 }
 
 void ChainsPacker::addNewString(Widget & string_node, StringLayout * parent, MemPool & pool) const
