@@ -9,7 +9,7 @@
                "visible":false,
                "children":[
                   {
-                     "minimal_size":[ 150, 20 ],
+                     "minimal_size":[ 150, 26 ],
                      "maximal_size":[ 2000, 2000 ],
                      "stretch":1,
                      "type":"TextBox",
@@ -24,9 +24,9 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size":[ 150, 20 ],
+                     "minimal_size":[ 150, 50 ],
                      "type":"TextBox",
-                     "stretch":0,
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"key_text",
@@ -38,7 +38,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size":[ 150, 20 ],
+                     "minimal_size":[ 150, 26 ],
                      "type":"TextBox",
                      "stretch":1,
                      "visible":true,
@@ -52,7 +52,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size": [ 100, 15 ],
+                     "minimal_size": [ 100, 20 ],
                      "type": "Button",
                      "stretch":1,
                      "visible": true,
@@ -115,7 +115,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size": [ 100, 15 ],
+                     "minimal_size": [ 100, 26 ],
                      "type": "Button",
                      "stretch":1,
                      "visible": true,

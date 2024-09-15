@@ -80,6 +80,7 @@ public:
     void sizeUpdated();
 
     glm::vec2   minimumSize() const { return m_min_size; }
+    void        setMinimumSize(glm::vec2 size) { m_min_size = size; }
     glm::vec2   maximumSize() const { return m_max_size; }
     float       getStretch() const { return m_stretch; }
     void        setStretch(float stretch) { m_stretch = stretch; }
