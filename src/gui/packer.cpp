@@ -25,7 +25,9 @@ T & GetRef(std::unique_ptr<T> & ptr)
     throw std::runtime_error("Error dereferencing null unique_ptr!");
 }
 
-void ChainsPacker::fitWidgets(UIWindow * win, float width, float height) const
+static glm::vec2 GetWidgetsSize(Widget const & root) {}
+
+void ChainsPacker::fitWidgets(UIWindow * win) const
 {
     if(win == nullptr || win->getRootWidget() == nullptr)
         return;
@@ -33,6 +35,7 @@ void ChainsPacker::fitWidgets(UIWindow * win, float width, float height) const
     MemPool        pool;
     Widget &       root       = *win->getRootWidget();
     StringLayout * top_string = nullptr;
+    auto           size       = GetWidgetsSize(root);
 
     if(root.getType() == ElementType::VerticalLayoutee || root.getType() == ElementType::HorizontalLayoutee)
     {
@@ -49,13 +52,13 @@ void ChainsPacker::fitWidgets(UIWindow * win, float width, float height) const
     }
     else
     {
-        win->setSize(width, height);
-        root.setSize(width, height);
+        win->setSize(size.x, size.y);
+        root.setSize(size.x, size.y);
     }
 
     if(top_string != nullptr)
     {
-        auto new_size = top_string->resizeAll(width, height);
+        auto new_size = top_string->resizeAll(size.x, size.y);
         win->setSize(new_size.x, new_size.y);
     }
 

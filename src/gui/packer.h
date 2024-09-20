@@ -11,7 +11,7 @@ public:
     virtual ~Packer() = default;
 
     void         setSpacing(float val) { m_border = val; }
-    virtual void fitWidgets(UIWindow * win, float width, float height) const = 0;
+    virtual void fitWidgets(UIWindow * win) const = 0;
 
 protected:
     float m_border = 1.0f;
@@ -23,7 +23,7 @@ class MemPool;
 class ChainsPacker : public Packer
 {
 public:
-    void fitWidgets(UIWindow * win, float width, float height) const;
+    void fitWidgets(UIWindow * win) const override;
 
 protected:
     void addNewString(Widget & string_node, StringLayout * parent, MemPool & pool) const;

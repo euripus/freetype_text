@@ -13,7 +13,7 @@ using Lines = std::vector<std::string>;
 
 float       MaxStringWidthInLines(TexFont const & font, Lines const & lines);
 std::string TrimWordToWidth(TexFont const & font, float const width, std::string const & word);
-Lines AdjustTextToRect(TexFont const & font, Rect2D const & rect, bool stretch, std::string const & text);
+Lines AdjustTextToSize(TexFont const & font, glm::vec2 const & size, bool stretch, std::string const & text);
 }   // namespace TextFitter
 
 #endif

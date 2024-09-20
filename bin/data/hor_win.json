@@ -9,7 +9,7 @@
                "visible":false,
                "children":[
                   {
-                     "minimal_size":[ 150, 26 ],
+                     "minimal_size":[ 150, 30 ],
                      "maximal_size":[ 2000, 2000 ],
                      "stretch":1,
                      "type":"TextBox",
@@ -30,7 +30,7 @@
                      "visible":true,
                      "region_name":"",
                      "id_name":"key_text",
-                     "align_horizontal":"left",
+                     "align_horizontal":"center",
                      "align_vertical":"top",
                      "font":"damase",
                      "font_size":24,
@@ -38,7 +38,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size":[ 150, 26 ],
+                     "minimal_size":[ 150, 30 ],
                      "type":"TextBox",
                      "stretch":1,
                      "visible":true,
@@ -52,7 +52,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size": [ 100, 20 ],
+                     "minimal_size": [ 100, 22 ],
                      "type": "Button",
                      "stretch":1,
                      "visible": true,
@@ -87,7 +87,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size":[ 100, 30 ],
+                     "minimal_size":[ 100, 50 ],
                      "type":"TextBox",
                      "stretch":1,
                      "visible":true,
@@ -115,7 +115,7 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size": [ 100, 26 ],
+                     "minimal_size": [ 100, 30 ],
                      "type": "Button",
                      "stretch":1,
                      "visible": true,

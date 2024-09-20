@@ -377,14 +377,14 @@ void SerChain::distribute(WDict & wd, float pos, float space)
         return;
 
     float available = space - minSize();
-    if(available < 0)
+    if(available < 0.f)
     {
         std::string msg;
         msg += "Not enough space for " + std::to_string(chains.size()) + "-item in "
                + (Horz(direction()) ? "horizontal" : "vertical") + " chain";
 
         std::cerr << msg << std::endl;
-        available = 0;
+        available = 0.f;
     }
 
     float sf = sumStretch();
@@ -405,7 +405,7 @@ void SerChain::distribute(WDict & wd, float pos, float space)
 
             float min_s = chains.at(i)->minSize();
             float siz   = min_s;
-            if(sf > 0.0f)
+            if(sf > 0.f)
                 siz += available * chains.at(i)->stretch() / sf;
             else
                 siz += available / num_chains;
@@ -441,7 +441,7 @@ void SerChain::distribute(WDict & wd, float pos, float space)
         float p = places[i];
         float s = places[i + 1] - places[i];
         if(backwards)
-            p = 2 * pos + space - p - s;
+            p = 2.f * pos + space - p - s;
         chains.at(i)->distribute(wd, p, s);
     }
 }
