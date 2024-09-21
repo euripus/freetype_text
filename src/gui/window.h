@@ -2,7 +2,7 @@
 #define WINDOW_H
 
 #include <string>
-#include <boost/json.hpp>
+#include <functional>
 #include "widget.h"
 
 class UI;
@@ -11,7 +11,11 @@ class UIImageGroup;
 class UIWindow
 {
 public:
-    static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
+    // json keys
+    static constexpr char const * sid_window_caption = "window_caption";
+    static constexpr char const * sid_window_size    = "window_size";
+    static constexpr char const * sid_widgets        = "widgets";
+
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
 public:

@@ -19,9 +19,9 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     // draw text
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     glm::vec2   pen_pos(0.f, 0.f);
-    // glm::vec2   r_size = m_rect.m_size;
-    // glm::vec2   r_pos  = m_pos;
-    pen_pos.y = m_pos.y + m_rect.height() - (line_height + m_fields.w);
+    pen_pos.y        = m_pos.y + m_rect.height() - (line_height + m_fields.w);
+    // glm::vec2 r_size = m_rect.m_size;
+    // glm::vec2 r_pos  = m_pos;
 
     for(auto const & line: m_lines)
     {
@@ -57,7 +57,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     }
 
     // Add2DRectangle(text, r_pos.x, r_pos.y, r_pos.x + r_size.x, r_pos.y + r_size.y, 0.005859375f, 0.015625f,
-    //                0.0078125f, 0.017578125f);
+                   // 0.0078125f, 0.017578125f);
 }
 
 void TextBox::setText(std::string new_text)
@@ -70,18 +70,10 @@ void TextBox::setText(std::string new_text)
 
 void TextBox::adjustTextToLines()
 {
-    glm::vec2 fit_size{
-        glm::vec2(m_rect.width() - m_fields.x - m_fields.y, m_rect.height() - m_fields.z - m_fields.w)};
-    bool stretch = (m_stretch > 0.f);
-    m_lines      = TextFitter::AdjustTextToSize(*m_font, fit_size, false, m_text);
+    glm::vec2 fit_size{m_rect.width() - m_fields.x - m_fields.y, m_rect.height() - m_fields.z - m_fields.w};
+    m_lines = TextFitter::AdjustTextToSize(*m_font, fit_size, false, m_text);
 
-    float text_height = m_lines.size() * (m_font->getHeight() + m_font->getLineGap());
-    float text_width  = TextFitter::MaxStringWidthInLines(*m_font, m_lines);
-    text_width        = glm::max(text_width + m_fields.x + m_fields.y, m_rect.width());
-    text_height       = glm::max(text_height + m_fields.z + m_fields.w, m_rect.height());
-
-    m_rect.m_size = glm::vec2(text_width, text_height);
-    m_formated    = true;
+    m_formated = true;
 
     sizeUpdated();
 }

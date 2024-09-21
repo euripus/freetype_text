@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
+#include <boost/json.hpp>
 #include "basic_types.h"
 #include "rect2d.h"
 #include "texfont.h"
@@ -54,6 +55,9 @@ class Widget
 private:
     virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
     virtual void subClassUdate(float time, bool check_cursor) {}
+
+public:
+    static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);

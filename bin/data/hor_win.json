@@ -1,5 +1,7 @@
 {
-   "Info Window HorizontalLayoutee":[
+   "window_caption":"Sample Window",
+   "window_size":[ 300, 150 ],
+   "widgets":[
       {
          "type":"HorizontalLayoutee",
          "visible":false,
@@ -8,6 +10,49 @@
                "type":"VerticalLayoutee",
                "visible":false,
                "children":[
+                  {
+                     "minimal_size":[ 100, 22 ],
+                     "type":"Button",
+                     "stretch":1,
+                     "visible":true,
+                     "texture":"button",
+                     "region_name":"button_unclicked",
+                     "id_name":"button_ok",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation_16",
+                     "font_size":16,
+                     "static_text":"Fullscreen",
+                     "text_horizontal":"center"
+                  },
+                  {
+                     "minimal_size":[ 150, 50 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"key_text",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Последняя клавиша",
+                     "text_horizontal":"right"
+                  },
+                  {
+                     "minimal_size":[ 150, 50 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"fps_text",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Καρε ανα δευτερολεπτο",
+                     "text_horizontal":"left"
+                  },
                   {
                      "minimal_size":[ 150, 30 ],
                      "maximal_size":[ 2000, 2000 ],
@@ -22,49 +67,6 @@
                      "font_size":24,
                      "static_text":"Cursor pos",
                      "text_horizontal":"left"
-                  },
-                  {
-                     "minimal_size":[ 150, 50 ],
-                     "type":"TextBox",
-                     "stretch":1,
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"key_text",
-                     "align_horizontal":"center",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":"Последняя клавиша",
-                     "text_horizontal":"left"
-                  },
-                  {
-                     "minimal_size":[ 150, 30 ],
-                     "type":"TextBox",
-                     "stretch":1,
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"fps_text",
-                     "align_horizontal":"left",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":"Καρε ανα δευτερολεπτο",
-                     "text_horizontal":"left"
-                  },
-                  {
-                     "minimal_size": [ 100, 22 ],
-                     "type": "Button",
-                     "stretch":1,
-                     "visible": true,
-                     "texture": "button",
-                     "region_name": "button_unclicked",
-                     "id_name": "button_ok",
-                     "align_horizontal": "left",
-                     "align_vertical": "top",
-                     "font":"liberation_16",
-                     "font_size":16,
-                     "static_text": "Fullscreen",
-                     "text_horizontal": "center"
                   }
                ]
             },
@@ -73,18 +75,19 @@
                "visible":false,
                "children":[
                   {
-                     "minimal_size":[ 75, 30 ],
-                     "type":"TextBox",
+                     "minimal_size":[ 100, 30 ],
+                     "type":"Button",
                      "stretch":1,
                      "visible":true,
-                     "region_name":"",
-                     "id_name":"pos_x",
+                     "texture":"button",
+                     "region_name":"button_unclicked",
+                     "id_name":"button_close",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
                      "font_size":24,
-                     "static_text":"x",
-                     "text_horizontal":"left"
+                     "static_text":"Close",
+                     "text_horizontal":"center"
                   },
                   {
                      "minimal_size":[ 100, 50 ],
@@ -115,19 +118,18 @@
                      "text_horizontal":"left"
                   },
                   {
-                     "minimal_size": [ 100, 30 ],
-                     "type": "Button",
+                     "minimal_size":[ 75, 30 ],
+                     "type":"TextBox",
                      "stretch":1,
-                     "visible": true,
-                     "texture": "button",
-                     "region_name": "button_unclicked",
-                     "id_name": "button_close",
-                     "align_horizontal": "left",
-                     "align_vertical": "top",
-                     "font": "liberation",
-                     "font_size": 24,
-                     "static_text": "Close",
-                     "text_horizontal": "center"
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"pos_x",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation",
+                     "font_size":24,
+                     "static_text":"x",
+                     "text_horizontal":"left"
                   }
                ]
             },
@@ -143,7 +145,7 @@
                      "region_name":"",
                      "id_name":"pos_y",
                      "align_horizontal":"left",
-                     "align_vertical":"top",
+                     "align_vertical":"bottom",
                      "font":"liberation",
                      "font_size":24,
                      "static_text":"y",
@@ -163,6 +165,5 @@
          "align_horizontal":"left",
          "align_vertical":"top"
       }
-   ],
-   "window_size": [300, 150]
+   ]
 }

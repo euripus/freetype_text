@@ -41,9 +41,9 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
 
     for(auto const & word: words)
     {
-        float const word_width = font.getTextSize(word.c_str()).x;
+        float const word_blank_width = font.getTextSize(word.c_str()).x + blank_width;
 
-        if(word_width > width)
+        if(word_blank_width > width)
         {
             if(!current_string.empty())
                 result.push_back(std::move(current_string));
@@ -52,10 +52,10 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
             continue;
         }
 
-        current_width += (word_width + blank_width);
+        current_width += word_blank_width;
         if(current_width > width)
         {
-            current_width = word_width + blank_width;
+            current_width = word_blank_width;
             result.push_back(std::move(current_string));
             current_string += word + ' ';
 

@@ -25,7 +25,56 @@ T & GetRef(std::unique_ptr<T> & ptr)
     throw std::runtime_error("Error dereferencing null unique_ptr!");
 }
 
-static glm::vec2 GetWidgetsSize(Widget const & root) {}
+static glm::vec2 GetWidgetsSize(Widget const & root, float border)
+{
+    glm::vec2 result{0.0f};
+
+    switch(root.getType())
+    {
+        case ElementType::VerticalLayoutee:
+        {
+            for(auto const & ch: root.getChildren())
+            {
+                auto const child_size = GetWidgetsSize(GetRef(ch), border);
+
+                result.x  = std::max(result.x, child_size.x);
+                result.y += child_size.y;
+            }
+
+            if(root.getNumChildren() > 1)
+            {
+                result.y += border * (root.getNumChildren() - 1);
+            }
+
+            break;
+        }
+        case ElementType::HorizontalLayoutee:
+        {
+            for(auto const & ch: root.getChildren())
+            {
+                auto const child_size = GetWidgetsSize(GetRef(ch), border);
+
+                result.x += child_size.x;
+                result.y  = std::max(result.y, child_size.y);
+            }
+
+            if(root.getNumChildren() > 1)
+            {
+                result.x += border * (root.getNumChildren() - 1);
+            }
+
+            break;
+        }
+        default:
+        {
+            result = root.getSize();
+
+            break;
+        }
+    }
+
+    return result;
+}
 
 void ChainsPacker::fitWidgets(UIWindow * win) const
 {
@@ -35,7 +84,7 @@ void ChainsPacker::fitWidgets(UIWindow * win) const
     MemPool        pool;
     Widget &       root       = *win->getRootWidget();
     StringLayout * top_string = nullptr;
-    auto           size       = GetWidgetsSize(root);
+    auto           size       = glm::max(GetWidgetsSize(root, m_border), win->size());
 
     if(root.getType() == ElementType::VerticalLayoutee || root.getType() == ElementType::HorizontalLayoutee)
     {

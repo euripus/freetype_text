@@ -8,7 +8,7 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner)
       m_text_horizontal_align(desc.text_hor)
 {
     // Trim text to button size
-    auto lines = TextFitter::AdjustTextToRect(*m_font, m_rect, false, m_caption);
+    auto lines = TextFitter::AdjustTextToSize(*m_font, m_rect.m_size, false, m_caption);
     m_caption  = lines[0];
 
     float const line_height = m_font->getHeight() + m_font->getLineGap();
