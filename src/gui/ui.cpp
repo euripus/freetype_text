@@ -96,5 +96,9 @@ void UI::parseUIResources(std::string const & file_name)
 
 void UI::fitWidgets(UIWindow * win_ptr) const
 {
+    if(win_ptr == nullptr)
+        return;
+
+    m_packer->setSpacing(win_ptr->getSpacing());
     m_packer->fitWidgets(win_ptr);
 }

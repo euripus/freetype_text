@@ -14,6 +14,7 @@ public:
     // json keys
     static constexpr char const * sid_window_caption = "window_caption";
     static constexpr char const * sid_window_size    = "window_size";
+    static constexpr char const * sid_window_spacing = "window_spacing";
     static constexpr char const * sid_widgets        = "widgets";
 
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
@@ -41,6 +42,7 @@ public:
     Rect2D    getRect() const { return m_rect; }
     void      setRect(Rect2D const & rect) { m_rect = rect; }
     void      setSize(float width, float height) { m_rect.m_size = {width, height}; }
+    float     getSpacing() const { return m_spacing; }
     glm::vec2 size() const { return m_rect.m_size; }
     glm::vec2 pos() const { return m_pos; }
 
@@ -65,6 +67,7 @@ public:
 
 private:
     std::string m_caption;
+    float       m_spacing      = 0.f;
     bool        m_visible      = false;
     bool        m_draw_caption = false;
     bool        m_size_updated = true;

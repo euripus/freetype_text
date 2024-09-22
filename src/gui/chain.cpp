@@ -193,7 +193,7 @@ void StringLayout::addWidget(Widget * widget, float stretch, Align alignment)
         return;
     }
 
-    if(border())
+    if(border() > 0.f)
         m_ser_chain->add(m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), border(), border()), 0);
 
     Chain * sc = m_chains_pool.getChain<SerChain>(Perp(m_dir));
@@ -215,6 +215,9 @@ void StringLayout::addString(StringLayout * layout, float stretch)
 {
     if(layout == nullptr)
         return;
+
+    if(border() > 0.f)
+        m_ser_chain->add(m_chains_pool.getChain<SpaceChain>(m_ser_chain->direction(), border(), border()), 0);
 
     if(Horz(m_dir))
     {

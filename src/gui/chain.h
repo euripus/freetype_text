@@ -82,16 +82,16 @@ struct ChainOwner
 class StringLayout
 {
 public:
-    StringLayout(ChainOwner & chains_pool, Direction d, float def_border = 0);
+    StringLayout(ChainOwner & chains_pool, Direction d, float def_border = 0.f);
 
     ~StringLayout() {}
 
     float border() const { return m_border; }
 
     void      addSpacing(float size);
-    void      addStretch(float stretch = 0);
+    void      addStretch(float stretch = 0.f);
     void      addWidget(Widget * w, float stretch = 0, Align alignment = Align::center);
-    void      addString(StringLayout * layout, float stretch = 0);
+    void      addString(StringLayout * layout, float stretch = 0.f);
     Direction direction() const { return m_dir; }
 
     void addStrut(float size);   // Limits the perpendicular dimension of the box
@@ -106,7 +106,7 @@ private:
     ChainOwner & m_chains_pool;
     Chain *      m_par_chain = nullptr;
     Chain *      m_ser_chain = nullptr;
-    float        m_border;
+    float        m_border    = 0.f;
 };
 
 class MemPool

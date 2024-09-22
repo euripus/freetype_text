@@ -145,6 +145,10 @@ void UIWindow::loadWindowFromDesc(std::string const & file_name)
             {
                 m_caption = kvp.value().as_string();
             }
+            else if(kvp.key() == UIWindow::sid_window_spacing)
+            {
+                m_spacing = static_cast<float>(kvp.value().as_int64());
+            }
             else if(kvp.key() == UIWindow::sid_widgets)
             {
                 auto const & arr = kvp.value().as_array();
