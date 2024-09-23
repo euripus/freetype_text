@@ -102,7 +102,7 @@ public:
     Align        getVerticalAlign() const { return m_vertical; }
 
 protected:
-    float getHorizontalOffset() const;
+    float getHorizontalOffset(std::string const & line) const;
 
     UIWindow & m_owner;
 

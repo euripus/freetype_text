@@ -444,7 +444,7 @@ static void print_widget_size(Widget const * widget, int32_t level = 0)
 int main()
 {
     g_ui.parseUIResources("./data/ui_res.json");
-    UIWindow * win = g_ui.loadWindow("./data/hor_win.json");
+    UIWindow * win = g_ui.loadWindow("./data/vert_win.json");
 
     if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {

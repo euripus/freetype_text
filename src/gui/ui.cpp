@@ -90,7 +90,7 @@ void UI::parseDefaultUISetID(std::string const & file_name)
     auto const default_font_size = obj.find(sid_defult_font_size);
     if(default_font_name != obj.end() && default_font_size != obj.end())
     {
-        std::string name = default_font_name->value().as_string();
+        std::string name{default_font_name->value().as_string()};
         int32_t     size = default_font_size->value().as_int64();
 
         m_default_font = m_fonts.getFont(name, size);

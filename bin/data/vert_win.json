@@ -93,7 +93,7 @@
                      "font":"damase",
                      "font_size":24,
                      "static_text":"Καρε ανα δευτερολεπτο",
-                     "text_horizontal":"left"
+                     "text_horizontal":"center"
                   },
                   {
                      "minimal_size":[ 100, 30 ],

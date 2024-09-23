@@ -21,7 +21,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
 
     for(auto const & line: m_lines)
     {
-        pen_pos.x = getHorizontalOffset();
+        pen_pos.x = getHorizontalOffset(line);
 
         m_font->addText(text, line.c_str(), pen_pos);
         pen_pos.y -= line_height;
