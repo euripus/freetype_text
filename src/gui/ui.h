@@ -36,7 +36,9 @@ class UI
     void parseDefaultUISetID(std::string const & file_name);
 
 public:
-    static constexpr char const * sid_gui_set = "current_gui_set";
+    static constexpr char const * sid_gui_set          = "current_gui_set";
+    static constexpr char const * sid_defult_font      = "defult_font";
+    static constexpr char const * sid_defult_font_size = "defult_font_size";
 
     UI(Input const & inp);
 
@@ -61,7 +63,8 @@ public:
     glm::ivec2              m_screen_size = {};
     UIImageManager          m_ui_image_atlas;
     FontManager             m_fonts;
-    glm::vec4               m_font_color = ColorMap::black;
+    TexFont *               m_default_font = nullptr;
+    glm::vec4               m_font_color   = ColorMap::black;
     std::unique_ptr<Packer> m_packer;
     std::string             m_current_gui_set = {"default"};
 

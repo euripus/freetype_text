@@ -85,6 +85,19 @@ void UI::parseDefaultUISetID(std::string const & file_name)
     {
         m_current_gui_set = gui_set_it->value().as_string();
     }
+
+    auto const default_font_name = obj.find(sid_defult_font);
+    auto const default_font_size = obj.find(sid_defult_font_size);
+    if(default_font_name != obj.end() && default_font_size != obj.end())
+    {
+        std::string name = default_font_name->value().as_string();
+        int32_t     size = default_font_size->value().as_int64();
+
+        m_default_font = m_fonts.getFont(name, size);
+    }
+
+    if(m_default_font == nullptr)
+        throw std::runtime_error("Default UI font not found");
 }
 
 void UI::parseUIResources(std::string const & file_name)

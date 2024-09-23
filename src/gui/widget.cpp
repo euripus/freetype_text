@@ -146,20 +146,28 @@ std::unique_ptr<Widget> Widget::GetWidgetFromJson(boost::json::object const & ob
 Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     : m_owner(owner)
 {
-    m_min_size    = desc.min_size;
-    m_max_size    = desc.max_size;
-    m_rect        = Rect2D(glm::vec2(0.f, 0.f), m_min_size);
-    m_id          = desc.id_name;
-    m_region_name = desc.region_name;
-    m_visible     = desc.visible;
-    m_horizontal  = desc.horizontal;
-    m_vertical    = desc.vertical;
-    m_type        = desc.type;
-    m_stretch     = desc.stretch;
+    m_min_size              = desc.min_size;
+    m_max_size              = desc.max_size;
+    m_rect                  = Rect2D(glm::vec2(0.f, 0.f), m_min_size);
+    m_id                    = desc.id_name;
+    m_region_name           = desc.region_name;
+    m_visible               = desc.visible;
+    m_horizontal            = desc.horizontal;
+    m_vertical              = desc.vertical;
+    m_text_horizontal_align = desc.text_hor;
+    m_type                  = desc.type;
+    m_stretch               = desc.stretch;
 
     UI & ui = m_owner.getOwner();
     if(!desc.font_name.empty())
+    {
         m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
+    }
+    else
+    {
+        // default font
+        m_font = ui.m_default_font;
+    }
 
     if(!m_region_name.empty() && m_owner.isImageGroupExist())
         m_region_ptr = m_owner.getImageGroup().getImageRegion(m_region_name);
@@ -245,4 +253,37 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
 void Widget::sizeUpdated()
 {
     m_owner.sizeUpdated();
+}
+
+float Widget::getHorizontalOffset() const
+{
+    float res = 0.f;
+    switch(m_text_horizontal_align)
+    {
+        case Align::left:
+        case Align::top:   // horizontal align only
+        case Align::bottom:
+        {
+            res = m_pos.x + m_fields.x;
+
+            break;
+        }
+        case Align::center:
+        {
+            float const line_width = m_font->getTextSize(line.c_str()).x;
+            res                    = m_pos.x + (m_rect.width() - line_width) / 2.f;
+
+            break;
+        }
+        case Align::right:
+        {
+            float const line_width = m_font->getTextSize(line.c_str()).x;
+            float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+            res                    = m_pos.x + delta;
+
+            break;
+        }
+    }
+
+    return res;
 }

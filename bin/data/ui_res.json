@@ -63,7 +63,7 @@
         }
     ],
     "current_gui_set": "default",
-    "defult_window_font": "liberation",
-    "defult_window_font_size": 24
+    "defult_font": "liberation",
+    "defult_font_size": 24
 }
 

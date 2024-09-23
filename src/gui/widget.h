@@ -54,7 +54,7 @@ class Widget
 {
 private:
     virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
-    virtual void subClassUdate(float time, bool check_cursor) {}
+    virtual void subClassUpdate(float time, bool check_cursor) {}
 
 public:
     static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
@@ -102,6 +102,8 @@ public:
     Align        getVerticalAlign() const { return m_vertical; }
 
 protected:
+    float getHorizontalOffset() const;
+
     UIWindow & m_owner;
 
     glm::vec2   m_min_size    = {};
@@ -112,12 +114,13 @@ protected:
     std::string m_id          = {};
     std::string m_region_name = {};
 
-    bool        m_visible    = true;
-    bool        m_focused    = false;
-    float       m_stretch    = 0.f;
-    Align       m_horizontal = Align::left;
-    Align       m_vertical   = Align::top;
-    ElementType m_type       = ElementType::Unknown;
+    bool        m_visible               = true;
+    bool        m_focused               = false;
+    float       m_stretch               = 0.f;
+    Align       m_horizontal            = Align::left;
+    Align       m_vertical              = Align::top;
+    Align       m_text_horizontal_align = Align::left;
+    ElementType m_type                  = ElementType::Unknown;
 
     TexFont *                     m_font       = nullptr;
     RegionDataOfUITexture const * m_region_ptr = nullptr;

@@ -20,15 +20,14 @@ public:
 
 private:
     void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
-    void subClassUdate(float time, bool check_cursor) override;
+    void subClassUpdate(float time, bool check_cursor) override;
 
     RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;
 
 protected:
     std::string               m_caption;
     std::function<void(void)> m_click_callback;
-    Align                     m_text_horizontal_align = Align::left;
-    ButtonState               m_state                 = ButtonState::unclicked;
+    ButtonState               m_state = ButtonState::unclicked;
 };
 
 #endif

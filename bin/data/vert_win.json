@@ -1,125 +1,161 @@
 {
-   "Info Window VerticalLayoutee":[
+   "window_caption":"Sample Window",
+   "window_size":[ 300, 150 ],
+   "window_spacing":1,
+   "widgets":[
       {
-         "size":[ 0, 0 ],
          "type":"VerticalLayoutee",
          "visible":false,
          "children":[
             {
-               "size":[ 0, 0 ],
                "type":"HorizontalLayoutee",
                "visible":false,
                "children":[
                   {
-                     "size":[ 100, 30 ],
+                     "minimal_size":[ 100, 22 ],
+                     "type":"Button",
+                     "stretch":1,
+                     "visible":true,
+                     "texture":"button",
+                     "region_name":"button_unclicked",
+                     "id_name":"button_ok",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation_16",
+                     "font_size":16,
+                     "static_text":"Fullscreen",
+                     "text_horizontal":"center"
+                  },
+                  {
+                     "minimal_size":[ 100, 30 ],
+                     "type":"Button",
+                     "stretch":1,
+                     "visible":true,
+                     "texture":"button",
+                     "region_name":"button_unclicked",
+                     "id_name":"button_close",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"liberation",
+                     "font_size":24,
+                     "static_text":"Close",
+                     "text_horizontal":"center"
+                  }
+               ]
+            },
+            {
+               "type":"HorizontalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "minimal_size":[ 150, 50 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"key_text",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Последняя клавиша",
+                     "text_horizontal":"right"
+                  },
+                  {
+                     "minimal_size":[ 100, 50 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"key_num",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"key",
+                     "text_horizontal":"left"
+                  }
+               ]
+            },
+            {
+               "type":"HorizontalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "minimal_size":[ 150, 50 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"fps_text",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"Καρε ανα δευτερολεπτο",
+                     "text_horizontal":"left"
+                  },
+                  {
+                     "minimal_size":[ 100, 30 ],
+                     "type":"TextBox",
+                     "stretch":1,
+                     "visible":true,
+                     "region_name":"",
+                     "id_name":"fps_num",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"damase",
+                     "font_size":24,
+                     "static_text":"fps",
+                     "text_horizontal":"left"
+                  }
+               ]
+            },
+            {
+               "type":"HorizontalLayoutee",
+               "visible":false,
+               "children":[
+                  {
+                     "minimal_size":[ 150, 30 ],
+                     "maximal_size":[ 2000, 2000 ],
+                     "stretch":1,
                      "type":"TextBox",
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_text",
-                     "size_policy":"scale",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
                      "font_size":24,
-                     "static_text":"Cursor pos: ",
+                     "static_text":"Cursor pos",
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 10, 30 ],
+                     "minimal_size":[ 75, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_x",
-                     "size_policy":"scale",
                      "align_horizontal":"left",
                      "align_vertical":"top",
                      "font":"liberation",
                      "font_size":24,
-                     "static_text":" ",
+                     "static_text":"x",
                      "text_horizontal":"left"
                   },
                   {
-                     "size":[ 10, 30 ],
+                     "minimal_size":[ 75, 30 ],
                      "type":"TextBox",
+                     "stretch":1,
                      "visible":true,
                      "region_name":"",
                      "id_name":"pos_y",
-                     "size_policy":"scale",
                      "align_horizontal":"left",
-                     "align_vertical":"top",
+                     "align_vertical":"bottom",
                      "font":"liberation",
                      "font_size":24,
-                     "static_text":" ",
-                     "text_horizontal":"left"
-                  }
-               ]
-            },
-            {
-               "size":[ 0, 0 ],
-               "type":"HorizontalLayoutee",
-               "visible":false,
-               "children":[
-                  {
-                     "size":[ 100, 30 ],
-                     "type":"TextBox",
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"key_text",
-                     "size_policy":"scale",
-                     "align_horizontal":"left",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":"Последняя клавиша: ",
-                     "text_horizontal":"left"
-                  },
-                  {
-                     "size":[ 10, 30 ],
-                     "type":"TextBox",
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"key_num",
-                     "size_policy":"scale",
-                     "align_horizontal":"left",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":" ",
-                     "text_horizontal":"left"
-                  }
-               ]
-            },
-            {
-               "size":[ 0, 0 ],
-               "type":"HorizontalLayoutee",
-               "visible":false,
-               "children":[
-                  {
-                     "size":[ 100, 30 ],
-                     "type":"TextBox",
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"fps_text",
-                     "size_policy":"scale",
-                     "align_horizontal":"left",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":"Καρε ανα δευτερολεπτο: ",
-                     "text_horizontal":"left"
-                  },
-                  {
-                     "size":[ 10, 30 ],
-                     "type":"TextBox",
-                     "visible":true,
-                     "region_name":"",
-                     "id_name":"fps_num",
-                     "size_policy":"scale",
-                     "align_horizontal":"left",
-                     "align_vertical":"top",
-                     "font":"damase",
-                     "font_size":24,
-                     "static_text":" ",
+                     "static_text":"y",
                      "text_horizontal":"left"
                   }
                ]
@@ -127,13 +163,12 @@
          ]
       },
       {
-         "size":[ 0, 0 ],
          "type":"ImageBox",
+         "stretch":1,
          "visible":true,
          "texture":"background",
          "region_name":"background",
          "id_name":"background",
-         "size_policy":"scale",
          "align_horizontal":"left",
          "align_vertical":"top"
       }
