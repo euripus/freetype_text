@@ -66,17 +66,8 @@ private:
 class UIImageManager
 {
 public:
-    // json keys
-    static constexpr char const * sid_gui_set        = "gui_sets";
-    static constexpr char const * sid_set_name       = "set_name";
-    static constexpr char const * sid_images         = "images";
-    static constexpr char const * sid_texture        = "texture";
-    static constexpr char const * sid_9slice_margins = "9slice_margins";
-
-public:
     UIImageManager() = default;
 
-    void                 parseUIRes(std::string const & file_name);
     UIImageGroup const & getImageGroup(std::string const & group_name) const;
 
     AtlasTex & getAtlas() { return m_atlas; }
@@ -87,6 +78,8 @@ private:
 
     AtlasTex        m_atlas;   // one tex atlas for all loaded UI elements
     image_group_map m_groups;
+
+    friend class UIImageManagerDesc;
 };
 
 #endif

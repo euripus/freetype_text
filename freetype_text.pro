@@ -47,6 +47,7 @@ SOURCES += \
     src/gui/text_box.cpp \
     src/gui/text_fitter.cpp \
     src/gui/ui.cpp \
+    src/gui/uiconfigloader.cpp \
     src/gui/uiimagemanager.cpp \
     src/gui/utf8_utils.cpp \
     src/gui/widget.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/gui/text_box.h \
     src/gui/text_fitter.h \
     src/gui/ui.h \
+    src/gui/uiconfigloader.h \
     src/gui/uiimagemanager.h \
     src/gui/utf8_utils.h \
     src/gui/widget.h \

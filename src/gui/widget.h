@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
-#include <boost/json.hpp>
 #include "basic_types.h"
 #include "rect2d.h"
 #include "texfont.h"
@@ -12,52 +11,13 @@
 
 class UIWindow;
 class VertexBuffer;
-
-struct WidgetDesc
-{
-    // json keys
-    static constexpr char const * sid_minimal_size     = "minimal_size";
-    static constexpr char const * sid_maximal_size     = "maximal_size";
-    static constexpr char const * sid_type             = "type";
-    static constexpr char const * sid_visible          = "visible";
-    static constexpr char const * sid_region_name      = "region_name";
-    static constexpr char const * sid_id_name          = "id_name";
-    static constexpr char const * sid_stretch          = "stretch";
-    static constexpr char const * sid_align_horizontal = "align_horizontal";
-    static constexpr char const * sid_align_vertical   = "align_vertical";
-    static constexpr char const * sid_font             = "font";
-    static constexpr char const * sid_font_size        = "font_size";
-    static constexpr char const * sid_static_text      = "static_text";
-    static constexpr char const * sid_text_horizontal  = "text_horizontal";
-    static constexpr char const * sid_children         = "children";
-    static constexpr float        MaxWidgetSize        = std::numeric_limits<int>::max();
-
-    static ElementType GetElementTypeFromString(std::string_view name);
-    static Align       GetAlignFromString(std::string_view name);
-
-    glm::vec2   min_size    = {};
-    glm::vec2   max_size    = {MaxWidgetSize, MaxWidgetSize};
-    ElementType type        = ElementType::Unknown;
-    float       stretch     = 0.f;
-    bool        visible     = true;
-    std::string region_name = {};
-    std::string id_name     = {};
-    Align       horizontal  = Align::left;
-    Align       vertical    = Align::top;
-    std::string font_name   = {};
-    float       size        = 0.0f;
-    std::string static_text = {};
-    Align       text_hor    = Align::left;
-};
+class WidgetDesc;
 
 class Widget
 {
 private:
     virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
     virtual void subClassUpdate(float time, bool check_cursor) {}
-
-public:
-    static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);

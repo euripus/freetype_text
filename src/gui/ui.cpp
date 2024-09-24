@@ -1,6 +1,5 @@
 #include "ui.h"
-#include <fstream>
-#include <boost/json.hpp>
+#include "uiconfigloader.h"
 
 UI::UI(Input const & inp)
     : m_input(inp)
@@ -32,7 +31,8 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
         win = std::make_unique<UIWindow>(*this, m_current_gui_set);
     else
         win = std::make_unique<UIWindow>(*this, image_group);
-    win->loadWindowFromDesc(widgets_filename);
+
+    WindowDesc::LoadWindow(*win.get(), widgets_filename);
 
     m_windows.push_back(std::move(win));
 
@@ -47,64 +47,11 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
     return win_ptr;
 }
 
-void UI::parseDefaultUISetID(std::string const & file_name)
-{
-    boost::json::value jv;
-
-    try
-    {
-        std::ifstream ifile(file_name, std::ios::in);
-        std::string   file_data;
-
-        if(ifile.is_open())
-        {
-            std::string tp;
-            while(std::getline(ifile, tp))
-            {
-                file_data += tp;
-            }
-        }
-        else
-        {
-            std::string err = "File: " + file_name + " - not found!";
-            throw std::runtime_error(err);
-        }
-
-        jv = boost::json::parse(file_data);
-    }
-    catch(std::exception const & e)
-    {
-        throw std::runtime_error(e.what());
-    }
-
-    assert(!jv.is_null());
-
-    auto const & obj        = jv.get_object();
-    auto const   gui_set_it = obj.find(sid_gui_set);
-    if(gui_set_it != obj.end())
-    {
-        m_current_gui_set = gui_set_it->value().as_string();
-    }
-
-    auto const default_font_name = obj.find(sid_defult_font);
-    auto const default_font_size = obj.find(sid_defult_font_size);
-    if(default_font_name != obj.end() && default_font_size != obj.end())
-    {
-        std::string name{default_font_name->value().as_string()};
-        int32_t     size = default_font_size->value().as_int64();
-
-        m_default_font = m_fonts.getFont(name, size);
-    }
-
-    if(m_default_font == nullptr)
-        throw std::runtime_error("Default UI font not found");
-}
-
 void UI::parseUIResources(std::string const & file_name)
 {
-    m_ui_image_atlas.parseUIRes(file_name);
-    m_fonts.parseFontsRes(file_name);
-    parseDefaultUISetID(file_name);
+    UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, file_name);
+    FontDataDesc::ParseFontsRes(m_fonts, file_name);
+    UIDesc::ParseDefaultUISetID(*this, file_name);
 }
 
 void UI::fitWidgets(UIWindow * win_ptr) const

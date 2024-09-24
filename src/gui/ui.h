@@ -33,13 +33,7 @@ using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
 
 class UI
 {
-    void parseDefaultUISetID(std::string const & file_name);
-
 public:
-    static constexpr char const * sid_gui_set          = "current_gui_set";
-    static constexpr char const * sid_defult_font      = "defult_font";
-    static constexpr char const * sid_defult_font_size = "defult_font_size";
-
     UI(Input const & inp);
 
     void       update(float time);

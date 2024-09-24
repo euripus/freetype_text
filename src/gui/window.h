@@ -11,15 +11,6 @@ class UIImageGroup;
 class UIWindow
 {
 public:
-    // json keys
-    static constexpr char const * sid_window_caption = "window_caption";
-    static constexpr char const * sid_window_size    = "window_size";
-    static constexpr char const * sid_window_spacing = "window_spacing";
-    static constexpr char const * sid_widgets        = "widgets";
-
-    static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
-
-public:
     UIWindow(UI & owner, std::string const & image_group);
 
     UI &                 getOwner() { return m_owner; }
@@ -61,8 +52,6 @@ public:
         return nullptr;
     }
 
-    void loadWindowFromDesc(std::string const & file_name);
-
     void addCallBack(std::function<void(void)> fn);
 
 private:
@@ -82,6 +71,8 @@ private:
     UIImageGroup const * m_images = nullptr;
 
     std::vector<std::function<void(void)>> m_callbacks;
+
+    friend struct WindowDesc;
 };
 
 #endif

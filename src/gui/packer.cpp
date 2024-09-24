@@ -2,6 +2,7 @@
 #include "window.h"
 #include "chain.h"
 #include "basic_types.h"
+#include <stdexcept>
 
 template<typename T>
 T const & GetRef(std::unique_ptr<T> const & ptr)
