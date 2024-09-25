@@ -22,9 +22,9 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
     m_stretch               = desc.stretch;
 
     UI & ui = m_owner.getOwner();
-    if(!desc.font_name.empty())
+    if(auto ptr = ui.m_fonts.getFont(desc.font_name, desc.size); ptr != nullptr)
     {
-        m_font = ui.m_fonts.getFont(desc.font_name, desc.size);
+        m_font = ptr;
     }
     else
     {

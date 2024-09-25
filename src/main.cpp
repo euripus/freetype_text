@@ -421,30 +421,10 @@ static void error_callback(int error, char const * description)
     std::cout << error << ": " << description << std::endl;
 }
 
-static void print_widget_size(Widget const * widget, int32_t level = 0)
-{
-    if(!(widget->getType() == ElementType::VerticalLayoutee
-         || widget->getType() == ElementType::HorizontalLayoutee))
-    {
-        for(int32_t i = 0; i < level - 1; ++i)
-            std::cout << "\t";
-        std::cout << "pos: " << widget->pos().x << " " << widget->pos().y << "  ";
-        std::cout << "size: " << widget->getSize().x << " " << widget->getSize().y << std::endl;
-    }
-
-    if(uint32_t num_ch = widget->getNumChildren(); num_ch > 0)
-    {
-        for(uint32_t i = 0; i < num_ch; ++i)
-        {
-            print_widget_size(widget->getChild(i), level + 1);
-        }
-    }
-}
-
 int main()
 {
-    g_ui.parseUIResources("./data/ui_res.json");
-    UIWindow * win = g_ui.loadWindow("./data/vert_win.json");
+    g_ui.parseUIResources("./data/ui/jsons/ui_res.json");
+    UIWindow * win = g_ui.loadWindow("./data/ui/jsons/vert_win.json");
 
     if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {
@@ -479,7 +459,6 @@ int main()
     win->show();
     win->move({10.f, 10.f});
 
-    // print_widget_size(g_ui.m_layers[0].front()->getRootWidget());
     // g_ui.getFontImageAtlas().writeAtlasToTGA(std::string("./data/atlas.tga"));
     // g_ui.getUIImageAtlas().writeAtlasToTGA(std::string("./data/atlas_ui.tga"));
 

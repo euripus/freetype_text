@@ -60,7 +60,7 @@ struct WidgetDesc
     static ElementType GetElementTypeFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
-    //static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
+    // static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
     glm::vec2   min_size    = {};

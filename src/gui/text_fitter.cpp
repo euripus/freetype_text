@@ -87,8 +87,9 @@ std::string TrimWordToWidth(TexFont const & font, float const width, std::string
 
     for(uint32_t i = 0; i < word.size(); i += utf8_surrogate_len(word.c_str() + i))
     {
-        std::uint32_t ucodepoint = utf8_to_utf32(word.c_str() + i);
-        Glyph const & glyph      = font.getGlyph(ucodepoint);
+        std::uint32_t ucodepoint  = utf8_to_utf32(word.c_str() + i);
+        Glyph const & glyph       = font.getGlyph(ucodepoint);
+        cur_width                += glyph.advance_x;
 
         if(cur_width + ellipsis_width > width)
         {
@@ -96,8 +97,7 @@ std::string TrimWordToWidth(TexFont const & font, float const width, std::string
             break;
         }
 
-        cur_width += glyph.advance_x;
-        result    += std::string(word.c_str() + i, word.c_str() + i + utf8_surrogate_len(word.c_str() + i));
+        result += std::string(word.c_str() + i, word.c_str() + i + utf8_surrogate_len(word.c_str() + i));
     }
 
     return result;

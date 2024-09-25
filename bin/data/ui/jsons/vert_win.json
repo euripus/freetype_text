@@ -21,7 +21,7 @@
                      "id_name":"button_ok",
                      "align_horizontal":"left",
                      "align_vertical":"top",
-                     "font":"liberation_16",
+                     "font":"noto_sans_16",
                      "font_size":16,
                      "static_text":"Fullscreen",
                      "text_horizontal":"center"
@@ -36,8 +36,8 @@
                      "id_name":"button_close",
                      "align_horizontal":"left",
                      "align_vertical":"top",
-                     "font":"liberation",
-                     "font_size":24,
+                     "font":"noto_sans_16",
+                     "font_size":16,
                      "static_text":"Close",
                      "text_horizontal":"center"
                   }
@@ -164,7 +164,6 @@
       },
       {
          "type":"ImageBox",
-         "stretch":1,
          "visible":true,
          "texture":"background",
          "region_name":"background",

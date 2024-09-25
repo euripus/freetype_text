@@ -85,11 +85,10 @@ void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
 {
     // draw text
     float const line_height = m_font->getSize();
+    float const free_space = glm::max(0.f, (m_rect.height() - (m_fields.z + m_fields.w + line_height)) / 2.f);
 
     glm::vec2 pen_pos(0.f, 0.f);
-    pen_pos.y =   // vertically align to the center only
-        m_pos.y + m_rect.height()
-        - (line_height + m_fields.w + (m_rect.height() - (m_fields.z + m_fields.w + line_height)) / 2.f);
+    pen_pos.y = m_pos.y + m_fields.w + free_space;   // vertically align to the center only
     pen_pos.x = getHorizontalOffset(m_caption);
 
     m_font->addText(text, m_caption.c_str(), pen_pos);

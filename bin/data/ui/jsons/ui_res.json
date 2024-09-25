@@ -5,26 +5,55 @@
             "images": [
                 {
                     "background": {
-                        "texture": "./data/background.tga",
+                        "texture": "./data/ui/def/background.tga",
                         "9slice_margins": [ 10, 10, 10, 10 ]
                     }
                 },
                 {
                     "button_clicked": {
-                        "texture": "./data/button.tga",
+                        "texture": "./data/ui/def/button.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_unclicked": {
-                        "texture": "./data/button_unp.tga",
+                        "texture": "./data/ui/def/button_unp.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_disabled": {
-                        "texture": "./data/button.tga",
+                        "texture": "./data/ui/def/button.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
+                    }
+                }
+            ]
+        },
+		{
+            "set_name": "windows",
+            "images": [
+                {
+                    "background": {
+                        "texture": "./data/ui/win/window_base.tga",
+                        "9slice_margins": [ 2, 2, 2, 2 ]
+                    }
+                },
+                {
+                    "button_clicked": {
+                        "texture": "./data/ui/win/button_pressed.tga",
+                        "9slice_margins": [ 2, 2, 2, 2 ]
+                    }
+                },
+                {
+                    "button_unclicked": {
+                        "texture": "./data/ui/win/button.tga",
+                        "9slice_margins": [ 2, 2, 2, 2 ]
+                    }
+                },
+                {
+                    "button_disabled": {
+                        "texture": "./data/ui/win/button_inactive.tga",
+                        "9slice_margins": [ 2, 2, 2, 2 ]
                     }
                 }
             ]
@@ -32,7 +61,7 @@
     ],
     "fonts": [
         {
-            "file_name": "./data/liberation.ttf",
+            "file_name": "./data/ui/fonts/liberation.ttf",
             "font_id": "liberation",
             "hinting": true,
             "kerning": true,
@@ -42,8 +71,8 @@
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         },
         {
-            "file_name": "./data/liberation.ttf",
-            "font_id": "liberation_16",
+            "file_name": "./data/ui/fonts/noto_sans.ttf",
+            "font_id": "noto_sans_16",
             "hinting": true,
             "kerning": true,
             "outline_thickness": 0.0,
@@ -52,7 +81,7 @@
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         },
         {
-            "file_name": "./data/damase.ttf",
+            "file_name": "./data/ui/fonts/damase.ttf",
             "font_id": "damase",
             "hinting": true,
             "kerning": false,
@@ -62,7 +91,7 @@
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         }
     ],
-    "current_gui_set": "default",
+    "current_gui_set": "windows",
     "defult_font": "liberation",
     "defult_font_size": 24
 }
