@@ -78,5 +78,5 @@ HEADERS += \
     src/vertex_buffer.h
 
 DISTFILES += \
-    bin/data/hor_win.json \
-    bin/data/ui_res.json
+    bin/data/ui/jsons/ui_res.json \
+    bin/data/ui/jsons/vert_win.json

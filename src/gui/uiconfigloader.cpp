@@ -281,6 +281,7 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
         case ElementType::HorizontalLayoutee:
         case ElementType::Unknown:
         case ElementType::ImageBox:
+        case ElementType::Empty:
         {
             result = std::make_unique<Widget>(desc, owner);
             break;

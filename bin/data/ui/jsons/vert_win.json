@@ -12,7 +12,7 @@
                "visible":false,
                "children":[
                   {
-                     "minimal_size":[ 100, 22 ],
+                     "minimal_size":[ 100, 30 ],
                      "type":"Button",
                      "stretch":1,
                      "visible":true,
