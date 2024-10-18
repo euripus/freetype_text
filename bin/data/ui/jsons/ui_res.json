@@ -35,25 +35,25 @@
                 {
                     "background": {
                         "texture": "./data/ui/win/window_base.tga",
-                        "9slice_margins": [ 2, 2, 2, 2 ]
+                        "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_clicked": {
                         "texture": "./data/ui/win/button_pressed.tga",
-                        "9slice_margins": [ 2, 2, 2, 2 ]
+                        "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_unclicked": {
                         "texture": "./data/ui/win/button.tga",
-                        "9slice_margins": [ 2, 2, 2, 2 ]
+                        "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_disabled": {
                         "texture": "./data/ui/win/button_inactive.tga",
-                        "9slice_margins": [ 2, 2, 2, 2 ]
+                        "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 }
             ]

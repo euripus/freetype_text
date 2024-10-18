@@ -36,6 +36,9 @@ unix:{
 }
 
 SOURCES += \
+    src/fs/file.cpp \
+    src/fs/file_system.cpp \
+    src/fs/memory_stream.cpp \
     src/gui/atlastex.cpp \
     src/gui/button.cpp \
     src/gui/chain.cpp \
@@ -57,6 +60,10 @@ SOURCES += \
     src/vertex_buffer.cpp
 
 HEADERS += \
+    src/fs/file.h \
+    src/fs/file_system.h \
+    src/fs/memory_stream.h \
+    src/fs/zip.h \
     src/gui/atlastex.h \
     src/gui/basic_types.h \
     src/gui/button.h \
