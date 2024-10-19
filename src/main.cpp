@@ -12,6 +12,8 @@
 #include "gui/button.h"
 #include "vertex_buffer.h"
 
+#include "./fs/file_system.h"
+
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
 constexpr char const *  TEXNAME     = "./data/base.tga";
 constexpr std::uint32_t WINDOWHEIGT = 600;
@@ -423,6 +425,8 @@ static void error_callback(int error, char const * description)
 
 int main()
 {
+    evnt::FileSystem fs("./data");
+
     g_ui.parseUIResources("./data/ui/jsons/ui_res.json");
     UIWindow * win = g_ui.loadWindow("./data/ui/jsons/vert_win.json");
 

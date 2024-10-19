@@ -1,14 +1,11 @@
 #include "file_system.h"
-// #include "../core/exception.h"
-// #include "../log/log.h"
 #include <random>
 #include <array>
 #include <algorithm>
-// #include <boost/filesystem.hpp>
 #include <chrono>
-#include <filesystem>
 #include <fstream>
 #include <zlib.h>
+#include <iostream>
 
 #include "zip.h"
 
@@ -107,17 +104,18 @@ void FileSystem::addZippedDir(std::string const & fname)
     ifs.open(fname, std::ifstream::in | std::ifstream::binary);
     if(!ifs.is_open())
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::AddZippedDir File: \"%s\" - not found", fname.c_str()));
+        std::stringstream ss;
+        ss << "FileSystem::AddZippedDir File: " << fname << " - not found";
+        std::cout << ss.str() << std::endl;
         return;
     }
 
     // get length of file:
     ifs.seekg(0, std::ifstream::end);
-    size_t const fileSize    = static_cast<size_t>(ifs.tellg());
+    size_t const file_size   = static_cast<size_t>(ifs.tellg());
     size_t       EOCD_offset = 0;
 
-    for(size_t offset = fileSize - sizeof(EOCD); offset != 0; --offset)
+    for(size_t offset = file_size - sizeof(EOCD); offset != 0; --offset)
     {
         uint32_t signature = 0;
 
@@ -133,9 +131,9 @@ void FileSystem::addZippedDir(std::string const & fname)
 
     if(EOCD_offset == 0)
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::AddZippedDir File: \"%s\" - not found EOCD_offset signature",
-                               fname.c_str()));
+        std::stringstream ss;
+        ss << "FileSystem::AddZippedDir File: " << fname << " - not found EOCD_offset signature";
+        std::cout << ss.str() << std::endl;
         return;
     }
 
@@ -143,10 +141,10 @@ void FileSystem::addZippedDir(std::string const & fname)
     ifs.seekg(EOCD_offset, std::ifstream::beg);
     ifs.read(reinterpret_cast<char *>(&eocd), sizeof(eocd));
 
-    ifs.seekg(eocd.centralDirectoryOffset, std::ifstream::beg);
+    ifs.seekg(eocd.central_directory_offset, std::ifstream::beg);
     CentralDirectoryFileHeader cdfh{};
 
-    for(uint16_t i = 0; i < eocd.numberCentralDirectoryRecord; ++i)
+    for(uint16_t i = 0; i < eocd.number_central_directory_record; ++i)
     {
         file_data zfile;
         zfile.is_zip = true;
@@ -155,60 +153,61 @@ void FileSystem::addZippedDir(std::string const & fname)
 
         if(0x02014b50 != cdfh.signature)
         {
-            Log::Log(
-                Log::error,
-                Log::cstr_log(
-                    "FileSystem::AddZippedDir File: \"%s\" - not found CentralDirectoryFileHeader signature",
-                    fname.c_str()));
+            std::stringstream ss;
+            ss << "FileSystem::AddZippedDir File: " << fname
+               << " - not found CentralDirectoryFileHeader signature";
+            std::cout << ss.str() << std::endl;
             return;
         }
 
-        if(cdfh.generalPurposeBitFlag & 0x1)   // encrypted
+        if(cdfh.general_purpose_bit_flag & 0x1)   // encrypted
         {
-            Log::Log(Log::error,
-                     Log::cstr_log("FileSystem::AddZippedDir File: \"%s\" - encrypted", fname.c_str()));
+            std::stringstream ss;
+            ss << "FileSystem::AddZippedDir File: " << fname << " - encrypted";
+            std::cout << ss.str() << std::endl;
             return;
         }
-        if(cdfh.generalPurposeBitFlag & 0x8)   // DataDescr Struct
+        if(cdfh.general_purpose_bit_flag & 0x8)   // DataDescr Struct
         {
-            Log::Log(Log::error, Log::cstr_log("FileSystem::AddZippedDir File: \"%s\" - DataDescr Struct",
-                                               fname.c_str()));
+            std::stringstream ss;
+            ss << "FileSystem::AddZippedDir File: " << fname << " - DataDescr Struct";
+            std::cout << ss.str() << std::endl;
             return;
         }
 
-        if(cdfh.filenameLength)
+        if(cdfh.filename_length)
         {
-            std::unique_ptr<char[]> filename = std::make_unique<char[]>(cdfh.filenameLength + 1);
-            ifs.read(reinterpret_cast<char *>(filename.get()), cdfh.filenameLength);
+            std::unique_ptr<char[]> filename = std::make_unique<char[]>(cdfh.filename_length + 1);
+            ifs.read(reinterpret_cast<char *>(filename.get()), cdfh.filename_length);
 
-            filename[cdfh.filenameLength] = 0;
+            filename[cdfh.filename_length] = 0;
 
             zfile.zip_data.fname = std::string(filename.get());
         }
 
-        if(cdfh.compressionMethod != 0 && cdfh.compressionMethod != Z_DEFLATED)
+        if(cdfh.compression_method != 0 && cdfh.compression_method != Z_DEFLATED)
         {
             continue;
         }
 
-        zfile.zip_data.compressed       = (Z_DEFLATED == cdfh.compressionMethod);
-        zfile.zip_data.compressedSize   = cdfh.compressedSize;
-        zfile.zip_data.uncompressedSize = cdfh.uncompressedSize;
-        zfile.zip_data.lfhOffset        = cdfh.localFileHeaderOffset;
+        zfile.zip_data.compressed        = (Z_DEFLATED == cdfh.compression_method);
+        zfile.zip_data.compressed_size   = cdfh.compressed_size;
+        zfile.zip_data.uncompressed_size = cdfh.uncompressed_size;
+        zfile.zip_data.lfh_offset        = cdfh.local_file_header_offset;
 
-        if(zfile.zip_data.uncompressedSize != 0 || zfile.zip_data.compressed != 0)
+        if(zfile.zip_data.uncompressed_size != 0 || zfile.zip_data.compressed != 0)
         {
             zfile.fname = fname;
             m_files.emplace_back(std::move(zfile));
         }
 
-        if(cdfh.extraFieldLength)
+        if(cdfh.extra_field_length)
         {
-            ifs.seekg(cdfh.extraFieldLength, std::ifstream::cur);
+            ifs.seekg(cdfh.extra_field_length, std::ifstream::cur);
         }
-        if(cdfh.fileCommentLength)
+        if(cdfh.file_comment_length)
         {
-            ifs.seekg(cdfh.fileCommentLength, std::ifstream::cur);
+            ifs.seekg(cdfh.file_comment_length, std::ifstream::cur);
         }
     }
 }
@@ -262,8 +261,10 @@ InFile FileSystem::getFile(std::string const & fname) const
     }
     else
     {
-        Log::Log(Log::warning, Log::cstr_log("FileSystem::GetFile File: \"%s\" - not found", fname.c_str()));
-        EV_EXCEPT("File not found");
+        std::stringstream ss;
+        ss << "FileSystem::GetFile File: " << fname << " - not found";
+        std::cout << ss.str() << std::endl;
+        throw std::runtime_error("File not found");
     }
 }
 
@@ -277,8 +278,9 @@ bool FileSystem::writeFile(std::string const & path, BaseFile const * file)
     std::ofstream ofs(std::string(m_data_dir + '/' + filename), std::ios::binary);
     if(!ofs.is_open())
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::WriteFile File: \"%s\" - not writed", filename.c_str()));
+        std::stringstream ss;
+        ss << "FileSystem::WriteFile File: " << filename << " - not writed";
+        std::cout << ss.str() << std::endl;
         return false;
     }
     ofs.write(reinterpret_cast<char *>(const_cast<int8_t *>(file->getData())),
@@ -294,6 +296,15 @@ bool FileSystem::writeFile(std::string const & path, BaseFile const * file)
     }
 
     return true;
+}
+
+// https://stackoverflow.com/questions/61030383/how-to-convert-stdfilesystemfile-time-type-to-time-t
+template<typename TP>
+std::time_t to_time_t(TP tp)
+{
+    using namespace std::chrono;
+    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
+    return system_clock::to_time_t(sctp);
 }
 
 void GetDosTime(std::time_t rawtime, uint16_t & time, uint16_t & date)
@@ -317,17 +328,17 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
 
     struct FileInfo
     {
-        uint32_t compressedSize;
-        uint32_t uncompressedSize;
-        uint16_t compressionMethod;
+        uint32_t compressed_size;
+        uint32_t uncompressed_size;
+        uint16_t compression_method;
         uint32_t crc32;
         uint32_t offset;
     };
 
-    // Буфер для сжатых данных
-    std::vector<uint8_t> dataBuffer;
-    // Информация для создания Central directory file header
-    std::vector<FileInfo> fileInfoList;
+    // Buffer for compressed data
+    std::vector<uint8_t> data_buffer;
+    // Information for creation Central directory file header
+    std::vector<FileInfo> file_info_list;
 
     std::ofstream ofs(std::string(m_data_dir + '/' + zipname), std::ofstream::binary | std::ofstream::trunc);
     if(!ofs.is_open())
@@ -340,6 +351,8 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
 
     for(size_t i = 0; i < filelist.size(); i++)
     {
+        assert(filelist[i] != nullptr);
+
         std::string       fname = filelist[i]->getName();
         std::vector<char> buf;
         buf.resize(filelist[i]->getFileSize());
@@ -348,121 +361,118 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
         LocalFileHeader lfh{};
         memset(&lfh, 0, sizeof(lfh));
 
-        lfh.uncompressedSize = static_cast<uint32_t>(buf.size());
+        lfh.uncompressed_size = static_cast<uint32_t>(buf.size());
 
         lfh.crc32 = static_cast<uint32_t>(
-            crc32(0, reinterpret_cast<unsigned char const *>(buf.data()), lfh.uncompressedSize));
+            crc32(0, reinterpret_cast<unsigned char const *>(buf.data()), lfh.uncompressed_size));
 
-        // Выделим память для сжатых данных
-        dataBuffer.resize(lfh.uncompressedSize);
+        // Let's allocate memory for compressed data
+        data_buffer.resize(lfh.uncompressed_size);
 
-        // Структура для сжатия данных
+        // Structure for data compression
         z_stream zStream;
         memset(&zStream, 0, sizeof(zStream));
         deflateInit2(&zStream, Z_BEST_COMPRESSION, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
 
-        // Сжимаем данные
-        zStream.avail_in  = lfh.uncompressedSize;
+        // Compressing data
+        zStream.avail_in  = lfh.uncompressed_size;
         zStream.next_in   = reinterpret_cast<unsigned char *>(buf.data());
-        zStream.avail_out = lfh.uncompressedSize;
-        zStream.next_out  = dataBuffer.data();
+        zStream.avail_out = lfh.uncompressed_size;
+        zStream.next_out  = data_buffer.data();
         deflate(&zStream, Z_FINISH);
 
-        // Размер сжатых данных
+        // Compressed data size
         char *   data_ptr = nullptr;
         uint32_t size     = 0;
-        if(zStream.total_out >= lfh.uncompressedSize)
+        if(zStream.total_out >= lfh.uncompressed_size)
         {
-            lfh.compressedSize    = lfh.uncompressedSize;
-            lfh.compressionMethod = 0;
+            lfh.compressed_size    = lfh.uncompressed_size;
+            lfh.compression_method = 0;
 
             data_ptr = buf.data();
-            size     = lfh.uncompressedSize;
+            size     = lfh.uncompressed_size;
         }
         else
         {
-            lfh.compressedSize    = static_cast<uint32_t>(zStream.total_out);
-            lfh.compressionMethod = Z_DEFLATED;
+            lfh.compressed_size    = static_cast<uint32_t>(zStream.total_out);
+            lfh.compression_method = Z_DEFLATED;
 
-            data_ptr = reinterpret_cast<char *>(dataBuffer.data());
-            size     = lfh.compressedSize;
+            data_ptr = reinterpret_cast<char *>(data_buffer.data());
+            size     = lfh.compressed_size;
         }
 
-        // Очистка
         deflateEnd(&zStream);
 
-        lfh.filenameLength = static_cast<uint16_t>(fname.size());
+        lfh.filename_length = static_cast<uint16_t>(fname.size());
 
-        // Сохраним смещение к записи Local File Header внутри архива
-        uint32_t const lfhOffset = static_cast<uint32_t>(ofs.tellp());
+        // Save the offset to the record Local File Header внутри архива
+        uint32_t const lfh_offset = static_cast<uint32_t>(ofs.tellp());
 
-        GetDosTime(filelist[i]->timeStamp(), time, date);
+        GetDosTime(to_time_t(filelist[i]->timeStamp()), time, date);
 
-        // Запишем сигнатуру Local File Header
-        lfh.signature        = 0x04034b50;
-        lfh.modificationDate = date;
-        lfh.modificationTime = time;
-        // Запишем Local File Header
+        // Write down the signature Local File Header
+        lfh.signature         = 0x04034b50;
+        lfh.modification_date = date;
+        lfh.modification_time = time;
+        // Write down Local File Header
         ofs.write(reinterpret_cast<char *>(&lfh), sizeof(lfh));
-        // Запишем имя файла
+        // Write down filename
         ofs.write(fname.c_str(), static_cast<std::streamsize>(fname.size()));
-        // Запишем данные
+        // Write down data
         ofs.write(data_ptr, static_cast<std::streamsize>(size));
 
-        // Сохраним все данные для Central directory file header
-        FileInfo fileInfo{};
-        fileInfo.compressedSize    = lfh.compressedSize;
-        fileInfo.uncompressedSize  = lfh.uncompressedSize;
-        fileInfo.compressionMethod = lfh.compressionMethod;
-        fileInfo.crc32             = lfh.crc32;
-        fileInfo.offset            = lfhOffset;
-        fileInfoList.push_back(fileInfo);
+        // Let's save all the data for Central directory file header
+        FileInfo file_info{};
+        file_info.compressed_size    = lfh.compressed_size;
+        file_info.uncompressed_size  = lfh.uncompressed_size;
+        file_info.compression_method = lfh.compression_method;
+        file_info.crc32              = lfh.crc32;
+        file_info.offset             = lfh_offset;
+        file_info_list.push_back(file_info);
     }
 
-    // Смещение первой записи для EOCD
-    uint32_t const firstOffsetCDFH = static_cast<uint32_t>(ofs.tellp());
+    // Offset of the first record for EOCD
+    uint32_t const first_offset_CDFH = static_cast<uint32_t>(ofs.tellp());
 
     for(uint32_t i = 0; i < filelist.size(); ++i)
     {
-        std::string const &        filename = filelist[i]->getName();
-        FileInfo const &           fileInfo = fileInfoList[i];
+        std::string const &        filename  = filelist[i]->getName();
+        FileInfo const &           file_info = file_info_list[i];
         CentralDirectoryFileHeader cdfh{};
         memset(&cdfh, 0, sizeof(cdfh));
 
-        GetDosTime(filelist[i]->timeStamp(), time, date);
+        GetDosTime(to_time_t(filelist[i]->timeStamp()), time, date);
 
-        cdfh.compressedSize        = fileInfo.compressedSize;
-        cdfh.uncompressedSize      = fileInfo.uncompressedSize;
-        cdfh.compressionMethod     = fileInfo.compressionMethod;
-        cdfh.crc32                 = fileInfo.crc32;
-        cdfh.localFileHeaderOffset = fileInfo.offset;
-        cdfh.filenameLength        = static_cast<uint16_t>(filename.size());
-        cdfh.signature             = 0x02014b50;
-        cdfh.modificationDate      = date;
-        cdfh.modificationTime      = time;
+        cdfh.compressed_size          = file_info.compressed_size;
+        cdfh.uncompressed_size        = file_info.uncompressed_size;
+        cdfh.compression_method       = file_info.compression_method;
+        cdfh.crc32                    = file_info.crc32;
+        cdfh.local_file_header_offset = file_info.offset;
+        cdfh.filename_length          = static_cast<uint16_t>(filename.size());
+        cdfh.signature                = 0x02014b50;
+        cdfh.modification_date        = date;
+        cdfh.modification_time        = time;
 
-        // Запишем структуру
         ofs.write(reinterpret_cast<char *>(&cdfh), sizeof(cdfh));
 
-        // Имя файла
-        ofs.write(filename.c_str(), cdfh.filenameLength);
+        ofs.write(filename.c_str(), cdfh.filename_length);
     }
 
-    // Посчитаем размер данных для следующего шага
-    uint32_t const lastOffsetCDFH = static_cast<uint32_t>(ofs.tellp());
+    // Let's calculate the data size for the next step
+    uint32_t const last_offset_CDFH = static_cast<uint32_t>(ofs.tellp());
 
     EOCD eocd{};
     memset(&eocd, 0, sizeof(eocd));
-    eocd.centralDirectoryOffset       = firstOffsetCDFH;
-    eocd.numberCentralDirectoryRecord = static_cast<uint16_t>(filelist.size());
-    eocd.totalCentralDirectoryRecord  = static_cast<uint16_t>(filelist.size());
-    eocd.sizeOfCentralDirectory       = lastOffsetCDFH - firstOffsetCDFH;
+    eocd.central_directory_offset        = first_offset_CDFH;
+    eocd.number_central_directory_record = static_cast<uint16_t>(filelist.size());
+    eocd.total_central_directory_record  = static_cast<uint16_t>(filelist.size());
+    eocd.size_of_central_directory       = last_offset_CDFH - first_offset_CDFH;
 
-    // Пишем сигнатуру
+    // Write a signature
     uint32_t signature = 0x06054b50;
     ofs.write(reinterpret_cast<char *>(&signature), sizeof(signature));
 
-    // Пишем EOCD
+    // Write EOCD
     ofs.write(reinterpret_cast<char *>(&eocd), sizeof(eocd));
 
     ofs.close();
@@ -472,6 +482,7 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
 bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname)
 {
     assert(!zipname.empty());
+    assert(file != nullptr);
 
     std::fstream ofs(m_data_dir + '/' + zipname,
                      std::fstream::binary | std::fstream::ate | std::fstream::out | std::fstream::in);
@@ -480,10 +491,10 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
         return false;
     }
 
-    size_t const fileSize     = static_cast<size_t>(ofs.tellg());
-    size_t       EOCD_offset_ = 0;
+    size_t const file_size   = static_cast<size_t>(ofs.tellg());
+    size_t       EOCD_offset = 0;
 
-    for(size_t offset = fileSize - sizeof(EOCD); offset != 0; --offset)
+    for(size_t offset = file_size - sizeof(EOCD); offset != 0; --offset)
     {
         uint32_t signature = 0;
 
@@ -492,26 +503,26 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
 
         if(0x06054b50 == signature)
         {
-            EOCD_offset_ = static_cast<size_t>(ofs.tellg());
+            EOCD_offset = static_cast<size_t>(ofs.tellg());
             break;
         }
     }
 
-    if(EOCD_offset_ == 0)
+    if(EOCD_offset == 0)
         return false;
 
     EOCD eocd{};
-    ofs.seekg(EOCD_offset_, std::fstream::beg);
+    ofs.seekg(EOCD_offset, std::fstream::beg);
     ofs.read(reinterpret_cast<char *>(&eocd), sizeof(eocd));
 
-    auto centralDirectoryData = std::make_unique<char[]>(eocd.sizeOfCentralDirectory);
-    ofs.seekg(eocd.centralDirectoryOffset, std::fstream::beg);
-    ofs.read(centralDirectoryData.get(), static_cast<std::streamsize>(eocd.sizeOfCentralDirectory));
-    ofs.seekg(eocd.centralDirectoryOffset, std::fstream::beg);
+    auto central_directory_data = std::make_unique<char[]>(eocd.size_of_central_directory);
+    ofs.seekg(eocd.central_directory_offset, std::fstream::beg);
+    ofs.read(central_directory_data.get(), static_cast<std::streamsize>(eocd.size_of_central_directory));
+    ofs.seekg(eocd.central_directory_offset, std::fstream::beg);
 
     std::vector<std::string> zip_fnames;
 
-    for(uint16_t i = 0; i < eocd.numberCentralDirectoryRecord; ++i)
+    for(uint16_t i = 0; i < eocd.number_central_directory_record; ++i)
     {
         CentralDirectoryFileHeader cdfh{};
 
@@ -522,141 +533,130 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
             return false;
         }
 
-        if(cdfh.filenameLength)
+        if(cdfh.filename_length)
         {
-            auto filename = std::make_unique<char[]>(cdfh.filenameLength + 1);
-            ofs.read(static_cast<char *>(filename.get()), cdfh.filenameLength);
+            auto filename = std::make_unique<char[]>(cdfh.filename_length + 1);
+            ofs.read(static_cast<char *>(filename.get()), cdfh.filename_length);
 
-            filename[cdfh.filenameLength] = 0;
+            filename[cdfh.filename_length] = 0;
 
             zip_fnames.push_back(std::string(filename.get()));
         }
     }
 
-    ofs.seekg(eocd.centralDirectoryOffset, std::fstream::beg);
+    ofs.seekg(eocd.central_directory_offset, std::fstream::beg);
 
     auto file_it = std::find_if(zip_fnames.begin(), zip_fnames.end(),
                                 [&file](std::string const & zn) -> bool { return file->getName() == zn; });
 
     if(file_it != zip_fnames.end())
-        return false;   // Если есть файл с таким именем
+        return false;   // If there is a file with this name
 
     uint16_t time = 0;
     uint16_t date = 0;
-    GetDosTime(file->timeStamp(), time, date);
+    GetDosTime(to_time_t(file->timeStamp()), time, date);
 
     LocalFileHeader lfh{};
     memset(&lfh, 0, sizeof(lfh));
-    // Буфер для сжатых данных
-    std::vector<uint8_t> dataBuffer;
+    // Buffer for compressed data
+    std::vector<uint8_t> data_buffer;
 
-    lfh.uncompressedSize = static_cast<uint32_t>(file->getFileSize());
+    lfh.uncompressed_size = static_cast<uint32_t>(file->getFileSize());
 
     lfh.crc32 = static_cast<uint32_t>(
-        crc32(0, reinterpret_cast<unsigned char const *>(file->getData()), lfh.uncompressedSize));
+        crc32(0, reinterpret_cast<unsigned char const *>(file->getData()), lfh.uncompressed_size));
 
-    // Выделим память для сжатых данных
-    dataBuffer.resize(lfh.uncompressedSize);
+    // Let's allocate memory for compressed data
+    data_buffer.resize(lfh.uncompressed_size);
 
-    // Структура для сжатия данных
-    z_stream zStream;
-    memset(&zStream, 0, sizeof(zStream));
-    deflateInit2(&zStream, Z_BEST_COMPRESSION, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
+    // Structure for data compression
+    z_stream z_stream;
+    memset(&z_stream, 0, sizeof(z_stream));
+    deflateInit2(&z_stream, Z_BEST_COMPRESSION, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
 
-    // Сжимаем данные
-    zStream.avail_in  = lfh.uncompressedSize;
-    zStream.next_in   = reinterpret_cast<unsigned char *>(const_cast<int8_t *>(file->getData()));
-    zStream.avail_out = lfh.uncompressedSize;
-    zStream.next_out  = dataBuffer.data();
-    deflate(&zStream, Z_FINISH);
+    // Compressing data
+    z_stream.avail_in  = lfh.uncompressed_size;
+    z_stream.next_in   = reinterpret_cast<unsigned char *>(const_cast<int8_t *>(file->getData()));
+    z_stream.avail_out = lfh.uncompressed_size;
+    z_stream.next_out  = data_buffer.data();
+    deflate(&z_stream, Z_FINISH);
 
-    // Размер сжатых данных
+    // Compressed data size
     char *   data_ptr = nullptr;
     uint32_t size     = 0;
-    if(zStream.total_out >= lfh.uncompressedSize)
+    if(z_stream.total_out >= lfh.uncompressed_size)
     {
-        lfh.compressedSize    = lfh.uncompressedSize;
-        lfh.compressionMethod = 0;
+        lfh.compressed_size    = lfh.uncompressed_size;
+        lfh.compression_method = 0;
 
         data_ptr = reinterpret_cast<char *>(const_cast<int8_t *>(file->getData()));
-        size     = lfh.uncompressedSize;
+        size     = lfh.uncompressed_size;
     }
     else
     {
-        lfh.compressedSize    = static_cast<uint32_t>(zStream.total_out);
-        lfh.compressionMethod = Z_DEFLATED;
+        lfh.compressed_size    = static_cast<uint32_t>(z_stream.total_out);
+        lfh.compression_method = Z_DEFLATED;
 
-        data_ptr = reinterpret_cast<char *>(dataBuffer.data());
-        size     = lfh.compressedSize;
+        data_ptr = reinterpret_cast<char *>(data_buffer.data());
+        size     = lfh.compressed_size;
     }
 
-    // Очистка
-    deflateEnd(&zStream);
+    // Cleaning
+    deflateEnd(&z_stream);
 
-    lfh.filenameLength = static_cast<uint16_t>(file->getName().size());
+    lfh.filename_length = static_cast<uint16_t>(file->getName().size());
 
-    // Сохраним смещение к записи Local File Header внутри архива
-    uint32_t const lfhOffset = static_cast<uint32_t>(ofs.tellp());
+    // Save the offset to the record to Local File Header
+    uint32_t const lfh_offset = static_cast<uint32_t>(ofs.tellp());
 
-    // Запишем сигнатуру Local File Header
-    lfh.signature        = 0x04034b50;
-    lfh.modificationDate = date;
-    lfh.modificationTime = time;
-    // Запишем Local File Header
+    // Write a signature Local File Header
+    lfh.signature         = 0x04034b50;
+    lfh.modification_date = date;
+    lfh.modification_time = time;
+    // Write Local File Header
     ofs.write(reinterpret_cast<char *>(&lfh), sizeof(lfh));
-    // Запишем имя файла
+    // Write filename
     ofs.write(file->getName().c_str(), static_cast<std::streamsize>(file->getName().size()));
-    // Запишем данные
+    // Write data
     ofs.write(data_ptr, static_cast<std::streamsize>(size));
 
-    uint32_t const firstOffsetCDFH = static_cast<uint32_t>(ofs.tellp());
+    uint32_t const first_offset_CDFH = static_cast<uint32_t>(ofs.tellp());
 
-    ofs.write(centralDirectoryData.get(), static_cast<std::streamsize>(eocd.sizeOfCentralDirectory));
+    ofs.write(central_directory_data.get(), static_cast<std::streamsize>(eocd.size_of_central_directory));
 
     CentralDirectoryFileHeader cdfh{};
     memset(&cdfh, 0, sizeof(cdfh));
 
-    cdfh.compressedSize        = lfh.compressedSize;
-    cdfh.uncompressedSize      = lfh.uncompressedSize;
-    cdfh.compressionMethod     = lfh.compressionMethod;
-    cdfh.crc32                 = lfh.crc32;
-    cdfh.localFileHeaderOffset = lfhOffset;
-    cdfh.filenameLength        = lfh.filenameLength;
-    cdfh.signature             = 0x02014b50;
-    cdfh.modificationDate      = date;
-    cdfh.modificationTime      = time;
+    cdfh.compressed_size          = lfh.compressed_size;
+    cdfh.uncompressed_size        = lfh.uncompressed_size;
+    cdfh.compression_method       = lfh.compression_method;
+    cdfh.crc32                    = lfh.crc32;
+    cdfh.local_file_header_offset = lfh_offset;
+    cdfh.filename_length          = lfh.filename_length;
+    cdfh.signature                = 0x02014b50;
+    cdfh.modification_date        = date;
+    cdfh.modification_time        = time;
 
-    // Запишем структуру
     ofs.write(reinterpret_cast<char *>(&cdfh), sizeof(cdfh));
 
-    // Имя файла
-    ofs.write(file->getName().c_str(), cdfh.filenameLength);
+    ofs.write(file->getName().c_str(), cdfh.filename_length);
 
-    uint32_t const lastOffsetCDFH = static_cast<uint32_t>(ofs.tellp());
+    uint32_t const last_offset_CDFH = static_cast<uint32_t>(ofs.tellp());
 
-    eocd.centralDirectoryOffset       = firstOffsetCDFH;
-    eocd.numberCentralDirectoryRecord = static_cast<uint16_t>(eocd.numberCentralDirectoryRecord + 1);
-    eocd.totalCentralDirectoryRecord  = static_cast<uint16_t>(eocd.totalCentralDirectoryRecord + 1);
-    eocd.sizeOfCentralDirectory       = lastOffsetCDFH - firstOffsetCDFH;
+    eocd.central_directory_offset        = first_offset_CDFH;
+    eocd.number_central_directory_record = static_cast<uint16_t>(eocd.number_central_directory_record + 1);
+    eocd.total_central_directory_record  = static_cast<uint16_t>(eocd.total_central_directory_record + 1);
+    eocd.size_of_central_directory       = last_offset_CDFH - first_offset_CDFH;
 
-    // Пишем сигнатуру
+    // Write a signature
     uint32_t const signature = 0x06054b50;
     ofs.write(reinterpret_cast<char const *>(&signature), sizeof(signature));
 
-    // Пишем EOCD
+    // Write a EOCD
     ofs.write(reinterpret_cast<char *>(&eocd), sizeof(eocd));
 
     ofs.close();
     return true;
-}
-
-// https://stackoverflow.com/questions/61030383/how-to-convert-stdfilesystemfile-time-type-to-time-t
-template<typename TP>
-std::time_t to_time_t(TP tp)
-{
-    using namespace std::chrono;
-    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
-    return system_clock::to_time_t(sctp);
 }
 
 InFile FileSystem::loadRegularFile(file_data const & f) const
@@ -664,9 +664,10 @@ InFile FileSystem::loadRegularFile(file_data const & f) const
     std::ifstream ifs(m_data_dir + '/' + f.fname, std::ios::binary);
     if(!ifs.is_open())
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::LoadRegularFile: \"%s\" - not found", f.fname.c_str()));
-        EV_EXCEPT("Unable to load file");
+        std::stringstream ss;
+        ss << "FileSystem::LoadRegularFile File: " << f.fname << " - not found";
+        std::cout << ss.str() << std::endl;
+        throw std::runtime_error("Unable to load file");
     }
 
     ifs.seekg(0, std::ios_base::end);
@@ -681,17 +682,24 @@ InFile FileSystem::loadRegularFile(file_data const & f) const
     bool success = !ifs.fail() && file_size == static_cast<size_t>(ifs.gcount());
     if(!success)
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::LoadRegularFile: \"%s\" - not found", f.fname.c_str()));
-        EV_EXCEPT("Unable to load file");
+        std::stringstream ss;
+        ss << "FileSystem::LoadRegularFile File: " << f.fname << " - not found";
+        std::cout << ss.str() << std::endl;
+        throw std::runtime_error("Unable to load file");
     }
 
     ifs.close();
 
-    auto        ftime = fs::last_write_time(m_data_dir + '/' + f.fname);
-    std::time_t time  = to_time_t(ftime);
+    auto ftime = fs::last_write_time(m_data_dir + '/' + f.fname);
 
-    return {f.fname, time, file_size, std::move(data)};
+    return {f.fname, ftime, file_size, std::move(data)};
+}
+
+std::filesystem::file_time_type tm_to_file_time(std::tm const & timeinfo)
+{
+    std::time_t time_t_val = std::mktime(const_cast<std::tm *>(&timeinfo));
+    auto        time_point = std::chrono::system_clock::from_time_t(time_t_val);
+    return std::filesystem::file_time_type::clock::now() + (time_point - std::chrono::system_clock::now());
 }
 
 // http://blog2k.ru/archives/3392
@@ -702,43 +710,45 @@ InFile FileSystem::loadZipFile(file_data const & zf) const
     std::ifstream ifs(zf.fname, std::ifstream::binary);
     if(!ifs.is_open())
     {
-        Log::Log(Log::error, Log::cstr_log("FileSystem::LoadZipFile: \"%s\" - not found", zf.fname.c_str()));
-        EV_EXCEPT("Unable to load file");
+        std::stringstream ss;
+        ss << "FileSystem::LoadZipFile File: " << zf.fname << " - not found";
+        std::cout << ss.str() << std::endl;
+        throw std::runtime_error("Unable to load file");
     }
 
-    ifs.seekg(zf.zip_data.lfhOffset, std::ifstream::beg);
+    ifs.seekg(zf.zip_data.lfh_offset, std::ifstream::beg);
     LocalFileHeader lfh{};
     ifs.read(reinterpret_cast<char *>(&lfh), sizeof(lfh));
 
     if(0x04034b50 != lfh.signature)
     {
-        Log::Log(Log::error,
-                 Log::cstr_log("FileSystem::LoadZipFile: \"%s\" - doesn't have zip file signature",
-                               zf.fname.c_str()));
-        EV_EXCEPT("Unable to load file");
+        std::stringstream ss;
+        ss << "FileSystem::LoadZipFile File: " << zf.fname << " - doesn't have zip file signature";
+        std::cout << ss.str() << std::endl;
+        throw std::runtime_error("Unable to load file");
     }
 
-    ifs.seekg(lfh.filenameLength, std::ifstream::cur);
-    ifs.seekg(lfh.extraFieldLength, std::ifstream::cur);
+    ifs.seekg(lfh.filename_length, std::ifstream::cur);
+    ifs.seekg(lfh.extra_field_length, std::ifstream::cur);
 
-    auto readBuffer = std::make_unique<int8_t[]>(lfh.compressedSize);
-    ifs.read(reinterpret_cast<char *>(readBuffer.get()), static_cast<std::streamsize>(lfh.compressedSize));
+    auto read_buffer = std::make_unique<int8_t[]>(lfh.compressed_size);
+    ifs.read(reinterpret_cast<char *>(read_buffer.get()), static_cast<std::streamsize>(lfh.compressed_size));
 
     if(!zf.zip_data.compressed)
     {
-        data = std::move(readBuffer);
+        data = std::move(read_buffer);
     }
     else
     {
-        data = std::make_unique<int8_t[]>(lfh.uncompressedSize);
+        data = std::make_unique<int8_t[]>(lfh.uncompressed_size);
 
         z_stream zs;
         std::memset(&zs, 0, sizeof(zs));
         inflateInit2(&zs, -MAX_WBITS);
 
-        zs.avail_in  = lfh.compressedSize;
-        zs.next_in   = reinterpret_cast<unsigned char *>(readBuffer.get());
-        zs.avail_out = lfh.uncompressedSize;
+        zs.avail_in  = lfh.compressed_size;
+        zs.next_in   = reinterpret_cast<unsigned char *>(read_buffer.get());
+        zs.avail_out = lfh.uncompressed_size;
         zs.next_out  = reinterpret_cast<unsigned char *>(data.get());
 
         inflate(&zs, Z_FINISH);
@@ -749,16 +759,16 @@ InFile FileSystem::loadZipFile(file_data const & zf) const
 
     struct tm timeinfo;
     std::memset(&timeinfo, 0, sizeof(timeinfo));
-    timeinfo.tm_year = ((lfh.modificationDate & 0xFE00) >> 9) + 1980;
-    timeinfo.tm_mon  = (lfh.modificationDate & 0x01E0) >> 5;
-    timeinfo.tm_mday = lfh.modificationDate & 0x001F;
+    timeinfo.tm_year = ((lfh.modification_date & 0xFE00) >> 9) + 1980;
+    timeinfo.tm_mon  = (lfh.modification_date & 0x01E0) >> 5;
+    timeinfo.tm_mday = lfh.modification_date & 0x001F;
 
-    timeinfo.tm_hour = (lfh.modificationTime & 0xF800) >> 11;
-    timeinfo.tm_min  = (lfh.modificationTime & 0x07E0) >> 5;
-    timeinfo.tm_sec  = (lfh.modificationTime & 0x001f) * 2;
+    timeinfo.tm_hour = (lfh.modification_time & 0xF800) >> 11;
+    timeinfo.tm_min  = (lfh.modification_time & 0x07E0) >> 5;
+    timeinfo.tm_sec  = (lfh.modification_time & 0x001f) * 2;
 
-    std::time_t t        = std::mktime(&timeinfo);
-    size_t      unc_size = zf.zip_data.compressed ? lfh.uncompressedSize : lfh.compressedSize;
+    auto   t        = tm_to_file_time(timeinfo);
+    size_t unc_size = zf.zip_data.compressed ? lfh.uncompressed_size : lfh.compressed_size;
 
     return {zf.fname, t, unc_size, std::move(data)};
 }

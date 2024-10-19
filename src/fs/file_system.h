@@ -32,10 +32,10 @@ private:
     {
         struct ZFileData
         {
-            bool        compressed       = false;
-            size_t      compressedSize   = 0;
-            size_t      uncompressedSize = 0;
-            size_t      lfhOffset        = 0;
+            bool        compressed        = false;
+            size_t      compressed_size   = 0;
+            size_t      uncompressed_size = 0;
+            size_t      lfh_offset        = 0;
             std::string fname;
         };
 

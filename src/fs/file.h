@@ -3,6 +3,7 @@
 
 #include "memory_stream.h"
 #include <ctime>
+#include <filesystem>
 
 namespace evnt
 {
@@ -15,13 +16,13 @@ public:
     virtual int8_t const * getData() const     = 0;
     virtual size_t         getFileSize() const = 0;
 
-    std::time_t timeStamp() const { return m_last_write_time; }
-    std::string getName() const { return m_name; }
-    std::string getNameExt() const;
+    std::filesystem::file_time_type timeStamp() const { return m_last_write_time; }
+    std::string                     getName() const { return m_name; }
+    std::string                     getNameExt() const;
 
 protected:
-    std::time_t m_last_write_time = 0;
-    std::string m_name;
+    std::filesystem::file_time_type m_last_write_time;
+    std::string                     m_name;
 };
 
 class InFile;
@@ -48,12 +49,14 @@ private:
 class InFile : public BaseFile
 {
 public:
-    InFile(std::string name, std::time_t timestamp, size_t f_size, std::unique_ptr<int8_t[]> data)
+    InFile(std::string name, std::filesystem::file_time_type timestamp, size_t f_size,
+           std::unique_ptr<int8_t[]> data)
         : m_data(std::move(data), f_size)
     {
         std::swap(m_name, name);
         m_last_write_time = timestamp;
     }
+
     InFile(OutFile const & outfile)
     {
         m_name            = outfile.getName();
