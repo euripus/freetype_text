@@ -426,6 +426,13 @@ static void error_callback(int error, char const * description)
 int main()
 {
     evnt::FileSystem fs("./data");
+    auto             file = fs.getFile("ui/jsons/hor_win.json");
+    std::string      line;
+    std::string      result;
+    while(evnt::GetLine(file->getStream(), line))
+    {
+        result += line;
+    }
 
     g_ui.parseUIResources("./data/ui/jsons/ui_res.json");
     UIWindow * win = g_ui.loadWindow("./data/ui/jsons/vert_win.json");

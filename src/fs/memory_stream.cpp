@@ -1,41 +1,45 @@
 #include "memory_stream.h"
-
 #include <cstring>
-#include <stdexcept>
 
 namespace evnt
 {
-void OutputMemoryStream::write(int8_t const * inData, size_t inByteCount)
+void OutputMemoryStream::write(int8_t const * data, size_t byte_count)
 {
-    m_buffer.reserve(m_buffer.size() + inByteCount);
-    m_buffer.insert(std::end(m_buffer), inData, inData + inByteCount);
+    m_buffer.reserve(m_buffer.size() + byte_count);
+    m_buffer.insert(std::end(m_buffer), data, data + byte_count);
 }
 
-void OutputMemoryStream::write(InputMemoryStream const & inStream)
+void OutputMemoryStream::write(InputMemoryStream const & stream)
 {
-    m_buffer.reserve(m_buffer.size() + inStream.getCapacity());
-    m_buffer.insert(std::end(m_buffer), inStream.getPtr(), inStream.getPtr() + inStream.getCapacity());
+    m_buffer.reserve(m_buffer.size() + stream.getCapacity());
+    m_buffer.insert(std::end(m_buffer), stream.getPtr(), stream.getPtr() + stream.getCapacity());
 }
 
-void InputMemoryStream::read(void * outData, size_t inByteCount) const
+bool InputMemoryStream::read(void * out_data, size_t byte_count) const
 {
-    size_t resultHead = m_head + inByteCount;
-    if(resultHead > m_capacity)
+    size_t result_head = m_head + byte_count;
+    if(result_head > m_capacity)
     {
-        throw std::range_error("InputMemoryStream::Read - no data to read!");
+        if(static_cast<int>(m_capacity - m_head) > 0)
+            std::memcpy(out_data, mup_data.get() + m_head, m_capacity - m_head);
+        m_head = m_capacity;
+        m_eof  = true;
+        return false;
     }
 
-    std::memcpy(outData, mup_data.get() + m_head, inByteCount);
+    std::memcpy(out_data, mup_data.get() + m_head, byte_count);
 
-    m_head = resultHead;
+    m_head = result_head;
+    return true;
 }
 
-InputMemoryStream InputMemoryStream::ConvertToInputMemoryStream(OutputMemoryStream const & inStream)
+InputMemoryStream & GetLine(InputMemoryStream & input_stream, std::string & out_str)
 {
-    std::unique_ptr<int8_t[]> new_buf = std::make_unique<int8_t[]>(inStream.getLength());
-    std::memcpy(new_buf.get(), inStream.getBufferPtr(), inStream.getLength());
-    InputMemoryStream temp(std::move(new_buf), inStream.getLength());
-
-    return temp;
+    char ch;
+    out_str.clear();
+    while(input_stream.read(ch) && ch != '\n')
+        out_str.push_back(ch);
+    return input_stream;
 }
+
 }   // namespace evnt

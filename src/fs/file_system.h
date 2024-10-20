@@ -1,9 +1,8 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 
-// #include "../assets/assetmanager.h"
 #include "file.h"
-// #include <functional>
+#include <optional>
 #include <list>
 
 namespace evnt
@@ -14,9 +13,9 @@ public:
     FileSystem(std::string root_dir);
     virtual ~FileSystem() = default;
 
-    bool   isExist(std::string const & fname) const;
-    InFile getFile(std::string const & fname) const;   // ex. file name: "fonts/times.ttf"
-    size_t getNumFiles() const { return m_files.size(); }
+    bool                  isExist(std::string const & fname) const;
+    std::optional<InFile> getFile(std::string const & fname) const;   // ex. file name: "fonts/times.ttf"
+    size_t                getNumFiles() const { return m_files.size(); }
 
     bool writeFile(std::string const & path, BaseFile const * file);   // Memory file
     bool createZIP(std::vector<BaseFile const *> filelist,

@@ -1,5 +1,6 @@
 #include "file.h"
 #include "file_system.h"
+#include <filesystem>
 
 namespace evnt
 {
@@ -11,13 +12,13 @@ std::string BaseFile::getNameExt() const
 OutFile::OutFile()
 {
     m_name            = FileSystem::GetTempFileName();
-    m_last_write_time = std::filesystem::file_time_type::clock::now();
+    m_last_write_time = std::chrono::system_clock::now();
 }
 
 OutFile::OutFile(std::string name)
 {
     m_name            = std::move(name);
-    m_last_write_time = std::filesystem::file_time_type::clock::now();
+    m_last_write_time = std::chrono::system_clock::now();
 }
 
 OutFile::OutFile(std::string name, char const * data, size_t length)
@@ -36,7 +37,7 @@ void OutFile::write(char const * buffer, size_t len)
     assert(len > 0);
 
     m_data.write(reinterpret_cast<int8_t const *>(buffer), len);
-    m_last_write_time = std::filesystem::file_time_type::clock::now();
+    m_last_write_time = std::chrono::system_clock::now();
 }
 
 }   // namespace evnt

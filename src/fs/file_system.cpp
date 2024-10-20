@@ -2,7 +2,8 @@
 #include <random>
 #include <array>
 #include <algorithm>
-#include <chrono>
+#include <ctime>
+#include <filesystem>
 #include <fstream>
 #include <zlib.h>
 #include <iostream>
@@ -13,6 +14,48 @@
 namespace evnt
 {
 namespace fs = std::filesystem;
+
+// https://stackoverflow.com/questions/61030383/how-to-convert-stdfilesystemfile-time-type-to-time-t
+template<typename TP>
+std::time_t To_time_t(TP tp)
+{
+    using namespace std::chrono;
+    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
+    return system_clock::to_time_t(sctp);
+}
+
+void GetDosTime(std::time_t rawtime, uint16_t & time, uint16_t & date)
+{
+    // http://stackoverflow.com/questions/15763259/unix-timestamp-to-fat-timestamp
+    struct tm * timeinfo;
+    timeinfo = localtime(&rawtime);
+
+    time =
+        static_cast<uint16_t>((timeinfo->tm_hour << 11) | (timeinfo->tm_min << 5) | (timeinfo->tm_sec >> 1));
+    date = static_cast<uint16_t>(((timeinfo->tm_year - 80) << 9) | ((timeinfo->tm_mon + 1) << 5)
+                                 | (timeinfo->tm_mday));
+}
+
+std::chrono::system_clock::time_point
+    file_time_to_time_point(std::filesystem::file_time_type const & file_time)
+{
+    auto system_time = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        file_time - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
+    return system_time;
+}
+
+std::filesystem::file_time_type tm_to_file_time(std::tm const & timeinfo)
+{
+    std::time_t time_t_val = std::mktime(const_cast<std::tm *>(&timeinfo));
+    auto        time_point = std::chrono::system_clock::from_time_t(time_t_val);
+    return std::filesystem::file_time_type::clock::now() + (time_point - std::chrono::system_clock::now());
+}
+
+std::chrono::system_clock::time_point tm_to_time_point(std::tm const & timeinfo)
+{
+    std::time_t time_t_val = std::mktime(const_cast<std::tm *>(&timeinfo));
+    return std::chrono::system_clock::from_time_t(time_t_val);
+}
 
 std::string FileSystem::GetTempDir()
 {
@@ -233,7 +276,7 @@ bool FileSystem::isExist(std::string const & fname) const
     return false;
 }
 
-InFile FileSystem::getFile(std::string const & fname) const
+std::optional<InFile> FileSystem::getFile(std::string const & fname) const
 {
     assert(!fname.empty());
 
@@ -264,7 +307,7 @@ InFile FileSystem::getFile(std::string const & fname) const
         std::stringstream ss;
         ss << "FileSystem::GetFile File: " << fname << " - not found";
         std::cout << ss.str() << std::endl;
-        throw std::runtime_error("File not found");
+        return {};
     }
 }
 
@@ -296,27 +339,6 @@ bool FileSystem::writeFile(std::string const & path, BaseFile const * file)
     }
 
     return true;
-}
-
-// https://stackoverflow.com/questions/61030383/how-to-convert-stdfilesystemfile-time-type-to-time-t
-template<typename TP>
-std::time_t to_time_t(TP tp)
-{
-    using namespace std::chrono;
-    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
-    return system_clock::to_time_t(sctp);
-}
-
-void GetDosTime(std::time_t rawtime, uint16_t & time, uint16_t & date)
-{
-    // http://stackoverflow.com/questions/15763259/unix-timestamp-to-fat-timestamp
-    struct tm * timeinfo;
-    timeinfo = localtime(&rawtime);
-
-    time =
-        static_cast<uint16_t>((timeinfo->tm_hour << 11) | (timeinfo->tm_min << 5) | (timeinfo->tm_sec >> 1));
-    date = static_cast<uint16_t>(((timeinfo->tm_year - 80) << 9) | ((timeinfo->tm_mon + 1) << 5)
-                                 | (timeinfo->tm_mday));
 }
 
 // http://blog2k.ru/archives/3397
@@ -408,7 +430,7 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
         // Save the offset to the record Local File Header внутри архива
         uint32_t const lfh_offset = static_cast<uint32_t>(ofs.tellp());
 
-        GetDosTime(to_time_t(filelist[i]->timeStamp()), time, date);
+        GetDosTime(To_time_t(filelist[i]->timeStamp()), time, date);
 
         // Write down the signature Local File Header
         lfh.signature         = 0x04034b50;
@@ -441,7 +463,7 @@ bool FileSystem::createZIP(std::vector<BaseFile const *> filelist, std::string c
         CentralDirectoryFileHeader cdfh{};
         memset(&cdfh, 0, sizeof(cdfh));
 
-        GetDosTime(to_time_t(filelist[i]->timeStamp()), time, date);
+        GetDosTime(To_time_t(filelist[i]->timeStamp()), time, date);
 
         cdfh.compressed_size          = file_info.compressed_size;
         cdfh.uncompressed_size        = file_info.uncompressed_size;
@@ -554,7 +576,7 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
 
     uint16_t time = 0;
     uint16_t date = 0;
-    GetDosTime(to_time_t(file->timeStamp()), time, date);
+    GetDosTime(To_time_t(file->timeStamp()), time, date);
 
     LocalFileHeader lfh{};
     memset(&lfh, 0, sizeof(lfh));
@@ -690,16 +712,10 @@ InFile FileSystem::loadRegularFile(file_data const & f) const
 
     ifs.close();
 
-    auto ftime = fs::last_write_time(m_data_dir + '/' + f.fname);
+    std::chrono::system_clock::time_point ftime =
+        file_time_to_time_point(fs::last_write_time(m_data_dir + '/' + f.fname));
 
     return {f.fname, ftime, file_size, std::move(data)};
-}
-
-std::filesystem::file_time_type tm_to_file_time(std::tm const & timeinfo)
-{
-    std::time_t time_t_val = std::mktime(const_cast<std::tm *>(&timeinfo));
-    auto        time_point = std::chrono::system_clock::from_time_t(time_t_val);
-    return std::filesystem::file_time_type::clock::now() + (time_point - std::chrono::system_clock::now());
 }
 
 // http://blog2k.ru/archives/3392
@@ -767,7 +783,7 @@ InFile FileSystem::loadZipFile(file_data const & zf) const
     timeinfo.tm_min  = (lfh.modification_time & 0x07E0) >> 5;
     timeinfo.tm_sec  = (lfh.modification_time & 0x001f) * 2;
 
-    auto   t        = tm_to_file_time(timeinfo);
+    auto   t        = tm_to_time_point(timeinfo);
     size_t unc_size = zf.zip_data.compressed ? lfh.uncompressed_size : lfh.compressed_size;
 
     return {zf.fname, t, unc_size, std::move(data)};
