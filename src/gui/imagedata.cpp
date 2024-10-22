@@ -284,10 +284,14 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
 bool ReadTGA(std::string const & file_name, ImageData & image)
 {
-    size_t file_length = 0;
+    if(auto file = g_fs.getFile(file_name); file)
+    {
+        return ReadTGA(*file, image);
+    }
+    else
+        return false;
 
-    std::ifstream        ifile(file_name, std::ios::binary);
-    std::vector<uint8_t> file;
+    std::ifstream ifile(file_name, std::ios::binary);
 
     if(ifile.is_open())
     {
@@ -295,24 +299,27 @@ bool ReadTGA(std::string const & file_name, ImageData & image)
         auto length = ifile.tellg();
         ifile.seekg(0, std::ios_base::beg);
 
-        file.resize(static_cast<size_t>(length));
-
-        ifile.read(reinterpret_cast<char *>(file.data()), length);
+        InFile file(length);
+        ifile.read(reinterpret_cast<char *>(file.getStream().getPtr()), length);
 
         auto success = !ifile.fail() && length == ifile.gcount();
         ifile.close();
 
         if(!success)
             return false;
+
+        return ReadTGA(file, image);
     }
     else
         return false;
+}
 
-    file_length = file.size();
-    if(file_length == 0)
+bool ReadTGA(BaseFile const & file, ImageData & image)
+{
+    if(file.empty())
         return false;
 
-    auto * buffer = file.data();
+    auto * buffer = const_cast<uint8_t *>(file.getData());
 
     auto *      data     = buffer;
     TGAHEADER * p_header = reinterpret_cast<TGAHEADER *>(data);

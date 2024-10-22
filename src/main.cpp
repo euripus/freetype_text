@@ -15,11 +15,13 @@
 #include "./fs/file_system.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
-constexpr char const *  TEXNAME     = "./data/base.tga";
+constexpr char const *  TEXNAME     = "base.tga";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
 GLFWwindow * g_window = nullptr;
+
+evnt::FileSystem g_fs("./data");
 
 bool         g_wire    = false;
 unsigned int g_num_fps = 0;   // Fps counter
@@ -70,7 +72,7 @@ GLfloat pyr_vert_tex[] = {0.5, 0.8, 0.2, 0.5, 0.5, 0.2, 0.8, 0.5, 0.5, 0.8, 0, 1
 GLuint pyr_index[] = {13, 14, 15, 7, 8, 9, 4, 5, 6, 10, 11, 12, 0, 1, 2, 0, 2, 3};
 
 Input        g_input_state;
-UI           g_ui(g_input_state);
+UI           g_ui(g_input_state, g_fs);
 VertexBuffer win_buf(VertexBuffer::pos_tex), text_win_buf(VertexBuffer::pos_tex),
     pyramid_buf(VertexBuffer::pos_tex_norm);
 GLuint tex_base;
@@ -425,17 +427,20 @@ static void error_callback(int error, char const * description)
 
 int main()
 {
-    evnt::FileSystem fs("./data");
-    auto             file = fs.getFile("ui/jsons/hor_win.json");
-    std::string      line;
-    std::string      result;
-    while(evnt::GetLine(file->getStream(), line))
+    if(auto file = g_fs.getFile("ui/jsons/ui_res.json"); file)
     {
-        result += line;
+        g_ui.parseUIResources(*file);
     }
+    else
+        return 1;
 
-    g_ui.parseUIResources("./data/ui/jsons/ui_res.json");
-    UIWindow * win = g_ui.loadWindow("./data/ui/jsons/vert_win.json");
+    UIWindow * win = nullptr;
+    if(auto file = g_fs.getFile("ui/jsons/vert_win.json"); file)
+    {
+        win = g_ui.loadWindow(*file);
+    }
+    else
+        return 1;
 
     if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {

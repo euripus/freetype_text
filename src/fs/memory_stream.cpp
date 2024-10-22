@@ -1,8 +1,6 @@
 #include "memory_stream.h"
 #include <cstring>
 
-namespace evnt
-{
 void OutputMemoryStream::write(int8_t const * data, size_t byte_count)
 {
     m_buffer.reserve(m_buffer.size() + byte_count);
@@ -41,5 +39,3 @@ InputMemoryStream & GetLine(InputMemoryStream & input_stream, std::string & out_
         out_str.push_back(ch);
     return input_stream;
 }
-
-}   // namespace evnt

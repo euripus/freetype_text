@@ -34,16 +34,16 @@ using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
 class UI
 {
 public:
-    UI(Input const & inp);
+    UI(Input const & inp, FileSystem & fsys);
 
     void       update(float time);
     void       draw(VertexBuffer & background, VertexBuffer & text) const;
     void       resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
     glm::ivec2 getScreenSize() const { return m_screen_size; }
 
-    UIWindow * loadWindow(std::string const & widgets_filename, int32_t layer = 0,
+    UIWindow * loadWindow(InFile const & file_json, int32_t layer = 0,
                           std::string const & image_group = std::string());
-    void       parseUIResources(std::string const & file_name);
+    void       parseUIResources(InFile const & file_json);
 
     void fitWidgets(UIWindow * win_ptr) const;
 

@@ -4,8 +4,6 @@
 #include "memory_stream.h"
 #include <chrono>
 
-namespace evnt
-{
 class BaseFile
 {
 public:
@@ -39,7 +37,11 @@ public:
     int8_t const * getData() const override { return m_data.getBufferPtr(); }
     size_t         getFileSize() const override { return m_data.getLength(); }
 
-    void                       write(char const * buffer, size_t len);   // change write time of file
+    void writeTimeNow()   // change write time of file
+    {
+        m_last_write_time = std::chrono::system_clock::now();
+    }
+
     OutputMemoryStream &       getStream() { return m_data; }
     OutputMemoryStream const & getStream() const { return m_data; }
 
@@ -50,6 +52,13 @@ private:
 class InFile : public BaseFile
 {
 public:
+    InFile(size_t f_size)
+        : m_data(f_size)
+    {
+        m_name            = FileSystem::GetTempFileName();
+        m_last_write_time = std::chrono::system_clock::now();
+    }
+
     InFile(std::string name, std::chrono::system_clock::time_point timestamp, size_t f_size,
            std::unique_ptr<int8_t[]> data)
         : m_data(std::move(data), f_size)
@@ -75,5 +84,4 @@ public:
 private:
     InputMemoryStream m_data;
 };
-}   // namespace evnt
 #endif   // FILE_H

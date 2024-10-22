@@ -5,7 +5,6 @@
 #include "window.h"
 #include "text_box.h"
 #include "button.h"
-#include <fstream>
 #include <boost/json.hpp>
 
 Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_outline)
@@ -22,27 +21,18 @@ Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_o
     return Glyph::OutlineType::NONE;
 }
 
-void FontDataDesc::ParseFontsRes(FontManager & fmgr, std::string const & file_name)
+void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile const & file_json)
 {
     boost::json::value jv;
 
     try
     {
-        std::ifstream ifile(file_name, std::ios::in);
-        std::string   file_data;
+        std::string file_data;
 
-        if(ifile.is_open())
+        std::string line;
+        while(evnt::GetLine(file_json->getStream(), line))
         {
-            std::string tp;
-            while(std::getline(ifile, tp))
-            {
-                file_data += tp;
-            }
-        }
-        else
-        {
-            std::string err = "File: " + file_name + " - not found!";
-            throw std::runtime_error(err);
+            file_data += line;
         }
 
         jv = boost::json::parse(file_data);
@@ -291,27 +281,18 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
     return result;
 }
 
-void WindowDesc::LoadWindow(UIWindow & win, std::string const & file_name)
+void WindowDesc::LoadWindow(UIWindow & win, InFile const & file_json)
 {
     boost::json::value jv;
 
     try
     {
-        std::ifstream ifile(file_name, std::ios::in);
-        std::string   file_data;
+        std::string file_data;
 
-        if(ifile.is_open())
+        std::string line;
+        while(evnt::GetLine(file->getStream(), line))
         {
-            std::string tp;
-            while(std::getline(ifile, tp))
-            {
-                file_data += tp;
-            }
-        }
-        else
-        {
-            std::string err = "File: " + file_name + " - not found!";
-            throw std::runtime_error(err);
+            file_data += line;
         }
 
         jv = boost::json::parse(file_data);
@@ -399,27 +380,18 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
     }
 }
 
-void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, std::string const & file_name)
+void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile const & file_json)
 {
     boost::json::value jv;
 
     try
     {
-        std::ifstream ifile(file_name, std::ios::in);
-        std::string   file_data;
+        std::string file_data;
 
-        if(ifile.is_open())
+        std::string line;
+        while(evnt::GetLine(file_json->getStream(), line))
         {
-            std::string tp;
-            while(std::getline(ifile, tp))
-            {
-                file_data += tp;
-            }
-        }
-        else
-        {
-            std::string err = "File: " + file_name + " - not found!";
-            throw std::runtime_error(err);
+            file_data += line;
         }
 
         jv = boost::json::parse(file_data);
@@ -465,27 +437,18 @@ void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, std::string const & fi
     }
 }
 
-void UIDesc::ParseDefaultUISetID(UI & ui, std::string const & file_name)
+void UIDesc::ParseDefaultUISetID(UI & ui, InFile const & file_json)
 {
     boost::json::value jv;
 
     try
     {
-        std::ifstream ifile(file_name, std::ios::in);
-        std::string   file_data;
+        std::string file_data;
 
-        if(ifile.is_open())
+        std::string line;
+        while(evnt::GetLine(file_json->getStream(), line))
         {
-            std::string tp;
-            while(std::getline(ifile, tp))
-            {
-                file_data += tp;
-            }
-        }
-        else
-        {
-            std::string err = "File: " + file_name + " - not found!";
-            throw std::runtime_error(err);
+            file_data += line;
         }
 
         jv = boost::json::parse(file_data);

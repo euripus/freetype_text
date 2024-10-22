@@ -23,6 +23,9 @@ struct ImageData
     std::unique_ptr<uint8_t[]> data;
 };
 
+bool ReadBMP(BaseFile const & file, ImageData & image);
+bool ReadTGA(BaseFile const & file, ImageData & image);
+
 bool ReadBMP(std::string const & file_name, ImageData & image);
 bool ReadTGA(std::string const & file_name, ImageData & image);
 

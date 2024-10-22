@@ -11,8 +11,6 @@
 #include "zip.h"
 
 // https://medium.com/@sshambir/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82-std-filesystem-4c7ed50d5634
-namespace evnt
-{
 namespace fs = std::filesystem;
 
 // https://stackoverflow.com/questions/61030383/how-to-convert-stdfilesystemfile-time-type-to-time-t
@@ -311,9 +309,9 @@ std::optional<InFile> FileSystem::getFile(std::string const & fname) const
     }
 }
 
-bool FileSystem::writeFile(std::string const & path, BaseFile const * file)
+bool FileSystem::writeFile(BaseFile const & file, std::string path = {})
 {
-    std::string filename = file->getName();
+    std::string filename = file.getName();
 
     if(!path.empty())
         filename = path + '/' + filename;
@@ -326,8 +324,8 @@ bool FileSystem::writeFile(std::string const & path, BaseFile const * file)
         std::cout << ss.str() << std::endl;
         return false;
     }
-    ofs.write(reinterpret_cast<char *>(const_cast<int8_t *>(file->getData())),
-              static_cast<std::streamsize>(file->getFileSize()));
+    ofs.write(reinterpret_cast<char *>(const_cast<int8_t *>(file.getData())),
+              static_cast<std::streamsize>(file.getFileSize()));
     ofs.close();
 
     if(!isExist(filename))
@@ -788,4 +786,3 @@ InFile FileSystem::loadZipFile(file_data const & zf) const
 
     return {zf.fname, t, unc_size, std::move(data)};
 }
-}   // namespace evnt

@@ -5,8 +5,6 @@
 #include <optional>
 #include <list>
 
-namespace evnt
-{
 class FileSystem
 {
 public:
@@ -17,7 +15,7 @@ public:
     std::optional<InFile> getFile(std::string const & fname) const;   // ex. file name: "fonts/times.ttf"
     size_t                getNumFiles() const { return m_files.size(); }
 
-    bool writeFile(std::string const & path, BaseFile const * file);   // Memory file
+    bool writeFile(BaseFile const & file, std::string path = {});   // Memory file
     bool createZIP(std::vector<BaseFile const *> filelist,
                    std::string const &           zipname);   // all zip files saves in root directory
     bool addFileToZIP(BaseFile const * file, std::string const & zipname);
@@ -50,6 +48,5 @@ private:
     std::list<file_data> m_files;
     std::string          m_data_dir;
 };
-}   // namespace evnt
 
 #endif   // FILESYSTEM_H

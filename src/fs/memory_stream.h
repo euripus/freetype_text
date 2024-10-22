@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-namespace evnt
-{
 class InputMemoryStream;
 
 class OutputMemoryStream
@@ -185,6 +183,5 @@ private:
 };
 
 InputMemoryStream & GetLine(InputMemoryStream & input_stream, std::string & out_str);
-}   // namespace evnt
 
 #endif   // MEMORYSTREAM_H

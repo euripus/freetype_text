@@ -10,6 +10,9 @@
 class FontManager
 {
 public:
+    FontManager(FileSystem & fsys)
+        : m_file_sys(fsys)
+    {}
     TexFont & addFont(FontDataDesc const & desc);
     TexFont * getFont(std::string name, uint32_t size);
 
@@ -19,8 +22,9 @@ public:
 private:
     using font_map = std::map<std::size_t, std::unique_ptr<TexFont>>;
 
-    AtlasTex m_atlas;   // one tex atlas for all loaded fonts
-    font_map m_fonts;
+    FileSystem & m_file_sys;
+    AtlasTex     m_atlas;   // one tex atlas for all loaded fonts
+    font_map     m_fonts;
 };
 
 #endif

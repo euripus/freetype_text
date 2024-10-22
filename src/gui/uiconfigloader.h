@@ -33,7 +33,7 @@ struct FontDataDesc
     Glyph::OutlineType outline_type      = Glyph::OutlineType::NONE;
 
     static Glyph::OutlineType GetOutlineTypeFromString(std::string_view str_outline);
-    static void               ParseFontsRes(FontManager & fmgr, std::string const & file_name);
+    static void               ParseFontsRes(FontManager & fmgr, InFile const & file_json);
 };
 
 struct WidgetDesc
@@ -60,7 +60,6 @@ struct WidgetDesc
     static ElementType GetElementTypeFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);
 
-    // static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj, UIWindow & owner);
     static std::unique_ptr<Widget> GetWidgetFromDesc(WidgetDesc const & desc, UIWindow & owner);
 
     glm::vec2   min_size    = {};
@@ -86,7 +85,7 @@ struct WindowDesc
     static constexpr char const * sid_window_spacing = "window_spacing";
     static constexpr char const * sid_widgets        = "widgets";
 
-    static void LoadWindow(UIWindow & win, std::string const & file_name);
+    static void LoadWindow(UIWindow & win, InFile const & file_json);
 };
 
 struct UIImageManagerDesc
@@ -98,7 +97,7 @@ struct UIImageManagerDesc
     static constexpr char const * sid_texture        = "texture";
     static constexpr char const * sid_9slice_margins = "9slice_margins";
 
-    static void ParseUIRes(UIImageManager & mgr, std::string const & file_name);
+    static void ParseUIRes(UIImageManager & mgr, InFile const & file_json);
 };
 
 struct UIDesc
@@ -107,7 +106,7 @@ struct UIDesc
     static constexpr char const * sid_defult_font      = "defult_font";
     static constexpr char const * sid_defult_font_size = "defult_font_size";
 
-    static void ParseDefaultUISetID(UI & ui, std::string const & file_name);
+    static void ParseDefaultUISetID(UI & ui, InFile const & file_json);
 };
 
 #endif

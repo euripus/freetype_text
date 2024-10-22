@@ -1,8 +1,9 @@
 #include "ui.h"
 #include "uiconfigloader.h"
 
-UI::UI(Input const & inp)
-    : m_input(inp)
+UI::UI(Input const & inp, FileSystem & fsys)
+    : m_input(inp),
+      m_fonts(fsys)
 {
     m_packer = std::make_unique<ChainsPacker>();
 }
@@ -23,8 +24,7 @@ void UI::draw(VertexBuffer & background, VertexBuffer & text) const
     }
 }
 
-UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
-                          std::string const & image_group)
+UIWindow * UI::loadWindow(InFile const & file_json, int32_t layer, std::string const & image_group)
 {
     std::unique_ptr<UIWindow> win;
     if(image_group.empty())
@@ -32,7 +32,7 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
     else
         win = std::make_unique<UIWindow>(*this, image_group);
 
-    WindowDesc::LoadWindow(*win.get(), widgets_filename);
+    WindowDesc::LoadWindow(*win.get(), file_json);
 
     m_windows.push_back(std::move(win));
 
@@ -47,11 +47,11 @@ UIWindow * UI::loadWindow(std::string const & widgets_filename, int32_t layer,
     return win_ptr;
 }
 
-void UI::parseUIResources(std::string const & file_name)
+void UI::parseUIResources(InFile const & file_json)
 {
-    UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, file_name);
-    FontDataDesc::ParseFontsRes(m_fonts, file_name);
-    UIDesc::ParseDefaultUISetID(*this, file_name);
+    UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, file_json);
+    FontDataDesc::ParseFontsRes(m_fonts, file_json);
+    UIDesc::ParseDefaultUISetID(*this, file_json);
 }
 
 void UI::fitWidgets(UIWindow * win_ptr) const
