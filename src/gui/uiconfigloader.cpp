@@ -21,7 +21,7 @@ Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_o
     return Glyph::OutlineType::NONE;
 }
 
-void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile const & file_json)
+void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile & file_json)
 {
     boost::json::value jv;
 
@@ -30,10 +30,11 @@ void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile const & file_json)
         std::string file_data;
 
         std::string line;
-        while(evnt::GetLine(file_json->getStream(), line))
+        while(GetLine(file_json.getStream(), line))
         {
             file_data += line;
         }
+        file_json.getStream().resetHead();
 
         jv = boost::json::parse(file_data);
     }
@@ -93,8 +94,8 @@ void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile const & file_json)
                     }
                     else
                     {
-                        std::string error =
-                            "Unknown parameter: " + std::string(kvp.key()) + " in file: " + file_name;
+                        std::string error = "Unknown parameter: " + std::string(kvp.key())
+                                            + " in file: " + file_json.getName();
                         throw std::runtime_error(error);
                     }
                 }
@@ -281,7 +282,7 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
     return result;
 }
 
-void WindowDesc::LoadWindow(UIWindow & win, InFile const & file_json)
+void WindowDesc::LoadWindow(UIWindow & win, InFile & file_json)
 {
     boost::json::value jv;
 
@@ -290,10 +291,11 @@ void WindowDesc::LoadWindow(UIWindow & win, InFile const & file_json)
         std::string file_data;
 
         std::string line;
-        while(evnt::GetLine(file->getStream(), line))
+        while(GetLine(file_json.getStream(), line))
         {
             file_data += line;
         }
+        file_json.getStream().resetHead();
 
         jv = boost::json::parse(file_data);
     }
@@ -340,7 +342,7 @@ void WindowDesc::LoadWindow(UIWindow & win, InFile const & file_json)
     }
 }
 
-void parseImages(boost::json::value const & jv, UIImageGroup & group)
+void parseImages(boost::json::value const & jv, UIImageGroup & group, FileSystem & fsys)
 {
     auto const & arr = jv.get_array();
     if(!arr.empty())
@@ -365,7 +367,12 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
             }
 
             tex::ImageData image;
-            if(!tex::ReadTGA(path, image))
+            if(auto file = fsys.getFile(path); file)
+            {
+                if(!tex::ReadTGA(*file, image))
+                    continue;
+            }
+            else
                 continue;
 
             if(group.addImage(name, path, image, margins[0], margins[1], margins[2], margins[3]) == -1)
@@ -380,7 +387,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group)
     }
 }
 
-void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile const & file_json)
+void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile & file_json, FileSystem & fsys)
 {
     boost::json::value jv;
 
@@ -389,10 +396,11 @@ void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile const & file_js
         std::string file_data;
 
         std::string line;
-        while(evnt::GetLine(file_json->getStream(), line))
+        while(GetLine(file_json.getStream(), line))
         {
             file_data += line;
         }
+        file_json.getStream().resetHead();
 
         jv = boost::json::parse(file_data);
     }
@@ -423,8 +431,8 @@ void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile const & file_js
                     }
                     else if(kvp.key() == sid_images)
                     {
-                        mgr.m_groups[gr_name] = std::make_unique<UIImageGroup>(mgr);
-                        parseImages(kvp.value(), *mgr.m_groups[gr_name]);
+                        mgr.m_groups[gr_name] = std::make_unique<UIImageGroup>(mgr, fsys);
+                        parseImages(kvp.value(), *mgr.m_groups[gr_name], fsys);
                     }
                 }
             }
@@ -432,12 +440,12 @@ void UIImageManagerDesc::ParseUIRes(UIImageManager & mgr, InFile const & file_js
     }
     else
     {
-        std::string err = "In file " + file_name + " not found " + sid_gui_set;
+        std::string err = "In file " + file_json.getName() + " not found " + sid_gui_set;
         throw std::runtime_error(err);
     }
 }
 
-void UIDesc::ParseDefaultUISetID(UI & ui, InFile const & file_json)
+void UIDesc::ParseDefaultUISetID(UI & ui, InFile & file_json)
 {
     boost::json::value jv;
 
@@ -446,10 +454,11 @@ void UIDesc::ParseDefaultUISetID(UI & ui, InFile const & file_json)
         std::string file_data;
 
         std::string line;
-        while(evnt::GetLine(file_json->getStream(), line))
+        while(GetLine(file_json.getStream(), line))
         {
             file_data += line;
         }
+        file_json.getStream().resetHead();
 
         jv = boost::json::parse(file_data);
     }

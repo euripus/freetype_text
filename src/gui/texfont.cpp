@@ -1,6 +1,7 @@
 #include "texfont.h"
 #include "fontmanager.h"
 #include "../vertex_buffer.h"
+#include "utf8_utils.h"
 
 #include <algorithm>
 #include <iostream>

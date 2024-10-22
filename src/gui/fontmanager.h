@@ -4,6 +4,7 @@
 #include "texfont.h"
 #include "atlastex.h"
 #include "uiconfigloader.h"
+#include "../fs/file_system.h"
 #include <map>
 #include <memory>
 

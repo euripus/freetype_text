@@ -28,3 +28,10 @@ OutFile::OutFile(std::string name, char const * data, size_t length)
 OutFile::OutFile(InFile const & infile)
     : OutFile{infile.getName(), reinterpret_cast<char const *>(infile.getData()), infile.getFileSize()}
 {}
+
+InFile::InFile(size_t f_size)
+    : m_data(f_size)
+{
+    m_name            = FileSystem::GetTempFileName();
+    m_last_write_time = std::chrono::system_clock::now();
+}

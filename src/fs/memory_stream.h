@@ -182,6 +182,6 @@ private:
     mutable bool              m_eof = false;
 };
 
-InputMemoryStream & GetLine(InputMemoryStream & input_stream, std::string & out_str);
+InputMemoryStream const & GetLine(InputMemoryStream const & input_stream, std::string & out_str);
 
 #endif   // MEMORYSTREAM_H

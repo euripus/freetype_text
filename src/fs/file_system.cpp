@@ -309,7 +309,7 @@ std::optional<InFile> FileSystem::getFile(std::string const & fname) const
     }
 }
 
-bool FileSystem::writeFile(BaseFile const & file, std::string path = {})
+bool FileSystem::writeFile(BaseFile const & file, std::string path)
 {
     std::string filename = file.getName();
 

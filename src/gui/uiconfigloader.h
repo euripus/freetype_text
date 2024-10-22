@@ -5,6 +5,7 @@
 #include <memory>
 #include "basic_types.h"
 #include "texfont.h"
+#include "../fs/file_system.h"
 
 class UIImageManager;
 class UIWindow;
@@ -33,7 +34,7 @@ struct FontDataDesc
     Glyph::OutlineType outline_type      = Glyph::OutlineType::NONE;
 
     static Glyph::OutlineType GetOutlineTypeFromString(std::string_view str_outline);
-    static void               ParseFontsRes(FontManager & fmgr, InFile const & file_json);
+    static void               ParseFontsRes(FontManager & fmgr, InFile & file_json);
 };
 
 struct WidgetDesc
@@ -85,7 +86,7 @@ struct WindowDesc
     static constexpr char const * sid_window_spacing = "window_spacing";
     static constexpr char const * sid_widgets        = "widgets";
 
-    static void LoadWindow(UIWindow & win, InFile const & file_json);
+    static void LoadWindow(UIWindow & win, InFile & file_json);
 };
 
 struct UIImageManagerDesc
@@ -97,7 +98,7 @@ struct UIImageManagerDesc
     static constexpr char const * sid_texture        = "texture";
     static constexpr char const * sid_9slice_margins = "9slice_margins";
 
-    static void ParseUIRes(UIImageManager & mgr, InFile const & file_json);
+    static void ParseUIRes(UIImageManager & mgr, InFile & file_json, FileSystem & fsys);
 };
 
 struct UIDesc
@@ -106,7 +107,7 @@ struct UIDesc
     static constexpr char const * sid_defult_font      = "defult_font";
     static constexpr char const * sid_defult_font_size = "defult_font_size";
 
-    static void ParseDefaultUISetID(UI & ui, InFile const & file_json);
+    static void ParseDefaultUISetID(UI & ui, InFile & file_json);
 };
 
 #endif

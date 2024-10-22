@@ -5,25 +5,25 @@
             "images": [
                 {
                     "background": {
-                        "texture": "./data/ui/def/background.tga",
+                        "texture": "ui/def/background.tga",
                         "9slice_margins": [ 10, 10, 10, 10 ]
                     }
                 },
                 {
                     "button_clicked": {
-                        "texture": "./data/ui/def/button.tga",
+                        "texture": "ui/def/button.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_unclicked": {
-                        "texture": "./data/ui/def/button_unp.tga",
+                        "texture": "ui/def/button_unp.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_disabled": {
-                        "texture": "./data/ui/def/button.tga",
+                        "texture": "ui/def/button.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 }
@@ -34,25 +34,25 @@
             "images": [
                 {
                     "background": {
-                        "texture": "./data/ui/win/window_base.tga",
+                        "texture": "ui/win/window_base.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_clicked": {
-                        "texture": "./data/ui/win/button_pressed.tga",
+                        "texture": "ui/win/button_pressed.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_unclicked": {
-                        "texture": "./data/ui/win/button.tga",
+                        "texture": "ui/win/button.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_disabled": {
-                        "texture": "./data/ui/win/button_inactive.tga",
+                        "texture": "ui/win/button_inactive.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 }
@@ -61,7 +61,7 @@
     ],
     "fonts": [
         {
-            "file_name": "./data/ui/fonts/liberation.ttf",
+            "file_name": "ui/fonts/liberation.ttf",
             "font_id": "liberation",
             "hinting": true,
             "kerning": true,
@@ -71,7 +71,7 @@
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         },
         {
-            "file_name": "./data/ui/fonts/noto_sans.ttf",
+            "file_name": "ui/fonts/noto_sans.ttf",
             "font_id": "noto_sans_16",
             "hinting": true,
             "kerning": true,
@@ -81,7 +81,7 @@
             "glyphs": " !\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωАБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя"
         },
         {
-            "file_name": "./data/ui/fonts/damase.ttf",
+            "file_name": "ui/fonts/damase.ttf",
             "font_id": "damase",
             "hinting": true,
             "kerning": false,

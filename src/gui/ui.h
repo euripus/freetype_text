@@ -41,9 +41,9 @@ public:
     void       resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
     glm::ivec2 getScreenSize() const { return m_screen_size; }
 
-    UIWindow * loadWindow(InFile const & file_json, int32_t layer = 0,
+    UIWindow * loadWindow(InFile & file_json, int32_t layer = 0,
                           std::string const & image_group = std::string());
-    void       parseUIResources(InFile const & file_json);
+    void       parseUIResources(InFile & file_json);
 
     void fitWidgets(UIWindow * win_ptr) const;
 
@@ -53,6 +53,7 @@ public:
     glm::vec4 const & getFontColor() const { return m_font_color; }
 
     Input const & m_input;
+    FileSystem &  m_fsys;
 
     glm::ivec2              m_screen_size = {};
     UIImageManager          m_ui_image_atlas;

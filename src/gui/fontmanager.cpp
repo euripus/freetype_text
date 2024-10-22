@@ -1,4 +1,6 @@
 #include "fontmanager.h"
+#include <sstream>
+#include <stdexcept>
 
 TexFont & FontManager::addFont(FontDataDesc const & desc)
 {
@@ -10,15 +12,15 @@ TexFont & FontManager::addFont(FontDataDesc const & desc)
 
     if(auto file = m_file_sys.getFile(desc.filename); file)
     {
-        m_fonts[hash_val] =
-            std::make_unique<TexFont>(*this, file->getData(), file->getFileSize(), desc.pt_size, desc.hinting,
-                                      desc.kerning, desc.outline_thickness, desc.outline_type);
+        m_fonts[hash_val] = std::make_unique<TexFont>(
+            *this, reinterpret_cast<unsigned char const *>(file->getData()), file->getFileSize(),
+            desc.pt_size, desc.hinting, desc.kerning, desc.outline_thickness, desc.outline_type);
     }
     else
     {
         std::stringstream ss;
         ss << "FontManager::addFont File: " << desc.filename << " - not found";
-        throw std::rutime_error(ss.str());
+        throw std::runtime_error(ss.str());
     }
 
     return *m_fonts[hash_val].get();

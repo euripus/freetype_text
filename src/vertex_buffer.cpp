@@ -216,8 +216,7 @@ void Add2DRectangle(VertexBuffer & vb, float x0, float y0, float x1, float y1, f
 {
     unsigned int indices[6] = {0, 1, 2, 0, 3, 1};
 
-    float vertices[4 * 3] = {x0, y0, 0.f, x1, y1, 0.f, x0, y1, 0.f, x1, y0, 0.f};
-
+    float vertices[4 * 3]  = {x0, y0, 0.f, x1, y1, 0.f, x0, y1, 0.f, x1, y0, 0.f};
     float tex_coord[4 * 2] = {s0, t0, s1, t1, s0, t1, s1, t0};
 
     vb.pushBack(vertices, tex_coord, nullptr, 4, indices, 6);

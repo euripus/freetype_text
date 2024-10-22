@@ -8,6 +8,7 @@
 
 #include "src/gui/atlastex.h"
 #include "src/gui/imagedata.h"
+#include "src/fs/file_system.h"
 
 class UIImageManager;
 class VertexBuffer;
@@ -45,8 +46,9 @@ struct RegionDataOfUITexture
 class UIImageGroup   // a group of images of the same style
 {
 public:
-    UIImageGroup(UIImageManager & owner)
-        : m_owner(owner)
+    UIImageGroup(UIImageManager & owner, FileSystem & fsys)
+        : m_owner(owner),
+          m_fsys(fsys)
     {}
 
     UIImageManager & getOwner() { return m_owner; }
@@ -60,6 +62,7 @@ public:
 
 private:
     UIImageManager &                   m_owner;
+    FileSystem &                       m_fsys;
     std::vector<RegionDataOfUITexture> m_regions;
 };
 

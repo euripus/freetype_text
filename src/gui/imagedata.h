@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "../fs/file.h"
 
 namespace tex
 {

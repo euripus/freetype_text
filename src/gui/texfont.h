@@ -6,8 +6,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "utf8_utils.h"
-
 //  Glyph metrics:
 //  --------------
 //                        xmin                     xmax

@@ -15,13 +15,13 @@
 #include "./fs/file_system.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
-constexpr char const *  TEXNAME     = "base.tga";
+constexpr char const *  TEXNAME     = "./data/base.tga";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
 GLFWwindow * g_window = nullptr;
 
-evnt::FileSystem g_fs("./data");
+FileSystem g_fs("./data");
 
 bool         g_wire    = false;
 unsigned int g_num_fps = 0;   // Fps counter

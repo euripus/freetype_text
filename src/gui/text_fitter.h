@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <string>
-#include "basic_types.h"
-#include "rect2d.h"
 #include "texfont.h"
 
 namespace TextFitter

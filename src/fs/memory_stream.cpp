@@ -31,7 +31,7 @@ bool InputMemoryStream::read(void * out_data, size_t byte_count) const
     return true;
 }
 
-InputMemoryStream & GetLine(InputMemoryStream & input_stream, std::string & out_str)
+InputMemoryStream const & GetLine(InputMemoryStream const & input_stream, std::string & out_str)
 {
     char ch;
     out_str.clear();

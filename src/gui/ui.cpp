@@ -3,6 +3,7 @@
 
 UI::UI(Input const & inp, FileSystem & fsys)
     : m_input(inp),
+      m_fsys(fsys),
       m_fonts(fsys)
 {
     m_packer = std::make_unique<ChainsPacker>();
@@ -24,7 +25,7 @@ void UI::draw(VertexBuffer & background, VertexBuffer & text) const
     }
 }
 
-UIWindow * UI::loadWindow(InFile const & file_json, int32_t layer, std::string const & image_group)
+UIWindow * UI::loadWindow(InFile & file_json, int32_t layer, std::string const & image_group)
 {
     std::unique_ptr<UIWindow> win;
     if(image_group.empty())
@@ -47,9 +48,9 @@ UIWindow * UI::loadWindow(InFile const & file_json, int32_t layer, std::string c
     return win_ptr;
 }
 
-void UI::parseUIResources(InFile const & file_json)
+void UI::parseUIResources(InFile & file_json)
 {
-    UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, file_json);
+    UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, file_json, m_fsys);
     FontDataDesc::ParseFontsRes(m_fonts, file_json);
     UIDesc::ParseDefaultUISetID(*this, file_json);
 }

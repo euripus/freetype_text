@@ -150,7 +150,12 @@ void UIImageGroup::reloadImages()
     for(auto & reg: regions)
     {
         tex::ImageData image;
-        if(!tex::ReadTGA(reg.path, image))
+        if(auto file = m_fsys.getFile(reg.path); file)
+        {
+            if(!tex::ReadTGA(*file, image))
+                continue;
+        }
+        else
             continue;
         // we don't care about the oversize atlas error in this function
         addImage(reg.name, reg.path, image, reg.left, reg.right, reg.bottom, reg.top);

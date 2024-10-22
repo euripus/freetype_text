@@ -16,7 +16,7 @@ public:
     std::chrono::system_clock::time_point timeStamp() const { return m_last_write_time; }
     std::string                           getName() const { return m_name; }
     std::string                           getNameExt() const;
-    bool                                  empty() const { return getFileSize() > 0; }
+    bool                                  empty() const { return getFileSize() == 0; }
 
 protected:
     std::chrono::system_clock::time_point m_last_write_time;
@@ -52,13 +52,7 @@ private:
 class InFile : public BaseFile
 {
 public:
-    InFile(size_t f_size)
-        : m_data(f_size)
-    {
-        m_name            = FileSystem::GetTempFileName();
-        m_last_write_time = std::chrono::system_clock::now();
-    }
-
+    InFile(size_t f_size);
     InFile(std::string name, std::chrono::system_clock::time_point timestamp, size_t f_size,
            std::unique_ptr<int8_t[]> data)
         : m_data(std::move(data), f_size)
@@ -79,7 +73,8 @@ public:
     int8_t const * getData() const override { return m_data.getPtr(); }
     size_t         getFileSize() const override { return m_data.getCapacity(); }
 
-    InputMemoryStream & getStream() { return m_data; }
+    InputMemoryStream &       getStream() { return m_data; }
+    InputMemoryStream const & getStream() const { return m_data; }
 
 private:
     InputMemoryStream m_data;
