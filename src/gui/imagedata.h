@@ -28,8 +28,6 @@ bool ReadBMP(BaseFile const & file, ImageData & image);
 bool ReadTGA(BaseFile const & file, ImageData & image);
 
 bool ReadBMP(std::string const & file_name, ImageData & image);
-bool ReadTGA(std::string const & file_name, ImageData & image);
-
 bool WriteTGA(std::string file_name, ImageData const & image);
 }   // namespace tex
 #endif   // IMAGEDATA_H

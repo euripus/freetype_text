@@ -15,7 +15,7 @@
 #include "./fs/file_system.h"
 
 constexpr char const *  WINDOWTITLE = "GLFW Frame Application";
-constexpr char const *  TEXNAME     = "./data/base.tga";
+constexpr char const *  TEXNAME     = "base.tga";
 constexpr std::uint32_t WINDOWHEIGT = 600;
 constexpr std::uint32_t WINDOWWIDTH = 800;
 
@@ -254,24 +254,27 @@ bool LoadTexture()
     {
         tex::ImageData image;
 
-        if(tex::ReadTGA(TEXNAME, image))
+        if(auto file = g_fs.getFile(TEXNAME); file)
         {
-            glGenTextures(1, &tex_base);
+            if(tex::ReadTGA(*file, image))
+            {
+                glGenTextures(1, &tex_base);
 
-            glBindTexture(GL_TEXTURE_2D, tex_base);
+                glBindTexture(GL_TEXTURE_2D, tex_base);
 
-            GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
-            GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
+                GLint  internal_format = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
+                GLenum format          = (image.type == tex::ImageData::PixelType::pt_rgb) ? GL_RGB : GL_RGBA;
 
-            glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
-                         GL_UNSIGNED_BYTE, image.data.get());
+                glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.width, image.height, 0, format,
+                             GL_UNSIGNED_BYTE, image.data.get());
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            glBindTexture(GL_TEXTURE_2D, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
 
-            return true;
+                return true;
+            }
         }
     }
 

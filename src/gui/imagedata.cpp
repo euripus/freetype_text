@@ -282,31 +282,6 @@ bool WriteTGA(std::string file_name, ImageData const & image)
 bool ReadUncompressedTGA(ImageData & image, uint8_t * data);
 bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
-bool ReadTGA(std::string const & file_name, ImageData & image)
-{
-    std::ifstream ifile(file_name, std::ios::binary);
-
-    if(ifile.is_open())
-    {
-        ifile.seekg(0, std::ios_base::end);
-        auto length = ifile.tellg();
-        ifile.seekg(0, std::ios_base::beg);
-
-        InFile file(length);
-        ifile.read(reinterpret_cast<char *>(const_cast<int8_t *>(file.getStream().getPtr())), length);
-
-        auto success = !ifile.fail() && length == ifile.gcount();
-        ifile.close();
-
-        if(!success)
-            return false;
-
-        return ReadTGA(file, image);
-    }
-    else
-        return false;
-}
-
 bool ReadTGA(BaseFile const & file, ImageData & image)
 {
     if(file.empty())
