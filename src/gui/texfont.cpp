@@ -226,7 +226,7 @@ bool TexFont::initFont()
     m_ascender  = convert(metrics.ascender);
     m_descender = convert(metrics.descender);
     m_height    = convert(metrics.height);
-    m_linegap   = m_height - m_ascender + m_descender;
+    m_linegap   = m_ascender - m_descender - m_height;
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 

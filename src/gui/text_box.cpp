@@ -17,19 +17,16 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     glm::vec2   pen_pos(0.f, 0.f);
     pen_pos.y = m_pos.y + m_rect.height() - (line_height + m_fields.w);
-    // glm::vec2 r_size = m_rect.m_size;
-    // glm::vec2 r_pos  = m_pos;
 
     for(auto const & line: m_lines)
     {
-        pen_pos.x = getHorizontalOffset(line);
+        glm::vec2 text_pos  = pen_pos;
+        text_pos.x          = getHorizontalOffset(line);
+        text_pos.y         += glm::abs(m_font->getDescender());
 
-        m_font->addText(text, line.c_str(), pen_pos);
+        m_font->addText(text, line.c_str(), text_pos);
         pen_pos.y -= line_height;
     }
-
-    // Add2DRectangle(text, r_pos.x, r_pos.y, r_pos.x + r_size.x, r_pos.y + r_size.y, 0.005859375f, 0.015625f,
-    // 0.0078125f, 0.017578125f);
 }
 
 void TextBox::setText(std::string new_text)

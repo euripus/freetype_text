@@ -108,6 +108,8 @@ public:
     float      getHeight() const { return m_height; }
     float      getSize() const { return m_size; }
     float      getLineGap() const { return m_linegap; }
+    float      getAscender() const { return m_ascender; }
+    float      getDescender() const { return m_descender; }
     RenderMode getRenderMode() const { return m_render_mode; }
 
 private:
