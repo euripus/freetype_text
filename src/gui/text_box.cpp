@@ -15,17 +15,16 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
 {
     // draw text
     float const line_height = m_font->getHeight() + m_font->getLineGap();
-    glm::vec2   pen_pos(0.f, 0.f);
-    pen_pos.y = m_pos.y + m_rect.height() - (line_height + m_fields.w);
+    float       y           = m_pos.y + m_rect.height() - (line_height + m_fields.w);
 
     for(auto const & line: m_lines)
     {
-        glm::vec2 text_pos  = pen_pos;
-        text_pos.x          = getHorizontalOffset(line);
-        text_pos.y         += glm::abs(m_font->getDescender());
+        glm::vec2 text_pos;
+        text_pos.x = getHorizontalOffset(line);
+        text_pos.y = y + getVerticalOffset();
 
         m_font->addText(text, line.c_str(), text_pos);
-        pen_pos.y -= line_height;
+        y -= line_height;
     }
 }
 

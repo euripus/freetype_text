@@ -149,3 +149,8 @@ float Widget::getHorizontalOffset(std::string const & line) const
 
     return res;
 }
+
+float Widget::getVerticalOffset() const
+{
+    return glm::abs(m_font->getDescender()) + m_font->getLineGap();
+}

@@ -63,6 +63,7 @@ public:
 
 protected:
     float getHorizontalOffset(std::string const & line) const;
+    float getVerticalOffset() const;
 
     UIWindow & m_owner;
 
