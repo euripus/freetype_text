@@ -26,8 +26,8 @@ win32:{
     INCLUDEPATH += $$PWD/include/freetype $$PWD/../libs/boost_1_82_0
     LIBS += -L$$PWD/../libs/boost_1_82_0/stage/lib
     LIBS += -lopengl32 -lglu32 -lgdi32 -lglew32dll -lglfw3dll -lzlibdll
-    LIBS += -lfreetype.dll -static-libgcc -static-libstdc++ -static -lpthread
-    LIBS += -lboost_json-mgw8-mt-x32-1_82
+    LIBS += -lfreetype -static-libgcc -static-libstdc++ -static -lpthread
+    LIBS += -lboost_json-mgw13-mt-x64-1_82
 }
 unix:{
     INCLUDEPATH += /usr/include/freetype2/

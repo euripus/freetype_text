@@ -234,7 +234,7 @@ void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32
     else if(button == GLFW_MOUSE_BUTTON_RIGHT)
         button_id = MouseButton::Right;
 
-    bool pressed = (action != GLFW_RELEASE);
+    bool pressed = (action == GLFW_PRESS);
 
     g_input_state.buttonEvent(button_id, pressed);
 }
