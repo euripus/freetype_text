@@ -10,7 +10,7 @@
 #include "src/gui/imagedata.h"
 #include "src/fs/file_system.h"
 
-class UIImageManager;
+class UIImageGroupManager;
 class VertexBuffer;
 
 //                      (right_top, tx1)
@@ -46,12 +46,12 @@ struct RegionDataOfUITexture
 class UIImageGroup   // a group of images of the same style
 {
 public:
-    UIImageGroup(UIImageManager & owner, FileSystem & fsys)
+    UIImageGroup(UIImageGroupManager & owner, FileSystem & fsys)
         : m_owner(owner),
           m_fsys(fsys)
     {}
 
-    UIImageManager & getOwner() { return m_owner; }
+    UIImageGroupManager & getOwner() { return m_owner; }
 
     int32_t addImage(std::string name, std::string path, tex::ImageData const & image, int32_t left,
                      int32_t right, int32_t bottom, int32_t top);
@@ -61,15 +61,15 @@ public:
     void reloadImages();
 
 private:
-    UIImageManager &                   m_owner;
+    UIImageGroupManager &                   m_owner;
     FileSystem &                       m_fsys;
     std::vector<RegionDataOfUITexture> m_regions;
 };
 
-class UIImageManager
+class UIImageGroupManager
 {
 public:
-    UIImageManager() = default;
+    UIImageGroupManager() = default;
 
     UIImageGroup const & getImageGroup(std::string const & group_name) const;
 

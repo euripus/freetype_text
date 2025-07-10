@@ -97,7 +97,7 @@ std::string generate_random_alphanumeric_string(std::size_t len)
 
 std::string FileSystem::GetTempFileName()
 {
-    return generate_random_alphanumeric_string(10) + ".tmp";
+    return generate_random_alphanumeric_string(16) + ".tmp";
 }
 
 FileSystem::FileSystem(std::string root_dir)
