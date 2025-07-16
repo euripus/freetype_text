@@ -62,11 +62,10 @@ namespace tex
 //==============================================================================
 //         Read BMP section
 //==============================================================================
+bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image);
+
 bool ReadBMP(std::string const & file_name, ImageData & id)
 {
-    bool   res         = false;
-    bool   compressed  = false;
-    bool   flip        = false;
     size_t file_length = 0;
 
     id.width  = 0;
@@ -99,22 +98,42 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
 
     file_length = file.size();
     if(file_length == 0)
-        return res;
+        return false;
 
     auto * buffer = file.data();
+	
+	return ReadBMPData(buffer, file_length, image);
+}
+
+bool ReadBMP(BaseFile const & file, ImageData & image)
+{
+	if(file.empty())
+        return false;
+
+    auto * buffer = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
+	size_t file_length = file.getFileSize();
+	
+	return ReadBMPData(buffer, file_length, image);
+}
+
+bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
+{
+		
+	bool   compressed  = false;
+    bool   flip        = false;
 
     auto *             pPtr    = buffer;
     BITMAPFILEHEADER * pHeader = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
     pPtr += sizeof(BITMAPFILEHEADER);
     if(pHeader->bfSize != file_length || pHeader->bfType != 0x4D42)   // little-endian
-        return res;
+        return false;
 
     if(reinterpret_cast<uint32_t *>(pPtr)[0] == 12)
     {
         BITMAPINFO12 * pInfo = reinterpret_cast<BITMAPINFO12 *>(pPtr);
 
         if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
-            return res;
+            return false;
 
         if(pInfo->biBitCount == 24)
             id.type = ImageData::PixelType::pt_rgb;
@@ -129,11 +148,11 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
         BITMAPINFO * pInfo = reinterpret_cast<BITMAPINFO *>(pPtr);
 
         if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
-            return res;
+            return false;
 
         if(pInfo->biCompression != 3 && pInfo->biCompression != 6 && pInfo->biCompression != 0)
         {
-            return res;
+            return false;
         }
 
         if(pInfo->biCompression == 3 || pInfo->biCompression == 6)
@@ -226,11 +245,9 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
     }
 
     id.data = std::move(image);
-    res     = true;
 
-    return res;
+    return true;
 }
-
 //==============================================================================
 //         TGA section
 //==============================================================================
@@ -280,15 +297,14 @@ bool WriteTGA(std::string file_name, ImageData const & id)
     return true;
 }
 
+bool ReadRawTGAData(ImageData & image, uint8_t * buffer);
 bool ReadUncompressedTGA(ImageData & image, uint8_t * data);
 bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
 bool ReadTGA(std::string const & file_name, ImageData & id)
 {
-    size_t file_length = 0;
-
     std::ifstream     ifile(file_name, std::ios::binary);
-    std::vector<char> file;
+    std::vector<uint8_t> file;
 
     if(ifile.is_open())
     {
@@ -309,13 +325,27 @@ bool ReadTGA(std::string const & file_name, ImageData & id)
     else
         return false;
 
-    file_length = file.size();
-    if(file_length == 0)
+    if(file.size() == 0)
         return false;
 
     auto * buffer = file.data();
 
-    uint8_t *   data     = reinterpret_cast<uint8_t *>(buffer);
+	return ReadRawTGAData(id, buffer);
+}
+
+bool ReadTGA(BaseFile const & file, ImageData & image)
+{
+    if(file.empty())
+        return false;
+
+    auto * buffer = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
+
+	return ReadRawTGAData(id, buffer);
+}
+
+bool ReadRawTGAData(ImageData & image, uint8_t * buffer)
+{
+	uint8_t *   data     = buffer;
     TGAHEADER * p_header = reinterpret_cast<TGAHEADER *>(data);
 
     data += sizeof(TGAHEADER);
@@ -326,60 +356,60 @@ bool ReadTGA(std::string const & file_name, ImageData & id)
         return false;
     }
 
-    id.width  = p_header->width;
-    id.height = p_header->height;
-    id.type   = p_header->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
+    image.width  = p_header->width;
+    image.height = p_header->height;
+    image.type   = p_header->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
     bool flip_horizontal = (p_header->imagedescriptor & 0x10);
     bool flip_vertical   = (p_header->imagedescriptor & 0x20);
 
     uint32_t bytes_per_pixel = p_header->bitsperpixel / 8;
-    id.data_size             = id.width * id.height * bytes_per_pixel;
+    image.data_size             = image.width * image.height * bytes_per_pixel;
 
     if(p_header->datatypecode == 2)
     {
-        ReadUncompressedTGA(id, data);
+        ReadUncompressedTGA(image, data);
     }
     else if(p_header->datatypecode == 10)
     {
-        if(!ReadCompressedTGA(id, data))
+        if(!ReadCompressedTGA(image, data))
             return false;
     }
 
     if(flip_vertical)
     {
-        auto flipped_image = std::make_unique<uint8_t[]>(id.data_size);
+        auto flipped_image = std::make_unique<uint8_t[]>(image.data_size);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            std::memcpy(flipped_image.get() + i * id.width * bytes_per_pixel,
-                        id.data.get() + (id.height - 1 - i) * id.width * bytes_per_pixel,
-                        id.width * bytes_per_pixel);
+            std::memcpy(flipped_image.get() + i * image.width * bytes_per_pixel,
+                        image.data.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
+                        image.width * bytes_per_pixel);
         }
 
-        id.data = std::move(flipped_image);
+        image.data = std::move(flipped_image);
     }
 
     if(flip_horizontal)
     {
-        auto flipped_image = std::make_unique<uint8_t[]>(id.data_size);
+        auto flipped_image = std::make_unique<uint8_t[]>(image.data_size);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            for(uint32_t j = 0; j < id.width; j++)
+            for(uint32_t j = 0; j < image.width; j++)
             {
-                flipped_image[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
-                    id.data[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 0];
-                flipped_image[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
-                    id.data[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 1];
-                flipped_image[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
-                    id.data[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 2];
-                if(id.type == ImageData::PixelType::pt_rgba)
-                    flipped_image[id.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
-                        id.data[id.width * bytes_per_pixel * i + (id.width - j - 1) * bytes_per_pixel + 3];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 0];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 1];
+                flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 2];
+                if(image.type == ImageData::PixelType::pt_rgba)
+                    flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
+                        image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 3];
             }
         }
 
-        id.data = std::move(flipped_image);
+        image.data = std::move(flipped_image);
     }
 
     return true;

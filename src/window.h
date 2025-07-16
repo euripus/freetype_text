@@ -28,6 +28,7 @@ class Window
 
     std::unique_ptr<Input>        m_input_ptr;
     std::unique_ptr<RendererBase> m_render_ptr;
+	std::unique_ptr<UI>           m_ui_ptr;
 
     // Scene
     VertexBuffer     m_pyramid;
@@ -35,7 +36,6 @@ class Window
     VertexBuffer     m_sphere;
     Texture          m_base_texture;
     Light            m_light;
-	std::unique_ptr<UI>           	 m_ui_ptr;
 	VertexBuffer 	 m_win_buf; 
 	VertexBuffer 	 m_text_win_buf;
 
@@ -55,6 +55,7 @@ public:
     void initScene();
     void fullscreen(bool is_fullscreen);
     void run();
+	void resize(int width, int height);
 
     // keys
     void key_f1();
