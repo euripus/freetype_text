@@ -43,7 +43,6 @@ SOURCES += \
     src/gui/button.cpp \
     src/gui/chain.cpp \
     src/gui/fontmanager.cpp \
-    src/gui/imagedata.cpp \
     src/gui/packer.cpp \
     src/gui/rect2d.cpp \
     src/gui/texfont.cpp \
@@ -69,7 +68,6 @@ HEADERS += \
     src/gui/button.h \
     src/gui/chain.h \
     src/gui/fontmanager.h \
-    src/gui/imagedata.h \
     src/gui/packer.h \
     src/gui/rect2d.h \
     src/gui/texfont.h \

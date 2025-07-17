@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+class BaseFile;
+
 namespace tex
 {
 struct ImageData

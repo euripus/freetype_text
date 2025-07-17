@@ -1,8 +1,8 @@
 #include "imagedata.h"
+#include "./fs/file.h"
 #include <cstring>
 #include <vector>
 #include <fstream>
-#include <iostream>
 
 #pragma pack(push, 1)
 
@@ -124,7 +124,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     auto *             pPtr     = buffer;
     BITMAPFILEHEADER * pHeader  = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
     pPtr                       += sizeof(BITMAPFILEHEADER);
-    if(pHeader->bfSize != file_length || pHeader->bfType != 0x4D42)   // little-endian
+    if(pHeader->bfSize != file_size || pHeader->bfType != 0x4D42)   // little-endian
         return false;
 
     if(reinterpret_cast<uint32_t *>(pPtr)[0] == 12)
@@ -135,12 +135,12 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
             return false;
 
         if(pInfo->biBitCount == 24)
-            id.type = ImageData::PixelType::pt_rgb;
+            image.type = ImageData::PixelType::pt_rgb;
         else
-            id.type = ImageData::PixelType::pt_rgba;
+            image.type = ImageData::PixelType::pt_rgba;
 
-        id.width  = pInfo->biWidth;
-        id.height = pInfo->biHeight;
+        image.width  = pInfo->biWidth;
+        image.height = pInfo->biHeight;
     }
     else
     {
@@ -160,69 +160,69 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
         }
 
         if(pInfo->biBitCount == 24)
-            id.type = ImageData::PixelType::pt_rgb;
+            image.type = ImageData::PixelType::pt_rgb;
         else
-            id.type = ImageData::PixelType::pt_rgba;
+            image.type = ImageData::PixelType::pt_rgba;
 
-        id.width = static_cast<uint32_t>(pInfo->biWidth);
+        image.width = static_cast<uint32_t>(pInfo->biWidth);
 
         if(pInfo->biHeight < 0)
             flip = true;
-        id.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
+        image.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
     }
 
     // read data:
     pPtr                     = buffer + pHeader->bfOffBits;
-    uint32_t lineLength      = 0;
-    uint32_t bytes_per_pixel = (id.type == ImageData::PixelType::pt_rgb ? 3 : 4);
-    auto     image           = std::make_unique<uint8_t[]>(id.width * id.height * bytes_per_pixel);
-    id.data_size             = id.width * id.height * bytes_per_pixel;
+    uint32_t line_length      = 0;
+    uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
+    auto     image           = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
+    image.data_size             = image.width * image.height * bytes_per_pixel;
     uint8_t  red, green, blue, alpha;
     uint32_t w_ind(0), h_ind(0);
 
-    if(id.type == ImageData::PixelType::pt_rgb)
-        lineLength = id.width * bytes_per_pixel + id.width % 4;
+    if(image.type == ImageData::PixelType::pt_rgb)
+        line_length = image.width * bytes_per_pixel + image.width % 4;
     else
-        lineLength = id.width * bytes_per_pixel;
+        line_length = image.width * bytes_per_pixel;
 
-    for(uint32_t i = 0; i < id.height; ++i)
+    for(uint32_t i = 0; i < image.height; ++i)
     {
         w_ind = 0;
-        for(uint32_t j = 0; j < lineLength; j += bytes_per_pixel)
+        for(uint32_t j = 0; j < line_length; j += bytes_per_pixel)
         {
-            if(j > id.width * bytes_per_pixel)
+            if(j > image.width * bytes_per_pixel)
                 continue;
 
             if(compressed)
             {
                 uint32_t count = 0;
-                if(id.type == ImageData::PixelType::pt_rgba)
+                if(image.type == ImageData::PixelType::pt_rgba)
                 {
-                    alpha = pPtr[i * lineLength + j + count];
+                    alpha = pPtr[i * line_length + j + count];
                     count++;
                 }
-                blue = pPtr[i * lineLength + j + count];
+                blue = pPtr[i * line_length + j + count];
                 count++;
-                green = pPtr[i * lineLength + j + count];
+                green = pPtr[i * line_length + j + count];
                 count++;
-                red = pPtr[i * lineLength + j + count];
+                red = pPtr[i * line_length + j + count];
             }
             else
             {
-                blue  = pPtr[i * lineLength + j + 0];
-                green = pPtr[i * lineLength + j + 1];
-                red   = pPtr[i * lineLength + j + 2];
-                if(id.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
+                blue  = pPtr[i * line_length + j + 0];
+                green = pPtr[i * line_length + j + 1];
+                red   = pPtr[i * line_length + j + 2];
+                if(image.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
                                                                // DWORD is not used
                     // https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
-                    alpha = pPtr[i * lineLength + j + 3];
+                    alpha = pPtr[i * line_length + j + 3];
             }
 
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
-            image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
-            if(id.type == ImageData::PixelType::pt_rgba)
-                image[h_ind * id.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
+            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
+            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
+            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
+            if(image.type == ImageData::PixelType::pt_rgba)
+                image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
             w_ind++;
         }
         h_ind++;
@@ -231,19 +231,19 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     // flip image if necessary
     if(flip)
     {
-        auto temp_buf = std::make_unique<uint8_t[]>(id.width * id.height * bytes_per_pixel);
+        auto temp_buf = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
 
-        for(uint32_t i = 0; i < id.height; i++)
+        for(uint32_t i = 0; i < image.height; i++)
         {
-            std::memcpy(temp_buf.get() + i * id.width * bytes_per_pixel,
-                        image.get() + (id.height - 1 - i) * id.width * bytes_per_pixel,
-                        id.width * bytes_per_pixel);
+            std::memcpy(temp_buf.get() + i * image.width * bytes_per_pixel,
+                        image.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
+                        image.width * bytes_per_pixel);
         }
 
         image = std::move(temp_buf);
     }
 
-    id.data = std::move(image);
+    image.data = std::move(image);
 
     return true;
 }

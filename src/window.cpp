@@ -11,7 +11,7 @@ namespace
 {
 constexpr char const * base_tex_fname = "color.tga";
 constexpr char const * data_folder    = "./data";
-};
+Window * g_cur_window_ptr = nullptr;
 }   // namespace
 
 Window::Window(int width, int height, char const * title)
@@ -29,6 +29,8 @@ Window::Window(int width, int height, char const * title)
     }
 
     mp_base_video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	
+	g_cur_window_ptr = this;
 
     m_light.m_type     = Light::LightType::Point;
     m_light.m_range    = 100.f;
@@ -79,6 +81,11 @@ Window::~Window()
     glfwTerminate();
 }
 
+void WindowSizeCallback(GLFWwindow * win, int width, int height)
+{
+	g_cur_window_ptr->resize(width, height);
+}
+
 void Window::createWindow()
 {
     GLFWmonitor * mon;
@@ -90,7 +97,7 @@ void Window::createWindow()
     }
     else
     {
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         mon         = nullptr;
         m_vp_size.x = m_size.x;
         m_vp_size.y = m_size.y;
@@ -131,6 +138,8 @@ void Window::createWindow()
 
     // input backend
     m_input_ptr = std::make_unique<InputGLFW>(mp_glfw_win);
+
+	glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
 }
 
 void Window::fullscreen(bool is_fullscreen)

@@ -189,20 +189,20 @@ protected:
     glm::ivec2 m_mouse_position                                                      = {};
     bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
 
-    static std::vector<TextInput>        m_text_queue;
-    static std::vector<MouseScrollEvent> m_wheel_queue;
+    inline static std::vector<TextInput>        ms_text_queue = {};
+    inline static std::vector<MouseScrollEvent> ms_wheel_queue = {};
 };
 
 template<>
 inline std::vector<MouseScrollEvent> const & Input::getEventQueue<MouseScrollEvent>()
 {
-    return m_wheel_queue;
+    return ms_wheel_queue;
 }
 
 template<>
 inline std::vector<TextInput> const & Input::getEventQueue<TextInput>()
 {
-    return m_text_queue;
+    return ms_text_queue;
 }
 
 #endif
