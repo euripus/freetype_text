@@ -56,7 +56,7 @@ public:
     FileSystem &  m_fsys;
 
     glm::ivec2              m_screen_size = {};
-    UIImageManager          m_ui_image_atlas;
+    UIImageGroupManager     m_ui_image_atlas;
     FontManager             m_fonts;
     TexFont *               m_default_font = nullptr;
     glm::vec4               m_font_color   = ColorMap::black;

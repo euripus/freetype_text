@@ -1,5 +1,4 @@
 #include "text_box.h"
-#include "../vertex_buffer.h"
 #include "window.h"
 #include "uiconfigloader.h"
 #include "text_fitter.h"

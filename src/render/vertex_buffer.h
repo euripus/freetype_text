@@ -28,6 +28,7 @@ public:
     constexpr static ComponentsFlags null         = 0b000000;   // null
     constexpr static ComponentsFlags pos          = 0b000001;   // pos
     constexpr static ComponentsFlags pos_norm     = 0b000011;   // pos + norm
+    constexpr static ComponentsFlags pos_tex      = 0b000101;   // pos + tex
     constexpr static ComponentsFlags pos_norm_tex = 0b000111;   // pos + norm + tex
 
     VertexBuffer(ComponentsFlags format = pos_norm_tex, uint32_t num_tex_channels = 1);

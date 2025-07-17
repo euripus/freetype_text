@@ -7,7 +7,7 @@
 #include "texfont.h"
 #include "../fs/file_system.h"
 
-class UIImageManager;
+class UIImageGroupManager;
 class UIWindow;
 class UI;
 class Widget;
@@ -98,7 +98,7 @@ struct UIImageManagerDesc
     static constexpr char const * sid_texture        = "texture";
     static constexpr char const * sid_9slice_margins = "9slice_margins";
 
-    static void ParseUIRes(UIImageManager & mgr, InFile & file_json, FileSystem & fsys);
+    static void ParseUIRes(UIImageGroupManager & mgr, InFile & file_json, FileSystem & fsys);
 };
 
 struct UIDesc

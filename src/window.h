@@ -9,6 +9,7 @@
 #include "input/input.h"
 #include "render/vertex_buffer.h"
 #include "render/texture.h"
+#include "src/gui/ui.h"
 
 class GLFWvidmode;
 class GLFWwindow;
@@ -49,11 +50,11 @@ public:
     Window(Window const &)             = delete;
     Window & operator=(Window const &) = delete;
 
-    bool isFullscreen() const { return m_is_fullscreen; }
-	glm::ivec2 getWindowSize() const { return m_vp_size; }
-	Input & getInputMgr() { return *m_input_ptr; }
-	RendererBase & getRenderer() { return *m_render_ptr; }
-	UI & getUIMgr() { return *m_ui_ptr; }
+    bool           isFullscreen() const { return m_is_fullscreen; }
+    glm::ivec2     getWindowSize() const { return m_vp_size; }
+    Input &        getInputMgr() { return *m_input_ptr; }
+    RendererBase & getRenderer() { return *m_render_ptr; }
+    UI &           getUIMgr() { return *m_ui_ptr; }
 
     void createWindow();
     void initScene();

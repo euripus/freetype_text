@@ -9,15 +9,15 @@
 
 namespace
 {
-constexpr char const * base_tex_fname = "color.tga";
-constexpr char const * data_folder    = "./data";
-Window * g_cur_window_ptr = nullptr;
+constexpr char const * base_tex_fname   = "color.tga";
+constexpr char const * data_folder      = "./data";
+Window *               g_cur_window_ptr = nullptr;
 }   // namespace
 
 Window::Window(int width, int height, char const * title)
     : m_size{width, height},
       m_title{title},
-      m_pyramid{VertexBuffer::pos_norm_tex, 2},
+      m_pyramid(VertexBuffer::pos_norm_tex, 2),
       m_win_buf(VertexBuffer::pos_tex),
       m_text_win_buf(VertexBuffer::pos_tex),
       m_fs(data_folder)
@@ -29,8 +29,8 @@ Window::Window(int width, int height, char const * title)
     }
 
     mp_base_video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	
-	g_cur_window_ptr = this;
+
+    g_cur_window_ptr = this;
 
     m_light.m_type     = Light::LightType::Point;
     m_light.m_range    = 100.f;
@@ -83,7 +83,7 @@ Window::~Window()
 
 void WindowSizeCallback(GLFWwindow * win, int width, int height)
 {
-	g_cur_window_ptr->resize(width, height);
+    g_cur_window_ptr->resize(width, height);
 }
 
 void Window::createWindow()
@@ -139,7 +139,7 @@ void Window::createWindow()
     // input backend
     m_input_ptr = std::make_unique<InputGLFW>(mp_glfw_win);
 
-	glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
+    glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
 }
 
 void Window::fullscreen(bool is_fullscreen)
@@ -186,12 +186,12 @@ void Window::run()
         if(glfwGetTime() - last_time > 1.0)
         {
             last_time  = glfwGetTime();
-            g_num_fps  = num_frames;
+            m_num_fps  = num_frames;
             num_frames = 0;
         }
         num_frames++;
 
-        m_input_ptr->update();
+        // m_input_ptr->update();
 
         //         Render scene:
         // bind lights
@@ -260,7 +260,8 @@ void Window::run()
         m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
         // draw UI
-        prj_mtx = glm::ortho(0.0, m_ui.getScreenSize().x, 0, m_ui.getScreenSize().y, -1.0, 1.0);
+        prj_mtx =
+            glm::ortho(0.f, static_cast<float>(m_vp_size.x), 0.f, static_cast<float>(m_vp_size.y), -1.f, 1.f);
         m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
         m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
@@ -273,6 +274,8 @@ void Window::run()
     }   // Check if the ESC key was pressed or the window was closed
     while(!m_input_ptr->isKeyPressed(KeyboardKey::Key_Escape) && glfwWindowShouldClose(mp_glfw_win) == 0);
 }
+
+void Window::resize(int width, int height) {}
 
 void Window::key_f1()
 {

@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "src/gui/atlastex.h"
-#include "src/gui/imagedata.h"
+#include "src/res/imagedata.h"
 #include "src/fs/file_system.h"
 
 class UIImageGroupManager;

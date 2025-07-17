@@ -1,5 +1,5 @@
 #include "imagedata.h"
-#include "./fs/file.h"
+#include "src/fs/file.h"
 #include <cstring>
 #include <vector>
 #include <fstream>
@@ -64,15 +64,15 @@ namespace tex
 //==============================================================================
 bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image);
 
-bool ReadBMP(std::string const & file_name, ImageData & id)
+bool ReadBMP(std::string const & file_name, ImageData & image)
 {
     size_t file_length = 0;
 
-    id.width  = 0;
-    id.height = 0;
-    id.type   = ImageData::PixelType::pt_none;
-    if(id.data)
-        id.data.reset(nullptr);
+    image.width  = 0;
+    image.height = 0;
+    image.type   = ImageData::PixelType::pt_none;
+    if(image.data)
+        image.data.reset(nullptr);
 
     std::ifstream        ifile(file_name, std::ios::binary);
     std::vector<uint8_t> file;
@@ -173,10 +173,10 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
 
     // read data:
     pPtr                     = buffer + pHeader->bfOffBits;
-    uint32_t line_length      = 0;
+    uint32_t line_length     = 0;
     uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
-    auto     image           = std::make_unique<uint8_t[]>(image.width * image.height * bytes_per_pixel);
-    image.data_size             = image.width * image.height * bytes_per_pixel;
+    image.data_size          = image.width * image.height * bytes_per_pixel;
+    auto     data            = std::make_unique<uint8_t[]>(image.data_size);
     uint8_t  red, green, blue, alpha;
     uint32_t w_ind(0), h_ind(0);
 
@@ -213,16 +213,16 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
                 green = pPtr[i * line_length + j + 1];
                 red   = pPtr[i * line_length + j + 2];
                 if(image.type == ImageData::PixelType::pt_rgba)   // !!!Not supported - the high byte in each
-                                                               // DWORD is not used
+                                                                  // DWORD is not used
                     // https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
                     alpha = pPtr[i * line_length + j + 3];
             }
 
-            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
-            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
-            image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
+            data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 0] = red;
+            data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 1] = green;
+            data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 2] = blue;
             if(image.type == ImageData::PixelType::pt_rgba)
-                image[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
+                data[h_ind * image.width * bytes_per_pixel + w_ind * bytes_per_pixel + 3] = alpha;
             w_ind++;
         }
         h_ind++;
@@ -236,31 +236,31 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
         for(uint32_t i = 0; i < image.height; i++)
         {
             std::memcpy(temp_buf.get() + i * image.width * bytes_per_pixel,
-                        image.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
+                        data.get() + (image.height - 1 - i) * image.width * bytes_per_pixel,
                         image.width * bytes_per_pixel);
         }
 
-        image = std::move(temp_buf);
+        data = std::move(temp_buf);
     }
 
-    image.data = std::move(image);
+    image.data = std::move(data);
 
     return true;
 }
 //==============================================================================
 //         TGA section
 //==============================================================================
-bool WriteTGA(std::string file_name, ImageData const & id)
+bool WriteTGA(std::string file_name, ImageData const & image)
 {
     TGAHEADER tga;
     std::memset(&tga, 0, sizeof(tga));
-    uint8_t bytes_per_pixel = (id.type == ImageData::PixelType::pt_rgb ? 3 : 4);
+    uint8_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
 
     tga.datatypecode = 2;
-    tga.width        = static_cast<uint16_t>(id.width);
-    tga.height       = static_cast<uint16_t>(id.height);
+    tga.width        = static_cast<uint16_t>(image.width);
+    tga.height       = static_cast<uint16_t>(image.height);
     tga.bitsperpixel = static_cast<uint8_t>(bytes_per_pixel * 8);
-    if(id.type == ImageData::PixelType::pt_rgb)
+    if(image.type == ImageData::PixelType::pt_rgb)
         tga.imagedescriptor = 0x10;
     else
         tga.imagedescriptor = 0x18;
@@ -269,9 +269,9 @@ bool WriteTGA(std::string file_name, ImageData const & id)
     out_data.resize(sizeof(tga));
     std::memcpy(out_data.data(), &tga, sizeof(tga));
 
-    uint8_t * data_ptr = id.data.get();
+    uint8_t * data_ptr = image.data.get();
     uint8_t   red, green, blue, alpha;
-    for(uint32_t i = 0; i < id.width * id.height * bytes_per_pixel; i += bytes_per_pixel)
+    for(uint32_t i = 0; i < image.width * image.height * bytes_per_pixel; i += bytes_per_pixel)
     {
         red   = data_ptr[i + 0];
         green = data_ptr[i + 1];
@@ -282,7 +282,7 @@ bool WriteTGA(std::string file_name, ImageData const & id)
         out_data.push_back(blue);
         out_data.push_back(green);
         out_data.push_back(red);
-        if(id.type == ImageData::PixelType::pt_rgba)
+        if(image.type == ImageData::PixelType::pt_rgba)
             out_data.push_back(alpha);
     }
 
@@ -300,7 +300,7 @@ bool ReadRawTGAData(ImageData & image, uint8_t * buffer);
 bool ReadUncompressedTGA(ImageData & image, uint8_t * data);
 bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
-bool ReadTGA(std::string const & file_name, ImageData & id)
+bool ReadTGA(std::string const & file_name, ImageData & image)
 {
     std::ifstream        ifile(file_name, std::ios::binary);
     std::vector<uint8_t> file;
@@ -329,7 +329,7 @@ bool ReadTGA(std::string const & file_name, ImageData & id)
 
     auto * buffer = file.data();
 
-    return ReadRawTGAData(id, buffer);
+    return ReadRawTGAData(image, buffer);
 }
 
 bool ReadTGA(BaseFile const & file, ImageData & image)
@@ -339,7 +339,7 @@ bool ReadTGA(BaseFile const & file, ImageData & image)
 
     auto * buffer = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
 
-    return ReadRawTGAData(id, buffer);
+    return ReadRawTGAData(image, buffer);
 }
 
 bool ReadRawTGAData(ImageData & image, uint8_t * buffer)

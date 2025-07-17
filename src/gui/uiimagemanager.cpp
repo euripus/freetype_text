@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "src/vertex_buffer.h"
+#include "src/render/vertex_buffer.h"
 
 void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::vec2 new_size) const
 {
@@ -69,7 +69,7 @@ void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::ve
     pos.x += new_size.x;
 }
 
-UIImageGroup const & UIImageManager::getImageGroup(std::string const & group_name) const
+UIImageGroup const & UIImageGroupManager::getImageGroup(std::string const & group_name) const
 {
     if(auto search = m_groups.find(group_name); search != m_groups.end())
         return *search->second;
@@ -77,12 +77,12 @@ UIImageGroup const & UIImageManager::getImageGroup(std::string const & group_nam
     throw std::runtime_error("ImageGroup with requested name not found");
 }
 
-void UIImageManager::resizeAtlas()
+void UIImageGroupManager::resizeAtlas()
 {
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & gr: m_groups)
+    for(auto & gr : m_groups)
     {
         gr.second->reloadImages();
     }
@@ -147,7 +147,7 @@ void UIImageGroup::reloadImages()
     auto regions = std::move(m_regions);
     m_regions.clear();
 
-    for(auto & reg: regions)
+    for(auto & reg : regions)
     {
         tex::ImageData image;
         if(auto file = m_fsys.getFile(reg.path); file)

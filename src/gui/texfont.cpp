@@ -1,6 +1,6 @@
 #include "texfont.h"
 #include "fontmanager.h"
-#include "../vertex_buffer.h"
+#include "src/render/vertex_buffer.h"
 #include "utf8_utils.h"
 
 #include <algorithm>
@@ -26,7 +26,7 @@ const struct {
 #include FT_ERRORS_H
     // clang-format on
 
-    constexpr std::uint32_t HRES = 64;
+constexpr std::uint32_t HRES = 64;
 constexpr float        HRESf     = 64.0f;
 constexpr std::int32_t DPI       = 72;
 
@@ -545,7 +545,7 @@ size_t TexFont::cacheGlyphs(char const * charcodes)
 
 void TexFont::generateKerning()
 {
-    for(auto & glyph: m_glyphs)
+    for(auto & glyph : m_glyphs)
     {
         generateKerning(glyph);
     }
@@ -565,7 +565,7 @@ void TexFont::generateKerning(Glyph & glyph)
     glyph_index = FT_Get_Char_Index(face, glyph.charcode);
     glyph.kerning.clear();
 
-    for(auto & prev_glyph: m_glyphs)
+    for(auto & prev_glyph : m_glyphs)
     {
         prev_index = FT_Get_Char_Index(face, prev_glyph.charcode);
         FT_Get_Kerning(face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning);
@@ -668,7 +668,7 @@ void TexFont::reloadGlyphs()
     m_glyphs.resize(0);
 
     // load glyphs to new atlas
-    for(auto const & ucodepoint: loaded_ucodepoints)
+    for(auto const & ucodepoint : loaded_ucodepoints)
     {
         loadGlyph(ucodepoint);
     }

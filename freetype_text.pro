@@ -56,7 +56,11 @@ SOURCES += \
     src/gui/window.cpp \
     src/input/input.cpp \
     src/main.cpp \
-    src/vertex_buffer.cpp
+    src/render/renderer.cpp \
+    src/render/texture.cpp \
+    src/render/vertex_buffer.cpp \
+    src/res/imagedata.cpp \
+    src/window.cpp
 
 HEADERS += \
     src/fs/file.h \
@@ -80,7 +84,14 @@ HEADERS += \
     src/gui/widget.h \
     src/gui/window.h \
     src/input/input.h \
-    src/vertex_buffer.h
+    src/render/AABB.h \
+    src/render/render_states.h \
+    src/render/renderer.h \
+    src/render/texture.h \
+    src/render/vertex_buffer.h \
+    src/res/imagedata.h \
+    src/scene_data.h \
+    src/window.h
 
 DISTFILES += \
     bin/data/ui/jsons/ui_res.json \

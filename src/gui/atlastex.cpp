@@ -1,5 +1,5 @@
 #include "atlastex.h"
-#include "imagedata.h"
+#include "src/res/imagedata.h"
 #include <cassert>
 #include <climits>
 #include <cstring>
