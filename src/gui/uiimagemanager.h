@@ -61,7 +61,7 @@ public:
     void reloadImages();
 
 private:
-    UIImageGroupManager &                   m_owner;
+    UIImageGroupManager &              m_owner;
     FileSystem &                       m_fsys;
     std::vector<RegionDataOfUITexture> m_regions;
 };

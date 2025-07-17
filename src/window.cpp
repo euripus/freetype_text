@@ -9,14 +9,18 @@
 
 namespace
 {
-constexpr char const *                base_tex_fname    = "color.tga";
-constexpr char const * data_folder = "./data";
+constexpr char const * base_tex_fname = "color.tga";
+constexpr char const * data_folder    = "./data";
 };
 }   // namespace
 
-Window::Window(int width, int height, char const * title) :
-    m_size{width, height}, m_title{title}, m_pyramid{VertexBuffer::pos_norm_tex, 2}, m_win_buf(VertexBuffer::pos_tex), 
-	m_text_win_buf(VertexBuffer::pos_tex), m_fs(data_folder)
+Window::Window(int width, int height, char const * title)
+    : m_size{width, height},
+      m_title{title},
+      m_pyramid{VertexBuffer::pos_norm_tex, 2},
+      m_win_buf(VertexBuffer::pos_tex),
+      m_text_win_buf(VertexBuffer::pos_tex),
+      m_fs(data_folder)
 {
     // Initialise GLFW
     if(!glfwInit())
@@ -57,16 +61,16 @@ Window::~Window()
 
         m_render_ptr->unloadBuffer(m_sphere);
         m_render_ptr->deleteBuffer(m_sphere);
-		
-		m_render_ptr->unloadBuffer(m_win_buf);
+
+        m_render_ptr->unloadBuffer(m_win_buf);
         m_render_ptr->deleteBuffer(m_win_buf);
-		
-		m_render_ptr->unloadBuffer(m_text_win_buf);
+
+        m_render_ptr->unloadBuffer(m_text_win_buf);
         m_render_ptr->deleteBuffer(m_text_win_buf);
 
         m_render_ptr->destroyTexture(m_base_texture);
 
-		m_render_ptr->clearLights();
+        m_render_ptr->clearLights();
 
         m_render_ptr->terminate();
     }
@@ -167,16 +171,16 @@ void Window::run()
 
     do
     {
-		static uint32_t num_frames = 0;
-		static double   last_time  = 0.0;
+        static uint32_t num_frames = 0;
+        static double   last_time  = 0.0;
 
-		if(glfwGetTime() - last_time > 1.0)
-		{
-			last_time  = glfwGetTime();
-			g_num_fps  = num_frames;
-			num_frames = 0;
-		}
-		num_frames++;
+        if(glfwGetTime() - last_time > 1.0)
+        {
+            last_time  = glfwGetTime();
+            g_num_fps  = num_frames;
+            num_frames = 0;
+        }
+        num_frames++;
 
         m_input_ptr->update();
 
@@ -197,9 +201,9 @@ void Window::run()
         prj_mtx =
             glm::perspective(glm::radians(45.0f),
                              static_cast<float>(m_vp_size.x) / static_cast<float>(m_vp_size.y), 0.1f, 100.0f);
-		mtx					 = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -7.0f});
-		mtx                  = glm::rotate(mtx, glm::radians(45.0f), {1.0f, 0.0f, 0.0f});
-		mtx                  = glm::rotate(mtx, glm::radians(60.0f), {0.0f, 1.0f, 0.0f});
+        mtx = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -7.0f});
+        mtx = glm::rotate(mtx, glm::radians(45.0f), {1.0f, 0.0f, 0.0f});
+        mtx = glm::rotate(mtx, glm::radians(60.0f), {0.0f, 1.0f, 0.0f});
         m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
         m_render_ptr->setMatrix(RendererBase::MatrixType::MODELVIEW, mtx);
 
@@ -247,8 +251,8 @@ void Window::run()
         m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
         // draw UI
-		prj_mtx = glm::ortho(0.0, m_ui.getScreenSize().x, 0, m_ui.getScreenSize().y, -1.0, 1.0);
-		m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
+        prj_mtx = glm::ortho(0.0, m_ui.getScreenSize().x, 0, m_ui.getScreenSize().y, -1.0, 1.0);
+        m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
         m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
         // Swap buffers

@@ -24,19 +24,32 @@ class AABB
     glm::vec3 m_max; /*!< The corner with the largest values for each coordinate of the AABB */
 public:
     //! Construct to invalid values to represent an unset bounding box
-    inline AABB() : m_min(max_float), m_max(min_float) {}
-
-    //! Construct to with specified min and max values
-    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) :
-        m_min(xmin, ymin, zmin), m_max(xmax, ymax, zmax)
+    inline AABB()
+        : m_min(max_float),
+          m_max(min_float)
     {}
 
     //! Construct to with specified min and max values
-    inline AABB(glm::vec3 min, glm::vec3 max) : m_min(min), m_max(max) {}
+    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
+        : m_min(xmin, ymin, zmin),
+          m_max(xmax, ymax, zmax)
+    {}
 
-    inline AABB(AABB const & bb) : m_min(bb.m_min), m_max(bb.m_max) {}
+    //! Construct to with specified min and max values
+    inline AABB(glm::vec3 min, glm::vec3 max)
+        : m_min(min),
+          m_max(max)
+    {}
 
-    inline AABB(AABB && bb) : m_min(bb.m_min), m_max(bb.m_max) {}
+    inline AABB(AABB const & bb)
+        : m_min(bb.m_min),
+          m_max(bb.m_max)
+    {}
+
+    inline AABB(AABB && bb)
+        : m_min(bb.m_min),
+          m_max(bb.m_max)
+    {}
 
     inline AABB & operator=(AABB const & bb)
     {

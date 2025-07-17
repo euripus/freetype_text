@@ -22,25 +22,25 @@ class Window
     GLFWwindow *        mp_glfw_win        = nullptr;
     glm::ivec2 const    m_size;   // initial size
     glm::ivec2          m_vp_size;
-    std::string         m_title = "UI example";
-	bool         m_wire    = false;
-    unsigned int m_num_fps = 0;   // Fps counter
+    std::string         m_title   = "UI example";
+    bool                m_wire    = false;
+    unsigned int        m_num_fps = 0;   // Fps counter
 
     std::unique_ptr<Input>        m_input_ptr;
     std::unique_ptr<RendererBase> m_render_ptr;
-	std::unique_ptr<UI>           m_ui_ptr;
+    std::unique_ptr<UI>           m_ui_ptr;
 
     // Scene
-    VertexBuffer     m_pyramid;
-    VertexBuffer     m_plane;
-    VertexBuffer     m_sphere;
-    Texture          m_base_texture;
-    Light            m_light;
-	VertexBuffer 	 m_win_buf; 
-	VertexBuffer 	 m_text_win_buf;
+    VertexBuffer m_pyramid;
+    VertexBuffer m_plane;
+    VertexBuffer m_sphere;
+    Texture      m_base_texture;
+    Light        m_light;
+    VertexBuffer m_win_buf;
+    VertexBuffer m_text_win_buf;
 
-	// Enviroment
-	FileSystem m_fs;
+    // Enviroment
+    FileSystem m_fs;
 
 public:
     Window(int width, int height, char const * title);
@@ -55,7 +55,7 @@ public:
     void initScene();
     void fullscreen(bool is_fullscreen);
     void run();
-	void resize(int width, int height);
+    void resize(int width, int height);
 
     // keys
     void key_f1();

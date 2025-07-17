@@ -2,8 +2,10 @@
 #include <assert.h>
 #include <algorithm>
 
-VertexBuffer::VertexBuffer(ComponentsFlags format, uint32_t num_tex_channels) :
-    m_tex_channels_count(num_tex_channels), m_components(format), m_state(State::NODATA)
+VertexBuffer::VertexBuffer(ComponentsFlags format, uint32_t num_tex_channels)
+    : m_tex_channels_count(num_tex_channels),
+      m_components(format),
+      m_state(State::NODATA)
 {}
 
 VertexBuffer::~VertexBuffer()
@@ -70,11 +72,11 @@ void VertexBuffer::insertVertices(uint32_t const index, float const * pos,
         // Copy existing normals after the insertion point 'index' (if any)
         if(index < m_vertex_count)
         {
-            new_dynamic_buffer.insert(
-                new_dynamic_buffer.end(),
-                m_dynamic_buffer.begin() + old_pos_block_total_floats + index * norm_floats_per_vertex,
-                m_dynamic_buffer.begin() + old_pos_block_total_floats
-                    + m_vertex_count * norm_floats_per_vertex);
+            new_dynamic_buffer.insert(new_dynamic_buffer.end(),
+                                      m_dynamic_buffer.begin() + old_pos_block_total_floats
+                                          + index * norm_floats_per_vertex,
+                                      m_dynamic_buffer.begin() + old_pos_block_total_floats
+                                          + m_vertex_count * norm_floats_per_vertex);
         }
     }
     m_dynamic_buffer.swap(new_dynamic_buffer);
@@ -120,7 +122,7 @@ void VertexBuffer::insertVertices(uint32_t const index, float const * pos,
     }
 
     m_vertex_count += vcount;
-    m_state = State::INITDATA;
+    m_state         = State::INITDATA;
 }
 
 void VertexBuffer::insertIndices(uint32_t const index, uint32_t const * indices, uint32_t const icount)
@@ -192,7 +194,7 @@ void VertexBuffer::pushBack(float const * pos, std::vector<float const *> const 
     }
 
     m_vertex_count += vcount;
-    m_state = State::INITDATA;
+    m_state         = State::INITDATA;
 }
 
 void VertexBuffer::eraseVertices(uint32_t const first, uint32_t const last)
@@ -264,7 +266,7 @@ void VertexBuffer::eraseVertices(uint32_t const first, uint32_t const last)
         }
     }
 
-    m_state = State::INITDATA;
+    m_state         = State::INITDATA;
     m_vertex_count -= count_to_erase;
 }
 

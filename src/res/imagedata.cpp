@@ -101,30 +101,29 @@ bool ReadBMP(std::string const & file_name, ImageData & id)
         return false;
 
     auto * buffer = file.data();
-	
-	return ReadBMPData(buffer, file_length, image);
+
+    return ReadBMPData(buffer, file_length, image);
 }
 
 bool ReadBMP(BaseFile const & file, ImageData & image)
 {
-	if(file.empty())
+    if(file.empty())
         return false;
 
-    auto * buffer = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
-	size_t file_length = file.getFileSize();
-	
-	return ReadBMPData(buffer, file_length, image);
+    auto * buffer      = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
+    size_t file_length = file.getFileSize();
+
+    return ReadBMPData(buffer, file_length, image);
 }
 
 bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
 {
-		
-	bool   compressed  = false;
-    bool   flip        = false;
+    bool compressed = false;
+    bool flip       = false;
 
-    auto *             pPtr    = buffer;
-    BITMAPFILEHEADER * pHeader = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
-    pPtr += sizeof(BITMAPFILEHEADER);
+    auto *             pPtr     = buffer;
+    BITMAPFILEHEADER * pHeader  = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
+    pPtr                       += sizeof(BITMAPFILEHEADER);
     if(pHeader->bfSize != file_length || pHeader->bfType != 0x4D42)   // little-endian
         return false;
 
@@ -303,7 +302,7 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data);
 
 bool ReadTGA(std::string const & file_name, ImageData & id)
 {
-    std::ifstream     ifile(file_name, std::ios::binary);
+    std::ifstream        ifile(file_name, std::ios::binary);
     std::vector<uint8_t> file;
 
     if(ifile.is_open())
@@ -330,7 +329,7 @@ bool ReadTGA(std::string const & file_name, ImageData & id)
 
     auto * buffer = file.data();
 
-	return ReadRawTGAData(id, buffer);
+    return ReadRawTGAData(id, buffer);
 }
 
 bool ReadTGA(BaseFile const & file, ImageData & image)
@@ -340,12 +339,12 @@ bool ReadTGA(BaseFile const & file, ImageData & image)
 
     auto * buffer = const_cast<uint8_t *>(reinterpret_cast<uint8_t const *>(file.getData()));
 
-	return ReadRawTGAData(id, buffer);
+    return ReadRawTGAData(id, buffer);
 }
 
 bool ReadRawTGAData(ImageData & image, uint8_t * buffer)
 {
-	uint8_t *   data     = buffer;
+    uint8_t *   data     = buffer;
     TGAHEADER * p_header = reinterpret_cast<TGAHEADER *>(data);
 
     data += sizeof(TGAHEADER);
@@ -358,12 +357,12 @@ bool ReadRawTGAData(ImageData & image, uint8_t * buffer)
 
     image.width  = p_header->width;
     image.height = p_header->height;
-    image.type   = p_header->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
+    image.type = p_header->bitsperpixel == 24 ? ImageData::PixelType::pt_rgb : ImageData::PixelType::pt_rgba;
     bool flip_horizontal = (p_header->imagedescriptor & 0x10);
     bool flip_vertical   = (p_header->imagedescriptor & 0x20);
 
     uint32_t bytes_per_pixel = p_header->bitsperpixel / 8;
-    image.data_size             = image.width * image.height * bytes_per_pixel;
+    image.data_size          = image.width * image.height * bytes_per_pixel;
 
     if(p_header->datatypecode == 2)
     {
@@ -398,14 +397,18 @@ bool ReadRawTGAData(ImageData & image, uint8_t * buffer)
             for(uint32_t j = 0; j < image.width; j++)
             {
                 flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 0] =
-                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 0];
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 0];
                 flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 1] =
-                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 1];
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 1];
                 flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 2] =
-                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 2];
+                    image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                               + 2];
                 if(image.type == ImageData::PixelType::pt_rgba)
                     flipped_image[image.width * bytes_per_pixel * i + j * bytes_per_pixel + 3] =
-                        image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel + 3];
+                        image.data[image.width * bytes_per_pixel * i + (image.width - j - 1) * bytes_per_pixel
+                                   + 3];
             }
         }
 

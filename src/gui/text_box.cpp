@@ -4,7 +4,9 @@
 #include "uiconfigloader.h"
 #include "text_fitter.h"
 
-TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner) : Widget(desc, owner), m_text(desc.static_text)
+TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)
+    : Widget(desc, owner),
+      m_text(desc.static_text)
 {
     adjustTextToLines();
 }
@@ -18,7 +20,7 @@ void TextBox::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
     float const line_height = m_font->getHeight() + m_font->getLineGap();
     float       y           = m_pos.y + m_rect.height() - (line_height + m_fields.w);
 
-    for(auto const & line : m_lines)
+    for(auto const & line: m_lines)
     {
         glm::vec2 text_pos;
         text_pos.x = getHorizontalOffset(line);
