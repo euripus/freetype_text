@@ -15,8 +15,8 @@ Window *               g_cur_window_ptr = nullptr;
 }   // namespace
 
 Window::Window(int width, int height, char const * title)
-    : m_size{width, height},
-      m_title{title},
+    : m_size(width, height),
+      m_title(title),
       m_pyramid(VertexBuffer::pos_norm_tex, 2),
       m_win_buf(VertexBuffer::pos_tex),
       m_text_win_buf(VertexBuffer::pos_tex),
@@ -41,8 +41,6 @@ Window::Window(int width, int height, char const * title)
 
     m_base_texture.m_type        = Texture::Type::TEXTURE_2D;
     m_base_texture.m_format      = Texture::Format::R8G8B8A8;
-    m_base_texture.m_width       = 1024;
-    m_base_texture.m_height      = 1024;
     m_base_texture.m_sampler.max = Texture::Filter::LINEAR;
     m_base_texture.m_sampler.min = Texture::Filter::LINEAR_MIPMAP_LINEAR;
     m_base_texture.m_sampler.r   = Texture::Wrap::REPEAT;
@@ -81,9 +79,14 @@ Window::~Window()
     glfwTerminate();
 }
 
-void WindowSizeCallback(GLFWwindow * win, int width, int height)
+static void WindowSizeCallback(GLFWwindow * win, int width, int height)
 {
     g_cur_window_ptr->resize(width, height);
+}
+
+static void ErrorCallback(int error, char const * description)
+{
+    std::cout << error << ": " << description << std::endl;
 }
 
 void Window::createWindow()
@@ -122,6 +125,7 @@ void Window::createWindow()
     glfwMakeContextCurrent(mp_glfw_win);
     glfwSetWindowTitle(mp_glfw_win, m_title.c_str());
 
+    // renderer
     m_render_ptr = std::make_unique<RendererBase>();
 
     m_render_ptr->setViewport(0, 0, m_vp_size.x, m_vp_size.y);
@@ -135,11 +139,17 @@ void Window::createWindow()
     m_render_ptr->init();
 
     m_render_ptr->addLight(m_light);
+	m_render_ptr->setClearColor(ColorMap::navy);
 
     // input backend
     m_input_ptr = std::make_unique<InputGLFW>(mp_glfw_win);
+	
+	// ui
+	m_ui_ptr = std::make_unique<UI>(m_fs);
+	m_ui_ptr->m_input = m_input_ptr.get();
 
     glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
+	glfwSetErrorCallback(ErrorCallback);
 }
 
 void Window::fullscreen(bool is_fullscreen)
@@ -171,6 +181,56 @@ void Window::initScene()
     // create textures
     if(!m_base_texture.loadImageDataFromFile(base_tex_fname, *m_render_ptr))
         throw std::runtime_error("Texture not found");
+
+	// load ui data
+	if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
+    {
+        m_ui_ptr->parseUIResources(*file);
+    }
+    else
+        throw std::runtime_error{"Failed to parse UI resources"};
+
+    if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
+    {
+        m_win = m_ui_ptr->loadWindow(*file);
+    }
+    else
+        throw std::runtime_error{"Failed to parse sample UI window"};
+	
+	// setup buttons
+	if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
+    {
+        button->setCallback([this] {
+            key_f1();
+        });
+    }
+    if(auto * button = win->getWidgetFromID<Button>("button_close"); button != nullptr)
+    {
+        button->setCallback([this] { m_running = false; });
+    }
+
+    win->show();
+    win->move({10.f, 10.f});
+}
+
+void Window::setUIData(UIWindow * win) const
+{
+	std::string const fps   = std::to_string(m_num_fps);
+    std::string const key   = KeyDescription(m_input_ptr->getKeyPressed());
+    std::string const cur_x = std::to_string(m_input_ptr->getMousePosition().x);
+    std::string const cur_y = std::to_string(m_input_ptr->getMousePosition().y);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("fps_num"); text_box != nullptr)
+        text_box->setText(fps);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("key_num"); text_box != nullptr)
+        text_box->setText(key);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("pos_x"); text_box != nullptr)
+        text_box->setText(cur_x);
+
+    if(auto * text_box = win->getWidgetFromID<TextBox>("pos_y"); text_box != nullptr)
+        text_box->setText(cur_y);
 }
 
 void Window::run()
@@ -191,7 +251,8 @@ void Window::run()
         }
         num_frames++;
 
-        // m_input_ptr->update();
+		SetUIData(m_win);
+        m_ui_ptr->update(glfwGetTime());
 
         //         Render scene:
         // bind lights
@@ -265,6 +326,8 @@ void Window::run()
         m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
         m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
+		m_input_ptr->clearEventQueues();
+
         // Swap buffers
         glfwSwapBuffers(mp_glfw_win);
         glfwPollEvents();
@@ -272,10 +335,19 @@ void Window::run()
         if(m_input_ptr->isKeyPressed(KeyboardKey::Key_F1))
             key_f1();
     }   // Check if the ESC key was pressed or the window was closed
-    while(!m_input_ptr->isKeyPressed(KeyboardKey::Key_Escape) && glfwWindowShouldClose(mp_glfw_win) == 0);
+    while(!m_input_ptr->isKeyPressed(KeyboardKey::Key_Escape) && (glfwWindowShouldClose(mp_glfw_win) == 0) && m_running);
 }
 
-void Window::resize(int width, int height) {}
+void Window::resize(int width, int height) 
+{
+	height = height > 0 ? height : 1;
+
+	m_vp_size = glm::ivec2(width, height);
+	m_render_ptr->setViewport(0, 0, width, height);
+
+	m_input_ptr->resize(width, height);
+    m_ui_ptr->resize(width, height);
+}
 
 void Window::key_f1()
 {

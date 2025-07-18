@@ -34,7 +34,7 @@ using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
 class UI
 {
 public:
-    UI(Input const & inp, FileSystem & fsys);
+    UI(FileSystem & fsys);
 
     void       update(float time);
     void       draw(VertexBuffer & background, VertexBuffer & text) const;
@@ -52,7 +52,7 @@ public:
 
     glm::vec4 const & getFontColor() const { return m_font_color; }
 
-    Input const & m_input;
+    Input *       m_input = nullptr;
     FileSystem &  m_fsys;
 
     glm::ivec2              m_screen_size = {};

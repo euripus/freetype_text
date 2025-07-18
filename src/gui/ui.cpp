@@ -1,9 +1,8 @@
 #include "ui.h"
 #include "uiconfigloader.h"
 
-UI::UI(Input const & inp, FileSystem & fsys)
-    : m_input(inp),
-      m_fsys(fsys),
+UI::UI(FileSystem & fsys)
+    : m_fsys(fsys),
       m_fonts(fsys)
 {
     m_packer = std::make_unique<ChainsPacker>();

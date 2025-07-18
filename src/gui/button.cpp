@@ -15,7 +15,7 @@ void Button::subClassUpdate(float time, bool check_cursor)
 {
     if(check_cursor)
     {
-        auto const & inp     = m_owner.getOwner().m_input;
+        auto const & inp     = *m_owner.getOwner().m_input;
         glm::vec2    cur_pos = inp.getMousePosition();
 
         Rect2D widget_area{m_pos, m_rect.m_size};
