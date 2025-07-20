@@ -51,10 +51,11 @@ SOURCES += \
     src/gui/ui.cpp \
     src/gui/uiconfigloader.cpp \
     src/gui/uiimagemanager.cpp \
+    src/gui/uiwindow.cpp \
     src/gui/utf8_utils.cpp \
     src/gui/widget.cpp \
-    src/gui/window.cpp \
     src/input/input.cpp \
+    src/input/inputglfw.cpp \
     src/main.cpp \
     src/render/renderer.cpp \
     src/render/texture.cpp \
@@ -80,10 +81,12 @@ HEADERS += \
     src/gui/ui.h \
     src/gui/uiconfigloader.h \
     src/gui/uiimagemanager.h \
+    src/gui/uiwindow.h \
     src/gui/utf8_utils.h \
     src/gui/widget.h \
-    src/gui/window.h \
     src/input/input.h \
+    src/input/inputglfw.h \
+    src/input/key_codes.h \
     src/render/AABB.h \
     src/render/render_states.h \
     src/render/renderer.h \

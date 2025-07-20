@@ -1,4 +1,4 @@
-#include "window.h"
+#include "uiwindow.h"
 #include "ui.h"
 
 UIWindow::UIWindow(UI & owner, std::string const & image_group)

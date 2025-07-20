@@ -6,7 +6,7 @@
 #include "fontmanager.h"
 #include "uiimagemanager.h"
 #include "packer.h"
-#include "window.h"
+#include "uiwindow.h"
 
 namespace ColorMap
 {
@@ -52,8 +52,8 @@ public:
 
     glm::vec4 const & getFontColor() const { return m_font_color; }
 
-    Input *       m_input = nullptr;
-    FileSystem &  m_fsys;
+    Input *      m_input = nullptr;
+    FileSystem & m_fsys;
 
     glm::ivec2              m_screen_size = {};
     UIImageGroupManager     m_ui_image_atlas;

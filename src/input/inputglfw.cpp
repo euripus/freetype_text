@@ -14,14 +14,14 @@ void KeyFuncCallback(GLFWwindow * win, int32_t key, int32_t scancode, int32_t ac
 
 void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
 {
-    Buttons button_id = Buttons::ButtonCount;
+    MouseButton button_id = MouseButton::ButtonCount;
 
     if(button == GLFW_MOUSE_BUTTON_LEFT)
-        button_id = Buttons::Button_0;
+        button_id = MouseButton::Button_0;
     else if(button == GLFW_MOUSE_BUTTON_MIDDLE)
-        button_id = Buttons::Button_2;
+        button_id = MouseButton::Button_2;
     else if(button == GLFW_MOUSE_BUTTON_RIGHT)
-        button_id = Buttons::Button_1;
+        button_id = MouseButton::Button_1;
 
     bool pressed = (action != GLFW_RELEASE);
 
@@ -353,7 +353,7 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
 
 InputGLFW::InputGLFW(GLFWwindow * window)
 {
-    assert(owner != nullptr);
+    assert(window != nullptr);
 
     g_input_ptr = this;
 

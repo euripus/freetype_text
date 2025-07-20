@@ -1,5 +1,5 @@
 #include "widget.h"
-#include "window.h"
+#include "uiwindow.h"
 #include "ui.h"
 #include <algorithm>
 #include <cassert>

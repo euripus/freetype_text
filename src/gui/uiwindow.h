@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef UIWINDOW_H
+#define UIWINDOW_H
 
 #include <string>
 #include <functional>

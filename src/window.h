@@ -25,7 +25,7 @@ class Window
     glm::ivec2          m_vp_size;
     std::string         m_title   = "UI example";
     bool                m_wire    = false;
-	bool                m_running = true;
+    bool                m_running = true;
     unsigned int        m_num_fps = 0;   // Fps counter
 
     std::unique_ptr<Input>        m_input_ptr;
@@ -40,14 +40,14 @@ class Window
     Light        m_light;
     VertexBuffer m_win_buf;
     VertexBuffer m_text_win_buf;
-	
-	// UI
-	UIWindow * m_win = nullptr;
+
+    // UI
+    UIWindow * m_win = nullptr;
 
     // Enviroment
     FileSystem m_fs;
-	
-	void setUIData(UIWindow * win) const;
+
+    void setUIData(UIWindow * win) const;
 
 public:
     Window(int width, int height, char const * title);

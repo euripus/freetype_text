@@ -58,8 +58,8 @@ protected:
     KeyboardKey m_last_key                                                     = KeyboardKey::Key_MaxKeyNum;
     bool        m_keys_states[static_cast<size_t>(KeyboardKey::Key_MaxKeyNum)] = {};
     // Mouse states
-    glm::ivec2 m_mouse_position                                                      = {};
-    bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonsCount)] = {};
+    glm::ivec2 m_mouse_position                                                     = {};
+    bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonCount)] = {};
 
     inline static std::vector<TextInput>        ms_text_queue  = {};
     inline static std::vector<MouseScrollEvent> ms_wheel_queue = {};

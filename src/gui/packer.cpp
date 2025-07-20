@@ -1,5 +1,5 @@
 #include "packer.h"
-#include "window.h"
+#include "uiwindow.h"
 #include "chain.h"
 #include "basic_types.h"
 #include <stdexcept>

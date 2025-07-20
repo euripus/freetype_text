@@ -1,5 +1,5 @@
 #include "text_box.h"
-#include "window.h"
+#include "uiwindow.h"
 #include "uiconfigloader.h"
 #include "text_fitter.h"
 

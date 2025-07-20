@@ -1,10 +1,14 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #include <stdexcept>
 
 #include "render/renderer.h"
 #include "input/inputglfw.h"
+#include "gui/ui.h"
+#include "gui/text_box.h"
+#include "gui/button.h"
 #include "scene_data.h"
 
 namespace
@@ -139,17 +143,17 @@ void Window::createWindow()
     m_render_ptr->init();
 
     m_render_ptr->addLight(m_light);
-	m_render_ptr->setClearColor(ColorMap::navy);
+    m_render_ptr->setClearColor(ColorMap::navy);
 
     // input backend
     m_input_ptr = std::make_unique<InputGLFW>(mp_glfw_win);
-	
-	// ui
-	m_ui_ptr = std::make_unique<UI>(m_fs);
-	m_ui_ptr->m_input = m_input_ptr.get();
+
+    // ui
+    m_ui_ptr          = std::make_unique<UI>(m_fs);
+    m_ui_ptr->m_input = m_input_ptr.get();
 
     glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
-	glfwSetErrorCallback(ErrorCallback);
+    glfwSetErrorCallback(ErrorCallback);
 }
 
 void Window::fullscreen(bool is_fullscreen)
@@ -182,8 +186,8 @@ void Window::initScene()
     if(!m_base_texture.loadImageDataFromFile(base_tex_fname, *m_render_ptr))
         throw std::runtime_error("Texture not found");
 
-	// load ui data
-	if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
+    // load ui data
+    if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
     {
         m_ui_ptr->parseUIResources(*file);
     }
@@ -196,26 +200,24 @@ void Window::initScene()
     }
     else
         throw std::runtime_error{"Failed to parse sample UI window"};
-	
-	// setup buttons
-	if(auto * button = win->getWidgetFromID<Button>("button_ok"); button != nullptr)
+
+    // setup buttons
+    if(auto * button = m_win->getWidgetFromID<Button>("button_ok"); button != nullptr)
     {
-        button->setCallback([this] {
-            key_f1();
-        });
+        button->setCallback([this] { key_f1(); });
     }
-    if(auto * button = win->getWidgetFromID<Button>("button_close"); button != nullptr)
+    if(auto * button = m_win->getWidgetFromID<Button>("button_close"); button != nullptr)
     {
         button->setCallback([this] { m_running = false; });
     }
 
-    win->show();
-    win->move({10.f, 10.f});
+    m_win->show();
+    m_win->move({10.f, 10.f});
 }
 
 void Window::setUIData(UIWindow * win) const
 {
-	std::string const fps   = std::to_string(m_num_fps);
+    std::string const fps   = std::to_string(m_num_fps);
     std::string const key   = KeyDescription(m_input_ptr->getKeyPressed());
     std::string const cur_x = std::to_string(m_input_ptr->getMousePosition().x);
     std::string const cur_y = std::to_string(m_input_ptr->getMousePosition().y);
@@ -251,7 +253,7 @@ void Window::run()
         }
         num_frames++;
 
-		SetUIData(m_win);
+        setUIData(m_win);
         m_ui_ptr->update(glfwGetTime());
 
         //         Render scene:
@@ -326,7 +328,7 @@ void Window::run()
         m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
         m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
-		m_input_ptr->clearEventQueues();
+        m_input_ptr->clearEventQueues();
 
         // Swap buffers
         glfwSwapBuffers(mp_glfw_win);
@@ -335,17 +337,18 @@ void Window::run()
         if(m_input_ptr->isKeyPressed(KeyboardKey::Key_F1))
             key_f1();
     }   // Check if the ESC key was pressed or the window was closed
-    while(!m_input_ptr->isKeyPressed(KeyboardKey::Key_Escape) && (glfwWindowShouldClose(mp_glfw_win) == 0) && m_running);
+    while(!m_input_ptr->isKeyPressed(KeyboardKey::Key_Escape) && (glfwWindowShouldClose(mp_glfw_win) == 0)
+          && m_running);
 }
 
-void Window::resize(int width, int height) 
+void Window::resize(int width, int height)
 {
-	height = height > 0 ? height : 1;
+    height = height > 0 ? height : 1;
 
-	m_vp_size = glm::ivec2(width, height);
-	m_render_ptr->setViewport(0, 0, width, height);
+    m_vp_size = glm::ivec2(width, height);
+    m_render_ptr->setViewport(0, 0, width, height);
 
-	m_input_ptr->resize(width, height);
+    m_input_ptr->resize(width, height);
     m_ui_ptr->resize(width, height);
 }
 
