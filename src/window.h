@@ -66,7 +66,7 @@ public:
     void initScene();
     void fullscreen(bool is_fullscreen);
     void run();
-	void draw();
+    void draw();
     void resize(int width, int height);
 
     // keys

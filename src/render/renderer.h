@@ -72,8 +72,8 @@ public:
 
     void enableClipPlane(uint32_t plane_num, glm::vec4 const & plane) const;
     void disableClipPlane(uint32_t plane_num) const;
-	
-	void setDrawColor(glm::vec4 const & color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)) const;
+
+    void setDrawColor(glm::vec4 const & color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)) const;
 
     // debug draw
     void drawBBox(AABB const & bbox, glm::mat4 const & object2world, glm::vec3 const & color);

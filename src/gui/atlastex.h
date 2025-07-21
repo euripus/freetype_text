@@ -26,13 +26,9 @@ public:
 
     void writeAtlasToTGA(std::string const & name);
 
-	void uploadAtlasTexture(RendererBase const & render);
-	void deleteAtlasTexture(RendererBase const & render);
-	Texture const * getAtlasTexture() const { return m_atlas_tex; }
-
-    void UploadTexture();
-    void DeleteTexture();
-    void BindTexture();
+    void            uploadAtlasTexture(RendererBase const & render);
+    void            deleteAtlasTexture(RendererBase const & render);
+    Texture const * getAtlasTexture() const { return &m_atlas_tex; }
 
 private:
     int32_t atlasFit(uint32_t index, uint32_t width, uint32_t height);

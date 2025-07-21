@@ -32,7 +32,7 @@ UIWindow * UI::loadWindow(InFile & file_json, int32_t layer, std::string const &
     else
         win = std::make_unique<UIWindow>(*this, image_group);
 
-    WindowDesc::LoadWindow(*win.get(), file_json);
+    WindowDesc::LoadWindow(*win, file_json);
 
     m_windows.push_back(std::move(win));
 

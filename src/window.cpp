@@ -36,7 +36,7 @@ Window::Window(int width, int height, char const * title)
 
     g_cur_window_ptr = this;
 
-	m_ui_ptr = std::make_unique<UI>(m_fs);
+    m_ui_ptr = std::make_unique<UI>(m_fs);
 
     m_light.m_type     = Light::LightType::Point;
     m_light.m_range    = 100.f;
@@ -76,7 +76,7 @@ Window::~Window()
 
         m_render_ptr->destroyTexture(m_base_texture);
 
-		m_ui_ptr->getUIImageAtlas().deleteAtlasTexture(*m_render_ptr);
+        m_ui_ptr->getUIImageAtlas().deleteAtlasTexture(*m_render_ptr);
         m_ui_ptr->getFontImageAtlas().deleteAtlasTexture(*m_render_ptr);
 
         m_render_ptr->clearLights();
@@ -149,7 +149,7 @@ void Window::createWindow()
 
     m_render_ptr->addLight(m_light);
     m_render_ptr->setClearColor(ColorMap::navy);
-	m_render_ptr->setClearDepth(1.0f);
+    m_render_ptr->setClearDepth(1.0f);
 
     // input backend
     m_input_ptr = std::make_unique<InputGLFW>(mp_glfw_win);
@@ -190,8 +190,8 @@ void Window::initScene()
     // create textures
     if(!m_base_texture.loadImageDataFromFile(base_tex_fname, *m_render_ptr))
         throw std::runtime_error("Texture not found");
-	
-	// load ui data
+
+    // load ui data
     if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
     {
         m_ui_ptr->parseUIResources(*file);
@@ -199,7 +199,7 @@ void Window::initScene()
     else
         throw std::runtime_error{"Failed to parse UI resources"};
 
-	m_ui_ptr->getUIImageAtlas().uploadAtlasTexture(*m_render_ptr);
+    m_ui_ptr->getUIImageAtlas().uploadAtlasTexture(*m_render_ptr);
     m_ui_ptr->getFontImageAtlas().uploadAtlasTexture(*m_render_ptr);
 
     if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
@@ -256,130 +256,129 @@ void Window::setUIData(UIWindow * win) const
 
 void Window::draw()
 {
-	glm::mat4   prj_mtx, mtx;
+    glm::mat4   prj_mtx, mtx;
     TextureSlot slot;
 
-	setUIData(m_win);
+    setUIData(m_win);
 
-	//         Render scene:
-	// bind lights
-	// for each mesh:
-	//      set slots
-	//      bind textures
-	//      bind VBO
-	//      draw object
-	//      unbind VBO
-	//      unbind textures
-	//      clear slots
-	// unbind lights
-	m_render_ptr->clearBuffers();
+    //         Render scene:
+    // bind lights
+    // for each mesh:
+    //      set slots
+    //      bind textures
+    //      bind VBO
+    //      draw object
+    //      unbind VBO
+    //      unbind textures
+    //      clear slots
+    // unbind lights
+    m_render_ptr->clearBuffers();
 
-	prj_mtx =
-		glm::perspective(glm::radians(45.0f),
-						 static_cast<float>(m_vp_size.x) / static_cast<float>(m_vp_size.y), 0.1f, 100.0f);
-	mtx = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -7.0f});
-	mtx = glm::rotate(mtx, glm::radians(45.0f), {1.0f, 0.0f, 0.0f});
-	mtx = glm::rotate(mtx, glm::radians(60.0f), {0.0f, 1.0f, 0.0f});
-	m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
-	m_render_ptr->setMatrix(RendererBase::MatrixType::MODELVIEW, mtx);
+    prj_mtx = glm::perspective(
+        glm::radians(45.0f), static_cast<float>(m_vp_size.x) / static_cast<float>(m_vp_size.y), 0.1f, 100.0f);
+    mtx = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -7.0f});
+    mtx = glm::rotate(mtx, glm::radians(45.0f), {1.0f, 0.0f, 0.0f});
+    mtx = glm::rotate(mtx, glm::radians(60.0f), {0.0f, 1.0f, 0.0f});
+    m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
+    m_render_ptr->setMatrix(RendererBase::MatrixType::MODELVIEW, mtx);
 
-	m_render_ptr->bindLights();
+    m_render_ptr->bindLights();
 
-	slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-	slot.tex_channel_num   = 1;
-	slot.texture           = &m_base_texture;
-	slot.projector         = nullptr;
-	slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-	m_render_ptr->addTextureSlot(slot);
-	m_render_ptr->bindSlots();
-	m_render_ptr->bindVertexBuffer(&m_pyramid);
-	m_render_ptr->draw(m_pyramid);
-	m_render_ptr->unbindVertexBuffer();
-	m_render_ptr->unbindAndClearSlots();
+    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+    slot.tex_channel_num   = 1;
+    slot.texture           = &m_base_texture;
+    slot.projector         = nullptr;
+    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
+    m_render_ptr->addTextureSlot(slot);
+    m_render_ptr->bindSlots();
+    m_render_ptr->bindVertexBuffer(&m_pyramid);
+    m_render_ptr->draw(m_pyramid);
+    m_render_ptr->unbindVertexBuffer();
+    m_render_ptr->unbindAndClearSlots();
 
-	slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-	slot.tex_channel_num   = 0;
-	slot.texture           = &m_base_texture;
-	slot.projector         = nullptr;
-	slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-	m_render_ptr->addTextureSlot(slot);
-	m_render_ptr->bindSlots();
-	m_render_ptr->bindVertexBuffer(&m_plane);
-	m_render_ptr->draw(m_plane);
-	m_render_ptr->unbindVertexBuffer();
-	m_render_ptr->unbindAndClearSlots();
+    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+    slot.tex_channel_num   = 0;
+    slot.texture           = &m_base_texture;
+    slot.projector         = nullptr;
+    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
+    m_render_ptr->addTextureSlot(slot);
+    m_render_ptr->bindSlots();
+    m_render_ptr->bindVertexBuffer(&m_plane);
+    m_render_ptr->draw(m_plane);
+    m_render_ptr->unbindVertexBuffer();
+    m_render_ptr->unbindAndClearSlots();
 
-	slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-	slot.tex_channel_num   = 0;
-	slot.texture           = &m_base_texture;
-	slot.projector         = nullptr;
-	slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-	m_render_ptr->addTextureSlot(slot);
-	m_render_ptr->bindSlots();
-	m_render_ptr->bindVertexBuffer(&m_sphere);
-	m_render_ptr->draw(m_sphere);
-	m_render_ptr->unbindVertexBuffer();
-	m_render_ptr->unbindAndClearSlots();
+    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+    slot.tex_channel_num   = 0;
+    slot.texture           = &m_base_texture;
+    slot.projector         = nullptr;
+    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
+    m_render_ptr->addTextureSlot(slot);
+    m_render_ptr->bindSlots();
+    m_render_ptr->bindVertexBuffer(&m_sphere);
+    m_render_ptr->draw(m_sphere);
+    m_render_ptr->unbindVertexBuffer();
+    m_render_ptr->unbindAndClearSlots();
 
-	m_render_ptr->unbindLights();
+    m_render_ptr->unbindLights();
 
-	AABB test_box({-1.f, -1.f, -1.f}, {1.f, 1.f, 1.f});
-	m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
+    AABB test_box({-1.f, -1.f, -1.f}, {1.f, 1.f, 1.f});
+    m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
-	// draw UI
-	prj_mtx =
-		glm::ortho(0.f, static_cast<float>(m_vp_size.x), 0.f, static_cast<float>(m_vp_size.y), -1.f, 1.f);
-	m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
-	m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
-	
-	m_ui_ptr->draw(m_win_buf, m_text_win_buf);
-	m_render_ptr->uploadBuffer(m_win_buf);
-	m_render_ptr->uploadBuffer(m_text_win_buf);
-	
-	auto old_blend = m_render_ptr->getAlphaState();
-	auto old_depth = m_render_ptr->getDepthState();
-	AlphaState blend;
-	DepthState depth;
-	
-	depth.enabled = false;
-	blend.blend_enabled = true;
+    // draw UI
+    prj_mtx =
+        glm::ortho(0.f, static_cast<float>(m_vp_size.x), 0.f, static_cast<float>(m_vp_size.y), -1.f, 1.f);
+    m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
+    m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
-	m_render_ptr->setDepthState(depth);
-	m_render_ptr->setAlphaState(blend);
+    m_ui_ptr->draw(m_win_buf, m_text_win_buf);
+    m_render_ptr->uploadBuffer(m_win_buf);
+    m_render_ptr->uploadBuffer(m_text_win_buf);
 
-	// draw background
-	slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-	slot.tex_channel_num   = 0;
-	slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTexture();
-	slot.projector         = nullptr;
-	slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
-	m_render_ptr->addTextureSlot(slot);
-	m_render_ptr->bindSlots();
-	m_render_ptr->bindVertexBuffer(&m_win_buf);
-	m_render_ptr->draw(m_win_buf);
-	m_render_ptr->unbindVertexBuffer();
-	m_render_ptr->unbindAndClearSlots();
+    auto       old_blend = m_render_ptr->getAlphaState();
+    auto       old_depth = m_render_ptr->getDepthState();
+    AlphaState blend;
+    DepthState depth;
 
-	// draw text
-	m_render_ptr->setDrawColor(m_ui_ptr->getFontColor());
-	slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-	slot.tex_channel_num   = 0;
-	slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTexture();
-	slot.projector         = nullptr;
-	slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
-	m_render_ptr->addTextureSlot(slot);
-	m_render_ptr->bindSlots();
-	m_render_ptr->bindVertexBuffer(&m_text_win_buf);
-	m_render_ptr->draw(m_text_win_buf);
-	m_render_ptr->unbindVertexBuffer();
-	m_render_ptr->unbindAndClearSlots();
-	m_render_ptr->setDrawColor(ColorMap::white); // return to default color
+    depth.enabled       = false;
+    blend.blend_enabled = true;
 
-	m_render_ptr->setDepthState(old_depth);
-	m_render_ptr->setAlphaState(old_blend);
+    m_render_ptr->setDepthState(depth);
+    m_render_ptr->setAlphaState(blend);
 
-	m_win_buf.clear();
-	m_text_win_buf.clear();
+    // draw background
+    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+    slot.tex_channel_num   = 0;
+    slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTexture();
+    slot.projector         = nullptr;
+    slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
+    m_render_ptr->addTextureSlot(slot);
+    m_render_ptr->bindSlots();
+    m_render_ptr->bindVertexBuffer(&m_win_buf);
+    m_render_ptr->draw(m_win_buf);
+    m_render_ptr->unbindVertexBuffer();
+    m_render_ptr->unbindAndClearSlots();
+
+    // draw text
+    m_render_ptr->setDrawColor(m_ui_ptr->getFontColor());
+    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+    slot.tex_channel_num   = 0;
+    slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTexture();
+    slot.projector         = nullptr;
+    slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
+    m_render_ptr->addTextureSlot(slot);
+    m_render_ptr->bindSlots();
+    m_render_ptr->bindVertexBuffer(&m_text_win_buf);
+    m_render_ptr->draw(m_text_win_buf);
+    m_render_ptr->unbindVertexBuffer();
+    m_render_ptr->unbindAndClearSlots();
+    m_render_ptr->setDrawColor(ColorMap::white);   // return to default color
+
+    m_render_ptr->setDepthState(old_depth);
+    m_render_ptr->setAlphaState(old_blend);
+
+    m_win_buf.clear();
+    m_text_win_buf.clear();
 }
 
 void Window::run()

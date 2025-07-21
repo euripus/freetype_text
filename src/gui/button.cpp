@@ -21,7 +21,7 @@ void Button::subClassUpdate(float time, bool check_cursor)
         Rect2D widget_area{m_pos, m_rect.m_size};
         if(widget_area.contains(cur_pos))
         {
-            if(inp.isMouseButtonPressed(MouseButton::Left))
+            if(inp.isMouseButtonPressed(MouseButton::Button_0))
             {
                 m_state = ButtonState::clicked;
 

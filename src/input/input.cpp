@@ -158,8 +158,6 @@ std::string KeyDescription(KeyboardKey key)
             return "Numpad/";
         case KeyboardKey::Key_NumPoint:
             return "Numpad.";
-        case KeyboardKey::Key_NumEqual:
-            return "Numpad=";
         case KeyboardKey::Key_LeftBracket:
             return "[";
         case KeyboardKey::Key_LeftCtrl:
@@ -194,8 +192,6 @@ std::string KeyDescription(KeyboardKey key)
             return "Return";
         case KeyboardKey::Key_Tab:
             return "Tab";
-        case KeyboardKey::Key_MenuKey:
-            return "MenuKey";
         case KeyboardKey::Key_CapsLock:
             return "Capital";
         case KeyboardKey::Key_Slash:

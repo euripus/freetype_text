@@ -1,10 +1,8 @@
 #include "atlastex.h"
-#include "src/res/imagedata.h"
+#include "../res/imagedata.h"
+#include "../render/renderer.h"
 #include <cassert>
-#include <climits>
 #include <cstring>
-
-#include <GL/glew.h>
 
 AtlasTex::AtlasTex(uint32_t size)
     : m_size{size}
@@ -14,11 +12,12 @@ AtlasTex::AtlasTex(uint32_t size)
     m_nodes.emplace_back(1, 1, m_size - 2);
     m_data.resize(m_size * m_size * 4);
     std::memset(m_data.data(), 0, m_size * m_size * 4);
-	
-	m_atlas_tex.m_type        = Texture::Type::TEXTURE_2D;
+
+    m_atlas_tex.m_type        = Texture::Type::TEXTURE_2D;
     m_atlas_tex.m_format      = Texture::Format::R8G8B8A8;
     m_atlas_tex.m_width       = m_size;
     m_atlas_tex.m_height      = m_size;
+    m_atlas_tex.m_gen_mips    = false;
     m_atlas_tex.m_sampler.max = Texture::Filter::LINEAR;
     m_atlas_tex.m_sampler.min = Texture::Filter::LINEAR;
     m_atlas_tex.m_sampler.r   = Texture::Wrap::CLAMP_TO_EDGE;
@@ -254,27 +253,27 @@ void AtlasTex::writeAtlasToTGA(std::string const & name)
     tex::WriteTGA(name, image);
 }
 
-////////////////////////
-void AtlasTex::BindTexture()
+void AtlasTex::uploadAtlasTexture(RendererBase const & render)
 {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_atlas_tex_id);
+    if(m_atlas_tex.m_render_id == 0)
+    {
+        render.createTexture(m_atlas_tex);
+    }
+
+    tex::ImageData tex_data;
+    tex_data.type      = tex::ImageData::PixelType::pt_rgba;
+    tex_data.width     = getSize();
+    tex_data.height    = getSize();
+    tex_data.data_size = m_data.size();
+
+    auto atlas_data = std::make_unique<uint8_t[]>(tex_data.data_size);
+    std::memcpy(atlas_data.get(), m_data.data(), tex_data.data_size);
+    tex_data.data = std::move(atlas_data);
+
+    render.uploadTextureData(m_atlas_tex, tex_data);
 }
 
-void AtlasTex::UploadTexture()
+void AtlasTex::deleteAtlasTexture(RendererBase const & render)
 {
-    glGenTextures(1, &m_atlas_tex_id);
-
-    glBindTexture(GL_TEXTURE_2D, m_atlas_tex_id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getSize(), getSize(), 0, GL_RGBA, GL_UNSIGNED_BYTE, getData());
-}
-
-void AtlasTex::DeleteTexture()
-{
-    glDeleteTextures(1, &m_atlas_tex_id);
+    render.destroyTexture(m_atlas_tex);
 }
