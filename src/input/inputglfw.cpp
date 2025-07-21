@@ -3,17 +3,23 @@
 
 namespace
 {
-InputGLFW * g_input_ptr{nullptr};
-
 void KeyFuncCallback(GLFWwindow * win, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 {
-    bool pressed = (action != GLFW_RELEASE);
+	assert(win != nullptr);
 
-    g_input_ptr->keyEvent(MapKeyCode(key), pressed);
+    bool pressed = (action != GLFW_RELEASE);
+	
+	auto * ptr = static_cast<InputGLFW>(glfwGetWindowUserPointer(win));
+
+    ptr->keyEvent(MapKeyCode(key), pressed);
 }
 
 void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
 {
+	assert(win != nullptr);
+
+	auto * ptr = static_cast<InputGLFW>(glfwGetWindowUserPointer(win));
+
     MouseButton button_id = MouseButton::ButtonCount;
 
     if(button == GLFW_MOUSE_BUTTON_LEFT)
@@ -25,17 +31,25 @@ void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32
 
     bool pressed = (action != GLFW_RELEASE);
 
-    g_input_ptr->buttonEvent(button_id, pressed);
+    ptr->buttonEvent(button_id, pressed);
 }
 
 void MousePositionCallback(GLFWwindow * win, double xpos, double ypos)
 {
-    g_input_ptr->mousePos(static_cast<int32_t>(xpos), static_cast<int32_t>(ypos));
+	assert(win != nullptr);
+	
+	auto * ptr = static_cast<InputGLFW>(glfwGetWindowUserPointer(win));
+
+    ptr->mousePos(static_cast<int32_t>(xpos), static_cast<int32_t>(ypos));
 }
 
 void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset)
 {
-    g_input_ptr->mouseWhell(static_cast<int32_t>(yoffset));
+	assert(win != nullptr);
+	
+	auto * ptr = static_cast<InputGLFW>(glfwGetWindowUserPointer(win));
+
+    ptr->mouseWhell(static_cast<int32_t>(yoffset));
 }
 }   // namespace
 
@@ -354,8 +368,8 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
 InputGLFW::InputGLFW(GLFWwindow * window)
 {
     assert(window != nullptr);
-
-    g_input_ptr = this;
+	
+	glfwSetWindowUserPointer(window, this);
 
     glfwSetKeyCallback(window, KeyFuncCallback);
     glfwSetCursorPosCallback(window, MousePositionCallback);

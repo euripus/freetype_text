@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
+#include "../render/texture.h"
+
+class RendererBase;
 
 class AtlasTex
 {
@@ -23,6 +26,10 @@ public:
 
     void writeAtlasToTGA(std::string const & name);
 
+	void uploadAtlasTexture(RendererBase const & render);
+	void deleteAtlasTexture(RendererBase const & render);
+	Texture const * getAtlasTexture() const { return m_atlas_tex; }
+
     void UploadTexture();
     void DeleteTexture();
     void BindTexture();
@@ -35,7 +42,7 @@ private:
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;
 
-    uint32_t m_atlas_tex_id = 0;
+    Texture m_atlas_tex = {};
 };
 
 #endif   // ATLASTEX_H

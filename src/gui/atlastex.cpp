@@ -14,11 +14,21 @@ AtlasTex::AtlasTex(uint32_t size)
     m_nodes.emplace_back(1, 1, m_size - 2);
     m_data.resize(m_size * m_size * 4);
     std::memset(m_data.data(), 0, m_size * m_size * 4);
+	
+	m_atlas_tex.m_type        = Texture::Type::TEXTURE_2D;
+    m_atlas_tex.m_format      = Texture::Format::R8G8B8A8;
+    m_atlas_tex.m_width       = m_size;
+    m_atlas_tex.m_height      = m_size;
+    m_atlas_tex.m_sampler.max = Texture::Filter::LINEAR;
+    m_atlas_tex.m_sampler.min = Texture::Filter::LINEAR;
+    m_atlas_tex.m_sampler.r   = Texture::Wrap::CLAMP_TO_EDGE;
+    m_atlas_tex.m_sampler.s   = Texture::Wrap::CLAMP_TO_EDGE;
+    m_atlas_tex.m_sampler.t   = Texture::Wrap::CLAMP_TO_EDGE;
 }
 
 void AtlasTex::clear()
 {
-    m_nodes.clear();
+    m_nodes.resize(0);
 
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture

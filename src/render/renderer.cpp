@@ -1048,6 +1048,11 @@ void RendererBase::disableClipPlane(uint32_t plane_num) const
     glDisable(plane_id);
 }
 
+void RendererBase::setDrawColor(glm::vec4 const & color) const
+{
+	glColor4fv(glm::value_ptr(color));
+}
+
 // https://en.wikibooks.org/wiki/OpenGL_Programming/Bounding_box
 void RendererBase::drawBBox(AABB const & bbox, glm::mat4 const & object2world, glm::vec3 const & color)
 {
