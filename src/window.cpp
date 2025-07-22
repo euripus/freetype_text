@@ -156,7 +156,7 @@ void Window::createWindow()
     // ui
     m_ui_ptr->m_input = m_input_ptr.get();
 
-	resize(m_vp_size.x, m_vp_size.y);
+    resize(m_vp_size.x, m_vp_size.y);
 
     glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
     glfwSetErrorCallback(ErrorCallback);
@@ -189,12 +189,12 @@ void Window::initScene()
     m_render_ptr->uploadBuffer(m_sphere);
 
     // create textures
-	if(auto file = m_fs.getFile(base_tex_fname); file)
-	{
-		if(!m_base_texture.loadImageDataFromFile(*file, *m_render_ptr))
-			throw std::runtime_error("Texture loading error");
-	}
-	else
+    if(auto file = m_fs.getFile(base_tex_fname); file)
+    {
+        if(!m_base_texture.loadImageDataFromFile(*file, *m_render_ptr))
+            throw std::runtime_error("Texture loading error");
+    }
+    else
         throw std::runtime_error{"Texture file not found"};
 
     // load ui data

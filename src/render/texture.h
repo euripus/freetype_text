@@ -1,11 +1,14 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include "../res/imagedata.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <array>
 
 class RendererBase;
+class BaseFile;
+
 class Texture
 {
 public:
@@ -76,8 +79,8 @@ public:
     };
 
     bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
-	bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
-	void loadImageData(ImageData const & image, RendererBase const & render);
+    bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
+    void loadImageData(tex::ImageData const & image, RendererBase const & render);
 
     bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
 

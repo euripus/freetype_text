@@ -1,6 +1,6 @@
 #include "texture.h"
 #include "renderer.h"
-#include "../res/imagedata.h"
+#include "../fs/file.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 bool Texture::loadImageDataFromFile(std::string const & fname, RendererBase const & render)
@@ -16,7 +16,7 @@ bool Texture::loadImageDataFromFile(std::string const & fname, RendererBase cons
 
 bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & render)
 {
-	tex::ImageData image;
+    tex::ImageData image;
     if(!tex::ReadTGA(file, image))
         return false;
 
@@ -25,17 +25,17 @@ bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & 
     return true;
 }
 
-void Texture::loadImageData(ImageData const & image, RendererBase const & render)
+void Texture::loadImageData(tex::ImageData const & image, RendererBase const & render)
 {
-	m_committed   = false;
-    //m_gen_mips    = true;
-    m_type        = Type::TEXTURE_2D;
-    m_format      = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
-    m_width       = image.width;
-    m_height      = image.height;
-    m_depth       = 0;
-    //m_sampler.max = Filter::LINEAR;
-    //m_sampler.min = Filter::LINEAR_MIPMAP_LINEAR;
+    m_committed = false;
+    // m_gen_mips    = true;
+    m_type   = Type::TEXTURE_2D;
+    m_format = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
+    m_width  = image.width;
+    m_height = image.height;
+    m_depth  = 0;
+    // m_sampler.max = Filter::LINEAR;
+    // m_sampler.min = Filter::LINEAR_MIPMAP_LINEAR;
 
     render.createTexture(*this);
     render.uploadTextureData(*this, image);

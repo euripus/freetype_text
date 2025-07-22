@@ -1,5 +1,5 @@
 #include "imagedata.h"
-#include "src/fs/file.h"
+#include "../fs/file.h"
 #include <cstring>
 #include <vector>
 #include <fstream>
