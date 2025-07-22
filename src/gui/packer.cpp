@@ -9,7 +9,7 @@ T const & GetRef(std::unique_ptr<T> const & ptr)
 {
     if(ptr)
     {
-        return *ptr.get();
+        return *ptr;
     }
 
     throw std::runtime_error("Error dereferencing null unique_ptr!");
@@ -20,7 +20,7 @@ T & GetRef(std::unique_ptr<T> & ptr)
 {
     if(ptr)
     {
-        return *ptr.get();
+        return *ptr;
     }
 
     throw std::runtime_error("Error dereferencing null unique_ptr!");

@@ -8,7 +8,7 @@ TexFont & FontManager::addFont(FontDataDesc const & desc)
     std::size_t hash_val    = std::hash<std::string>{}(hash_string);
 
     if(auto search = m_fonts.find(hash_val); search != m_fonts.end())
-        return *search->second.get();   // font already loaded
+        return *search->second;   // font already loaded
 
     if(auto file = m_file_sys.getFile(desc.filename); file)
     {
@@ -23,7 +23,7 @@ TexFont & FontManager::addFont(FontDataDesc const & desc)
         throw std::runtime_error(ss.str());
     }
 
-    return *m_fonts[hash_val].get();
+    return *m_fonts[hash_val];
 }
 
 TexFont * FontManager::getFont(std::string name, uint32_t size)

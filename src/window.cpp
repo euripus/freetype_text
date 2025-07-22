@@ -13,7 +13,7 @@
 
 namespace
 {
-constexpr char const * base_tex_fname   = "color.tga";
+constexpr char const * base_tex_fname   = "base.tga";
 constexpr char const * data_folder      = "./data";
 Window *               g_cur_window_ptr = nullptr;
 }   // namespace
@@ -137,7 +137,6 @@ void Window::createWindow()
     // renderer
     m_render_ptr = std::make_unique<RendererBase>();
 
-    m_render_ptr->setViewport(0, 0, m_vp_size.x, m_vp_size.y);
     auto prj_mtx = glm::perspective(
         glm::radians(45.0f), static_cast<float>(m_vp_size.x) / static_cast<float>(m_vp_size.y), 0.1f, 100.0f);
     m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
@@ -156,6 +155,8 @@ void Window::createWindow()
 
     // ui
     m_ui_ptr->m_input = m_input_ptr.get();
+
+	resize(m_vp_size.x, m_vp_size.y);
 
     glfwSetWindowSizeCallback(mp_glfw_win, WindowSizeCallback);
     glfwSetErrorCallback(ErrorCallback);
@@ -188,8 +189,13 @@ void Window::initScene()
     m_render_ptr->uploadBuffer(m_sphere);
 
     // create textures
-    if(!m_base_texture.loadImageDataFromFile(base_tex_fname, *m_render_ptr))
-        throw std::runtime_error("Texture not found");
+	if(auto file = m_fs.getFile(base_tex_fname); file)
+	{
+		if(!m_base_texture.loadImageDataFromFile(*file, *m_render_ptr))
+			throw std::runtime_error("Texture loading error");
+	}
+	else
+        throw std::runtime_error{"Texture file not found"};
 
     // load ui data
     if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
@@ -351,7 +357,7 @@ void Window::draw()
     slot.tex_channel_num   = 0;
     slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTexture();
     slot.projector         = nullptr;
-    slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
+    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);
     m_render_ptr->bindSlots();
     m_render_ptr->bindVertexBuffer(&m_win_buf);
@@ -365,7 +371,7 @@ void Window::draw()
     slot.tex_channel_num   = 0;
     slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTexture();
     slot.projector         = nullptr;
-    slot.combine_mode.mode = CombineStage::CombineMode::REPLACE;
+    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);
     m_render_ptr->bindSlots();
     m_render_ptr->bindVertexBuffer(&m_text_win_buf);

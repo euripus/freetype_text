@@ -76,6 +76,9 @@ public:
     };
 
     bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
+	bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
+	void loadImageData(ImageData const & image, RendererBase const & render);
+
     bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
 
     // protected:

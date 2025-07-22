@@ -296,42 +296,6 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
         case GLFW_KEY_F12:
             key = KeyboardKey::Key_F12;
             break;
-        case GLFW_KEY_F13:
-            key = KeyboardKey::Key_F13;
-            break;
-        case GLFW_KEY_F14:
-            key = KeyboardKey::Key_F14;
-            break;
-        case GLFW_KEY_F15:
-            key = KeyboardKey::Key_F15;
-            break;
-        case GLFW_KEY_F16:
-            key = KeyboardKey::Key_F16;
-            break;
-        case GLFW_KEY_F17:
-            key = KeyboardKey::Key_F17;
-            break;
-        case GLFW_KEY_F18:
-            key = KeyboardKey::Key_F18;
-            break;
-        case GLFW_KEY_F19:
-            key = KeyboardKey::Key_F19;
-            break;
-        case GLFW_KEY_F20:
-            key = KeyboardKey::Key_F20;
-            break;
-        case GLFW_KEY_F21:
-            key = KeyboardKey::Key_F21;
-            break;
-        case GLFW_KEY_F22:
-            key = KeyboardKey::Key_F22;
-            break;
-        case GLFW_KEY_F23:
-            key = KeyboardKey::Key_F23;
-            break;
-        case GLFW_KEY_F24:
-            key = KeyboardKey::Key_F24;
-            break;
         case GLFW_KEY_LEFT_SHIFT:
             key = KeyboardKey::Key_LeftShift;
             break;
@@ -356,9 +320,59 @@ KeyboardKey MapKeyCode(int32_t platformKeyCode)
         case GLFW_KEY_RIGHT_SUPER:
             key = KeyboardKey::Key_RightWin;
             break;
-
-        default:
-            key = KeyboardKey::Key_MaxKeyNum;
+        case GLFW_KEY_KP_0:
+            key = KeyboardKey::Key_NumPad0;
+            break;
+        case GLFW_KEY_KP_1:
+            key = KeyboardKey::Key_NumPad1;
+            break;
+        case GLFW_KEY_KP_2:
+            key = KeyboardKey::Key_NumPad2;
+            break;
+        case GLFW_KEY_KP_3:
+            key = KeyboardKey::Key_NumPad3;
+            break;
+        case GLFW_KEY_KP_4:
+            key = KeyboardKey::Key_NumPad4;
+            break;
+        case GLFW_KEY_KP_5:
+            key = KeyboardKey::Key_NumPad5;
+            break;
+        case GLFW_KEY_KP_6:
+            key = KeyboardKey::Key_NumPad6;
+            break;
+        case GLFW_KEY_KP_7:
+            key = KeyboardKey::Key_NumPad7;
+            break;
+        case GLFW_KEY_KP_8:
+            key = KeyboardKey::Key_NumPad8;
+            break;
+        case GLFW_KEY_KP_9:
+            key = KeyboardKey::Key_NumPad9;
+            break;
+        case GLFW_KEY_KP_DECIMAL:
+            key = KeyboardKey::Key_NumPoint;
+            break;
+        case GLFW_KEY_KP_DIVIDE:
+            key = KeyboardKey::Key_NumDivide;
+            break;
+        case GLFW_KEY_KP_MULTIPLY:
+            key = KeyboardKey::Key_NumMultiply;
+            break;
+        case GLFW_KEY_KP_SUBTRACT:
+            key = KeyboardKey::Key_NumSubtract;
+            break;
+        case GLFW_KEY_KP_ADD:
+            key = KeyboardKey::Key_NumAdd;
+            break;
+        case GLFW_KEY_KP_ENTER:
+            key = KeyboardKey::Key_NumPadEnter;
+            break;
+        case GLFW_KEY_KP_EQUAL:
+            key = KeyboardKey::Key_NumEqual;
+            break;
+        case GLFW_KEY_MENU:
+            key = KeyboardKey::Key_MenuKey;
             break;
     }
 

@@ -6,8 +6,8 @@ enum class KeyboardKey
     Key_0,
     Key_1,
     Key_2,
-    Key_3,
     Key_4,
+    Key_3,
     Key_5,
     Key_6,
     Key_7,
@@ -53,18 +53,6 @@ enum class KeyboardKey
     Key_F10,
     Key_F11,
     Key_F12,
-    Key_F13,
-    Key_F14,
-    Key_F15,
-    Key_F16,
-    Key_F17,
-    Key_F18,
-    Key_F19,
-    Key_F20,
-    Key_F21,
-    Key_F22,
-    Key_F23,
-    Key_F24,
 
     Key_UpArrow,
     Key_DownArrow,
@@ -97,61 +85,18 @@ enum class KeyboardKey
     Key_NumMultiply,   // (*) on numeric keypad
     Key_NumDivide,     // (/) on numeric keypad
     Key_NumPoint,      // PERIOD (decimal point) on numeric keypad
-    Key_NumComma,
-    Key_Num00,
-    Key_Num000,
-    Key_NumLeftParen,
-    Key_NumRightParen,
-    Key_NumLeftBrace,
-    Key_NumRightBrace,
-    Key_NumTab,
-    Key_NumBackspace,
-    Key_NumA,
-    Key_NumB,
-    Key_NumC,
-    Key_NumD,
-    Key_NumE,
-    Key_NumF,
-    Key_NumXor,
-    Key_NumPower,
-    Key_NumPercent,
-    Key_NumLess,
-    Key_NumGreater,
-    Key_NumAmpersand,
-    Key_NumDblAmpersand,
-    Key_NumVerticalBar,
-    Key_NumDblVerticalBar,
-    Key_NumColon,
-    Key_NumHash,
-    Key_NumSpace,
-    Key_NumAt,
-    Key_NumExclam,
-    Key_NumMemStore,
-    Key_NumMemRecall,
-    Key_NumMemClear,
-    Key_NumMemAdd,
-    Key_NumMemSubtract,
-    Key_NumMemMultiply,
-    Key_NumMemDivide,
-    Key_NumPlusMinus,
-    Key_NumClear,
-    Key_NumClearEntry,
-    Key_NumBinary,
-    Key_NumOctal,
-    Key_NumDecimal,
-    Key_NumHexadecimal,
+    Key_NumEqual,
 
-    Key_LeftBracket,   // Left square bracket [
-    Key_LeftCtrl,      // Left CTRL
-    Key_LeftAlt,       // Left ALT
-    Key_LeftShift,     // Left SHIFT
-    Key_LeftWin,       // Left Windows logo key
+    Key_LeftCtrl,    // Left CTRL
+    Key_LeftAlt,     // Left ALT
+    Key_LeftShift,   // Left SHIFT
+    Key_LeftWin,     // Left Windows logo key
 
-    Key_RightBracket,   // Right square bracket ]
-    Key_RightCtrl,      // Right CTRL
-    Key_RightAlt,       // Right ALT
-    Key_RightShift,     // Right SHIFT
-    Key_RightWin,       // Right Windows logo key
+    Key_RightCtrl,    // Right CTRL
+    Key_RightAlt,     // Right ALT
+    Key_RightShift,   // Right SHIFT
+    Key_RightWin,     // Right Windows logo key
+    Key_MenuKey,      // Application key
 
     Key_PrintScreen,
     Key_ScrollLock,
@@ -161,18 +106,17 @@ enum class KeyboardKey
     Key_Backspace,
     Key_Enter,   // ENTER on main keyboard
     Key_Tab,
-
-    Key_Apps,   // Application key
     Key_CapsLock,
-
-    Key_Slash,        // (/) On main keyboard
-    Key_Backslash,    // (\)
-    Key_Comma,        // (,)
-    Key_Semicolon,    // (;)
-    Key_Period,       // (.) On main keyboard
-    Key_Grave,        // (`) Grave accent
-    Key_Apostrophe,   // (')
-    Key_Minus,        // (-) On main keyboard
+    Key_LeftBracket,    // Left square bracket [
+    Key_RightBracket,   // Right square bracket ]
+    Key_Slash,          // (/) On main keyboard
+    Key_Backslash,      // (\)
+    Key_Comma,          // (,)
+    Key_Semicolon,      // (;)
+    Key_Period,         // (.) On main keyboard
+    Key_Grave,          // (`) Grave accent
+    Key_Apostrophe,     // (')
+    Key_Minus,          // (-) On main keyboard
     Key_Equals,
 
     Key_MaxKeyNum   // Max and unknown code
