@@ -151,9 +151,9 @@ std::string KeyDescription(KeyboardKey key)
         case KeyboardKey::Key_NumSubtract:
             return "Numpad-";
         case KeyboardKey::Key_NumAdd:
-            return "NumpadPlus";
+            return "Numpad+";
         case KeyboardKey::Key_NumMultiply:
-            return "Multiply";
+            return "Numpad*";
         case KeyboardKey::Key_NumDivide:
             return "Numpad/";
         case KeyboardKey::Key_NumPoint:

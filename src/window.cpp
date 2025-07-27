@@ -341,16 +341,13 @@ void Window::draw()
     m_render_ptr->uploadBuffer(m_win_buf);
     m_render_ptr->uploadBuffer(m_text_win_buf);
 
-    auto       old_blend = m_render_ptr->getAlphaState();
-    auto       old_depth = m_render_ptr->getDepthState();
     AlphaState blend;
     DepthState depth;
-
     depth.enabled       = false;
     blend.blend_enabled = true;
 
-    m_render_ptr->setDepthState(depth);
-    m_render_ptr->setAlphaState(blend);
+    auto old_depth = m_render_ptr->setDepthState(depth);
+    auto old_blend = m_render_ptr->setAlphaState(blend);
 
     // draw background
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;

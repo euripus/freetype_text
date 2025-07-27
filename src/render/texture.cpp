@@ -28,14 +28,11 @@ bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & 
 void Texture::loadImageData(tex::ImageData const & image, RendererBase const & render)
 {
     m_committed = false;
-    // m_gen_mips    = true;
     m_type   = Type::TEXTURE_2D;
     m_format = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
     m_width  = image.width;
     m_height = image.height;
     m_depth  = 0;
-    // m_sampler.max = Filter::LINEAR;
-    // m_sampler.min = Filter::LINEAR_MIPMAP_LINEAR;
 
     render.createTexture(*this);
     render.uploadTextureData(*this, image);
@@ -44,11 +41,8 @@ void Texture::loadImageData(tex::ImageData const & image, RendererBase const & r
 bool Texture::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
 {
     m_committed   = false;
-    m_gen_mips    = false;
     m_type        = Type::TEXTURE_CUBE;
     m_depth       = 0;
-    m_sampler.max = Filter::LINEAR;
-    m_sampler.min = Filter::LINEAR;
 
     render.createTexture(*this);
 

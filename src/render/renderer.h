@@ -95,12 +95,12 @@ public:
 
     void setViewport(int32_t x_pos, int32_t y_pos, int32_t width, int32_t height);
 
-    void setAlphaState(AlphaState const & new_state);
-    void setCullState(CullState const & new_state);
-    void setDepthState(DepthState const & new_state);
-    void setOffsetState(OffsetState const & new_state);
-    void setStencilState(StencilState const & new_state);
-    void setWireState(WireState const & new_state);
+    AlphaState   setAlphaState(AlphaState const & new_state);
+    CullState    setCullState(CullState const & new_state);
+    DepthState   setDepthState(DepthState const & new_state);
+    OffsetState  setOffsetState(OffsetState const & new_state);
+    StencilState setStencilState(StencilState const & new_state);
+    WireState    setWireState(WireState const & new_state);
 
     AlphaState   getAlphaState() const { return m_alpha; }
     CullState    getCullState() const { return m_cull; }

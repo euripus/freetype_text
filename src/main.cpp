@@ -6,7 +6,7 @@ int main(void)
 {
     try
     {
-        Window w{800, 600, "FBO test"};
+        Window w{800, 600, "Freetype text & UI"};
         w.createWindow();
         w.initScene();
         w.run();

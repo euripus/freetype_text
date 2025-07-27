@@ -1138,58 +1138,76 @@ void RendererBase::setViewport(int32_t x_pos, int32_t y_pos, int32_t width, int3
     m_viewport_size.y = height;
 }
 
-void RendererBase::setAlphaState(AlphaState const & new_state)
+AlphaState RendererBase::setAlphaState(AlphaState const & new_state)
 {
     if(m_alpha == new_state)
-        return;
+        return m_alpha;
 
-    m_alpha = new_state;
+    AlphaState old = m_alpha;
+    m_alpha        = new_state;
     commitAlphaState();
+
+    return old;
 }
 
-void RendererBase::setCullState(CullState const & new_state)
+CullState RendererBase::setCullState(CullState const & new_state)
 {
     if(m_cull == new_state)
-        return;
+        return m_cull;
 
-    m_cull = new_state;
+    CullState old = m_cull;
+    m_cull        = new_state;
     commitCullState();
+
+    return old;
 }
 
-void RendererBase::setDepthState(DepthState const & new_state)
+DepthState RendererBase::setDepthState(DepthState const & new_state)
 {
     if(m_depth == new_state)
-        return;
+        return m_depth;
 
-    m_depth = new_state;
+    DepthState old = m_depth;
+    m_depth        = new_state;
     commitDepthState();
+
+    return old;
 }
 
-void RendererBase::setOffsetState(OffsetState const & new_state)
+OffsetState RendererBase::setOffsetState(OffsetState const & new_state)
 {
     if(m_offset == new_state)
-        return;
+        return m_offset;
 
-    m_offset = new_state;
+    OffsetState old = m_offset;
+    m_offset        = new_state;
     commitOffsetState();
+
+    return old;
 }
 
-void RendererBase::setStencilState(StencilState const & new_state)
+StencilState RendererBase::setStencilState(StencilState const & new_state)
 {
     if(m_stencil == new_state)
-        return;
+        return m_stencil;
 
-    m_stencil = new_state;
+    StencilState old = m_stencil;
+    m_stencil        = new_state;
     commitStencilState();
+
+    return old;
 }
 
-void RendererBase::setWireState(WireState const & new_state)
+WireState RendererBase::setWireState(WireState const & new_state)
 {
     if(m_wire == new_state)
-        return;
+        return m_wire;
 
-    m_wire = new_state;
+    WireState old = m_wire;
+    m_wire        = new_state;
     commitWireState();
+
+    return old;
 }
 
 void RendererBase::commitAlphaState() const
