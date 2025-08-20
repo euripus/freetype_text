@@ -14,7 +14,7 @@ CONFIG(release, debug|release) {
     TARGET = $$join(TARGET,,,_d)
 }
 
-QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast
+QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast -Wunitialized -Wpedantic
 
 DESTDIR = $$PWD/bin
 
