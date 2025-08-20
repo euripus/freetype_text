@@ -74,7 +74,6 @@ bin/freetype_text
 bin/freetype_text_d
 
 include/
-bin/freetype_text-Context2-Texture1level0.png
 
 # build directories
 /obj
