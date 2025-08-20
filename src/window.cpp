@@ -346,8 +346,8 @@ void Window::draw()
     depth.enabled       = false;
     blend.blend_enabled = true;
 
-    auto old_depth = m_render_ptr->setDepthState(depth);
-    auto old_blend = m_render_ptr->setAlphaState(blend);
+    auto const old_depth = m_render_ptr->setDepthState(depth);
+    auto const old_blend = m_render_ptr->setAlphaState(blend);
 
     // draw background
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
