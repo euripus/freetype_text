@@ -14,7 +14,7 @@ CONFIG(release, debug|release) {
     TARGET = $$join(TARGET,,,_d)
 }
 
-QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast -Wunitialized -Wpedantic
+QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast -Wuninitialized -Wpedantic
 
 DESTDIR = $$PWD/bin
 
@@ -23,11 +23,11 @@ INCLUDEPATH += $$PWD/include
 LIBS += -L$$PWD/lib
 
 win32:{
-    INCLUDEPATH += $$PWD/include/freetype $$PWD/../libs/boost_1_82_0
-    LIBS += -L$$PWD/../libs/boost_1_82_0/stage/lib
-    LIBS += -lopengl32 -lglu32 -lgdi32 -lglew32dll -lglfw3dll -lzlibdll
+    INCLUDEPATH += $$PWD/include/freetype $$PWD/../boost_1_89_0
+    LIBS += -L$$PWD/../boost_1_89_0/stage/lib
+    LIBS += -lopengl32 -lglu32 -lgdi32 -lglew32dll -lglfw3 -lzlibdll
     LIBS += -lfreetype -static-libgcc -static-libstdc++ -static -lpthread
-    LIBS += -lboost_json-mgw13-mt-x64-1_82
+    LIBS += -lboost_json-mgw17-mt-x64-1_89
 }
 unix:{
     INCLUDEPATH += /usr/include/freetype2/

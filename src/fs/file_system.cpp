@@ -7,6 +7,7 @@
 #include <fstream>
 #include <zlib.h>
 #include <iostream>
+#include <sstream>
 
 #include "zip.h"
 

@@ -8,35 +8,35 @@
 
 struct BITMAPFILEHEADER
 {
-    uint16_t bfType;   // bmp file signature
-    uint32_t bfSize;   // file size
-    uint16_t bfReserved1;
-    uint16_t bfReserved2;
-    uint32_t bfOffBits;
+    uint16_t bf_type;   // bmp file signature
+    uint32_t bf_size;   // file size
+    uint16_t bf_reserved1;
+    uint16_t bf_reserved2;
+    uint32_t bf_off_bits;
 };
 
 struct BITMAPINFO12   // CORE version
 {
-    uint32_t biSize;
-    uint16_t biWidth;
-    uint16_t biHeight;
-    uint16_t biPlanes;
-    uint16_t biBitCount;
+    uint32_t bi_size;
+    uint16_t bi_width;
+    uint16_t bi_height;
+    uint16_t bi_planes;
+    uint16_t bi_bit_count;
 };
 
 struct BITMAPINFO   // Standart version
 {
-    uint32_t biSize;
-    int32_t  biWidth;
-    int32_t  biHeight;
-    uint16_t biPlanes;
-    uint16_t biBitCount;
-    uint32_t biCompression;
-    uint32_t biSizeImage;
-    int32_t  biXPelsPerMeter;
-    int32_t  biYPelsPerMeter;
-    uint32_t biClrUsed;
-    uint32_t biClrImportant;
+    uint32_t bi_size;
+    int32_t  bi_width;
+    int32_t  bi_height;
+    uint16_t bi_planes;
+    uint16_t bi_bit_count;
+    uint32_t bi_compression;
+    uint32_t bi_size_image;
+    int32_t  bi_x_pels_per_meter;
+    int32_t  bi_y_pels_per_meter;
+    uint32_t bi_clr_used;
+    uint32_t bi_clr_important;
 };
 
 struct TGAHEADER
@@ -124,55 +124,57 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     auto *             pPtr     = buffer;
     BITMAPFILEHEADER * pHeader  = reinterpret_cast<BITMAPFILEHEADER *>(pPtr);
     pPtr                       += sizeof(BITMAPFILEHEADER);
-    if(pHeader->bfSize != file_size || pHeader->bfType != 0x4D42)   // little-endian
+    if(pHeader->bf_size != file_size || pHeader->bf_type != 0x4D42)   // little-endian
         return false;
 
     if(reinterpret_cast<uint32_t *>(pPtr)[0] == 12)
     {
         BITMAPINFO12 * pInfo = reinterpret_cast<BITMAPINFO12 *>(pPtr);
 
-        if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
+        if(pInfo->bi_bit_count != 24 && pInfo->bi_bit_count != 32)
             return false;
 
-        if(pInfo->biBitCount == 24)
+        if(pInfo->bi_bit_count == 24)
             image.type = ImageData::PixelType::pt_rgb;
         else
             image.type = ImageData::PixelType::pt_rgba;
 
-        image.width  = pInfo->biWidth;
-        image.height = pInfo->biHeight;
+        image.width  = pInfo->bi_width;
+        image.height = pInfo->bi_height;
     }
     else
     {
         BITMAPINFO * pInfo = reinterpret_cast<BITMAPINFO *>(pPtr);
 
-        if(pInfo->biBitCount != 24 && pInfo->biBitCount != 32)
+        if(pInfo->bi_bit_count != 24 && pInfo->bi_bit_count != 32)
             return false;
 
-        if(pInfo->biCompression != 3 && pInfo->biCompression != 6 && pInfo->biCompression != 0)
+        if(pInfo->bi_compression != 3 && pInfo->bi_compression != 6 && pInfo->bi_compression != 0)
         {
             return false;
         }
 
-        if(pInfo->biCompression == 3 || pInfo->biCompression == 6)
+        if(pInfo->bi_compression == 3 || pInfo->bi_compression == 6)
         {
             compressed = true;
         }
 
-        if(pInfo->biBitCount == 24)
+        if(pInfo->bi_bit_count == 24)
             image.type = ImageData::PixelType::pt_rgb;
         else
             image.type = ImageData::PixelType::pt_rgba;
 
-        image.width = static_cast<uint32_t>(pInfo->biWidth);
+        image.width = static_cast<uint32_t>(pInfo->bi_width);
 
-        if(pInfo->biHeight < 0)
+        if(pInfo->bi_height < 0)
+            flip = false;
+        else
             flip = true;
-        image.height = static_cast<uint32_t>(std::abs(pInfo->biHeight));
+        image.height = static_cast<uint32_t>(std::abs(pInfo->bi_height));
     }
 
     // read data:
-    pPtr                     = buffer + pHeader->bfOffBits;
+    pPtr                     = buffer + pHeader->bf_off_bits;
     uint32_t line_length     = 0;
     uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
     image.data_size          = image.width * image.height * bytes_per_pixel;
@@ -181,7 +183,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     uint32_t w_ind(0), h_ind(0);
 
     if(image.type == ImageData::PixelType::pt_rgb)
-        line_length = image.width * bytes_per_pixel + image.width % 4;
+        line_length = ((image.width * bytes_per_pixel + 3) / 4) * 4;
     else
         line_length = image.width * bytes_per_pixel;
 
@@ -191,7 +193,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
         for(uint32_t j = 0; j < line_length; j += bytes_per_pixel)
         {
             if(j > image.width * bytes_per_pixel)
-                continue;
+                break;
 
             if(compressed)
             {
