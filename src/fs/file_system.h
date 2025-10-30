@@ -25,7 +25,7 @@ public:
     static std::string GetTempFileName();
 
 private:
-    struct file_data
+    struct FileData
     {
         struct ZFileData
         {
@@ -42,11 +42,11 @@ private:
     };
 
     void   addZippedDir(std::string const & fname);
-    InFile loadRegularFile(file_data const & f) const;
-    InFile loadZipFile(file_data const & zf) const;
+    InFile loadRegularFile(FileData const & f) const;
+    InFile loadZipFile(FileData const & zf) const;
 
-    std::list<file_data> m_files;
-    std::string          m_data_dir;
+    std::list<FileData> m_files;
+    std::string         m_data_dir;
 };
 
 #endif   // FILESYSTEM_H

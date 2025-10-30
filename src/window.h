@@ -7,13 +7,13 @@
 #include <glm/glm.hpp>
 
 #include "input/input.h"
-#include "render/vertex_buffer.h"
 #include "render/texture.h"
+#include "render/vertex_buffer.h"
 #include "src/gui/ui.h"
 
-class GLFWvidmode;
-class GLFWwindow;
-class RendererBase;
+struct GLFWvidmode;
+struct GLFWwindow;
+class  RendererBase;
 
 class Window
 {
@@ -24,7 +24,7 @@ class Window
     glm::ivec2 const    m_size;   // initial size
     glm::ivec2          m_vp_size;
     std::string         m_title   = "UI example";
-    bool                m_wire    = false;
+    //bool                m_wire    = false;
     bool                m_running = true;
     unsigned int        m_num_fps = 0;   // Fps counter
 

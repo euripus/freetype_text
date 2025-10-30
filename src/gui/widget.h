@@ -1,17 +1,17 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <memory>
-#include <vector>
-#include <glm/glm.hpp>
 #include "basic_types.h"
 #include "rect2d.h"
 #include "texfont.h"
 #include "uiimagemanager.h"
+#include <glm/glm.hpp>
+#include <memory>
+#include <vector>
 
-class UIWindow;
-class VertexBuffer;
-class WidgetDesc;
+class  UIWindow;
+class  VertexBuffer;
+struct WidgetDesc;
 
 class Widget
 {

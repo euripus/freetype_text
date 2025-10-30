@@ -82,7 +82,7 @@ private:
     AtlasTex        m_atlas;   // one tex atlas for all loaded UI elements
     image_group_map m_groups;
 
-    friend class UIImageManagerDesc;
+    friend struct UIImageManagerDesc;
 };
 
 #endif

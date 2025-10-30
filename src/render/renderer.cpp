@@ -220,10 +220,10 @@ bool RendererBase::checkExtensions() const
     {
         return false;
     }
-    else if(!GLEW_ARB_texture_filter_anisotropic)
+    /*else if(!GLEW_ARB_texture_filter_anisotropic)
     {
         return false;
-    }
+    }*/
     else if(!GLEW_ARB_texture_env_combine)
     {
         return false;

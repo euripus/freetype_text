@@ -4,27 +4,27 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "render/renderer.h"
-#include "input/inputglfw.h"
-#include "gui/ui.h"
-#include "gui/text_box.h"
 #include "gui/button.h"
+#include "gui/text_box.h"
+#include "gui/ui.h"
+#include "input/inputglfw.h"
+#include "render/renderer.h"
 #include "scene_data.h"
 
 namespace
 {
-constexpr char const * base_tex_fname   = "base.tga";
-constexpr char const * data_folder      = "./data";
-Window *               g_cur_window_ptr = nullptr;
+constexpr char const * const base_tex_fname   = "base.tga";
+constexpr char const * const data_folder      = "./data";
+Window *                     g_cur_window_ptr = nullptr;
 }   // namespace
 
-Window::Window(int width, int height, char const * title)
-    : m_size(width, height),
-      m_title(title),
-      m_pyramid(VertexBuffer::pos_norm_tex, 2),
-      m_win_buf(VertexBuffer::pos_tex),
-      m_text_win_buf(VertexBuffer::pos_tex),
-      m_fs(data_folder)
+Window::Window(int width, int height, char const * title) :
+    m_size(width, height),
+    m_title(title),
+    m_pyramid(VertexBuffer::pos_norm_tex, 2),
+    m_win_buf(VertexBuffer::pos_tex),
+    m_text_win_buf(VertexBuffer::pos_tex),
+    m_fs(data_folder)
 {
     // Initialise GLFW
     if(!glfwInit())

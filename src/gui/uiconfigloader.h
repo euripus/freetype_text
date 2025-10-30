@@ -1,11 +1,11 @@
 #ifndef UICONFIGLOADER_H
 #define UICONFIGLOADER_H
 
-#include <glm/glm.hpp>
-#include <memory>
+#include "../fs/file_system.h"
 #include "basic_types.h"
 #include "texfont.h"
-#include "../fs/file_system.h"
+#include <glm/glm.hpp>
+#include <memory>
 
 class UIImageGroupManager;
 class UIWindow;
@@ -56,7 +56,7 @@ struct WidgetDesc
     static constexpr char const * sid_children         = "children";
 
     // constants
-    static constexpr float MaxWidgetSize = std::numeric_limits<int>::max();
+    static constexpr float MaxWidgetSize = static_cast<float>(std::numeric_limits<int>::max());
 
     static ElementType GetElementTypeFromString(std::string_view name);
     static Align       GetAlignFromString(std::string_view name);

@@ -126,7 +126,7 @@ FileSystem::FileSystem(std::string root_dir)
                     std::string tmp_fname = lp.generic_string();
                     tmp_fname.erase(0, m_data_dir.length() + 1);
 
-                    file_data fd;
+                    FileData fd;
                     fd.fname = tmp_fname;
 
                     m_files.emplace_back(std::move(fd));
@@ -188,7 +188,7 @@ void FileSystem::addZippedDir(std::string const & fname)
 
     for(uint16_t i = 0; i < eocd.number_central_directory_record; ++i)
     {
-        file_data zfile;
+        FileData zfile;
         zfile.is_zip = true;
 
         ifs.read(reinterpret_cast<char *>(&cdfh), sizeof(cdfh));
@@ -279,7 +279,7 @@ std::optional<InFile> FileSystem::getFile(std::string const & fname) const
 {
     assert(!fname.empty());
 
-    auto res = std::find_if(m_files.begin(), m_files.end(), [&fname](file_data const & f) -> bool {
+    auto res = std::find_if(m_files.begin(), m_files.end(), [&fname](FileData const & f) -> bool {
         if(f.is_zip)
         {
             if(fname == f.zip_data.fname)
@@ -331,7 +331,7 @@ bool FileSystem::writeFile(BaseFile const & file, std::string path)
 
     if(!isExist(filename))
     {
-        file_data fd;
+        FileData fd;
         fd.fname = filename;
 
         m_files.emplace_back(std::move(fd));
@@ -680,7 +680,7 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
     return true;
 }
 
-InFile FileSystem::loadRegularFile(file_data const & f) const
+InFile FileSystem::loadRegularFile(FileData const & f) const
 {
     std::ifstream ifs(m_data_dir + '/' + f.fname, std::ios::binary);
     if(!ifs.is_open())
@@ -718,7 +718,7 @@ InFile FileSystem::loadRegularFile(file_data const & f) const
 }
 
 // http://blog2k.ru/archives/3392
-InFile FileSystem::loadZipFile(file_data const & zf) const
+InFile FileSystem::loadZipFile(FileData const & zf) const
 {
     std::unique_ptr<int8_t[]> data;
 
