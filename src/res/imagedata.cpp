@@ -195,7 +195,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
         w_ind = 0;
         for(uint32_t j = 0; j < line_length; j += bytes_per_pixel)
         {
-            if(j > image.width * bytes_per_pixel)
+            if(w_ind >= image.width)
                 break;
 
             if(compressed)
@@ -469,10 +469,8 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
             chunk -= 127;
             for(uint16_t counter = 0; counter < chunk; counter++)
             {
-                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
-                {
+                if(current_pixel >= pixel_count)
                     return false;
-                }
 
                 img[current_byte + 0] = data[2];
                 img[current_byte + 1] = data[1];
@@ -490,10 +488,8 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
             chunk++;
             for(uint16_t counter = 0; counter < chunk; counter++)
             {
-                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
-                {
+                if(current_pixel >= pixel_count)
                     return false;
-                }
 
                 img[current_byte + 0] = data[2];
                 img[current_byte + 1] = data[1];
