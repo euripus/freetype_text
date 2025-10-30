@@ -139,8 +139,14 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
         else
             image.type = ImageData::PixelType::pt_rgba;
 
-        image.width  = p_info->bi_width;
-        image.height = p_info->bi_height;
+        image.width = p_info->bi_width;
+
+        // flip для BITMAPINFO12
+        if(static_cast<int16_t>(p_info->bi_height) < 0)
+            flip = false;
+        else
+            flip = true;
+        image.height = static_cast<uint32_t>(std::abs(static_cast<int16_t>(p_info->bi_height)));
     }
     else
     {
@@ -182,10 +188,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     uint8_t  red, green, blue, alpha;
     uint32_t w_ind(0), h_ind(0);
 
-    if(image.type == ImageData::PixelType::pt_rgb)
-        line_length = ((image.width * bytes_per_pixel + 3) / 4) * 4;
-    else
-        line_length = image.width * bytes_per_pixel;
+    line_length = ((image.width * bytes_per_pixel + 3) / 4) * 4;
 
     for(uint32_t i = 0; i < image.height; ++i)
     {
@@ -466,6 +469,11 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
             chunk -= 127;
             for(uint16_t counter = 0; counter < chunk; counter++)
             {
+                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
+                {
+                    return false;
+                }
+
                 img[current_byte + 0] = data[2];
                 img[current_byte + 1] = data[1];
                 img[current_byte + 2] = data[0];
@@ -474,11 +482,6 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
 
                 current_byte += bytes_per_pixel;
                 current_pixel++;
-
-                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
-                {
-                    return false;
-                }
             }
             data += bytes_per_pixel;
         }
@@ -487,6 +490,11 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
             chunk++;
             for(uint16_t counter = 0; counter < chunk; counter++)
             {
+                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
+                {
+                    return false;
+                }
+
                 img[current_byte + 0] = data[2];
                 img[current_byte + 1] = data[1];
                 img[current_byte + 2] = data[0];
@@ -496,11 +504,6 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
                 current_byte += bytes_per_pixel;
                 current_pixel++;
                 data += bytes_per_pixel;
-
-                if(current_pixel > pixel_count)   // Make sure we havent read too many pixels
-                {
-                    return false;
-                }
             }
         }
     } while(current_pixel < pixel_count);
