@@ -464,7 +464,7 @@ bool ReadCompressedTGA(ImageData & image, uint8_t * data)
         uint8_t chunk = data[0];
         data++;
 
-        if(chunk > 128)
+        if(chunk >= 128)
         {
             chunk -= 127;
             for(uint16_t counter = 0; counter < chunk; counter++)

@@ -28,11 +28,11 @@ bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & 
 void Texture::loadImageData(tex::ImageData const & image, RendererBase const & render)
 {
     m_committed = false;
-    m_type   = Type::TEXTURE_2D;
-    m_format = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
-    m_width  = image.width;
-    m_height = image.height;
-    m_depth  = 0;
+    m_type      = Type::TEXTURE_2D;
+    m_format    = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
+    m_width     = image.width;
+    m_height    = image.height;
+    m_depth     = 1;
 
     render.createTexture(*this);
     render.uploadTextureData(*this, image);
@@ -40,14 +40,14 @@ void Texture::loadImageData(tex::ImageData const & image, RendererBase const & r
 
 bool Texture::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
 {
-    m_committed   = false;
-    m_type        = Type::TEXTURE_CUBE;
-    m_depth       = 0;
+    m_committed = false;
+    m_type      = Type::TEXTURE_CUBE;
+    m_depth     = 0;
 
     render.createTexture(*this);
 
     tex::ImageData image;
-    for(uint32_t i = 0; i < fnames.size(); ++i)
+    for(std::size_t i = 0; i < fnames.size(); ++i)
     {
         if(!tex::ReadTGA(fnames[i], image))
             return false;
@@ -84,6 +84,8 @@ glm::mat4 TextureProjector::getTransformMatrix() const
 
 glm::mat4 TextureProjector::getProjectionMatrix() const
 {
+    assert(projected_texture->m_height > 0);
+
     glm::mat4 projection_matrix(1.0f);
     float     aspect =
         static_cast<float>(projected_texture->m_width) / static_cast<float>(projected_texture->m_height);

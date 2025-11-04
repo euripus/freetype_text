@@ -92,7 +92,7 @@ public:
     SamplerState m_sampler   = {};
     uint32_t     m_width     = 0;
     uint32_t     m_height    = 0;
-    uint32_t     m_depth     = 0;
+    uint32_t     m_depth     = 1;
 
     uint32_t m_render_id = 0;
 

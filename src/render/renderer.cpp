@@ -7,61 +7,44 @@
 
 // Mappings
 static std::array<GLenum, static_cast<uint32_t>(CompareMode::QUANTITY)> const g_gl_compare_mode = {
-    {GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL, GL_GEQUAL, GL_ALWAYS}
-};
+    {GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL, GL_GEQUAL, GL_ALWAYS}};
 
 static std::array<GLenum, static_cast<uint32_t>(AlphaState::SrcBlendMode::QUANTITY)> const
-    g_gl_alpha_src_blend = {
-        {GL_ZERO, GL_ONE, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-         GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA_SATURATE, GL_CONSTANT_COLOR,
-         GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA}
-};
+    g_gl_alpha_src_blend = {{GL_ZERO, GL_ONE, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA,
+                             GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
+                             GL_SRC_ALPHA_SATURATE, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR,
+                             GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA}};
 
 static std::array<GLenum, static_cast<uint32_t>(AlphaState::DstBlendMode::QUANTITY)> const
-    g_gl_alpha_dst_blend = {
-        {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-         GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR,
-         GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA}
-};
+    g_gl_alpha_dst_blend = {{GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA,
+                             GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR,
+                             GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA}};
 
 static std::array<GLenum, static_cast<uint32_t>(StencilState::OperationType::QUANTITY)> const
-    g_gl_stencil_operation = {
-        {GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_DECR, GL_INVERT}
-};
+    g_gl_stencil_operation = {{GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_DECR, GL_INVERT}};
 
 static std::array<GLint, static_cast<uint32_t>(Texture::Filter::QUANTITY)> const g_gl_tex_filter = {
     {GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR,
-     GL_LINEAR_MIPMAP_LINEAR}
-};
+     GL_LINEAR_MIPMAP_LINEAR}};
 
 static std::array<GLint, static_cast<uint32_t>(Texture::Wrap::QUANTITY)> const g_gl_tex_wrap = {
-    {GL_CLAMP, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_EDGE, GL_MIRRORED_REPEAT, GL_REPEAT}
-};
+    {GL_CLAMP, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_EDGE, GL_MIRRORED_REPEAT, GL_REPEAT}};
 
 static std::array<uint32_t, static_cast<uint32_t>(Texture::Type::QUANTITY)> const g_texture_gl_types{
-    {0, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP}
-};
+    {0, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP}};
 
 static std::array<uint32_t, static_cast<uint32_t>(CombineStage::CombineMode::QUANTITY)> const
-    g_texture_gl_combine_modes{
-        {GL_ADD, GL_MODULATE, GL_DECAL, GL_BLEND, GL_REPLACE, GL_COMBINE}
-};
+    g_texture_gl_combine_modes{{GL_ADD, GL_MODULATE, GL_DECAL, GL_BLEND, GL_REPLACE, GL_COMBINE}};
 
 static std::array<uint32_t, static_cast<uint32_t>(CombineStage::CombineFunctions::QUANTITY)> const
-    g_texture_gl_combine_functions{
-        {GL_REPLACE, GL_MODULATE, GL_ADD, GL_ADD_SIGNED, GL_INTERPOLATE, GL_SUBTRACT, GL_DOT3_RGB,
-         GL_DOT3_RGBA}
-};
+    g_texture_gl_combine_functions{{GL_REPLACE, GL_MODULATE, GL_ADD, GL_ADD_SIGNED, GL_INTERPOLATE,
+                                    GL_SUBTRACT, GL_DOT3_RGB, GL_DOT3_RGBA}};
 
 static std::array<uint32_t, static_cast<uint32_t>(CombineStage::SrcType::QUANTITY)> const
-    g_texture_gl_src_types{
-        {GL_TEXTURE, GL_TEXTURE0, GL_CONSTANT, GL_PRIMARY_COLOR, GL_PREVIOUS}
-};
+    g_texture_gl_src_types{{GL_TEXTURE, GL_TEXTURE0, GL_CONSTANT, GL_PRIMARY_COLOR, GL_PREVIOUS}};
 
 static std::array<uint32_t, static_cast<uint32_t>(CombineStage::OperandType::QUANTITY)> const
-    g_texture_gl_operand_types{
-        {GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA}
-};
+    g_texture_gl_operand_types{{GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA}};
 
 // Texture formats mapping
 struct GLTextureFormatMapping
@@ -72,17 +55,15 @@ struct GLTextureFormatMapping
 };
 
 static std::array<GLTextureFormatMapping, static_cast<uint32_t>(Texture::Format::QUANTITY)> const
-    g_texture_gl_formats{
-        {
-         {0, 0, 0},                                                 // NOFORMAT
-            {GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE},                       // R8G8B8
-            {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE},                     // R8G8B8A8
-            {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 0, GL_UNSIGNED_BYTE},   // DXT1
-            {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 0, GL_UNSIGNED_BYTE},   // DXT3
-            {GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, GL_UNSIGNED_BYTE},   // DXT5
-            {GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT}       // DEPTH
-        }
-};
+    g_texture_gl_formats{{
+        {0, 0, 0},                                                 // NOFORMAT
+        {GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE},                       // R8G8B8
+        {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE},                     // R8G8B8A8
+        {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 0, GL_UNSIGNED_BYTE},   // DXT1
+        {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 0, GL_UNSIGNED_BYTE},   // DXT3
+        {GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, GL_UNSIGNED_BYTE},   // DXT5
+        {GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT}       // DEPTH
+    }};
 
 constexpr static bool IsCompressedTextureFormat(Texture::Format fmt)
 {
@@ -91,7 +72,7 @@ constexpr static bool IsCompressedTextureFormat(Texture::Format fmt)
 
 constexpr static glm::vec4 GetMtrxRow(glm::mat4 const & mtx, int32_t row_num = 0)
 {
-    assert(row_num < 4);
+    assert(row_num < 4 && row_num >= 0);
 
     return glm::vec4(mtx[0][row_num], mtx[1][row_num], mtx[2][row_num], mtx[3][row_num]);
 }
@@ -404,14 +385,15 @@ void RendererBase::unbindVertexBuffer() const
 void RendererBase::draw(VertexBuffer const & geo) const
 {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(geo.m_indices.size()), GL_UNSIGNED_INT,
-                   static_cast<char *>(nullptr));
+                   static_cast<void *>(nullptr));
 }
 
 void RendererBase::drawIndexed(uint32_t first_index, uint32_t num_indices, uint32_t first_vert,
                                uint32_t num_verts) const
 {
+    void * offset = reinterpret_cast<void *>(static_cast<uintptr_t>(first_index) * sizeof(uint32_t));
     glDrawRangeElements(GL_TRIANGLES, first_vert, first_vert + num_verts, num_indices, GL_UNSIGNED_INT,
-                        reinterpret_cast<char *>(first_index));
+                        offset);
 }
 
 void RendererBase::createTexture(Texture & tex) const
@@ -434,6 +416,7 @@ void RendererBase::uploadTextureData(Texture & tex, tex::ImageData const & tex_d
     assert(tex.m_render_id != 0 && tex.m_type != Texture::Type::TEXTURE_NOTYPE);
     assert(tex_data.data.get() != nullptr);
     assert(tex.m_width == tex_data.width && tex.m_height == tex_data.height && tex.m_depth == tex_data.depth);
+    assert(static_cast<int>(tex.m_format) < static_cast<int>(Texture::Format::QUANTITY));
 
     uint32_t const  tex_type  = g_texture_gl_types[static_cast<uint32_t>(tex.m_type)];
     uint8_t const * data      = tex_data.data.get();
@@ -567,10 +550,10 @@ void RendererBase::applySamplerState(Texture const & tex) const
     }
     else if(tex.m_type == Texture::Type::TEXTURE_2D)
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+        glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+        glTexParameteri(target, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
     }
 }
 
@@ -597,7 +580,7 @@ void RendererBase::applyCombineStage(CombineStage const & combine) const
             uint32_t src = 0;
             if(src_type == CombineStage::SrcType::TEXTURE_STAGE)
             {
-                src  = g_texture_gl_src_types[static_cast<uint32_t>(src_type)];
+                src = g_texture_gl_src_types[static_cast<uint32_t>(src_type)];
                 src += num_stage;
             }
             else
@@ -983,7 +966,7 @@ bool RendererBase::bindTextureAsFrameBuffer(Texture * color_tex, Texture * depth
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, static_cast<GLsizei>(width),
-                     static_cast<GLsizei>(height), 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
+                     static_cast<GLsizei>(height), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D,
                                   m_custom_fbo_depth, 0);
     }

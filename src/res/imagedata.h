@@ -23,7 +23,7 @@ struct ImageData
 
     uint32_t                   width     = 0;
     uint32_t                   height    = 0;
-    uint32_t                   depth     = 0;
+    uint32_t                   depth     = 1;
     uint32_t                   data_size = 0;
     PixelType                  type      = PixelType::pt_none;
     std::unique_ptr<uint8_t[]> data;
