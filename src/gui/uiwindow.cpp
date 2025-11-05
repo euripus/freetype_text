@@ -7,16 +7,16 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group)
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
 
-void UIWindow::draw(VertexBuffer & background, VertexBuffer & text) const
+void UIWindow::fillBuffers(VertexBuffer & background, VertexBuffer & text) const
 {
     if(!m_visible)
         return;
 
     if(m_background)
-        m_background->draw(background, text);
+        m_background->fillBuffers(background, text);
 
     if(m_root)
-        m_root->draw(background, text);
+        m_root->fillBuffers(background, text);
 }
 
 void UIWindow::update(float time, bool check_cursor)

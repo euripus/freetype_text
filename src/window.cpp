@@ -337,7 +337,7 @@ void Window::draw()
     m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
     m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
-    m_ui_ptr->draw(m_win_buf, m_text_win_buf);
+    m_ui_ptr->clearAndFillBuffers(m_win_buf, m_text_win_buf);
     m_render_ptr->uploadBuffer(m_win_buf);
     m_render_ptr->uploadBuffer(m_text_win_buf);
 
@@ -379,9 +379,6 @@ void Window::draw()
 
     m_render_ptr->setDepthState(old_depth);
     m_render_ptr->setAlphaState(old_blend);
-
-    m_win_buf.clear();
-    m_text_win_buf.clear();
 }
 
 void Window::run()

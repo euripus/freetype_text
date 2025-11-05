@@ -19,7 +19,7 @@ public:
     void setCallback(std::function<void(void)> click_callback) { m_click_callback = click_callback; }
 
 private:
-    void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
+    void subClassFillTextBuffer(VertexBuffer & text) const override;
     void subClassUpdate(float time, bool check_cursor) override;
 
     RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;

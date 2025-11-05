@@ -37,7 +37,7 @@ public:
     UI(FileSystem & fsys);
 
     void       update(float time);
-    void       draw(VertexBuffer & background, VertexBuffer & text) const;
+    void       clearAndFillBuffers(VertexBuffer & background, VertexBuffer & text) const;
     void       resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
     glm::ivec2 getScreenSize() const { return m_screen_size; }
 

@@ -9,21 +9,21 @@
 #include <memory>
 #include <vector>
 
-class  UIWindow;
-class  VertexBuffer;
+class UIWindow;
+class VertexBuffer;
 struct WidgetDesc;
 
 class Widget
 {
 private:
-    virtual void subClassDraw(VertexBuffer & background, VertexBuffer & text) const {}
+    virtual void subClassFillTextBuffer(VertexBuffer & text) const {}
     virtual void subClassUpdate(float time, bool check_cursor) {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
-    void draw(VertexBuffer & background, VertexBuffer & text) const;
+    void fillBuffers(VertexBuffer & background, VertexBuffer & text) const;
     void update(float time, bool check_cursor);
     void move(glm::vec2 const & new_origin);
 

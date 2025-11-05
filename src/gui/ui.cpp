@@ -1,26 +1,28 @@
 #include "ui.h"
 #include "uiconfigloader.h"
+#include "src/render/vertex_buffer.h"
 
-UI::UI(FileSystem & fsys)
-    : m_fsys(fsys),
-      m_fonts(fsys)
+UI::UI(FileSystem & fsys) : m_fsys(fsys), m_fonts(fsys)
 {
     m_packer = std::make_unique<ChainsPacker>();
 }
 
 void UI::update(float time)
 {
-    for(auto & ptr: m_windows)
+    for(auto & ptr : m_windows)
     {
         ptr->update(time, true);
     }
 }
 
-void UI::draw(VertexBuffer & background, VertexBuffer & text) const
+void UI::clearAndFillBuffers(VertexBuffer & background, VertexBuffer & text) const
 {
-    for(auto const & ptr: m_windows)
+    background.clear();
+    text.clear();
+
+    for(auto const & ptr : m_windows)
     {
-        ptr->draw(background, text);
+        ptr->fillBuffers(background, text);
     }
 }
 

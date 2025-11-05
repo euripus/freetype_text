@@ -2,9 +2,8 @@
 #include "text_fitter.h"
 #include "ui.h"
 
-Button::Button(WidgetDesc const & desc, UIWindow & owner)
-    : Widget(desc, owner),
-      m_caption(std::move(desc.static_text))
+Button::Button(WidgetDesc const & desc, UIWindow & owner) :
+    Widget(desc, owner), m_caption(std::move(desc.static_text))
 {
     // Trim text to button size
     auto lines = TextFitter::AdjustTextToSize(*m_font, m_rect.m_size, false, m_caption);
@@ -61,18 +60,15 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     auto const &                  images = m_owner.getImageGroup();
     switch(state)
     {
-        case ButtonState::clicked:
-        {
+        case ButtonState::clicked: {
             result = images.getImageRegion(sid_button_clicked);
             break;
         }
-        case ButtonState::unclicked:
-        {
+        case ButtonState::unclicked: {
             result = images.getImageRegion(sid_button_unclicked);
             break;
         }
-        case ButtonState::disabled:
-        {
+        case ButtonState::disabled: {
             result = images.getImageRegion(sid_button_disabled);
             break;
         }
@@ -81,7 +77,7 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     return result;
 }
 
-void Button::subClassDraw(VertexBuffer & background, VertexBuffer & text) const
+void Button::subClassFillTextBuffer(VertexBuffer & text) const
 {
     // draw text
     float const line_height = m_font->getHeight();

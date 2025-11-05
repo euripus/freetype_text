@@ -12,7 +12,7 @@ public:
 
 private:
     void adjustTextToLines();
-    void subClassDraw(VertexBuffer & background, VertexBuffer & text) const override;
+    void subClassFillTextBuffer(VertexBuffer & text) const override;
 
 protected:
     std::string m_text = {};

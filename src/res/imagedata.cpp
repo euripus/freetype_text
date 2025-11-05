@@ -185,7 +185,7 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     uint32_t bytes_per_pixel = (image.type == ImageData::PixelType::pt_rgb ? 3 : 4);
     image.data_size          = image.width * image.height * bytes_per_pixel;
     auto     data            = std::make_unique<uint8_t[]>(image.data_size);
-    uint8_t  red, green, blue, alpha;
+    uint8_t  red, green, blue, alpha{255};
     uint32_t w_ind(0), h_ind(0);
 
     line_length = ((image.width * bytes_per_pixel + 3) / 4) * 4;
