@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "texfont.h"
+#include "utils/texfont.h"
 
 namespace TextFitter
 {

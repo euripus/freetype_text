@@ -1,6 +1,6 @@
 #include "uiconfigloader.h"
 #include "ui.h"
-#include "fontmanager.h"
+#include "utils/fontmanager.h"
 #include "widget.h"
 #include "uiwindow.h"
 #include "text_box.h"

@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include "uiconfigloader.h"
-#include "src/render/vertex_buffer.h"
+#include "../render/vertex_buffer.h"
 
 Widget::Widget(WidgetDesc const & desc, UIWindow & owner) : m_owner(owner)
 {

@@ -2,8 +2,8 @@
 #define WIDGET_H
 
 #include "basic_types.h"
-#include "rect2d.h"
-#include "texfont.h"
+#include "utils/rect2d.h"
+#include "utils/texfont.h"
 #include "uiimagemanager.h"
 #include <glm/glm.hpp>
 #include <memory>

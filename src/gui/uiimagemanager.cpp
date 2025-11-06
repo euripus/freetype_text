@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "src/render/vertex_buffer.h"
+#include "../render/vertex_buffer.h"
 
 void RegionDataOfUITexture::addBlock(VertexBuffer & vb, glm::vec2 & pos, glm::vec2 new_size) const
 {

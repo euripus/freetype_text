@@ -1,6 +1,6 @@
 #include "packer.h"
 #include "uiwindow.h"
-#include "chain.h"
+#include "utils/chain.h"
 #include "basic_types.h"
 #include <stdexcept>
 

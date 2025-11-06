@@ -1,6 +1,6 @@
 #include "ui.h"
 #include "uiconfigloader.h"
-#include "src/render/vertex_buffer.h"
+#include "../render/vertex_buffer.h"
 
 UI::UI(FileSystem & fsys) : m_fsys(fsys), m_fonts(fsys)
 {

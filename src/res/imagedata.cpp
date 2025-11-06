@@ -72,7 +72,7 @@ bool ReadBMP(std::string const & file_name, ImageData & image)
     image.height = 0;
     image.type   = ImageData::PixelType::pt_none;
     if(image.data)
-        image.data.reset(nullptr);
+        image.data.reset();
 
     std::ifstream        ifile(file_name, std::ios::binary);
     std::vector<uint8_t> file;

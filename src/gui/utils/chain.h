@@ -5,8 +5,8 @@
 #include <vector>
 #include <map>
 #include <glm/glm.hpp>
-#include "basic_types.h"
-#include "widget.h"
+#include "../basic_types.h"
+#include "../widget.h"
 
 enum class Direction
 {

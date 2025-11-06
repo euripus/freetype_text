@@ -6,9 +6,9 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include "src/gui/atlastex.h"
-#include "src/res/imagedata.h"
-#include "src/fs/file_system.h"
+#include "utils/atlastex.h"
+#include "../res/imagedata.h"
+#include "../fs/file_system.h"
 
 class UIImageGroupManager;
 class VertexBuffer;

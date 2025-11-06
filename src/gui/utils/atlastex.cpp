@@ -1,6 +1,6 @@
 #include "atlastex.h"
-#include "../res/imagedata.h"
-#include "../render/renderer.h"
+#include "../../res/imagedata.h"
+#include "../../render/renderer.h"
 #include <cassert>
 #include <cstring>
 
