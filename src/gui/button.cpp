@@ -17,15 +17,15 @@ void Button::subClassUpdate(float time, bool check_cursor)
         auto const & inp     = *m_owner.getOwner().m_input;
         glm::vec2    cur_pos = inp.getMousePosition();
 
-        Rect2D widget_area{m_pos, m_rect.m_size};
+        Rect2D const widget_area{m_pos, m_rect.m_size};
         if(widget_area.contains(cur_pos))
         {
-            if(inp.isMouseButtonPressed(MouseButton::Button_0))
+            if(inp.isMouseButtonPressed(MouseButton::Button_Left))
             {
                 m_state = ButtonState::clicked;
 
                 if(m_click_callback)
-                    m_owner.addCallBack(m_click_callback);
+                    m_owner.addCallBackToQueue(m_click_callback);
             }
             else
             {

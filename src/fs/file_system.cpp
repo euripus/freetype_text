@@ -36,7 +36,7 @@ void GetDosTime(std::time_t rawtime, uint16_t & time, uint16_t & date)
 }
 
 std::chrono::system_clock::time_point
-    file_time_to_time_point(std::filesystem::file_time_type const & file_time)
+file_time_to_time_point(std::filesystem::file_time_type const & file_time)
 {
     auto system_time = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
         file_time - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
@@ -157,6 +157,8 @@ void FileSystem::addZippedDir(std::string const & fname)
     size_t const file_size   = static_cast<size_t>(ifs.tellg());
     size_t       EOCD_offset = 0;
 
+    assert(file_size > sizeof(EOCD));
+
     for(size_t offset = file_size - sizeof(EOCD); offset != 0; --offset)
     {
         uint32_t signature = 0;
@@ -258,7 +260,7 @@ bool FileSystem::isExist(std::string const & fname) const
 {
     assert(!fname.empty());
 
-    for(auto & fl: m_files)
+    for(auto & fl : m_files)
     {
         if(fl.is_zip)
         {
@@ -600,7 +602,10 @@ bool FileSystem::addFileToZIP(BaseFile const * file, std::string const & zipname
     z_stream.next_in   = reinterpret_cast<unsigned char *>(const_cast<int8_t *>(file->getData()));
     z_stream.avail_out = lfh.uncompressed_size;
     z_stream.next_out  = data_buffer.data();
-    deflate(&z_stream, Z_FINISH);
+    auto res           = deflate(&z_stream, Z_FINISH);
+
+    if(res != Z_STREAM_END)
+        throw std::runtime_error("Deflate error while writing zip file");
 
     // Compressed data size
     char *   data_ptr = nullptr;
@@ -697,8 +702,7 @@ InFile FileSystem::loadRegularFile(FileData const & f) const
 
     auto data = std::make_unique<int8_t[]>(file_size);
 
-    ifs.read(reinterpret_cast<char *>(const_cast<int8_t *>(data.get())),
-             static_cast<std::streamsize>(file_size));
+    ifs.read(reinterpret_cast<char *>(data.get()), static_cast<std::streamsize>(file_size));
 
     bool success = !ifs.fail() && file_size == static_cast<size_t>(ifs.gcount());
     if(!success)
@@ -766,7 +770,10 @@ InFile FileSystem::loadZipFile(FileData const & zf) const
         zs.avail_out = lfh.uncompressed_size;
         zs.next_out  = reinterpret_cast<unsigned char *>(data.get());
 
-        inflate(&zs, Z_FINISH);
+        auto res = inflate(&zs, Z_FINISH);
+
+        if(res != Z_STREAM_END)
+            throw std::runtime_error("Inflate error while reading zip file");
 
         inflateEnd(&zs);
     }
@@ -774,8 +781,8 @@ InFile FileSystem::loadZipFile(FileData const & zf) const
 
     struct tm timeinfo;
     std::memset(&timeinfo, 0, sizeof(timeinfo));
-    timeinfo.tm_year = ((lfh.modification_date & 0xFE00) >> 9) + 1980;
-    timeinfo.tm_mon  = (lfh.modification_date & 0x01E0) >> 5;
+    timeinfo.tm_year = ((lfh.modification_date & 0xFE00) >> 9) + 80;
+    timeinfo.tm_mon  = ((lfh.modification_date & 0x01E0) >> 5) - 1;
     timeinfo.tm_mday = lfh.modification_date & 0x001F;
 
     timeinfo.tm_hour = (lfh.modification_time & 0xF800) >> 11;
@@ -785,5 +792,5 @@ InFile FileSystem::loadZipFile(FileData const & zf) const
     auto   t        = tm_to_time_point(timeinfo);
     size_t unc_size = zf.zip_data.compressed ? lfh.uncompressed_size : lfh.compressed_size;
 
-    return {zf.fname, t, unc_size, std::move(data)};
+    return {zf.zip_data.fname, t, unc_size, std::move(data)};
 }

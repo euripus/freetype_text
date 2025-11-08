@@ -26,9 +26,9 @@ const struct {
 #include FT_ERRORS_H
     // clang-format on
 
-    constexpr std::uint32_t HRES = 64;
-constexpr float        HRESf     = 64.0f;
-constexpr std::int32_t DPI       = 72;
+constexpr std::uint32_t HRES = 64;
+constexpr float         HRESf     = 64.0f;
+constexpr std::int32_t  DPI       = 72;
 
 // https://stackoverflow.com/questions/8638792/how-to-convert-packed-integer-16-16-fixed-point-to-float
 auto convert = [](auto const & fixed, int fraction = 6) {

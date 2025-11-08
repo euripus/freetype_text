@@ -23,11 +23,11 @@ void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32
     MouseButton button_id = MouseButton::ButtonCount;
 
     if(button == GLFW_MOUSE_BUTTON_LEFT)
-        button_id = MouseButton::Button_0;
+        button_id = MouseButton::Button_Left;
     else if(button == GLFW_MOUSE_BUTTON_MIDDLE)
-        button_id = MouseButton::Button_2;
+        button_id = MouseButton::Button_Middle;
     else if(button == GLFW_MOUSE_BUTTON_RIGHT)
-        button_id = MouseButton::Button_1;
+        button_id = MouseButton::Button_Right;
 
     bool pressed = (action != GLFW_RELEASE);
 

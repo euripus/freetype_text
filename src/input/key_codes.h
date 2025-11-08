@@ -124,9 +124,9 @@ enum class KeyboardKey
 
 enum class MouseButton
 {
-    Button_0,   // left
-    Button_1,   // right
-    Button_2,   // middle
+    Button_Left,
+    Button_Right,
+    Button_Middle,
 
     Button_Pos,   // for callbacks id
     Button_Whell,

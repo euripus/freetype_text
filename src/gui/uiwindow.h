@@ -52,7 +52,7 @@ public:
         return nullptr;
     }
 
-    void addCallBack(std::function<void(void)> fn);
+    void addCallBackToQueue(std::function<void(void)> fn);
 
 private:
     std::string m_caption;
@@ -70,7 +70,7 @@ private:
     UI &                 m_owner;
     UIImageGroup const * m_images = nullptr;
 
-    std::vector<std::function<void(void)>> m_callbacks;
+    std::vector<std::function<void(void)>> m_callbacks_queue;
 
     friend struct WindowDesc;
 };

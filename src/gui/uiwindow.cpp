@@ -1,8 +1,7 @@
 #include "uiwindow.h"
 #include "ui.h"
 
-UIWindow::UIWindow(UI & owner, std::string const & image_group)
-    : m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
 {
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
@@ -37,12 +36,12 @@ void UIWindow::update(float time, bool check_cursor)
     if(m_background)
         m_background->update(time, check_cursor);
 
-    if(!m_callbacks.empty())
+    if(!m_callbacks_queue.empty())
     {
-        for(auto & fn: m_callbacks)
+        for(auto & fn : m_callbacks_queue)
             fn();
 
-        m_callbacks.clear();
+        m_callbacks_queue.clear();
     }
 }
 
@@ -76,10 +75,10 @@ Widget * UIWindow::getBackgroundWidget() const
         return nullptr;
 }
 
-void UIWindow::addCallBack(std::function<void(void)> fn)
+void UIWindow::addCallBackToQueue(std::function<void(void)> fn)
 {
     if(fn)
-        m_callbacks.push_back(fn);
+        m_callbacks_queue.push_back(fn);
 }
 
 Widget * UIWindow::getWidgetFromID(std::string const & id_name) const
