@@ -52,13 +52,13 @@ void FontDataDesc::ParseFontsRes(FontManager & fmgr, InFile & file_json)
         auto const & arr = fonts_set_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & font_entry: arr)
+            for(auto const & font_entry : arr)
             {
                 auto const & font_obj = font_entry.as_object();
                 FontDataDesc desc;
                 std::string  glyphs;
 
-                for(auto const & kvp: font_obj)
+                for(auto const & kvp : font_obj)
                 {
                     if(kvp.key() == sid_file_name)
                     {
@@ -160,7 +160,7 @@ static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj
     assert(!obj.empty());
 
     WidgetDesc desc;
-    for(auto const & kvp: obj)
+    for(auto const & kvp : obj)
     {
         if(kvp.key() == WidgetDesc::sid_minimal_size)
         {
@@ -231,7 +231,7 @@ static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj
         auto const & arr = children_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & child_entry: arr)
+            for(auto const & child_entry : arr)
             {
                 auto const & widget_obj = child_entry.as_object();
                 if(!widget_obj.empty())
@@ -252,31 +252,31 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
     switch(desc.type)
     {
         case ElementType::TextBox:
-        {
-            result = std::make_unique<TextBox>(desc, owner);
+            {
+                result = std::make_unique<TextBox>(desc, owner);
 
-            break;
-        }
+                break;
+            }
         // case ElementType::ImageBox:
         // {
         //     // result = std::make_unique<ImageBox>(std::string(), owner);
         //     break;
         // }
         case ElementType::Button:
-        {
-            result = std::make_unique<Button>(desc, owner);
+            {
+                result = std::make_unique<Button>(desc, owner);
 
-            break;
-        }
+                break;
+            }
         case ElementType::VerticalLayoutee:
         case ElementType::HorizontalLayoutee:
         case ElementType::Unknown:
         case ElementType::ImageBox:
         case ElementType::Empty:
-        {
-            result = std::make_unique<Widget>(desc, owner);
-            break;
-        }
+            {
+                result = std::make_unique<Widget>(desc, owner);
+                break;
+            }
     }
 
     return result;
@@ -308,7 +308,7 @@ void WindowDesc::LoadWindow(UIWindow & win, InFile & file_json)
 
     if(auto const & win_obj = jv.get_object(); !win_obj.empty())
     {
-        for(auto const & kvp: win_obj)
+        for(auto const & kvp : win_obj)
         {
             if(kvp.key() == sid_window_size)
             {
@@ -347,7 +347,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group, FileSystem
     auto const & arr = jv.get_array();
     if(!arr.empty())
     {
-        for(auto const & kvp: arr)
+        for(auto const & kvp : arr)
         {
             std::string          path;
             std::string          name;
@@ -356,7 +356,7 @@ void parseImages(boost::json::value const & jv, UIImageGroup & group, FileSystem
             auto const it = kvp.get_object().begin();
             name          = it->key();
 
-            for(auto const & kvp2: it->value().as_object())
+            for(auto const & kvp2 : it->value().as_object())
             {
                 if(kvp2.key() == UIImageManagerDesc::sid_texture)
                     path = kvp2.value().as_string();
@@ -418,12 +418,12 @@ void UIImageManagerDesc::ParseUIRes(UIImageGroupManager & mgr, InFile & file_jso
         auto const & arr = gui_set_it->value().as_array();
         if(!arr.empty())
         {
-            for(auto const & set_val: arr)
+            for(auto const & set_val : arr)
             {
                 std::string gr_name;
 
                 auto const & array_obj = set_val.as_object();
-                for(auto const & kvp: array_obj)
+                for(auto const & kvp : array_obj)
                 {
                     if(kvp.key() == sid_set_name)
                     {

@@ -14,6 +14,17 @@ void KeyFuncCallback(GLFWwindow * win, int32_t key, int32_t scancode, int32_t ac
     ptr->keyEvent(MapKeyCode(key), pressed);
 }
 
+void CharacterCallback(GLFWwindow * window, unsigned int codepoint)
+{
+    assert(window != nullptr);
+
+    auto * ptr = static_cast<InputGLFW *>(glfwGetWindowUserPointer(window));
+
+    TextInput text_char{codepoint};
+
+    ptr->pushTextInput(text_char);
+}
+
 void MouseButtonCallback(GLFWwindow * win, int32_t button, int32_t action, int32_t mods)
 {
     assert(win != nullptr);
@@ -386,6 +397,7 @@ InputGLFW::InputGLFW(GLFWwindow * window)
     glfwSetWindowUserPointer(window, this);
 
     glfwSetKeyCallback(window, KeyFuncCallback);
+    glfwSetCharCallback(window, CharacterCallback);
     glfwSetCursorPosCallback(window, MousePositionCallback);
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
     glfwSetScrollCallback(window, MouseWheelCallback);

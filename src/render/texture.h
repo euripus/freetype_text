@@ -9,9 +9,8 @@
 class RendererBase;
 class BaseFile;
 
-class Texture
+struct ImageState
 {
-public:
     enum class Type
     {
         TEXTURE_NOTYPE,
@@ -78,13 +77,6 @@ public:
         bool      compare_mode   = false;
     };
 
-    bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
-    bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
-    void loadImageData(tex::ImageData const & image, RendererBase const & render);
-
-    bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
-
-    // protected:
     bool         m_committed = false;
     bool         m_gen_mips  = true;
     Type         m_type      = Type::TEXTURE_NOTYPE;
@@ -93,10 +85,13 @@ public:
     uint32_t     m_width     = 0;
     uint32_t     m_height    = 0;
     uint32_t     m_depth     = 1;
+    uint32_t     m_render_id = 0;
 
-    uint32_t m_render_id = 0;
+    bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
+    bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
+    void loadImageData(tex::ImageData const & image, RendererBase const & render);
 
-    friend class RendererBase;
+    bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
 };
 
 struct Light
@@ -117,7 +112,6 @@ struct Light
     glm::vec3 m_spot_direction  = glm::vec3(0.f);
     float     m_spot_exponent   = 0.f;
     float     m_spot_cos_cutoff = 0.f;
-    // bool      m_cast_shadows    = false;
 };
 
 struct TextureProjector
@@ -127,7 +121,7 @@ struct TextureProjector
     bool  is_cube_map   = false;
     float fovy          = 45.f;
 
-    Texture const * projected_texture = nullptr;
+    ImageState const * projected_texture = nullptr;
 
     glm::mat4 modelview  = glm::mat4(1.f);
     glm::mat4 reflection = glm::mat4(1.f);
@@ -231,7 +225,7 @@ struct TextureSlot
     std::uint32_t  tex_channel_num = 0;   // num of active channel in tex_coords pool
     CombineStage   combine_mode    = {};
 
-    Texture const *          texture   = nullptr;
+    ImageState const *       texture   = nullptr;
     TextureProjector const * projector = nullptr;
 };
 

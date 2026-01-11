@@ -82,7 +82,7 @@ void UIImageGroupManager::resizeAtlas()
     AtlasTex new_atlas(m_atlas.getSize() * 2);
     m_atlas = std::move(new_atlas);
 
-    for(auto & gr: m_groups)
+    for(auto & gr : m_groups)
     {
         gr.second->reloadImages();
     }
@@ -147,7 +147,7 @@ void UIImageGroup::reloadImages()
     auto regions = std::move(m_regions);
     m_regions.clear();
 
-    for(auto & reg: regions)
+    for(auto & reg : regions)
     {
         tex::ImageData image;
         if(auto file = m_fsys.getFile(reg.path); file)

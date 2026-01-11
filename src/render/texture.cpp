@@ -3,7 +3,7 @@
 #include "../fs/file.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-bool Texture::loadImageDataFromFile(std::string const & fname, RendererBase const & render)
+bool ImageState::loadImageDataFromFile(std::string const & fname, RendererBase const & render)
 {
     tex::ImageData image;
     if(!tex::ReadTGA(fname, image))
@@ -14,7 +14,7 @@ bool Texture::loadImageDataFromFile(std::string const & fname, RendererBase cons
     return true;
 }
 
-bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & render)
+bool ImageState::loadImageDataFromFile(BaseFile const & file, RendererBase const & render)
 {
     tex::ImageData image;
     if(!tex::ReadTGA(file, image))
@@ -25,7 +25,7 @@ bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & 
     return true;
 }
 
-void Texture::loadImageData(tex::ImageData const & image, RendererBase const & render)
+void ImageState::loadImageData(tex::ImageData const & image, RendererBase const & render)
 {
     m_committed = false;
     m_type      = Type::TEXTURE_2D;
@@ -38,7 +38,7 @@ void Texture::loadImageData(tex::ImageData const & image, RendererBase const & r
     render.uploadTextureData(*this, image);
 }
 
-bool Texture::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
+bool ImageState::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
 {
     m_committed = false;
     m_type      = Type::TEXTURE_CUBE;

@@ -33,45 +33,45 @@ static glm::vec2 GetWidgetsSize(Widget const & root, float border)
     switch(root.getType())
     {
         case ElementType::VerticalLayoutee:
-        {
-            for(auto const & ch: root.getChildren())
             {
-                auto const child_size = GetWidgetsSize(GetRef(ch), border);
+                for(auto const & ch : root.getChildren())
+                {
+                    auto const child_size = GetWidgetsSize(GetRef(ch), border);
 
-                result.x  = std::max(result.x, child_size.x);
-                result.y += child_size.y;
+                    result.x = std::max(result.x, child_size.x);
+                    result.y += child_size.y;
+                }
+
+                if(root.getNumChildren() > 1)
+                {
+                    result.y += border * (root.getNumChildren() - 1);
+                }
+
+                break;
             }
-
-            if(root.getNumChildren() > 1)
-            {
-                result.y += border * (root.getNumChildren() - 1);
-            }
-
-            break;
-        }
         case ElementType::HorizontalLayoutee:
-        {
-            for(auto const & ch: root.getChildren())
             {
-                auto const child_size = GetWidgetsSize(GetRef(ch), border);
+                for(auto const & ch : root.getChildren())
+                {
+                    auto const child_size = GetWidgetsSize(GetRef(ch), border);
 
-                result.x += child_size.x;
-                result.y  = std::max(result.y, child_size.y);
+                    result.x += child_size.x;
+                    result.y = std::max(result.y, child_size.y);
+                }
+
+                if(root.getNumChildren() > 1)
+                {
+                    result.x += border * (root.getNumChildren() - 1);
+                }
+
+                break;
             }
-
-            if(root.getNumChildren() > 1)
-            {
-                result.x += border * (root.getNumChildren() - 1);
-            }
-
-            break;
-        }
         default:
-        {
-            result = root.getSize();
+            {
+                result = root.getSize();
 
-            break;
-        }
+                break;
+            }
     }
 
     return result;
@@ -121,32 +121,32 @@ void ChainsPacker::fitWidgets(UIWindow * win) const
 
 void ChainsPacker::addNewString(Widget & string_node, StringLayout * parent, MemPool & pool) const
 {
-    for(auto & ch: string_node.getChildren())
+    for(auto & ch : string_node.getChildren())
     {
         auto & w = GetRef(ch);
         switch(w.getType())
         {
             case ElementType::VerticalLayoutee:
-            {
-                auto * nested_string = pool.createNewLayout(Direction::Up, m_border);
-                parent->addString(nested_string);
-                addNewString(w, nested_string, pool);
+                {
+                    auto * nested_string = pool.createNewLayout(Direction::Up, m_border);
+                    parent->addString(nested_string);
+                    addNewString(w, nested_string, pool);
 
-                break;
-            }
+                    break;
+                }
             case ElementType::HorizontalLayoutee:
-            {
-                auto * nested_string = pool.createNewLayout(Direction::LeftToRight, m_border);
-                parent->addString(nested_string);
-                addNewString(w, nested_string, pool);
+                {
+                    auto * nested_string = pool.createNewLayout(Direction::LeftToRight, m_border);
+                    parent->addString(nested_string);
+                    addNewString(w, nested_string, pool);
 
-                break;
-            }
+                    break;
+                }
             default:
-            {
-                addWidgetInLayout(w, parent);
-                break;
-            }
+                {
+                    addWidgetInLayout(w, parent);
+                    break;
+                }
         }
     }
 }

@@ -251,6 +251,11 @@ void Input::buttonEvent(MouseButton button_id, bool press)
     }
 }
 
+void Input::pushTextInput(TextInput text)
+{
+    ms_text_queue.push_back(std::move(text));
+}
+
 void Input::mousePos(int32_t xpos, int32_t ypos)
 {
     m_mouse_position = glm::ivec2{xpos, ypos};

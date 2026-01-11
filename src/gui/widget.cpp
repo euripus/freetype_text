@@ -123,24 +123,27 @@ float Widget::getHorizontalOffset(std::string const & line) const
     {
         case Align::left:
         case Align::top:   // horizontal align only
-        case Align::bottom: {
-            res = m_pos.x + m_fields.x;
+        case Align::bottom:
+            {
+                res = m_pos.x + m_fields.x;
 
-            break;
-        }
-        case Align::center: {
-            float const line_width = m_font->getTextSize(line.c_str()).x;
-            res                    = m_pos.x + (m_rect.width() - line_width) / 2.f;
+                break;
+            }
+        case Align::center:
+            {
+                float const line_width = m_font->getTextSize(line.c_str()).x;
+                res                    = m_pos.x + (m_rect.width() - line_width) / 2.f;
 
-            break;
-        }
-        case Align::right: {
-            float const line_width = m_font->getTextSize(line.c_str()).x;
-            float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
-            res                    = m_pos.x + delta;
+                break;
+            }
+        case Align::right:
+            {
+                float const line_width = m_font->getTextSize(line.c_str()).x;
+                float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+                res                    = m_pos.x + delta;
 
-            break;
-        }
+                break;
+            }
     }
 
     return res;

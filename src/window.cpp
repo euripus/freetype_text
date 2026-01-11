@@ -45,13 +45,13 @@ Window::Window(int width, int height, char const * title) :
     m_light.m_ambient  = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     m_light.m_position = glm::vec4(0.f, 4.5f, 3.3f, 1.0f);
 
-    m_base_texture.m_type        = Texture::Type::TEXTURE_2D;
-    m_base_texture.m_format      = Texture::Format::R8G8B8A8;
-    m_base_texture.m_sampler.max = Texture::Filter::LINEAR;
-    m_base_texture.m_sampler.min = Texture::Filter::LINEAR_MIPMAP_LINEAR;
-    m_base_texture.m_sampler.r   = Texture::Wrap::REPEAT;
-    m_base_texture.m_sampler.s   = Texture::Wrap::REPEAT;
-    m_base_texture.m_sampler.t   = Texture::Wrap::REPEAT;
+    m_base_texture.m_type        = ImageState::Type::TEXTURE_2D;
+    m_base_texture.m_format      = ImageState::Format::R8G8B8A8;
+    m_base_texture.m_sampler.max = ImageState::Filter::LINEAR;
+    m_base_texture.m_sampler.min = ImageState::Filter::LINEAR_MIPMAP_LINEAR;
+    m_base_texture.m_sampler.r   = ImageState::Wrap::REPEAT;
+    m_base_texture.m_sampler.s   = ImageState::Wrap::REPEAT;
+    m_base_texture.m_sampler.t   = ImageState::Wrap::REPEAT;
 }
 
 Window::~Window()
@@ -265,8 +265,6 @@ void Window::draw()
     glm::mat4   prj_mtx, mtx;
     TextureSlot slot;
 
-    setUIData(m_win);
-
     //         Render scene:
     // bind lights
     // for each mesh:
@@ -332,6 +330,8 @@ void Window::draw()
     m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
     // draw UI
+    setUIData(m_win);
+
     prj_mtx =
         glm::ortho(0.f, static_cast<float>(m_vp_size.x), 0.f, static_cast<float>(m_vp_size.y), -1.f, 1.f);
     m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);

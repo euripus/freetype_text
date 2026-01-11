@@ -60,18 +60,21 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     auto const &                  images = m_owner.getImageGroup();
     switch(state)
     {
-        case ButtonState::clicked: {
-            result = images.getImageRegion(sid_button_clicked);
-            break;
-        }
-        case ButtonState::unclicked: {
-            result = images.getImageRegion(sid_button_unclicked);
-            break;
-        }
-        case ButtonState::disabled: {
-            result = images.getImageRegion(sid_button_disabled);
-            break;
-        }
+        case ButtonState::clicked:
+            {
+                result = images.getImageRegion(sid_button_clicked);
+                break;
+            }
+        case ButtonState::unclicked:
+            {
+                result = images.getImageRegion(sid_button_unclicked);
+                break;
+            }
+        case ButtonState::disabled:
+            {
+                result = images.getImageRegion(sid_button_disabled);
+                break;
+            }
     }
 
     return result;

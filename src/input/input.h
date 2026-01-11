@@ -48,6 +48,7 @@ public:
 
     // functions for platform callbacks to call
     void buttonEvent(MouseButton button_id, bool press);
+    void pushTextInput(TextInput text);
     void mousePos(int32_t xpos, int32_t ypos);
     void mouseWhell(int32_t offset) {}
     void keyEvent(KeyboardKey key, bool press);

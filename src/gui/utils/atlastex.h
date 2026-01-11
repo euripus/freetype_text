@@ -26,9 +26,9 @@ public:
 
     void writeAtlasToTGA(std::string const & name);
 
-    void            uploadAtlasTexture(RendererBase const & render);
-    void            deleteAtlasTexture(RendererBase const & render);
-    Texture const * getAtlasTexture() const { return &m_atlas_tex; }
+    void               uploadAtlasTexture(RendererBase const & render);
+    void               deleteAtlasTexture(RendererBase const & render);
+    ImageState const * getAtlasTexture() const { return &m_atlas_tex; }
 
 private:
     int32_t atlasFit(uint32_t index, uint32_t width, uint32_t height);
@@ -37,8 +37,7 @@ private:
     uint32_t                   m_size = 0;
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;
-
-    Texture m_atlas_tex = {};
+    ImageState                 m_atlas_tex = {};
 };
 
 #endif   // ATLASTEX_H

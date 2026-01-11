@@ -8,7 +8,7 @@ float MaxStringWidthInLines(TexFont const & font, Lines const & lines)
 {
     float result = 0.f;
 
-    for(auto const & line: lines)
+    for(auto const & line : lines)
     {
         result = glm::max(result, font.getTextSize(line.c_str()).x);
     }
@@ -40,7 +40,7 @@ static void SplitTextForWidth(Lines & result, Lines const & words, TexFont const
     float       current_width  = 0.f;
     float       current_height = string_height;
 
-    for(auto const & word: words)
+    for(auto const & word : words)
     {
         float const word_blank_width = font.getTextSize(word.c_str()).x + blank_width;
 
@@ -88,9 +88,9 @@ std::string TrimWordToWidth(TexFont const & font, float const width, std::string
 
     for(uint32_t i = 0; i < word.size(); i += utf8_surrogate_len(word.c_str() + i))
     {
-        std::uint32_t ucodepoint  = utf8_to_utf32(word.c_str() + i);
-        Glyph const & glyph       = font.getGlyph(ucodepoint);
-        cur_width                += glyph.advance_x;
+        std::uint32_t ucodepoint = utf8_to_utf32(word.c_str() + i);
+        Glyph const & glyph      = font.getGlyph(ucodepoint);
+        cur_width += glyph.advance_x;
 
         if(cur_width + ellipsis_width > width)
         {
