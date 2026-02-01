@@ -76,8 +76,8 @@ Window::~Window()
 
         m_render_ptr->destroyTexture(m_base_texture);
 
-        m_ui_ptr->getUIImageAtlas().deleteAtlasTexture(*m_render_ptr);
-        m_ui_ptr->getFontImageAtlas().deleteAtlasTexture(*m_render_ptr);
+        AtlasTex::DeleteAtlasTexture(*m_render_ptr, m_ui_ptr->getUIImageAtlas());
+        AtlasTex::DeleteAtlasTexture(*m_render_ptr, m_ui_ptr->getFontImageAtlas());
 
         m_render_ptr->clearLights();
 
@@ -205,8 +205,8 @@ void Window::initScene()
     else
         throw std::runtime_error{"Failed to parse UI resources"};
 
-    m_ui_ptr->getUIImageAtlas().uploadAtlasTexture(*m_render_ptr);
-    m_ui_ptr->getFontImageAtlas().uploadAtlasTexture(*m_render_ptr);
+    AtlasTex::UploadAtlasTexture(*m_render_ptr, m_ui_ptr->getUIImageAtlas());
+    AtlasTex::UploadAtlasTexture(*m_render_ptr, m_ui_ptr->getFontImageAtlas());
 
     if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
     {
@@ -352,7 +352,7 @@ void Window::draw()
     // draw background
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 0;
-    slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTexture();
+    slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTextureState();
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);
@@ -366,7 +366,7 @@ void Window::draw()
     m_render_ptr->setDrawColor(m_ui_ptr->getFontColor());
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 0;
-    slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTexture();
+    slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTextureState();
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);

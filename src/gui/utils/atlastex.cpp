@@ -260,27 +260,27 @@ void AtlasTex::writeAtlasToTGA(std::string const & name)
     tex::WriteTGA(name, image);
 }
 
-void AtlasTex::uploadAtlasTexture(RendererBase const & render)
+void AtlasTex::UploadAtlasTexture(RendererBase const & render, AtlasTex & atlas)
 {
-    if(m_atlas_tex.m_render_id == 0)
+    if(atlas.m_atlas_tex.m_render_id == 0)
     {
-        render.createTexture(m_atlas_tex);
+        render.createTexture(atlas.m_atlas_tex);
     }
 
     tex::ImageData tex_data;
     tex_data.type      = tex::ImageData::PixelType::pt_rgba;
-    tex_data.width     = getSize();
-    tex_data.height    = getSize();
-    tex_data.data_size = m_data.size();
+    tex_data.width     = atlas.getSize();
+    tex_data.height    = atlas.getSize();
+    tex_data.data_size = atlas.m_data.size();
 
     auto atlas_data = std::make_unique<uint8_t[]>(tex_data.data_size);
-    std::memcpy(atlas_data.get(), m_data.data(), tex_data.data_size);
+    std::memcpy(atlas_data.get(), atlas.m_data.data(), tex_data.data_size);
     tex_data.data = std::move(atlas_data);
 
-    render.uploadTextureData(m_atlas_tex, tex_data);
+    render.uploadTextureData(atlas.m_atlas_tex, tex_data);
 }
 
-void AtlasTex::deleteAtlasTexture(RendererBase const & render)
+void AtlasTex::DeleteAtlasTexture(RendererBase const & render, AtlasTex & atlas)
 {
-    render.destroyTexture(m_atlas_tex);
+    render.destroyTexture(atlas.m_atlas_tex);
 }

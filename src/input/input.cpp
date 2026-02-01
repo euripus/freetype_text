@@ -223,6 +223,8 @@ std::string KeyDescription(KeyboardKey key)
     return "unknown key";
 }
 
+void Input::update() {}
+
 bool Input::isAnyKeyPressed() const
 {
     return std::any_of(std::begin(m_keys_states), std::end(m_keys_states), [](bool k) { return k; });
@@ -235,8 +237,8 @@ bool Input::isMouseButtonPressed(MouseButton button_id) const
 
 void Input::clearEventQueues()
 {
-    ms_text_queue.resize(0);
-    ms_wheel_queue.resize(0);
+    clearTextQueue();
+    clearWheelQueue();
 }
 
 void Input::buttonEvent(MouseButton button_id, bool press)
@@ -253,7 +255,8 @@ void Input::buttonEvent(MouseButton button_id, bool press)
 
 void Input::pushTextInput(TextInput text)
 {
-    ms_text_queue.push_back(std::move(text));
+    if(m_write_text_buffer)
+        ms_text_queue.push_back(std::move(text));
 }
 
 void Input::mousePos(int32_t xpos, int32_t ypos)

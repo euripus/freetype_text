@@ -28,6 +28,7 @@ public:
     virtual ~Input() = default;
 
     void resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
+    void update();
 
     // Keyboard
     KeyboardKey getKeyPressed() const { return m_last_key; }
@@ -45,6 +46,15 @@ public:
     template<class T>
     std::vector<T> const & getEventQueue();
     void                   clearEventQueues();
+    void                   clearTextQueue() { ms_text_queue.resize(0); }
+    void                   clearWheelQueue() { ms_wheel_queue.resize(0); }
+
+    void startWritingToTextQueue() { m_write_text_buffer = true; }
+    void stopWritingToTextQueueAndClear()
+    {
+        m_write_text_buffer = false;
+        clearTextQueue();
+    }
 
     // functions for platform callbacks to call
     void buttonEvent(MouseButton button_id, bool press);
@@ -62,18 +72,20 @@ protected:
     glm::ivec2 m_mouse_position                                                     = {};
     bool       m_mouse_buttons_state[static_cast<size_t>(MouseButton::ButtonCount)] = {};
 
+    bool m_write_text_buffer = false;
+
     inline static std::vector<TextInput>        ms_text_queue  = {};
     inline static std::vector<MouseScrollEvent> ms_wheel_queue = {};
 };
 
 template<>
-inline std::vector<MouseScrollEvent> const & Input::getEventQueue<MouseScrollEvent>()
+constexpr std::vector<MouseScrollEvent> const & Input::getEventQueue<MouseScrollEvent>()
 {
     return ms_wheel_queue;
 }
 
 template<>
-inline std::vector<TextInput> const & Input::getEventQueue<TextInput>()
+constexpr std::vector<TextInput> const & Input::getEventQueue<TextInput>()
 {
     return ms_text_queue;
 }
