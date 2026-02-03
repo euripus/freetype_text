@@ -284,3 +284,17 @@ void AtlasTex::DeleteAtlasTexture(RendererBase const & render, AtlasTex & atlas)
 {
     render.destroyTexture(atlas.m_atlas_tex);
 }
+
+void AtlasTex::BindAtlasRegionAsRenderTarget(RendererBase & render, glm::vec2 bl_corner, glm::vec2 tr_corner,
+                                             AtlasTex & atlas)
+{
+    int32_t x{0}, y{0}, width{0}, height{0};
+
+    x = static_cast<int32_t>(bl_corner.x * atlas.getSize());
+    y = static_cast<int32_t>(bl_corner.y * atlas.getSize());
+
+    width  = static_cast<int32_t>(tr_corner.x * atlas.getSize()) - x;
+    height = static_cast<int32_t>(tr_corner.y * atlas.getSize()) - y;
+
+    render.bindTextureAsFrameBuffer(atlas.getAtlasTextureState(), nullptr, {x, y, width, height});
+}

@@ -26,10 +26,12 @@ public:
 
     void writeAtlasToTGA(std::string const & name);
 
-    ImageState const * getAtlasTextureState() const { return &m_atlas_tex; }
+    ImageState * getAtlasTextureState() { return &m_atlas_tex; }
 
     static void UploadAtlasTexture(RendererBase const & render, AtlasTex & atlas);
     static void DeleteAtlasTexture(RendererBase const & render, AtlasTex & atlas);
+    static void BindAtlasRegionAsRenderTarget(RendererBase & render, glm::vec2 bl_corner, glm::vec2 tr_corner,
+                                              AtlasTex & atlas);
 
 private:
     int32_t atlasFit(uint32_t index, uint32_t width, uint32_t height);

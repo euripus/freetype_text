@@ -74,6 +74,9 @@ UIImageGroup const & UIImageGroupManager::getImageGroup(std::string const & grou
     if(auto search = m_groups.find(group_name); search != m_groups.end())
         return *search->second;
 
+    if(auto search = m_groups.find("default"); search != m_groups.end())
+        return *search->second;
+
     throw std::runtime_error("ImageGroup with requested name not found");
 }
 
@@ -115,8 +118,8 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     RegionDataOfUITexture tex_region;
     tex_region.name        = std::move(name);
     tex_region.path        = std::move(path);
-    tex_region.left_bottom = glm::vec2(x, y);
-    tex_region.right_top   = glm::vec2(x + w, y + h);
+    tex_region.left_bottom = glm::ivec2(x, y);
+    tex_region.right_top   = glm::ivec2(x + w, y + h);
     tex_region.tx0.s       = x * inv_size;
     tex_region.tx0.t       = y * inv_size;
     tex_region.tx1.s       = (x + w) * inv_size;
@@ -129,6 +132,13 @@ int32_t UIImageGroup::addImage(std::string name, std::string path, tex::ImageDat
     m_regions.push_back(tex_region);
 
     return m_regions.size() - 1;
+}
+
+void UIImageGroup::bindRegionAsRenderTarget(RendererBase & render, RegionDataOfUITexture const & region) const
+{
+    AtlasTex & atlas = m_owner.getAtlas();
+
+    AtlasTex::BindAtlasRegionAsRenderTarget(render, region.tx0, region.tx1, atlas);
 }
 
 RegionDataOfUITexture const * UIImageGroup::getImageRegion(std::string const & name) const
