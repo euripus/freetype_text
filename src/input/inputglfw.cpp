@@ -1,4 +1,5 @@
 #include "inputglfw.h"
+#include "../gui/utils/utf8_utils.h"
 #include <GLFW/glfw3.h>
 
 namespace
@@ -20,7 +21,7 @@ void CharacterCallback(GLFWwindow * window, unsigned int codepoint)
 
     auto * ptr = static_cast<InputGLFW *>(glfwGetWindowUserPointer(window));
 
-    TextInput text_char{codepoint};
+    TextInput text_char{utf32_to_utf8(codepoint)};
 
     ptr->pushTextInput(text_char);
 }
@@ -60,7 +61,7 @@ void MouseWheelCallback(GLFWwindow * win, double xoffset, double yoffset)
 
     auto * ptr = static_cast<InputGLFW *>(glfwGetWindowUserPointer(win));
 
-    ptr->mouseWhell(static_cast<int32_t>(yoffset));
+    ptr->mouseWhell({glm::vec2(xoffset, yoffset)});
 }
 }   // namespace
 

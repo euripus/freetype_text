@@ -12,13 +12,12 @@ std::string KeyDescription(KeyboardKey key);
 
 struct TextInput
 {
-    uint32_t character;
+    std::string utf8_character;
 };
 
 struct MouseScrollEvent
 {
-    glm::vec2 old_pos;
-    glm::vec2 new_pos;
+    glm::vec2 offset;
 };
 
 class Input
@@ -60,7 +59,7 @@ public:
     void buttonEvent(MouseButton button_id, bool press);
     void pushTextInput(TextInput text);
     void mousePos(int32_t xpos, int32_t ypos);
-    void mouseWhell(int32_t offset) {}
+    void mouseWhell(MouseScrollEvent offset) { ms_wheel_queue.push_back(std::move(offset)); }
     void keyEvent(KeyboardKey key, bool press);
 
 protected:

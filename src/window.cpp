@@ -276,6 +276,8 @@ void Window::draw()
     //      unbind textures
     //      clear slots
     // unbind lights
+    // render ui dinamic textures
+    // render ui
     m_render_ptr->clearBuffers();
 
     prj_mtx = glm::perspective(
