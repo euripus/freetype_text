@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/epsilon.hpp>
 #include <limits>
 #include <vector>
 
@@ -24,32 +25,19 @@ class AABB
     glm::vec3 m_max; /*!< The corner with the largest values for each coordinate of the AABB */
 public:
     //! Construct to invalid values to represent an unset bounding box
-    inline AABB()
-        : m_min(max_float),
-          m_max(min_float)
+    inline AABB() : m_min(max_float), m_max(min_float) {}
+
+    //! Construct to with specified min and max values
+    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) :
+        m_min(xmin, ymin, zmin), m_max(xmax, ymax, zmax)
     {}
 
     //! Construct to with specified min and max values
-    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
-        : m_min(xmin, ymin, zmin),
-          m_max(xmax, ymax, zmax)
-    {}
+    inline AABB(glm::vec3 min, glm::vec3 max) : m_min(min), m_max(max) {}
 
-    //! Construct to with specified min and max values
-    inline AABB(glm::vec3 min, glm::vec3 max)
-        : m_min(min),
-          m_max(max)
-    {}
+    inline AABB(AABB const & bb) : m_min(bb.m_min), m_max(bb.m_max) {}
 
-    inline AABB(AABB const & bb)
-        : m_min(bb.m_min),
-          m_max(bb.m_max)
-    {}
-
-    inline AABB(AABB && bb)
-        : m_min(bb.m_min),
-          m_max(bb.m_max)
-    {}
+    inline AABB(AABB && bb) : m_min(bb.m_min), m_max(bb.m_max) {}
 
     inline AABB & operator=(AABB const & bb)
     {
@@ -75,9 +63,13 @@ public:
 
     ~AABB() {}
 
-    inline bool operator==(AABB const & rhs) const { return m_min == rhs.m_min && m_max == rhs.m_max; }
+    inline bool operator==(AABB const & rhs) const
+    {
+        return glm::all(glm::epsilonEqual(m_min, rhs.m_min, std::numeric_limits<float>::epsilon()))
+               && glm::all(glm::epsilonEqual(m_max, rhs.m_max, std::numeric_limits<float>::epsilon()));
+    }
 
-    inline bool operator!=(AABB const & rhs) const { return m_min != rhs.m_min || m_max != rhs.m_max; }
+    inline bool operator!=(AABB const & rhs) const { return !(*this == rhs); }
 
     inline glm::vec3 min() const { return m_min; }
 

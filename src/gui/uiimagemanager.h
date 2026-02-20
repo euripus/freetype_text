@@ -29,10 +29,10 @@ struct RegionDataOfUITexture
     glm::vec2  tx0         = {};   // normalized coordinates
     glm::vec2  tx1         = {};
     // nine slice data
-    int32_t left   = 0;
-    int32_t right  = 0;
-    int32_t bottom = 0;
-    int32_t top    = 0;
+    int32_t left   = 1;
+    int32_t right  = 1;
+    int32_t bottom = 1;
+    int32_t top    = 1;
 
     std::string name;
     std::string path;

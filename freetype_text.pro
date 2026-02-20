@@ -14,7 +14,8 @@ CONFIG(release, debug|release) {
     TARGET = $$join(TARGET,,,_d)
 }
 
-QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast -Wuninitialized -Wpedantic
+QMAKE_CXXFLAGS += -std=c++17 -Wno-unused-parameter -Wold-style-cast -Wuninitialized -Wpedantic -Wfloat-equal
+#-Wdouble-promotion
 
 DESTDIR = $$PWD/bin
 
@@ -40,6 +41,7 @@ SOURCES +=  \
     src/fs/file_system.cpp \
     src/fs/memory_stream.cpp \
     src/gui/button.cpp \
+    src/gui/imagebox.cpp \
     src/gui/packer.cpp \
     src/gui/text_box.cpp \
     src/gui/text_fitter.cpp \
@@ -70,6 +72,7 @@ HEADERS +=  \
     src/fs/zip.h \
     src/gui/basic_types.h \
     src/gui/button.h \
+    src/gui/imagebox.h \
     src/gui/packer.h \
     src/gui/text_box.h \
     src/gui/text_fitter.h \

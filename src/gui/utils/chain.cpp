@@ -40,11 +40,7 @@ static void SetWinfo(Widget * w, WDict & dict, Direction d, float p, float s)
 class SpaceChain : public Chain
 {
 public:
-    SpaceChain(Direction d, float min, float max)
-        : Chain(d),
-          minsize(min),
-          maxsize(max)
-    {}
+    SpaceChain(Direction d, float min, float max) : Chain(d), minsize(min), maxsize(max) {}
     // needs direction for consistency check.....
     bool addChain(Chain *) override { return false; }
 
@@ -61,10 +57,7 @@ private:
 class WidChain : public Chain
 {
 public:
-    WidChain(Direction d, Widget * w)
-        : Chain(d),
-          widget(w)
-    {}
+    WidChain(Direction d, Widget * w) : Chain(d), widget(w) {}
     bool addChain(Chain *) override { return false; }
 
     float minSize() const override;
@@ -96,9 +89,7 @@ private:
 class ParChain : public Chain
 {
 public:
-    ParChain(Direction d)
-        : Chain(d)
-    {}
+    ParChain(Direction d) : Chain(d) {}
 
     bool addChain(Chain * s) override;
 
@@ -123,9 +114,7 @@ private:
 class SerChain : public Chain
 {
 public:
-    SerChain(Direction d)
-        : Chain(d)
-    {}
+    SerChain(Direction d) : Chain(d) {}
 
     bool addChain(Chain * s) override;
 
@@ -146,10 +135,8 @@ private:
     std::vector<Chain *> chains;
 };
 
-StringLayout::StringLayout(ChainOwner & chains_pool, Direction d, float def_border)
-    : m_dir(d),
-      m_chains_pool(chains_pool),
-      m_border(def_border)
+StringLayout::StringLayout(ChainOwner & chains_pool, Direction d, float def_border) :
+    m_dir(d), m_chains_pool(chains_pool), m_border(def_border)
 {
     m_ser_chain = m_chains_pool.getChain<SerChain>(m_dir);
     m_par_chain = m_chains_pool.getChain<ParChain>(Perp(m_dir));
@@ -251,7 +238,7 @@ glm::vec2 StringLayout::resizeAll(float new_width, float new_height)
     mainHorizontalChain()->distribute(lookup_table, cur_border, width - 2 * cur_border);
     mainVerticalChain()->distribute(lookup_table, cur_border, height - 2 * cur_border);
 
-    for(auto & [key, val]: lookup_table)
+    for(auto & [key, val] : lookup_table)
     {
         if(val.widget)
         {
@@ -316,7 +303,7 @@ void ParChain::distribute(WDict & wd, float pos, float space)
 
 bool ParChain::removeWidget(Widget const * w)
 {
-    for(auto & ch: chains)
+    for(auto & ch : chains)
     {
         if(ch->removeWidget(w))
         {
@@ -403,7 +390,7 @@ void SerChain::distribute(WDict & wd, float pos, float space)
         for(int i = 0; i < static_cast<int>(chains.size()); i++)
         {
             float max_s = chains.at(i)->maxSize();
-            if(sizes[i] == max_s)
+            if(glm::epsilonEqual(sizes[i], max_s, std::numeric_limits<float>::epsilon()))
                 continue;
 
             float min_s = chains.at(i)->minSize();
@@ -415,9 +402,9 @@ void SerChain::distribute(WDict & wd, float pos, float space)
 
             if(siz >= max_s)
             {
-                sizes[i]   = max_s;
+                sizes[i] = max_s;
                 available -= max_s - min_s;
-                sf        -= chains.at(i)->stretch();
+                sf -= chains.at(i)->stretch();
                 num_chains--;
                 do_again = true;
                 break;
@@ -433,8 +420,8 @@ void SerChain::distribute(WDict & wd, float pos, float space)
     float fpos = pos;
     for(int i = 0; i < static_cast<int>(chains.size()); i++)
     {
-        places[i]  = fpos;   // only give what we've got
-        fpos      += sizes[i];
+        places[i] = fpos;   // only give what we've got
+        fpos += sizes[i];
     }
 
     bool backwards = (direction() == Direction::RightToLeft || direction() == Direction::Down);

@@ -69,7 +69,8 @@ struct AlphaState
                && (dst_blend == other.dst_blend) && (compare_enabled == other.compare_enabled)
                && (compare == other.compare)
                && glm::epsilonEqual(reference, other.reference, std::numeric_limits<float>::epsilon())
-               && (constant_color == other.constant_color);
+               && glm::all(glm::epsilonEqual(constant_color, other.constant_color,
+                                             std::numeric_limits<float>::epsilon()));
     }
 };
 
