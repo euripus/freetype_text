@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "../input/input.h"
+#include "../render/vertex_buffer.h"
 #include "utils/fontmanager.h"
 #include "uiimagemanager.h"
 #include "packer.h"
@@ -31,6 +32,8 @@ constexpr glm::vec4 aqua    = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
 using ColorBuffers = std::map<glm::vec4, VertexBuffer>;
 }   // namespace ColorMap
 
+class RendererBase;
+
 class UI
 {
 public:
@@ -41,9 +44,12 @@ public:
     void       resize(int32_t w, int32_t h) { m_screen_size = glm::ivec2{w, h}; }
     glm::ivec2 getScreenSize() const { return m_screen_size; }
 
+    bool init(RendererBase & render);
+    void draw(RendererBase & render);
+    void terminate(RendererBase & render);
+
     UIWindow * loadWindow(InFile & file_json, int32_t layer = 0,
                           std::string const & image_group = std::string());
-    void       parseUIResources(InFile & file_json);
 
     void fitWidgets(UIWindow * win_ptr) const;
 
@@ -62,6 +68,9 @@ public:
     glm::vec4               m_font_color   = ColorMap::black;
     std::unique_ptr<Packer> m_packer;
     std::string             m_current_gui_set = {"default"};
+
+    mutable VertexBuffer m_win_buf;
+    mutable VertexBuffer m_text_win_buf;
 
     std::vector<std::unique_ptr<UIWindow>> m_windows;
     std::vector<std::vector<UIWindow *>>   m_layers;

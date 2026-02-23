@@ -6,12 +6,6 @@
 class ImageBox : public Widget
 {
 public:
-    struct Texture
-    {
-        tex::ImageData img_data;
-        ImageState     img_state;
-    };
-
     ImageBox(WidgetDesc const & desc, UIWindow & owner);
 
     // Widget interface

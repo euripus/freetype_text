@@ -247,8 +247,8 @@ Glyph const & TexFont::getGlyph(std::uint32_t const ucodepoint) const
         if((glyph.charcode == ucodepoint)
            && ((ucodepoint == static_cast<std::uint32_t>(-1))
                || ((glyph.outline_type == m_outline_type)
-                   && (glm::epsilonEqual(glyph.outline_thickness, m_outline_thickness,
-                                         std::numeric_limits<float>::epsilon())))))
+                   && glm::epsilonEqual(glyph.outline_thickness, m_outline_thickness,
+                                         std::numeric_limits<float>::epsilon()))))
         {
             return glyph;
         }

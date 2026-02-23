@@ -19,12 +19,7 @@ Window *                     g_cur_window_ptr = nullptr;
 }   // namespace
 
 Window::Window(int width, int height, char const * title) :
-    m_size(width, height),
-    m_title(title),
-    m_pyramid(VertexBuffer::pos_norm_tex, 2),
-    m_win_buf(VertexBuffer::pos_tex),
-    m_text_win_buf(VertexBuffer::pos_tex),
-    m_fs(data_folder)
+    m_size(width, height), m_title(title), m_pyramid(VertexBuffer::pos_norm_tex, 2), m_fs(data_folder)
 {
     // Initialise GLFW
     if(!glfwInit())
@@ -68,16 +63,9 @@ Window::~Window()
         m_render_ptr->unloadBuffer(m_sphere);
         m_render_ptr->deleteBuffer(m_sphere);
 
-        m_render_ptr->unloadBuffer(m_win_buf);
-        m_render_ptr->deleteBuffer(m_win_buf);
-
-        m_render_ptr->unloadBuffer(m_text_win_buf);
-        m_render_ptr->deleteBuffer(m_text_win_buf);
-
         m_render_ptr->destroyTexture(m_base_texture);
 
-        AtlasTex::DeleteAtlasTexture(*m_render_ptr, m_ui_ptr->getUIImageAtlas());
-        AtlasTex::DeleteAtlasTexture(*m_render_ptr, m_ui_ptr->getFontImageAtlas());
+        m_ui_ptr->terminate(*m_render_ptr);
 
         m_render_ptr->clearLights();
 
@@ -198,16 +186,12 @@ void Window::initScene()
         throw std::runtime_error{"Texture file not found"};
 
     // load ui data
-    if(auto file = m_fs.getFile("ui/jsons/ui_res.json"); file)
+    if(!m_ui_ptr->init(*m_render_ptr))
     {
-        m_ui_ptr->parseUIResources(*file);
-    }
-    else
         throw std::runtime_error{"Failed to parse UI resources"};
+    }
 
-    AtlasTex::UploadAtlasTexture(*m_render_ptr, m_ui_ptr->getUIImageAtlas());
-    AtlasTex::UploadAtlasTexture(*m_render_ptr, m_ui_ptr->getFontImageAtlas());
-
+    // load example window
     if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
     {
         m_win = m_ui_ptr->loadWindow(*file);
@@ -332,55 +316,8 @@ void Window::draw()
     m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
     // draw UI
-    setUIData(m_win);
-
-    prj_mtx =
-        glm::ortho(0.f, static_cast<float>(m_vp_size.x), 0.f, static_cast<float>(m_vp_size.y), -1.f, 1.f);
-    m_render_ptr->setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
-    m_render_ptr->setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
-
-    m_ui_ptr->clearAndFillBuffers(m_win_buf, m_text_win_buf);
-    m_render_ptr->uploadBuffer(m_win_buf);
-    m_render_ptr->uploadBuffer(m_text_win_buf);
-
-    AlphaState blend;
-    DepthState depth;
-    depth.enabled       = false;
-    blend.blend_enabled = true;
-
-    auto const old_depth = m_render_ptr->setDepthState(depth);
-    auto const old_blend = m_render_ptr->setAlphaState(blend);
-
-    // draw background
-    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-    slot.tex_channel_num   = 0;
-    slot.texture           = m_ui_ptr->getUIImageAtlas().getAtlasTextureState();
-    slot.projector         = nullptr;
-    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-    m_render_ptr->addTextureSlot(slot);
-    m_render_ptr->bindSlots();
-    m_render_ptr->bindVertexBuffer(&m_win_buf);
-    m_render_ptr->draw(m_win_buf);
-    m_render_ptr->unbindVertexBuffer();
-    m_render_ptr->unbindAndClearSlots();
-
-    // draw text
-    m_render_ptr->setDrawColor(m_ui_ptr->getFontColor());
-    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-    slot.tex_channel_num   = 0;
-    slot.texture           = m_ui_ptr->getFontImageAtlas().getAtlasTextureState();
-    slot.projector         = nullptr;
-    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-    m_render_ptr->addTextureSlot(slot);
-    m_render_ptr->bindSlots();
-    m_render_ptr->bindVertexBuffer(&m_text_win_buf);
-    m_render_ptr->draw(m_text_win_buf);
-    m_render_ptr->unbindVertexBuffer();
-    m_render_ptr->unbindAndClearSlots();
-    m_render_ptr->setDrawColor(ColorMap::white);   // return to default color
-
-    m_render_ptr->setDepthState(old_depth);
-    m_render_ptr->setAlphaState(old_blend);
+    setUIData(m_win);    
+    m_ui_ptr->draw(*m_render_ptr);
 }
 
 void Window::run()

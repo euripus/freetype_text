@@ -13,7 +13,7 @@
 
 struct GLFWvidmode;
 struct GLFWwindow;
-class  RendererBase;
+class RendererBase;
 
 class Window
 {
@@ -23,10 +23,10 @@ class Window
     GLFWwindow *        mp_glfw_win        = nullptr;
     glm::ivec2 const    m_size;   // initial size
     glm::ivec2          m_vp_size;
-    std::string         m_title   = "UI example";
-    //bool                m_wire    = false;
-    bool                m_running = true;
-    unsigned int        m_num_fps = 0;   // Fps counter
+    std::string         m_title = "UI example";
+    // bool                m_wire    = false;
+    bool         m_running = true;
+    unsigned int m_num_fps = 0;   // Fps counter
 
     std::unique_ptr<Input>        m_input_ptr;
     std::unique_ptr<RendererBase> m_render_ptr;
@@ -36,10 +36,8 @@ class Window
     VertexBuffer m_pyramid;
     VertexBuffer m_plane;
     VertexBuffer m_sphere;
-    ImageState      m_base_texture;
+    ImageState   m_base_texture;
     Light        m_light;
-    VertexBuffer m_win_buf;
-    VertexBuffer m_text_win_buf;
 
     // UI
     UIWindow * m_win = nullptr;
