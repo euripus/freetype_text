@@ -96,7 +96,7 @@
                      "text_horizontal":"center"
                   },
                   {
-                     "minimal_size":[ 100, 30 ],
+                     "minimal_size":[ 80, 30 ],
                      "type":"TextBox",
                      "stretch":1,
                      "visible":true,
@@ -108,6 +108,21 @@
                      "font_size":24,
                      "static_text":"fps",
                      "text_horizontal":"left"
+                  },
+                  {
+                     "minimal_size":[ 64, 64 ],
+                     "type":"ImageBox",
+                     "stretch":1,
+                     "visible":true,
+                     "texture":"button",
+                     "region_name":"static_image",
+                     "id_name":"image",
+                     "align_horizontal":"left",
+                     "align_vertical":"top",
+                     "font":"noto_sans_16",
+                     "font_size":16,
+                     "static_text":"",
+                     "text_horizontal":"center"
                   }
                ]
             },

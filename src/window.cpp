@@ -191,6 +191,8 @@ void Window::initScene()
         throw std::runtime_error{"Failed to parse UI resources"};
     }
 
+    //m_ui_ptr->getUIImageAtlas().writeAtlasToTGA("ui_atlas.tga");
+
     // load example window
     if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
     {
@@ -316,7 +318,7 @@ void Window::draw()
     m_render_ptr->drawBBox(test_box, glm::mat4(1.f), {1.0f, 0.0f, 0.0f});
 
     // draw UI
-    setUIData(m_win);    
+    setUIData(m_win);
     m_ui_ptr->draw(*m_render_ptr);
 }
 

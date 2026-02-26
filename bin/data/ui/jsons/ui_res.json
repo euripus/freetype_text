@@ -6,24 +6,36 @@
                 {
                     "background": {
                         "texture": "ui/def/background.tga",
-                        "9slice_margins": [ 10, 10, 10, 10 ]
+                        "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 },
                 {
                     "button_clicked": {
-                        "texture": "ui/def/button.tga",
-                        "9slice_margins": [ 5, 5, 5, 5 ]
+                        "texture": "ui/def/button_pressed.tga",
+                        "9slice_margins": [ 25, 25, 10, 10 ]
                     }
                 },
                 {
                     "button_unclicked": {
-                        "texture": "ui/def/button_unp.tga",
-                        "9slice_margins": [ 5, 5, 5, 5 ]
+                        "texture": "ui/def/button_active.tga",
+                        "9slice_margins": [ 25, 25, 10, 10 ]
+                    }
+                },
+                {
+                    "button_focused": {
+                        "texture": "ui/def/button_focused.tga",
+                        "9slice_margins": [ 25, 25, 10, 10 ]
                     }
                 },
                 {
                     "button_disabled": {
-                        "texture": "ui/def/button.tga",
+                        "texture": "ui/def/button_disabled.tga",
+                        "9slice_margins": [ 25, 25, 10, 10 ]
+                    }
+                },
+				{
+                    "static_image": {
+                        "texture": "ui/def/turtle-icon.tga",
                         "9slice_margins": [ 5, 5, 5, 5 ]
                     }
                 }

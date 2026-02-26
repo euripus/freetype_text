@@ -5,6 +5,7 @@
 #include "uiwindow.h"
 #include "text_box.h"
 #include "button.h"
+#include "imagebox.h"
 #include <boost/json.hpp>
 
 Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_outline)
@@ -257,11 +258,11 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
 
                 break;
             }
-        // case ElementType::ImageBox:
-        // {
-        //     // result = std::make_unique<ImageBox>(std::string(), owner);
-        //     break;
-        // }
+        case ElementType::ImageBox:
+            {
+                result = std::make_unique<ImageBox>(desc, owner);
+                break;
+            }
         case ElementType::Button:
             {
                 result = std::make_unique<Button>(desc, owner);
@@ -271,7 +272,6 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
         case ElementType::VerticalLayoutee:
         case ElementType::HorizontalLayoutee:
         case ElementType::Unknown:
-        case ElementType::ImageBox:
         case ElementType::Empty:
             {
                 result = std::make_unique<Widget>(desc, owner);

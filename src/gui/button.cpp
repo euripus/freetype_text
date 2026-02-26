@@ -33,14 +33,15 @@ void Button::subClassUpdate(float time, bool check_cursor)
                 {
                     m_state = ButtonState::unclicked;
                 }
+                else
+                {
+                    m_state = ButtonState::focused;
+                }
             }
         }
         else
         {
-            if(m_state == ButtonState::clicked)
-            {
-                m_state = ButtonState::unclicked;
-            }
+            m_state = ButtonState::unclicked;
         }
 
         m_region_ptr = getRegionFromState(m_state);
@@ -51,6 +52,7 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
 {
     static constexpr char const * sid_button_clicked   = "button_clicked";
     static constexpr char const * sid_button_unclicked = "button_unclicked";
+    static constexpr char const * sid_button_focused   = "button_focused";
     static constexpr char const * sid_button_disabled  = "button_disabled";
 
     if(!m_owner.isImageGroupExist())
@@ -68,6 +70,11 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
         case ButtonState::unclicked:
             {
                 result = images.getImageRegion(sid_button_unclicked);
+                break;
+            }
+        case ButtonState::focused:
+            {
+                result = images.getImageRegion(sid_button_focused);
                 break;
             }
         case ButtonState::disabled:

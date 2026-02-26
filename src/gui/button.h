@@ -11,6 +11,7 @@ public:
     {
         clicked,
         unclicked,
+        focused,
         disabled
     };
 
