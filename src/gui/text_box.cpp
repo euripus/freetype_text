@@ -3,12 +3,13 @@
 #include "uiconfigloader.h"
 #include "text_fitter.h"
 
-TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner) : Widget(desc, owner), m_text(desc.static_text)
+TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner) :
+    Widget(desc, owner), m_text(desc.static_text), m_text_color(desc.text_color)
 {
     adjustTextToLines();
 }
 
-void TextBox::subClassFillTextBuffer(VertexBuffer & text) const
+void TextBox::subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const
 {
     if(!m_formated)
         return;
@@ -23,7 +24,7 @@ void TextBox::subClassFillTextBuffer(VertexBuffer & text) const
         text_pos.x = getHorizontalOffset(line);
         text_pos.y = y + getVerticalOffset();
 
-        m_font->addText(text, line.c_str(), text_pos);
+        m_font->addText(ColorMap::GetOrCreate(text, m_text_color), line.c_str(), text_pos);
         y -= line_height;
     }
 }

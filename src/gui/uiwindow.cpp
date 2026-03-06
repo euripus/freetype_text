@@ -6,7 +6,7 @@ UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
 
-void UIWindow::fillBuffers(VertexBuffer & background, VertexBuffer & text) const
+void UIWindow::fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const
 {
     if(!m_visible)
         return;

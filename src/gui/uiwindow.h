@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include "basic_types.h"
 #include "widget.h"
 
 class UI;
@@ -17,7 +18,7 @@ public:
     bool                 isImageGroupExist() const { return m_images != nullptr; }
     UIImageGroup const & getImageGroup() const { return *m_images; }
 
-    void fillBuffers(VertexBuffer & background, VertexBuffer & text) const;
+    void fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const;
     void update(float time, bool check_cursor);
 
     void        setCaption(std::string caption) { m_caption = std::move(caption); }

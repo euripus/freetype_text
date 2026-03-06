@@ -20,7 +20,7 @@ public:
     void setCallback(std::function<void(void)> click_callback) { m_click_callback = click_callback; }
 
 private:
-    void subClassFillTextBuffer(VertexBuffer & text) const override;
+    void subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const override;
     void subClassUpdate(float time, bool check_cursor) override;
 
     RegionDataOfUITexture const * getRegionFromState(ButtonState state) const;
@@ -28,7 +28,8 @@ private:
 protected:
     std::string               m_caption;
     std::function<void(void)> m_click_callback;
-    ButtonState               m_state = ButtonState::unclicked;
+    ButtonState               m_state      = ButtonState::unclicked;
+    glm::vec4                 m_text_color = ColorMap::black;
 };
 
 #endif

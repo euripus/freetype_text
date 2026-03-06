@@ -215,6 +215,16 @@ static std::unique_ptr<Widget> GetWidgetFromJson(boost::json::object const & obj
         {
             desc.size = static_cast<float>(kvp.value().as_int64());
         }
+        else if(kvp.key() == WidgetDesc::sid_text_color)
+        {
+            std::vector<int32_t> vec;
+            vec = boost::json::value_to<std::vector<int32_t>>(kvp.value());
+
+            desc.text_color.x = static_cast<float>(vec[0]) / 255.f;
+            desc.text_color.y = static_cast<float>(vec[1]) / 255.f;
+            desc.text_color.z = static_cast<float>(vec[2]) / 255.f;
+            desc.text_color.w = static_cast<float>(vec[3]) / 255.f;
+        }
         else if(kvp.key() == WidgetDesc::sid_static_text)
         {
             desc.static_text = kvp.value().as_string();

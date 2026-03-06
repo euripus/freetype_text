@@ -40,6 +40,7 @@ SOURCES +=  \
     src/fs/file.cpp \
     src/fs/file_system.cpp \
     src/fs/memory_stream.cpp \
+    src/gui/basic_types.cpp \
     src/gui/button.cpp \
     src/gui/imagebox.cpp \
     src/gui/packer.cpp \

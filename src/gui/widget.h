@@ -16,14 +16,14 @@ struct WidgetDesc;
 class Widget
 {
 private:
-    virtual void subClassFillTextBuffer(VertexBuffer & text) const {}
+    virtual void subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const {}
     virtual void subClassUpdate(float time, bool check_cursor) {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
-    void fillBuffers(VertexBuffer & background, VertexBuffer & text) const;
+    void fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const;
     void update(float time, bool check_cursor);
     void move(glm::vec2 const & new_origin);
 

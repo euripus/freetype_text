@@ -6,8 +6,9 @@ Button::Button(WidgetDesc const & desc, UIWindow & owner) :
     Widget(desc, owner), m_caption(std::move(desc.static_text))
 {
     // Trim text to button size
-    auto lines = TextFitter::AdjustTextToSize(*m_font, m_rect.m_size, false, m_caption);
-    m_caption  = lines[0];
+    auto lines   = TextFitter::AdjustTextToSize(*m_font, m_rect.m_size, false, m_caption);
+    m_caption    = lines[0];
+    m_text_color = desc.text_color;
 }
 
 void Button::subClassUpdate(float time, bool check_cursor)
@@ -87,7 +88,7 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     return result;
 }
 
-void Button::subClassFillTextBuffer(VertexBuffer & text) const
+void Button::subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const
 {
     // draw text
     float const line_height = m_font->getHeight();
@@ -98,5 +99,5 @@ void Button::subClassFillTextBuffer(VertexBuffer & text) const
                 + glm::abs(m_font->getDescender());   // vertically align to the center only
     pen_pos.x = getHorizontalOffset(m_caption);
 
-    m_font->addText(text, m_caption.c_str(), pen_pos);
+    m_font->addText(ColorMap::GetOrCreate(text, m_text_color), m_caption.c_str(), pen_pos);
 }

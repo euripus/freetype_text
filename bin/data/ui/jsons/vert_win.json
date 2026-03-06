@@ -23,6 +23,7 @@
                      "align_vertical":"top",
                      "font":"noto_sans_16",
                      "font_size":16,
+                     "text_color":[ 255, 0, 0, 255 ],
                      "static_text":"Fullscreen",
                      "text_horizontal":"center"
                   },

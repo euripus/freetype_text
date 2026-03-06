@@ -42,7 +42,7 @@ void Widget::update(float time, bool check_cursor)
     subClassUpdate(time, check_cursor);
 }
 
-void Widget::fillBuffers(VertexBuffer & background, VertexBuffer & text) const
+void Widget::fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const
 {
     if(m_region_ptr != nullptr && visible())
     {

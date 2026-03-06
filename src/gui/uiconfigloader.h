@@ -51,6 +51,7 @@ struct WidgetDesc
     static constexpr char const * sid_align_vertical   = "align_vertical";
     static constexpr char const * sid_font             = "font";
     static constexpr char const * sid_font_size        = "font_size";
+    static constexpr char const * sid_text_color       = "text_color";
     static constexpr char const * sid_static_text      = "static_text";
     static constexpr char const * sid_text_horizontal  = "text_horizontal";
     static constexpr char const * sid_children         = "children";
@@ -74,6 +75,7 @@ struct WidgetDesc
     Align       vertical    = Align::top;
     std::string font_name   = {};
     float       size        = 0.0f;
+    glm::vec4   text_color  = glm::vec4(0.f, 0.f, 0.f, 1.f);
     std::string static_text = {};
     Align       text_hor    = Align::left;
 };

@@ -191,7 +191,7 @@ void Window::initScene()
         throw std::runtime_error{"Failed to parse UI resources"};
     }
 
-    //m_ui_ptr->getUIImageAtlas().writeAtlasToTGA("ui_atlas.tga");
+    // m_ui_ptr->getUIImageAtlas().writeAtlasToTGA("ui_atlas.tga");
 
     // load example window
     if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
@@ -220,8 +220,8 @@ void Window::resize(int width, int height)
     height = height > 0 ? height : 1;
 
     m_vp_size = glm::ivec2(width, height);
-    m_render_ptr->setViewport(0, 0, width, height);
 
+    m_render_ptr->setViewport(0, 0, width, height);
     m_input_ptr->resize(width, height);
     m_ui_ptr->resize(width, height);
 }

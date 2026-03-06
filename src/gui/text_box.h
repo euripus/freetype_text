@@ -12,10 +12,11 @@ public:
 
 private:
     void adjustTextToLines();
-    void subClassFillTextBuffer(VertexBuffer & text) const override;
+    void subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const override;
 
 protected:
-    std::string m_text = {};
+    std::string m_text       = {};
+    glm::vec4   m_text_color = ColorMap::black;
 
     std::vector<std::string> m_lines    = {};
     bool                     m_formated = false;

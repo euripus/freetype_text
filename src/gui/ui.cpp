@@ -3,8 +3,7 @@
 #include "../render/vertex_buffer.h"
 #include "../render/renderer.h"
 
-UI::UI(FileSystem & fsys) :
-    m_fsys(fsys), m_fonts(fsys), m_win_buf(VertexBuffer::pos_tex), m_text_win_buf(VertexBuffer::pos_tex)
+UI::UI(FileSystem & fsys) : m_fsys(fsys), m_fonts(fsys), m_win_buf(VertexBuffer::pos_tex)
 {
     m_packer = std::make_unique<ChainsPacker>();
 }
@@ -17,10 +16,13 @@ void UI::update(float time)
     }
 }
 
-void UI::clearAndFillBuffers(VertexBuffer & background, VertexBuffer & text) const
+void UI::clearAndFillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const
 {
     background.clear();
-    text.clear();
+    for(auto & [color, text_buf] : text)
+    {
+        text_buf.clear();
+    }
 
     for(auto const & ptr : m_windows)
     {
@@ -55,9 +57,8 @@ void UI::draw(RendererBase & render)
     render.setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
     render.setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
-    clearAndFillBuffers(m_win_buf, m_text_win_buf);
+    clearAndFillBuffers(m_win_buf, m_colored_text_buffers);
     render.uploadBuffer(m_win_buf);
-    render.uploadBuffer(m_text_win_buf);
 
     AlphaState blend;
     DepthState depth;
@@ -81,20 +82,25 @@ void UI::draw(RendererBase & render)
     render.unbindAndClearSlots();
 
     // draw text
-    render.setDrawColor(getFontColor());
-    slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
-    slot.tex_channel_num   = 0;
-    slot.texture           = getFontImageAtlas().getAtlasTextureState();
-    slot.projector         = nullptr;
-    slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
-    render.addTextureSlot(slot);
-    render.bindSlots();
-    render.bindVertexBuffer(&m_text_win_buf);
-    render.draw(m_text_win_buf);
-    render.unbindVertexBuffer();
-    render.unbindAndClearSlots();
-    render.setDrawColor(ColorMap::white);   // return to default color
+    for(auto & [color, text_buf] : m_colored_text_buffers)
+    {
+        render.uploadBuffer(text_buf);
 
+        render.setDrawColor(color);
+        slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
+        slot.tex_channel_num   = 0;
+        slot.texture           = getFontImageAtlas().getAtlasTextureState();
+        slot.projector         = nullptr;
+        slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
+        render.addTextureSlot(slot);
+        render.bindSlots();
+        render.bindVertexBuffer(&text_buf);
+        render.draw(text_buf);
+        render.unbindVertexBuffer();
+        render.unbindAndClearSlots();
+    }
+
+    render.setDrawColor(ColorMap::white);   // return to default color
     render.setDepthState(old_depth);
     render.setAlphaState(old_blend);
 }
@@ -107,8 +113,11 @@ void UI::terminate(RendererBase & render)
     render.unloadBuffer(m_win_buf);
     render.deleteBuffer(m_win_buf);
 
-    render.unloadBuffer(m_text_win_buf);
-    render.deleteBuffer(m_text_win_buf);
+    for(auto & [color, text_buf] : m_colored_text_buffers)
+    {
+        render.unloadBuffer(text_buf);
+        render.deleteBuffer(text_buf);
+    }
 }
 
 UIWindow * UI::loadWindow(InFile & file_json, int32_t layer, std::string const & image_group)
