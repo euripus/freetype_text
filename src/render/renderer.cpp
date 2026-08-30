@@ -271,7 +271,7 @@ void RendererBase::uploadBuffer(VertexBuffer & geo) const
 
     if(!geo.m_is_generated)
         glGenBuffers(1, &geo.m_dynamic_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER_ARB, geo.m_dynamic_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, geo.m_dynamic_buffer_id);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geo.m_dynamic_buffer.size(), &geo.m_dynamic_buffer[0],
                  GL_DYNAMIC_DRAW);
 
@@ -279,7 +279,7 @@ void RendererBase::uploadBuffer(VertexBuffer & geo) const
     {
         if(!geo.m_is_generated)
             glGenBuffers(1, &geo.m_static_bufffer_id);
-        glBindBuffer(GL_ARRAY_BUFFER_ARB, geo.m_static_bufffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_bufffer_id);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geo.m_static_bufffer.size(), &geo.m_static_bufffer[0],
                      GL_STATIC_DRAW);
     }
@@ -300,11 +300,11 @@ void RendererBase::unloadBuffer(VertexBuffer const & geo) const
 {
     if(geo.m_is_generated)
     {
-        glBindBuffer(GL_ARRAY_BUFFER_ARB, geo.m_dynamic_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, geo.m_dynamic_buffer_id);
         glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_DYNAMIC_DRAW);
         if(geo.m_components[VertexBuffer::ComponentsBitPos::tex])
         {
-            glBindBuffer(GL_ARRAY_BUFFER_ARB, geo.m_static_bufffer_id);
+            glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_bufffer_id);
             glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_STATIC_DRAW);
         }
 
@@ -395,8 +395,8 @@ void RendererBase::unbindVertexBuffer() const
         if(m_last_binded_vbo_components[VertexBuffer::ComponentsBitPos::normal])
             glDisableClientState(GL_NORMAL_ARRAY);
 
-        glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         m_last_binded_vbo_components = VertexBuffer::null;
     }
@@ -506,7 +506,7 @@ bool RendererBase::get2DTextureData(ImageState const & tex, tex::ImageData & tex
     if(target == GL_TEXTURE_CUBE_MAP)
         target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<uint32_t>(face);
 
-    if(static_cast<uint32_t>(tex.m_format) > g_texture_gl_formats.size())
+    if(static_cast<uint32_t>(tex.m_format) >= g_texture_gl_formats.size())
         return false;
 
     uint32_t const fmt  = g_texture_gl_formats[static_cast<uint32_t>(tex.m_format)].gl_input_format;
@@ -997,6 +997,7 @@ bool RendererBase::bindTextureAsFrameBuffer(ImageState * color_tex, ImageState *
     uint32_t status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if(status != GL_FRAMEBUFFER_COMPLETE_EXT)
     {
+        bindDefaultFbo();
         return false;
     }
 
