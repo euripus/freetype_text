@@ -2,8 +2,9 @@
 #include "text_fitter.h"
 #include "ui.h"
 
-Button::Button(WidgetDesc const & desc, UIWindow & owner) :
-    Widget(desc, owner), m_caption(std::move(desc.static_text))
+Button::Button(WidgetDesc const & desc, UIWindow & owner)
+    : Widget(desc, owner),
+      m_caption(std::move(desc.static_text))
 {
     // Trim text to button size
     auto lines   = TextFitter::AdjustTextToSize(*m_font, m_rect.m_size, false, m_caption);
@@ -64,25 +65,25 @@ RegionDataOfUITexture const * Button::getRegionFromState(ButtonState state) cons
     switch(state)
     {
         case ButtonState::clicked:
-            {
-                result = images.getImageRegion(sid_button_clicked);
-                break;
-            }
+        {
+            result = images.getImageRegion(sid_button_clicked);
+            break;
+        }
         case ButtonState::unclicked:
-            {
-                result = images.getImageRegion(sid_button_unclicked);
-                break;
-            }
+        {
+            result = images.getImageRegion(sid_button_unclicked);
+            break;
+        }
         case ButtonState::focused:
-            {
-                result = images.getImageRegion(sid_button_focused);
-                break;
-            }
+        {
+            result = images.getImageRegion(sid_button_focused);
+            break;
+        }
         case ButtonState::disabled:
-            {
-                result = images.getImageRegion(sid_button_disabled);
-                break;
-            }
+        {
+            result = images.getImageRegion(sid_button_disabled);
+            break;
+        }
     }
 
     return result;

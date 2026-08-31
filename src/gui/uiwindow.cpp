@@ -1,7 +1,8 @@
 #include "uiwindow.h"
 #include "ui.h"
 
-UIWindow::UIWindow(UI & owner, std::string const & image_group) : m_owner(owner)
+UIWindow::UIWindow(UI & owner, std::string const & image_group)
+    : m_owner(owner)
 {
     m_images = &m_owner.m_ui_image_atlas.getImageGroup(image_group);
 }
@@ -38,7 +39,7 @@ void UIWindow::update(float time, bool check_cursor)
 
     if(!m_callbacks_queue.empty())
     {
-        for(auto & fn : m_callbacks_queue)
+        for(auto & fn: m_callbacks_queue)
             fn();
 
         m_callbacks_queue.clear();

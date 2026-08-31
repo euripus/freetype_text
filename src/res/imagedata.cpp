@@ -121,9 +121,9 @@ bool ReadBMPData(uint8_t * buffer, size_t file_size, ImageData & image)
     bool compressed = false;
     bool flip       = false;
 
-    auto *             p_ptr    = buffer;
-    BITMAPFILEHEADER * p_header = reinterpret_cast<BITMAPFILEHEADER *>(p_ptr);
-    p_ptr += sizeof(BITMAPFILEHEADER);
+    auto *             p_ptr     = buffer;
+    BITMAPFILEHEADER * p_header  = reinterpret_cast<BITMAPFILEHEADER *>(p_ptr);
+    p_ptr                       += sizeof(BITMAPFILEHEADER);
     if(p_header->bf_size != file_size || p_header->bf_type != 0x4D42)   // little-endian
         return false;
 

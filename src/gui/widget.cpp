@@ -6,7 +6,8 @@
 #include "uiconfigloader.h"
 #include "../render/vertex_buffer.h"
 
-Widget::Widget(WidgetDesc const & desc, UIWindow & owner) : m_owner(owner)
+Widget::Widget(WidgetDesc const & desc, UIWindow & owner)
+    : m_owner(owner)
 {
     m_min_size              = desc.min_size;
     m_max_size              = desc.max_size;
@@ -36,7 +37,7 @@ Widget::Widget(WidgetDesc const & desc, UIWindow & owner) : m_owner(owner)
 
 void Widget::update(float time, bool check_cursor)
 {
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->update(time, check_cursor);
 
     subClassUpdate(time, check_cursor);
@@ -51,7 +52,7 @@ void Widget::fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers
     }
 
     // draw children
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->fillBuffers(background, text);
 
     if(visible())
@@ -62,7 +63,7 @@ void Widget::move(glm::vec2 const & new_origin)
 {
     m_pos = m_rect.m_pos + new_origin;
 
-    for(auto & ch : m_children)
+    for(auto & ch: m_children)
         ch->move(new_origin);
 }
 
@@ -102,7 +103,7 @@ Widget * Widget::getWidgetFromIDName(std::string const & id_name)
     if(m_id == id_name)
         return this;
 
-    for(auto const & ch : m_children)
+    for(auto const & ch: m_children)
     {
         if(auto * ptr = ch->getWidgetFromIDName(id_name); ptr != nullptr)
             return ptr;
@@ -124,26 +125,26 @@ float Widget::getHorizontalOffset(std::string const & line) const
         case Align::left:
         case Align::top:   // horizontal align only
         case Align::bottom:
-            {
-                res = m_pos.x + m_fields.x;
+        {
+            res = m_pos.x + m_fields.x;
 
-                break;
-            }
+            break;
+        }
         case Align::center:
-            {
-                float const line_width = m_font->getTextSize(line.c_str()).x;
-                res                    = m_pos.x + (m_rect.width() - line_width) / 2.f;
+        {
+            float const line_width = m_font->getTextSize(line.c_str()).x;
+            res                    = m_pos.x + (m_rect.width() - line_width) / 2.f;
 
-                break;
-            }
+            break;
+        }
         case Align::right:
-            {
-                float const line_width = m_font->getTextSize(line.c_str()).x;
-                float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
-                res                    = m_pos.x + delta;
+        {
+            float const line_width = m_font->getTextSize(line.c_str()).x;
+            float const delta      = glm::max(m_fields.x, (m_rect.width() - line_width - m_fields.y));
+            res                    = m_pos.x + delta;
 
-                break;
-            }
+            break;
+        }
     }
 
     return res;

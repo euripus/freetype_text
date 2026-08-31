@@ -36,7 +36,7 @@ void GetDosTime(std::time_t rawtime, uint16_t & time, uint16_t & date)
 }
 
 std::chrono::system_clock::time_point
-file_time_to_time_point(std::filesystem::file_time_type const & file_time)
+    file_time_to_time_point(std::filesystem::file_time_type const & file_time)
 {
     auto system_time = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
         file_time - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
@@ -260,7 +260,7 @@ bool FileSystem::isExist(std::string const & fname) const
 {
     assert(!fname.empty());
 
-    for(auto & fl : m_files)
+    for(auto & fl: m_files)
     {
         if(fl.is_zip)
         {

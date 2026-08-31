@@ -18,8 +18,11 @@ constexpr char const * const data_folder      = "./data";
 Window *                     g_cur_window_ptr = nullptr;
 }   // namespace
 
-Window::Window(int width, int height, char const * title) :
-    m_size(width, height), m_title(title), m_pyramid(VertexBuffer::pos_norm_tex, 2), m_fs(data_folder)
+Window::Window(int width, int height, char const * title)
+    : m_size(width, height),
+      m_title(title),
+      m_pyramid(VertexBuffer::pos_norm_tex, 2),
+      m_fs(data_folder)
 {
     // Initialise GLFW
     if(!glfwInit())

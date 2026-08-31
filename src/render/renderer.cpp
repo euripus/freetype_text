@@ -74,13 +74,13 @@ struct GLTextureFormatMapping
 static std::array<GLTextureFormatMapping, static_cast<uint32_t>(ImageState::Format::QUANTITY)> const
     g_texture_gl_formats{
         {
-         {0, 0, 0}, // NOFORMAT
- {GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE}, // R8G8B8
- {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE}, // R8G8B8A8
- {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 0, GL_UNSIGNED_BYTE}, // DXT1
- {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 0, GL_UNSIGNED_BYTE}, // DXT3
- {GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, GL_UNSIGNED_BYTE}, // DXT5
- {GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT}       // DEPTH
+         {0, 0, 0},                                                 // NOFORMAT
+            {GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE},                       // R8G8B8
+            {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE},                     // R8G8B8A8
+            {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 0, GL_UNSIGNED_BYTE},   // DXT1
+            {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 0, GL_UNSIGNED_BYTE},   // DXT3
+            {GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, GL_UNSIGNED_BYTE},   // DXT5
+            {GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT}       // DEPTH
         }
 };
 
@@ -601,7 +601,7 @@ void RendererBase::applyCombineStage(CombineStage const & combine) const
             uint32_t src = 0;
             if(src_type == CombineStage::SrcType::TEXTURE_STAGE)
             {
-                src = g_texture_gl_src_types[static_cast<uint32_t>(src_type)];
+                src  = g_texture_gl_src_types[static_cast<uint32_t>(src_type)];
                 src += num_stage;
             }
             else
