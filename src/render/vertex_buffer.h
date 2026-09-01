@@ -50,11 +50,11 @@ public:
     void updateDynamicBuffer(std::vector<glm::vec3> const & pos, std::vector<glm::vec3> const & norm);
 
 private:
-    std::vector<float> m_static_bufffer;   // for tex0 tex1 ...
+    std::vector<float> m_static_buffer;    // for tex0 tex1 ...
     std::vector<float> m_dynamic_buffer;   // for pos norm
     uint32_t           m_vertex_count       = 0;
     uint32_t           m_tex_channels_count = 0;
-    uint32_t           m_static_bufffer_id  = 0;
+    uint32_t           m_static_buffer_id   = 0;
     uint32_t           m_dynamic_buffer_id  = 0;
 
     std::vector<uint32_t> m_indices;

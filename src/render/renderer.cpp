@@ -278,9 +278,9 @@ void RendererBase::uploadBuffer(VertexBuffer & geo) const
     if(geo.m_components[VertexBuffer::ComponentsBitPos::tex])
     {
         if(!geo.m_is_generated)
-            glGenBuffers(1, &geo.m_static_bufffer_id);
-        glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_bufffer_id);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geo.m_static_bufffer.size(), &geo.m_static_bufffer[0],
+            glGenBuffers(1, &geo.m_static_buffer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_buffer_id);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geo.m_static_buffer.size(), &geo.m_static_buffer[0],
                      GL_STATIC_DRAW);
     }
 
@@ -304,7 +304,7 @@ void RendererBase::unloadBuffer(VertexBuffer const & geo) const
         glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_DYNAMIC_DRAW);
         if(geo.m_components[VertexBuffer::ComponentsBitPos::tex])
         {
-            glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_bufffer_id);
+            glBindBuffer(GL_ARRAY_BUFFER, geo.m_static_buffer_id);
             glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_STATIC_DRAW);
         }
 
@@ -321,8 +321,8 @@ void RendererBase::deleteBuffer(VertexBuffer & geo) const
         geo.m_dynamic_buffer_id = 0;
         if(geo.m_components[VertexBuffer::ComponentsBitPos::tex])
         {
-            glDeleteBuffers(1, &geo.m_static_bufffer_id);
-            geo.m_static_bufffer_id = 0;
+            glDeleteBuffers(1, &geo.m_static_buffer_id);
+            geo.m_static_buffer_id = 0;
         }
         glDeleteBuffers(1, &geo.m_indices_id);
         geo.m_indices_id = 0;
@@ -358,7 +358,7 @@ void RendererBase::bindVertexBuffer(VertexBuffer const * geo) const
                         uint32_t tex_coord_start = static_cast<uint32_t>(sizeof(float))
                                                    * m_texture_slots[i].tex_channel_num * geo->m_vertex_count
                                                    * 2;
-                        glBindBuffer(GL_ARRAY_BUFFER, geo->m_static_bufffer_id);
+                        glBindBuffer(GL_ARRAY_BUFFER, geo->m_static_buffer_id);
 
                         uint32_t const texture_slot_id = GL_TEXTURE0 + i;
                         glClientActiveTexture(texture_slot_id);
@@ -1011,7 +1011,7 @@ bool RendererBase::bindTextureAsFrameBuffer(ImageState * color_tex, ImageState *
         depth_tex->m_committed = true;
     }
 
-    if(glm::all(glm::notEqual(viewport_size, glm::ivec4{0})))
+    if(viewport_size != glm::ivec4{0})
     {
         glViewport(static_cast<GLint>(viewport_size.x), static_cast<GLint>(viewport_size.y),
                    static_cast<GLsizei>(viewport_size.z), static_cast<GLsizei>(viewport_size.w));

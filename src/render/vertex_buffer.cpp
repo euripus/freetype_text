@@ -101,10 +101,9 @@ void VertexBuffer::insertVertices(uint32_t const index, float const * pos,
             uint32_t old_tex_channel_block_start_offset = i * m_vertex_count * tex_floats_per_vertex;
 
             // Copy existing tex coords for this channel, before the insertion point 'index'
-            new_static_buffer.insert(new_static_buffer.end(),
-                                     m_static_bufffer.begin() + old_tex_channel_block_start_offset,
-                                     m_static_bufffer.begin() + old_tex_channel_block_start_offset
-                                         + index * tex_floats_per_vertex);
+            new_static_buffer.insert(
+                new_static_buffer.end(), m_static_buffer.begin() + old_tex_channel_block_start_offset,
+                m_static_buffer.begin() + old_tex_channel_block_start_offset + index * tex_floats_per_vertex);
             // Insert new tex coords for this channel
             new_static_buffer.insert(new_static_buffer.end(), tex[i],
                                      tex[i] + vcount * tex_floats_per_vertex);
@@ -112,13 +111,13 @@ void VertexBuffer::insertVertices(uint32_t const index, float const * pos,
             if(index < m_vertex_count)
             {
                 new_static_buffer.insert(new_static_buffer.end(),
-                                         m_static_bufffer.begin() + old_tex_channel_block_start_offset
+                                         m_static_buffer.begin() + old_tex_channel_block_start_offset
                                              + index * tex_floats_per_vertex,
-                                         m_static_bufffer.begin() + old_tex_channel_block_start_offset
+                                         m_static_buffer.begin() + old_tex_channel_block_start_offset
                                              + m_vertex_count * tex_floats_per_vertex);
             }
         }
-        m_static_bufffer.swap(new_static_buffer);
+        m_static_buffer.swap(new_static_buffer);
     }
 
     m_vertex_count += vcount;
@@ -178,8 +177,8 @@ void VertexBuffer::pushBack(float const * pos, std::vector<float const *> const 
                                      + (m_vertex_count * tex_floats_per_vertex)
                                      + (i * vcount * tex_floats_per_vertex);
 
-            auto tex_insertion_iterator = m_static_bufffer.begin() + offset_floats;
-            m_static_bufffer.insert(tex_insertion_iterator, tex[i], tex[i] + vcount * tex_floats_per_vertex);
+            auto tex_insertion_iterator = m_static_buffer.begin() + offset_floats;
+            m_static_buffer.insert(tex_insertion_iterator, tex[i], tex[i] + vcount * tex_floats_per_vertex);
         }
     }
 
@@ -245,12 +244,12 @@ void VertexBuffer::eraseVertices(uint32_t const first, uint32_t const last)
             // Calculate start of this channel's data in the original m_static_bufffer
             uint32_t channel_i_original_start_offset = i * m_vertex_count * tex_floats_per_vertex;
 
-            auto t_erase_begin_it = m_static_bufffer.begin() + channel_i_original_start_offset
+            auto t_erase_begin_it = m_static_buffer.begin() + channel_i_original_start_offset
                                     + first * tex_floats_per_vertex
                                     - total_tex_floats_erased_from_previous_channels;
             auto t_erase_end_it   = t_erase_begin_it + count_to_erase * tex_floats_per_vertex;
 
-            m_static_bufffer.erase(t_erase_begin_it, t_erase_end_it);
+            m_static_buffer.erase(t_erase_begin_it, t_erase_end_it);
 
             total_tex_floats_erased_from_previous_channels += count_to_erase * tex_floats_per_vertex;
         }
@@ -274,7 +273,7 @@ void VertexBuffer::clear()
 {
     m_state = State::NODATA;
 
-    m_static_bufffer.resize(0);
+    m_static_buffer.resize(0);
     m_dynamic_buffer.resize(0);
     m_indices.resize(0);
     m_vertex_count = 0;

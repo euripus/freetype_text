@@ -41,7 +41,7 @@ static bool TexFontLoadFace(float size, FT_Library * library, FT_Face * face, Te
                             std::string const & filename, std::vector<unsigned char> const & data)
 {
     assert(library);
-    assert(size);
+    assert(size > 0.f);
 
     FT_Error  error;
     FT_Matrix matrix = {static_cast<int>((1.0 / HRES) * 0x10000L), static_cast<int>((0.0) * 0x10000L),
