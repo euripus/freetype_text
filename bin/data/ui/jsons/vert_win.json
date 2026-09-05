@@ -112,7 +112,7 @@
                   },
                   {
                      "minimal_size":[ 64, 64 ],
-                     "type":"ImageBox",
+                     "type":"AtlasImage",
                      "stretch":1,
                      "visible":true,
                      "texture":"button",

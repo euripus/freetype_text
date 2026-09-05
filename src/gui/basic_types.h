@@ -9,6 +9,7 @@ enum class ElementType
 {
     Empty,
     TextBox,
+    PartOfUIAtlasImageBox,
     ImageBox,   // animated/static image and/or internal rendered frame
     Button,
     // RadioButton,
@@ -55,7 +56,9 @@ struct EpsilonLessVec4
 {
     glm::vec4 epsilon;
 
-    explicit EpsilonLessVec4(float e = std::numeric_limits<float>::epsilon()) : epsilon(e) {}
+    explicit EpsilonLessVec4(float e = std::numeric_limits<float>::epsilon())
+        : epsilon(e)
+    {}
 
     bool operator()(glm::vec4 const & lhs, glm::vec4 const & rhs) const
     {

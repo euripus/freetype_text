@@ -25,19 +25,32 @@ class AABB
     glm::vec3 m_max; /*!< The corner with the largest values for each coordinate of the AABB */
 public:
     //! Construct to invalid values to represent an unset bounding box
-    inline AABB() : m_min(max_float), m_max(min_float) {}
-
-    //! Construct to with specified min and max values
-    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) :
-        m_min(xmin, ymin, zmin), m_max(xmax, ymax, zmax)
+    inline AABB()
+        : m_min(max_float),
+          m_max(min_float)
     {}
 
     //! Construct to with specified min and max values
-    inline AABB(glm::vec3 min, glm::vec3 max) : m_min(min), m_max(max) {}
+    inline AABB(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
+        : m_min(xmin, ymin, zmin),
+          m_max(xmax, ymax, zmax)
+    {}
 
-    inline AABB(AABB const & bb) : m_min(bb.m_min), m_max(bb.m_max) {}
+    //! Construct to with specified min and max values
+    inline AABB(glm::vec3 min, glm::vec3 max)
+        : m_min(min),
+          m_max(max)
+    {}
 
-    inline AABB(AABB && bb) : m_min(bb.m_min), m_max(bb.m_max) {}
+    inline AABB(AABB const & bb)
+        : m_min(bb.m_min),
+          m_max(bb.m_max)
+    {}
+
+    inline AABB(AABB && bb)
+        : m_min(std::move(bb.m_min)),
+          m_max(std::move(bb.m_max))
+    {}
 
     inline AABB & operator=(AABB const & bb)
     {
@@ -181,6 +194,12 @@ public:
     */
     inline void transform(glm::mat4 const & matrix)
     {
+        // affine matrix expected
+        assert(glm::epsilonEqual(0.0f, matrix[0][3], std::numeric_limits<float>::epsilon())
+               && glm::epsilonEqual(0.0f, matrix[1][3], std::numeric_limits<float>::epsilon())
+               && glm::epsilonEqual(0.0f, matrix[2][3], std::numeric_limits<float>::epsilon())
+               && glm::epsilonEqual(1.0f, matrix[3][3], std::numeric_limits<float>::epsilon()));
+
         // https://stackoverflow.com/questions/6053522/how-to-recalculate-axis-aligned-bounding-box-after-translate-rotate/
         glm::vec3 new_min(max_float), new_max(min_float);
         for(int i = 0; i < 3; i++)

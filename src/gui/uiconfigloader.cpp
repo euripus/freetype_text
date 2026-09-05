@@ -5,7 +5,7 @@
 #include "uiwindow.h"
 #include "text_box.h"
 #include "button.h"
-#include "imagebox.h"
+#include "partofuiatlasimage.h"
 #include <boost/json.hpp>
 
 Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_outline)
@@ -114,6 +114,8 @@ ElementType WidgetDesc::GetElementTypeFromString(std::string_view name)
 
     if(name == "TextBox")
         type = ElementType::TextBox;
+    else if(name == "AtlasImage")
+        type = ElementType::PartOfUIAtlasImageBox;
     else if(name == "ImageBox")
         type = ElementType::ImageBox;
     else if(name == "Button")
@@ -268,9 +270,9 @@ std::unique_ptr<Widget> WidgetDesc::GetWidgetFromDesc(WidgetDesc const & desc, U
 
             break;
         }
-        case ElementType::ImageBox:
+        case ElementType::PartOfUIAtlasImageBox:
         {
-            result = std::make_unique<ImageBox>(desc, owner);
+            result = std::make_unique<PartOfUIAtlasImageBox>(desc, owner);
             break;
         }
         case ElementType::Button:
