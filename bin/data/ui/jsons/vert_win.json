@@ -179,7 +179,7 @@
          ]
       },
       {
-         "type":"ImageBox",
+         "type":"AtlasImage",
          "visible":true,
          "texture":"background",
          "region_name":"background",

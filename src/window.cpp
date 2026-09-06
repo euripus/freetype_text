@@ -15,6 +15,7 @@ namespace
 {
 constexpr char const * const base_tex_fname   = "base.tga";
 constexpr char const * const data_folder      = "./data";
+constexpr char const * const win_config       = "ui/jsons/vert_win.json";
 Window *                     g_cur_window_ptr = nullptr;
 }   // namespace
 
@@ -197,7 +198,7 @@ void Window::initScene()
     // m_ui_ptr->getUIImageAtlas().writeAtlasToTGA("ui_atlas.tga");
 
     // load example window
-    if(auto file = m_fs.getFile("ui/jsons/vert_win.json"); file)
+    if(auto file = m_fs.getFile(win_config); file)
     {
         m_win = m_ui_ptr->loadWindow(*file);
     }

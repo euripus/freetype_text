@@ -3,6 +3,11 @@
 #include "../render/vertex_buffer.h"
 #include "../render/renderer.h"
 
+namespace
+{
+constexpr char const * const ui_res_fname = "ui/jsons/ui_res.json";
+}
+
 UI::UI(FileSystem & fsys)
     : m_fsys(fsys),
       m_fonts(fsys),
@@ -35,7 +40,7 @@ void UI::clearAndFillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuf
 
 bool UI::init(RendererBase & render)
 {
-    if(auto file = m_fsys.getFile("ui/jsons/ui_res.json"); file)
+    if(auto file = m_fsys.getFile(ui_res_fname); file)
     {
         UIImageManagerDesc::ParseUIRes(m_ui_image_atlas, *file, m_fsys);
         FontDataDesc::ParseFontsRes(m_fonts, *file);
