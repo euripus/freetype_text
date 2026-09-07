@@ -107,6 +107,7 @@ void Texture::loadImageData(RendererBase const & render)
 {
     assert(is_cube_map == false);
     assert(memory_state == MemoryState::CPU_MEMORY);
+    assert(image_data.data);
 
     texture_state.m_committed = false;
     texture_state.m_type      = TextureState::Type::TEXTURE_2D;
@@ -128,18 +129,21 @@ bool Texture::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, R
 {
     assert(memory_state == MemoryState::NONE);
 
-    is_cube_map               = true;
-    texture_state.m_committed = false;
-    texture_state.m_type      = TextureState::Type::TEXTURE_CUBE;
-    texture_state.m_depth     = 0;
-
     render.createTexture(texture_state);
 
     for(std::size_t i = 0; i < fnames.size(); ++i)
     {
         if(!tex::ReadTGA(fnames[i], cube_map_faces[i]))
             return false;
+    }
 
+    is_cube_map               = true;
+    texture_state.m_committed = false;
+    texture_state.m_type      = TextureState::Type::TEXTURE_CUBE;
+    texture_state.m_depth     = 0;
+
+    for(std::size_t i = 0; i < cube_map_faces.size(); ++i)
+    {
         texture_state.m_format = cube_map_faces[i].type == tex::ImageData::PixelType::pt_rgb
                                      ? TextureState::Format::R8G8B8
                                      : TextureState::Format::R8G8B8A8;
