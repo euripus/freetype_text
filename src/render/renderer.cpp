@@ -29,16 +29,16 @@ static std::array<GLenum, static_cast<uint32_t>(StencilState::OperationType::QUA
         {GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_DECR, GL_INVERT}
 };
 
-static std::array<GLint, static_cast<uint32_t>(ImageState::Filter::QUANTITY)> const g_gl_tex_filter = {
+static std::array<GLint, static_cast<uint32_t>(TextureState::Filter::QUANTITY)> const g_gl_tex_filter = {
     {GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR,
      GL_LINEAR_MIPMAP_LINEAR}
 };
 
-static std::array<GLint, static_cast<uint32_t>(ImageState::Wrap::QUANTITY)> const g_gl_tex_wrap = {
+static std::array<GLint, static_cast<uint32_t>(TextureState::Wrap::QUANTITY)> const g_gl_tex_wrap = {
     {GL_CLAMP, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_EDGE, GL_MIRRORED_REPEAT, GL_REPEAT}
 };
 
-static std::array<uint32_t, static_cast<uint32_t>(ImageState::Type::QUANTITY)> const g_texture_gl_types{
+static std::array<uint32_t, static_cast<uint32_t>(TextureState::Type::QUANTITY)> const g_texture_gl_types{
     {0, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP}
 };
 
@@ -71,7 +71,7 @@ struct GLTextureFormatMapping
     uint32_t gl_input_data_type;
 };
 
-static std::array<GLTextureFormatMapping, static_cast<uint32_t>(ImageState::Format::QUANTITY)> const
+static std::array<GLTextureFormatMapping, static_cast<uint32_t>(TextureState::Format::QUANTITY)> const
     g_texture_gl_formats{
         {
          {0, 0, 0},                                                 // NOFORMAT
@@ -84,10 +84,10 @@ static std::array<GLTextureFormatMapping, static_cast<uint32_t>(ImageState::Form
         }
 };
 
-constexpr static bool IsCompressedTextureFormat(ImageState::Format fmt)
+constexpr static bool IsCompressedTextureFormat(TextureState::Format fmt)
 {
-    return (fmt == ImageState::Format::DXT1) || (fmt == ImageState::Format::DXT3)
-           || (fmt == ImageState::Format::DXT5);
+    return (fmt == TextureState::Format::DXT1) || (fmt == TextureState::Format::DXT3)
+           || (fmt == TextureState::Format::DXT5);
 }
 
 constexpr static glm::vec4 GetMtrxRow(glm::mat4 const & mtx, int32_t row_num = 0)
@@ -416,9 +416,9 @@ void RendererBase::drawIndexed(uint32_t first_index, uint32_t num_indices, uint3
                         offset);
 }
 
-void RendererBase::createTexture(ImageState & tex) const
+void RendererBase::createTexture(TextureState & tex) const
 {
-    assert(tex.m_render_id == 0 && tex.m_type != ImageState::Type::TEXTURE_NOTYPE);
+    assert(tex.m_render_id == 0 && tex.m_type != TextureState::Type::TEXTURE_NOTYPE);
 
     uint32_t const tex_type = g_texture_gl_types[static_cast<uint32_t>(tex.m_type)];
 
@@ -430,13 +430,13 @@ void RendererBase::createTexture(ImageState & tex) const
     glBindTexture(tex_type, 0);
 }
 
-void RendererBase::uploadTextureData(ImageState & tex, tex::ImageData const & tex_data,
-                                     ImageState::CubeFace face) const
+void RendererBase::uploadTextureData(TextureState & tex, tex::ImageData const & tex_data,
+                                     TextureState::CubeFace face) const
 {
-    assert(tex.m_render_id != 0 && tex.m_type != ImageState::Type::TEXTURE_NOTYPE);
+    assert(tex.m_render_id != 0 && tex.m_type != TextureState::Type::TEXTURE_NOTYPE);
     assert(tex_data.data.get() != nullptr);
     assert(tex.m_width == tex_data.width && tex.m_height == tex_data.height && tex.m_depth == tex_data.depth);
-    assert(static_cast<int>(tex.m_format) < static_cast<int>(ImageState::Format::QUANTITY));
+    assert(static_cast<int>(tex.m_format) < static_cast<int>(TextureState::Format::QUANTITY));
 
     uint32_t const  tex_type  = g_texture_gl_types[static_cast<uint32_t>(tex.m_type)];
     uint8_t const * data      = tex_data.data.get();
@@ -451,9 +451,9 @@ void RendererBase::uploadTextureData(ImageState & tex, tex::ImageData const & te
     uint32_t const input_format = g_texture_gl_formats[static_cast<uint32_t>(tex.m_format)].gl_input_format;
     uint32_t const input_type = g_texture_gl_formats[static_cast<uint32_t>(tex.m_format)].gl_input_data_type;
 
-    if(tex.m_type == ImageState::Type::TEXTURE_2D || tex.m_type == ImageState::Type::TEXTURE_CUBE)
+    if(tex.m_type == TextureState::Type::TEXTURE_2D || tex.m_type == TextureState::Type::TEXTURE_CUBE)
     {
-        uint32_t const target = (tex.m_type == ImageState::Type::TEXTURE_2D)
+        uint32_t const target = (tex.m_type == TextureState::Type::TEXTURE_2D)
                                     ? tex_type
                                     : (GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<uint32_t>(face));
 
@@ -463,7 +463,7 @@ void RendererBase::uploadTextureData(ImageState & tex, tex::ImageData const & te
             glTexImage2D(target, 0, internal_format, static_cast<int32_t>(tex.m_width),
                          static_cast<int32_t>(tex.m_height), 0, input_format, input_type, data);
     }
-    else if(tex.m_type == ImageState::Type::TEXTURE_3D)
+    else if(tex.m_type == TextureState::Type::TEXTURE_3D)
     {
         if(compressed)
             glCompressedTexImage3D(GL_TEXTURE_3D, 0, internal_format, tex.m_width, tex.m_height, tex.m_depth,
@@ -474,7 +474,7 @@ void RendererBase::uploadTextureData(ImageState & tex, tex::ImageData const & te
     }
 
     if(tex.m_gen_mips
-       && (tex.m_type != ImageState::Type::TEXTURE_CUBE || face == ImageState::CubeFace::NEG_Z))
+       && (tex.m_type != TextureState::Type::TEXTURE_CUBE || face == TextureState::CubeFace::NEG_Z))
     {
         // Note: for cube maps mips are only generated when the side with the highest index is uploaded
         glEnable(tex_type);
@@ -487,7 +487,7 @@ void RendererBase::uploadTextureData(ImageState & tex, tex::ImageData const & te
     tex.m_committed = true;
 }
 
-void RendererBase::destroyTexture(ImageState & tex) const
+void RendererBase::destroyTexture(TextureState & tex) const
 {
     assert(tex.m_render_id != 0);
 
@@ -496,13 +496,14 @@ void RendererBase::destroyTexture(ImageState & tex) const
     tex.m_committed = false;
 }
 
-bool RendererBase::get2DTextureData(ImageState const & tex, tex::ImageData & tex_data,
-                                    ImageState::CubeFace face) const
+bool RendererBase::get2DTextureData(TextureState const & tex, tex::ImageData & tex_data,
+                                    TextureState::CubeFace face) const
 {
-    assert(tex.m_render_id != 0
-           && (tex.m_type == ImageState::Type::TEXTURE_2D || tex.m_type == ImageState::Type::TEXTURE_CUBE));
+    assert(
+        tex.m_render_id != 0
+        && (tex.m_type == TextureState::Type::TEXTURE_2D || tex.m_type == TextureState::Type::TEXTURE_CUBE));
 
-    uint32_t target = tex.m_type == ImageState::Type::TEXTURE_CUBE ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+    uint32_t target = tex.m_type == TextureState::Type::TEXTURE_CUBE ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
     if(target == GL_TEXTURE_CUBE_MAP)
         target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<uint32_t>(face);
 
@@ -551,11 +552,11 @@ bool RendererBase::get2DTextureData(ImageState const & tex, tex::ImageData & tex
     return true;
 }
 
-void RendererBase::applySamplerState(ImageState const & tex) const
+void RendererBase::applySamplerState(TextureState const & tex) const
 {
     uint32_t const target = g_texture_gl_types[static_cast<uint32_t>(tex.m_type)];
 
-    if(tex.m_sampler.s == ImageState::Wrap::CLAMP_TO_BORDER)
+    if(tex.m_sampler.s == TextureState::Wrap::CLAMP_TO_BORDER)
         glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(tex.m_sampler.border_color));
 
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, g_gl_tex_filter[static_cast<uint32_t>(tex.m_sampler.min)]);
@@ -569,7 +570,7 @@ void RendererBase::applySamplerState(ImageState const & tex) const
     {
         glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE);
     }
-    else if(tex.m_type == ImageState::Type::TEXTURE_2D)
+    else if(tex.m_type == TextureState::Type::TEXTURE_2D)
     {
         glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
         glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
@@ -690,10 +691,10 @@ void RendererBase::bindSlots() const
         {
             uint32_t const texture_slot_id = GL_TEXTURE0 + i;
             uint32_t const target =
-                g_texture_gl_types[static_cast<uint32_t>(m_texture_slots[i].texture->m_type)];
+                g_texture_gl_types[static_cast<uint32_t>(m_texture_slots[i].texture_state->m_type)];
             glActiveTexture(texture_slot_id);
             glEnable(target);
-            glBindTexture(target, m_texture_slots[i].texture->m_render_id);
+            glBindTexture(target, m_texture_slots[i].texture_state->m_render_id);
         }
         else
         {
@@ -714,7 +715,7 @@ void RendererBase::unbindSlots() const
         {
             uint32_t const texture_slot_id = GL_TEXTURE0 + i;
             uint32_t const target =
-                g_texture_gl_types[static_cast<uint32_t>(m_texture_slots[i].texture->m_type)];
+                g_texture_gl_types[static_cast<uint32_t>(m_texture_slots[i].texture_state->m_type)];
             glActiveTexture(texture_slot_id);
             glBindTexture(target, 0);
             glDisable(target);
@@ -754,7 +755,7 @@ void RendererBase::enableTextureCoordGeneration(std::uint32_t slot_num, uint32_t
 
     if(!slot.projector->is_cube_map)
     {
-        assert(slot.projector->projected_texture->m_type == ImageState::Type::TEXTURE_2D);
+        assert(slot.projector->projected_texture->m_type == TextureState::Type::TEXTURE_2D);
 
         auto transform_mtx = slot.projector->getTransformMatrix();
 
@@ -777,7 +778,7 @@ void RendererBase::enableTextureCoordGeneration(std::uint32_t slot_num, uint32_t
     }
     else
     {
-        assert(slot.projector->projected_texture->m_type == ImageState::Type::TEXTURE_CUBE);
+        assert(slot.projector->projected_texture->m_type == TextureState::Type::TEXTURE_CUBE);
 
         int32_t refl_mode =
             slot.cube_map_mode == TextureSlot::CubeMapGenMode::NORMAL ? GL_NORMAL_MAP : GL_REFLECTION_MAP;
@@ -899,7 +900,7 @@ void RendererBase::unbindLights() const
 }
 
 // https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples
-bool RendererBase::bindTextureAsFrameBuffer(ImageState * color_tex, ImageState * depth_tex,
+bool RendererBase::bindTextureAsFrameBuffer(TextureState * color_tex, TextureState * depth_tex,
                                             glm::ivec4 viewport_size)
 {
     assert(m_custom_fbo != 0);
@@ -920,7 +921,7 @@ bool RendererBase::bindTextureAsFrameBuffer(ImageState * color_tex, ImageState *
     {
         assert(m_fbo_color_attached == false);
 
-        if(color_tex->m_format != ImageState::Format::R8G8B8A8)
+        if(color_tex->m_format != TextureState::Format::R8G8B8A8)
             return false;
 
         GLint const internal_format =

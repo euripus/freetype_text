@@ -44,13 +44,13 @@ Window::Window(int width, int height, char const * title)
     m_light.m_ambient  = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     m_light.m_position = glm::vec4(0.f, 4.5f, 3.3f, 1.0f);
 
-    m_base_texture.m_type        = ImageState::Type::TEXTURE_2D;
-    m_base_texture.m_format      = ImageState::Format::R8G8B8A8;
-    m_base_texture.m_sampler.max = ImageState::Filter::LINEAR;
-    m_base_texture.m_sampler.min = ImageState::Filter::LINEAR_MIPMAP_LINEAR;
-    m_base_texture.m_sampler.r   = ImageState::Wrap::REPEAT;
-    m_base_texture.m_sampler.s   = ImageState::Wrap::REPEAT;
-    m_base_texture.m_sampler.t   = ImageState::Wrap::REPEAT;
+    m_base_texture.texture_state.m_type        = TextureState::Type::TEXTURE_2D;
+    m_base_texture.texture_state.m_format      = TextureState::Format::R8G8B8A8;
+    m_base_texture.texture_state.m_sampler.max = TextureState::Filter::LINEAR;
+    m_base_texture.texture_state.m_sampler.min = TextureState::Filter::LINEAR_MIPMAP_LINEAR;
+    m_base_texture.texture_state.m_sampler.r   = TextureState::Wrap::REPEAT;
+    m_base_texture.texture_state.m_sampler.s   = TextureState::Wrap::REPEAT;
+    m_base_texture.texture_state.m_sampler.t   = TextureState::Wrap::REPEAT;
 }
 
 Window::~Window()
@@ -67,7 +67,7 @@ Window::~Window()
         m_render_ptr->unloadBuffer(m_sphere);
         m_render_ptr->deleteBuffer(m_sphere);
 
-        m_render_ptr->destroyTexture(m_base_texture);
+        m_render_ptr->destroyTexture(m_base_texture.texture_state);
 
         m_ui_ptr->terminate(*m_render_ptr);
 
@@ -116,6 +116,11 @@ void Window::createWindow()
     new_window = glfwCreateWindow(m_vp_size.x, m_vp_size.y, "", mon, mp_glfw_win);
     if(mp_glfw_win != nullptr)
         glfwDestroyWindow(mp_glfw_win);
+    if(new_window == nullptr)
+    {
+        glfwTerminate();
+        throw std::runtime_error{"Failed to create GLFW window"};
+    }
 
     mp_glfw_win = new_window;
     if(mp_glfw_win == nullptr)
@@ -282,7 +287,7 @@ void Window::draw()
 
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 1;
-    slot.texture           = &m_base_texture;
+    slot.texture_state     = &m_base_texture.texture_state;
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);
@@ -294,7 +299,7 @@ void Window::draw()
 
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 0;
-    slot.texture           = &m_base_texture;
+    slot.texture_state     = &m_base_texture.texture_state;
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);
@@ -306,7 +311,7 @@ void Window::draw()
 
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 0;
-    slot.texture           = &m_base_texture;
+    slot.texture_state     = &m_base_texture.texture_state;
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     m_render_ptr->addTextureSlot(slot);

@@ -9,7 +9,8 @@ constexpr bool IsPowerOfTwo(uint32_t x)
     return x && ((x & (x - 1)) == 0);
 }
 
-AtlasTex::AtlasTex(uint32_t size) : m_size{size}
+AtlasTex::AtlasTex(uint32_t size)
+    : m_size{size}
 {
     assert(m_size != 0);
     assert(IsPowerOfTwo(m_size));
@@ -20,16 +21,16 @@ AtlasTex::AtlasTex(uint32_t size) : m_size{size}
     m_data.resize(m_size * m_size * 4);
     std::memset(m_data.data(), 0, m_size * m_size * 4);
 
-    m_atlas_tex.m_type        = ImageState::Type::TEXTURE_2D;
-    m_atlas_tex.m_format      = ImageState::Format::R8G8B8A8;
+    m_atlas_tex.m_type        = TextureState::Type::TEXTURE_2D;
+    m_atlas_tex.m_format      = TextureState::Format::R8G8B8A8;
     m_atlas_tex.m_width       = m_size;
     m_atlas_tex.m_height      = m_size;
     m_atlas_tex.m_gen_mips    = false;
-    m_atlas_tex.m_sampler.max = ImageState::Filter::LINEAR;
-    m_atlas_tex.m_sampler.min = ImageState::Filter::LINEAR;
-    m_atlas_tex.m_sampler.r   = ImageState::Wrap::CLAMP_TO_EDGE;
-    m_atlas_tex.m_sampler.s   = ImageState::Wrap::CLAMP_TO_EDGE;
-    m_atlas_tex.m_sampler.t   = ImageState::Wrap::CLAMP_TO_EDGE;
+    m_atlas_tex.m_sampler.max = TextureState::Filter::LINEAR;
+    m_atlas_tex.m_sampler.min = TextureState::Filter::LINEAR;
+    m_atlas_tex.m_sampler.r   = TextureState::Wrap::CLAMP_TO_EDGE;
+    m_atlas_tex.m_sampler.s   = TextureState::Wrap::CLAMP_TO_EDGE;
+    m_atlas_tex.m_sampler.t   = TextureState::Wrap::CLAMP_TO_EDGE;
 }
 
 void AtlasTex::clear()
@@ -93,7 +94,7 @@ void AtlasTex::atlasMerge()
         if(node->y == next->y)
         {
             node->z += next->z;
-            it = m_nodes.erase(it + 1);
+            it       = m_nodes.erase(it + 1);
         }
     }
 }
@@ -150,9 +151,9 @@ glm::ivec4 AtlasTex::getRegion(uint32_t width, uint32_t height)
 
         if(node->x < (prev->x + prev->z))
         {
-            int32_t shrink = prev->x + prev->z - node->x;
-            node->x += shrink;
-            node->z -= shrink;
+            int32_t shrink  = prev->x + prev->z - node->x;
+            node->x        += shrink;
+            node->z        -= shrink;
 
             if(node->z <= 0)
             {

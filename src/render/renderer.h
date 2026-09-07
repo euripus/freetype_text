@@ -41,13 +41,13 @@ public:
                      uint32_t num_verts) const;
 
     // Textures
-    void          createTexture(ImageState & tex) const;
-    void          uploadTextureData(ImageState & tex, tex::ImageData const & tex_data,
-                                    ImageState::CubeFace face = ImageState::CubeFace::POS_X) const;
-    void          destroyTexture(ImageState & tex) const;
-    bool          get2DTextureData(ImageState const & tex, tex::ImageData & tex_data,
-                                   ImageState::CubeFace face = ImageState::CubeFace::POS_X) const;
-    void          applySamplerState(ImageState const & tex) const;
+    void          createTexture(TextureState & tex) const;
+    void          uploadTextureData(TextureState & tex, tex::ImageData const & tex_data,
+                                    TextureState::CubeFace face = TextureState::CubeFace::POS_X) const;
+    void          destroyTexture(TextureState & tex) const;
+    bool          get2DTextureData(TextureState const & tex, tex::ImageData & tex_data,
+                                   TextureState::CubeFace face = TextureState::CubeFace::POS_X) const;
+    void          applySamplerState(TextureState const & tex) const;
     void          applyCombineStage(CombineStage const & combine) const;
     uint32_t      addTextureSlot(TextureSlot slot);
     TextureSlot & getTextureSlot(uint32_t slot_num);
@@ -66,7 +66,7 @@ public:
     void     unbindLights() const;
 
     // Frame buffer
-    bool bindTextureAsFrameBuffer(ImageState * color_tex, ImageState * depth_tex = nullptr,
+    bool bindTextureAsFrameBuffer(TextureState * color_tex, TextureState * depth_tex = nullptr,
                                   glm::ivec4 viewport_size = glm::ivec4{0});
     void unbindTexturesFromFrameBuffer() const;
     void bindDefaultFbo();

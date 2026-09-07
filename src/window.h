@@ -36,7 +36,7 @@ class Window
     VertexBuffer m_pyramid;
     VertexBuffer m_plane;
     VertexBuffer m_sphere;
-    ImageState   m_base_texture;
+    Texture      m_base_texture;
     Light        m_light;
 
     // UI

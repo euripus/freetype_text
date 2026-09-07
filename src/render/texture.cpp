@@ -3,65 +3,6 @@
 #include "../fs/file.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-bool ImageState::loadImageDataFromFile(std::string const & fname, RendererBase const & render)
-{
-    tex::ImageData image;
-    if(!tex::ReadTGA(fname, image))
-        return false;
-
-    loadImageData(image, render);
-
-    return true;
-}
-
-bool ImageState::loadImageDataFromFile(BaseFile const & file, RendererBase const & render)
-{
-    tex::ImageData image;
-    if(!tex::ReadTGA(file, image))
-        return false;
-
-    loadImageData(image, render);
-
-    return true;
-}
-
-void ImageState::loadImageData(tex::ImageData const & image, RendererBase const & render)
-{
-    m_committed = false;
-    m_type      = Type::TEXTURE_2D;
-    m_format    = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
-    m_width     = image.width;
-    m_height    = image.height;
-    m_depth     = 1;
-
-    render.createTexture(*this);
-    render.uploadTextureData(*this, image);
-}
-
-bool ImageState::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
-{
-    m_committed = false;
-    m_type      = Type::TEXTURE_CUBE;
-    m_depth     = 0;
-
-    render.createTexture(*this);
-
-    tex::ImageData image;
-    for(std::size_t i = 0; i < fnames.size(); ++i)
-    {
-        if(!tex::ReadTGA(fnames[i], image))
-            return false;
-
-        m_format = image.type == tex::ImageData::PixelType::pt_rgb ? Format::R8G8B8 : Format::R8G8B8A8;
-        m_width  = image.width;
-        m_height = image.height;
-
-        render.uploadTextureData(*this, image, static_cast<CubeFace>(i));
-    }
-
-    return true;
-}
-
 glm::mat4 TextureProjector::getTransformMatrix() const
 {
     assert(projected_texture != nullptr);
@@ -132,4 +73,83 @@ glm::vec4 TextureProjector::GetPlaneFromPoints(glm::vec3 const & p0, glm::vec3 c
     float d    = -(norm.x * p0.x + norm.y * p0.y + norm.z * p0.z);
 
     return glm::vec4(norm, d);
+}
+
+bool Texture::loadImageDataFromFile(std::string const & fname, RendererBase const & render)
+{
+    assert(is_cube_map == false);
+
+    if(!tex::ReadTGA(fname, image_data))
+        return false;
+
+    memory_state = MemoryState::CPU_MEMORY;
+
+    loadImageData(render);
+
+    return true;
+}
+
+bool Texture::loadImageDataFromFile(BaseFile const & file, RendererBase const & render)
+{
+    assert(is_cube_map == false);
+
+    if(!tex::ReadTGA(file, image_data))
+        return false;
+
+    memory_state = MemoryState::CPU_MEMORY;
+
+    loadImageData(render);
+
+    return true;
+}
+
+void Texture::loadImageData(RendererBase const & render)
+{
+    assert(is_cube_map == false);
+    assert(memory_state == MemoryState::CPU_MEMORY);
+
+    texture_state.m_committed = false;
+    texture_state.m_type      = TextureState::Type::TEXTURE_2D;
+    texture_state.m_format    = image_data.type == tex::ImageData::PixelType::pt_rgb
+                                    ? TextureState::Format::R8G8B8
+                                    : TextureState::Format::R8G8B8A8;
+    texture_state.m_width     = image_data.width;
+    texture_state.m_height    = image_data.height;
+    texture_state.m_depth     = 1;
+
+    render.createTexture(texture_state);
+    render.uploadTextureData(texture_state, image_data);
+
+    assert(texture_state.m_committed);
+    memory_state = MemoryState::CPU_GPU_MEMORY;
+}
+
+bool Texture::loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render)
+{
+    assert(memory_state == MemoryState::NONE);
+
+    is_cube_map               = true;
+    texture_state.m_committed = false;
+    texture_state.m_type      = TextureState::Type::TEXTURE_CUBE;
+    texture_state.m_depth     = 0;
+
+    render.createTexture(texture_state);
+
+    for(std::size_t i = 0; i < fnames.size(); ++i)
+    {
+        if(!tex::ReadTGA(fnames[i], cube_map_faces[i]))
+            return false;
+
+        texture_state.m_format = cube_map_faces[i].type == tex::ImageData::PixelType::pt_rgb
+                                     ? TextureState::Format::R8G8B8
+                                     : TextureState::Format::R8G8B8A8;
+        texture_state.m_width  = cube_map_faces[i].width;
+        texture_state.m_height = cube_map_faces[i].height;
+
+        render.uploadTextureData(texture_state, cube_map_faces[i], static_cast<TextureState::CubeFace>(i));
+    }
+
+    memory_state = MemoryState::CPU_GPU_MEMORY;
+
+    return true;
 }

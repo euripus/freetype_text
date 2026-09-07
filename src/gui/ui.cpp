@@ -79,7 +79,7 @@ void UI::draw(RendererBase & render)
     // draw background
     slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
     slot.tex_channel_num   = 0;
-    slot.texture           = getUIImageAtlas().getAtlasTextureState();
+    slot.texture_state     = getUIImageAtlas().getAtlasTextureState();
     slot.projector         = nullptr;
     slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
     render.addTextureSlot(slot);
@@ -97,7 +97,7 @@ void UI::draw(RendererBase & render)
         render.setDrawColor(color);
         slot.coord_source      = TextureSlot::TexCoordSource::TEX_COORD_BUFFER;
         slot.tex_channel_num   = 0;
-        slot.texture           = getFontImageAtlas().getAtlasTextureState();
+        slot.texture_state     = getFontImageAtlas().getAtlasTextureState();
         slot.projector         = nullptr;
         slot.combine_mode.mode = CombineStage::CombineMode::MODULATE;
         render.addTextureSlot(slot);

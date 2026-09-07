@@ -9,7 +9,7 @@
 class RendererBase;
 class BaseFile;
 
-struct ImageState
+struct TextureState
 {
     enum class Type
     {
@@ -86,12 +86,6 @@ struct ImageState
     uint32_t     m_height    = 0;
     uint32_t     m_depth     = 1;
     uint32_t     m_render_id = 0;
-
-    bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
-    bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
-    void loadImageData(tex::ImageData const & image, RendererBase const & render);
-
-    bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
 };
 
 struct Light
@@ -121,7 +115,7 @@ struct TextureProjector
     bool  is_cube_map   = false;
     float fovy          = 45.f;
 
-    ImageState const * projected_texture = nullptr;
+    TextureState const * projected_texture = nullptr;
 
     glm::mat4 modelview  = glm::mat4(1.f);
     glm::mat4 reflection = glm::mat4(1.f);
@@ -225,8 +219,31 @@ struct TextureSlot
     std::uint32_t  tex_channel_num = 0;   // num of active channel in tex_coords pool
     CombineStage   combine_mode    = {};
 
-    ImageState const *       texture   = nullptr;
-    TextureProjector const * projector = nullptr;
+    TextureState const *     texture_state = nullptr;
+    TextureProjector const * projector     = nullptr;
+};
+
+struct Texture
+{
+    enum class MemoryState
+    {
+        NONE,
+        CPU_MEMORY,
+        GPU_MEMORY,
+        CPU_GPU_MEMORY
+    };
+
+    MemoryState                   memory_state = MemoryState::NONE;
+    tex::ImageData                image_data;
+    std::array<tex::ImageData, 6> cube_map_faces;
+    TextureState                  texture_state;
+    bool                          is_cube_map = false;
+
+    bool loadImageDataFromFile(std::string const & fname, RendererBase const & render);
+    bool loadImageDataFromFile(BaseFile const & file, RendererBase const & render);
+    void loadImageData(RendererBase const & render);
+
+    bool loadCubeMapFromFiles(std::array<char const *, 6> const & fnames, RendererBase const & render);
 };
 
 #endif

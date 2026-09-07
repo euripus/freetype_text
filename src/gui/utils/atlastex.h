@@ -26,7 +26,7 @@ public:
 
     void writeAtlasToTGA(std::string const & name);
 
-    ImageState * getAtlasTextureState() { return &m_atlas_tex; }
+    TextureState * getAtlasTextureState() { return &m_atlas_tex; }
 
     static void UploadAtlasTexture(RendererBase const & render, AtlasTex & atlas);
     static void DeleteAtlasTexture(RendererBase const & render, AtlasTex & atlas);
@@ -40,7 +40,7 @@ private:
     uint32_t                   m_size = 0;
     std::vector<unsigned char> m_data;
     std::vector<glm::ivec3>    m_nodes;
-    ImageState                 m_atlas_tex = {};
+    TextureState               m_atlas_tex = {};
 };
 
 #endif   // ATLASTEX_H
