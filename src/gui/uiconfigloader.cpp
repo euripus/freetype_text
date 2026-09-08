@@ -3,9 +3,9 @@
 #include "utils/fontmanager.h"
 #include "widget.h"
 #include "uiwindow.h"
-#include "text_box.h"
-#include "button.h"
-#include "partofuiatlasimage.h"
+#include "./widgets/text_box.h"
+#include "./widgets/button.h"
+#include "./widgets/partofuiatlasimage.h"
 #include <boost/json.hpp>
 
 Glyph::OutlineType FontDataDesc::GetOutlineTypeFromString(std::string_view str_outline)

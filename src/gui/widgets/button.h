@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "widget.h"
+#include "../widget.h"
 #include <functional>
 
 class Button : public Widget

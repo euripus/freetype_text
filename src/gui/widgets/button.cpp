@@ -1,6 +1,6 @@
 #include "button.h"
 #include "text_fitter.h"
-#include "ui.h"
+#include "../ui.h"
 
 Button::Button(WidgetDesc const & desc, UIWindow & owner)
     : Widget(desc, owner),

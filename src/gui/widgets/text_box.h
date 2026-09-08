@@ -1,7 +1,7 @@
 #ifndef TEXT_BOX_H
 #define TEXT_BOX_H
 
-#include "widget.h"
+#include "../widget.h"
 
 class TextBox : public Widget
 {

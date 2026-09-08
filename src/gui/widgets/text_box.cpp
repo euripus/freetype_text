@@ -1,6 +1,6 @@
 #include "text_box.h"
-#include "uiwindow.h"
-#include "uiconfigloader.h"
+#include "../uiwindow.h"
+#include "../uiconfigloader.h"
 #include "text_fitter.h"
 
 TextBox::TextBox(WidgetDesc const & desc, UIWindow & owner)

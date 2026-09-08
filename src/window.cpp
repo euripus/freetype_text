@@ -4,8 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "gui/button.h"
-#include "gui/text_box.h"
+#include "gui/widgets/button.h"
+#include "gui/widgets/text_box.h"
 #include "gui/ui.h"
 #include "input/inputglfw.h"
 #include "render/renderer.h"

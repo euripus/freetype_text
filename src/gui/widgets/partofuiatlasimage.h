@@ -1,7 +1,7 @@
 #ifndef PARTOFUIATLASIMAGE_H
 #define PARTOFUIATLASIMAGE_H
 
-#include "widget.h"
+#include "../widget.h"
 
 class PartOfUIAtlasImageBox : public Widget
 {
