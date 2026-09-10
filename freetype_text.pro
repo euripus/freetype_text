@@ -54,6 +54,7 @@ SOURCES +=  \
     src/gui/utils/utf8_utils.cpp \
     src/gui/widget.cpp \
     src/gui/widgets/button.cpp \
+    src/gui/widgets/imagebox.cpp \
     src/gui/widgets/partofuiatlasimage.cpp \
     src/gui/widgets/text_box.cpp \
     src/gui/widgets/text_fitter.cpp \
@@ -85,6 +86,7 @@ HEADERS +=  \
     src/gui/utils/utf8_utils.h \
     src/gui/widget.h \
     src/gui/widgets/button.h \
+    src/gui/widgets/imagebox.h \
     src/gui/widgets/partofuiatlasimage.h \
     src/gui/widgets/text_box.h \
     src/gui/widgets/text_fitter.h \

@@ -43,20 +43,23 @@ void Widget::update(float time, bool check_cursor)
     subClassUpdate(time, check_cursor);
 }
 
-void Widget::fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const
+void Widget::fillBuffers(RefToDrawData & draw_data) const
 {
     if(m_region_ptr != nullptr && visible())
     {
         glm::vec2 pos = m_pos;
-        m_region_ptr->addBlock(background, pos, m_rect.m_size);
+        m_region_ptr->addBlock(draw_data.background, pos, m_rect.m_size);
     }
 
     // draw children
     for(auto & ch: m_children)
-        ch->fillBuffers(background, text);
+        ch->fillBuffers(draw_data);
 
     if(visible())
-        subClassFillTextBuffer(text);
+    {
+        subClassFillTextBuffer(draw_data.text);
+        subClassFillTexturedQuads(draw_data.textured_quads);
+    }
 }
 
 void Widget::move(glm::vec2 const & new_origin)

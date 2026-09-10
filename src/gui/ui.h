@@ -10,6 +10,14 @@
 #include "uiwindow.h"
 
 class RendererBase;
+struct Texture;
+
+struct RefToDrawData
+{
+    VertexBuffer &                                    background;
+    ColorMap::ColoredTextBuffers &                    text;
+    std::vector<std::pair<VertexBuffer, Texture *>> & textured_quads;
+};
 
 class UI
 {
@@ -35,7 +43,7 @@ public:
     glm::vec4 const & getFontColor() const { return m_font_color; }
 
     // private
-    void clearAndFillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const;
+    void clearAndFillBuffers(RefToDrawData draw_data) const;
 
     Input *      m_input = nullptr;
     FileSystem & m_fsys;
@@ -51,6 +59,7 @@ public:
     mutable VertexBuffer                 m_win_buf;
     mutable ColorMap::ColoredTextBuffers m_colored_text_buffers =
         ColorMap::ColoredTextBuffers{ColorMap::EpsilonLessVec4(0.001f)};
+    mutable std::vector<std::pair<VertexBuffer, Texture *>> m_external_textured_regions;
 
     std::vector<std::unique_ptr<UIWindow>> m_windows;
     std::vector<std::vector<UIWindow *>>   m_layers;

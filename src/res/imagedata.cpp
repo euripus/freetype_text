@@ -275,7 +275,7 @@ bool WriteTGA(std::string file_name, ImageData const & image)
     std::memcpy(out_data.data(), &tga, sizeof(tga));
 
     uint8_t * data_ptr = image.data.get();
-    uint8_t   red, green, blue, alpha;
+    uint8_t   red{0}, green{0}, blue{0}, alpha{0};
     for(uint32_t i = 0; i < image.width * image.height * bytes_per_pixel; i += bytes_per_pixel)
     {
         red   = data_ptr[i + 0];

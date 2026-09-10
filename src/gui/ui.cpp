@@ -24,17 +24,18 @@ void UI::update(float time)
     }
 }
 
-void UI::clearAndFillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const
+void UI::clearAndFillBuffers(RefToDrawData draw_data) const
 {
-    background.clear();
-    for(auto & [color, text_buf]: text)
+    draw_data.background.clear();
+    for(auto & [color, text_buf]: draw_data.text)
     {
         text_buf.clear();
     }
+    draw_data.textured_quads.clear();
 
     for(auto const & ptr: m_windows)
     {
-        ptr->fillBuffers(background, text);
+        ptr->fillBuffers(draw_data);
     }
 }
 
@@ -65,7 +66,7 @@ void UI::draw(RendererBase & render)
     render.setMatrix(RendererBase::MatrixType::PROJECTION, prj_mtx);
     render.setIdentityMatrix(RendererBase::MatrixType::MODELVIEW);
 
-    clearAndFillBuffers(m_win_buf, m_colored_text_buffers);
+    clearAndFillBuffers({m_win_buf, m_colored_text_buffers, m_external_textured_regions});
     render.uploadBuffer(m_win_buf);
 
     AlphaState blend;

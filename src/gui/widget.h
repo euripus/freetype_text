@@ -12,18 +12,22 @@
 class UIWindow;
 class VertexBuffer;
 struct WidgetDesc;
+struct RefToDrawData;
 
 class Widget
 {
 private:
     virtual void subClassFillTextBuffer(ColorMap::ColoredTextBuffers & text) const {}
+    virtual void
+        subClassFillTexturedQuads(std::vector<std::pair<VertexBuffer, Texture *>> & textured_quads) const
+    {}
     virtual void subClassUpdate(float time, bool check_cursor) {}
 
 public:
     Widget(WidgetDesc const & desc, UIWindow & owner);
     virtual ~Widget() = default;
 
-    void fillBuffers(VertexBuffer & background, ColorMap::ColoredTextBuffers & text) const;
+    void fillBuffers(RefToDrawData & draw_data) const;
     void update(float time, bool check_cursor);
     void move(glm::vec2 const & new_origin);
 
