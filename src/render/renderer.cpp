@@ -411,8 +411,10 @@ void RendererBase::draw(VertexBuffer const & geo) const
 void RendererBase::drawIndexed(uint32_t first_index, uint32_t num_indices, uint32_t first_vert,
                                uint32_t num_verts) const
 {
+    assert(num_verts > 0);
+
     void * offset = reinterpret_cast<void *>(static_cast<uintptr_t>(first_index) * sizeof(uint32_t));
-    glDrawRangeElements(GL_TRIANGLES, first_vert, first_vert + num_verts, num_indices, GL_UNSIGNED_INT,
+    glDrawRangeElements(GL_TRIANGLES, first_vert, first_vert + num_verts - 1, num_indices, GL_UNSIGNED_INT,
                         offset);
 }
 
@@ -912,6 +914,8 @@ bool RendererBase::bindTextureAsFrameBuffer(TextureState * color_tex, TextureSta
             return false;
     }
 
+    unbindTexturesFromFrameBuffer();
+
     uint32_t loc_width  = 0;
     uint32_t loc_height = 0;
 
@@ -922,7 +926,10 @@ bool RendererBase::bindTextureAsFrameBuffer(TextureState * color_tex, TextureSta
         assert(m_fbo_color_attached == false);
 
         if(color_tex->m_format != TextureState::Format::R8G8B8A8)
+        {
+            bindDefaultFbo();
             return false;
+        }
 
         GLint const internal_format =
             g_texture_gl_formats[static_cast<uint32_t>(color_tex->m_format)].gl_internal_format;
@@ -931,15 +938,23 @@ bool RendererBase::bindTextureAsFrameBuffer(TextureState * color_tex, TextureSta
         uint32_t const input_type =
             g_texture_gl_formats[static_cast<uint32_t>(color_tex->m_format)].gl_input_data_type;
 
+        bool needs_allocation = color_tex->m_render_id == 0;
+
         loc_width  = color_tex->m_width;
         loc_height = color_tex->m_height;
 
-        if(color_tex->m_render_id == 0)
+        if(needs_allocation)
             glGenTextures(1, &color_tex->m_render_id);
         glBindTexture(GL_TEXTURE_2D, color_tex->m_render_id);
-        applySamplerState(*color_tex);
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, static_cast<GLsizei>(loc_width),
-                     static_cast<GLsizei>(loc_height), 0, input_format, input_type, nullptr);
+
+        if(needs_allocation)
+        {
+            applySamplerState(*color_tex);
+            glTexImage2D(GL_TEXTURE_2D, 0, internal_format, static_cast<GLsizei>(loc_width),
+                         static_cast<GLsizei>(loc_height), 0, input_format, input_type, nullptr);
+            color_tex->m_committed = true;
+        }
+
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D,
                                   color_tex->m_render_id, 0);
         m_fbo_color_attached = true;
@@ -965,15 +980,23 @@ bool RendererBase::bindTextureAsFrameBuffer(TextureState * color_tex, TextureSta
         uint32_t const input_type =
             g_texture_gl_formats[static_cast<uint32_t>(depth_tex->m_format)].gl_input_data_type;
 
+        bool needs_allocation = depth_tex->m_render_id == 0;
+
         loc_width  = depth_tex->m_width;
         loc_height = depth_tex->m_height;
 
-        if(depth_tex->m_render_id == 0)
+        if(needs_allocation)
             glGenTextures(1, &depth_tex->m_render_id);
         glBindTexture(GL_TEXTURE_2D, depth_tex->m_render_id);
-        applySamplerState(*depth_tex);
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, static_cast<GLsizei>(loc_width),
-                     static_cast<GLsizei>(loc_height), 0, input_format, input_type, nullptr);
+
+        if(needs_allocation)
+        {
+            applySamplerState(*depth_tex);
+            glTexImage2D(GL_TEXTURE_2D, 0, internal_format, static_cast<GLsizei>(loc_width),
+                         static_cast<GLsizei>(loc_height), 0, input_format, input_type, nullptr);
+            depth_tex->m_committed = true;
+        }
+
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D,
                                   depth_tex->m_render_id, 0);
     }
